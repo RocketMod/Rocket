@@ -3,7 +3,7 @@ You are not allowed to change, mix or redistribute Unturned 3
 unless permission is explicitly given by Smartly Dressed Games.
 Copyright (C) 2015  Smartly Dressed Games
 
-------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 
 The Rocket Wiki accesible at https://github.com/RocketFoundation/Rocket/wiki/ 
 is licensed under a Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) License.
@@ -12,7 +12,7 @@ credit and license any derivations under the same license as the original.
 See http://creativecommons.org/licenses/by-sa/3.0/ for the human-readable summary
 and http://creativecommons.org/licenses/by-sa/3.0/legalcode for the full license.
 
-------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 
 Rocket, as a modification to Unturned 3 is licensed under a 
 Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License.
@@ -21,23 +21,12 @@ for commercial purposes and dont distribute modified versions.
 See http://creativecommons.org/licenses/by-nc-nd/3.0/ for the human-readable summary
 and http://creativecommons.org/licenses/by-nc-nd/3.0/legalcode for the full license.
 
-If you want to use Rocket for comercial purposes, please contact us at info@rocket.foundation
+To make it clear: If you are a hosting company, you are neither allowed to 
+advertise your servers to work with Rocket nor use someway of (automatic)
+installation unless a permission is explicitly granted by us.
 
-------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
 
-The RocketAPI is licensed under GPLv2.
+The RocketAPI used in plugins is licensed under GPLv2.
 All plugins are automatically sub licensed under the same license.
 Copyright (C) 2015  Rocket Foundation
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
