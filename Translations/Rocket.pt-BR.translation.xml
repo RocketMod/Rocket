@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Translation Id="command_generic_failed_find_player" Value="Jogador não encontrado" />
+  <Translation Id="command_generic_invalid_parameter" Value="Parâmetro Invalido" />
+  <Translation Id="command_generic_target_player_not_found" Value="Jogador alvo não encontrado" />
+  <Translation Id="command_generic_teleport_while_driving_error" Value="Você não pode usar teleport dentro de carros!" />
+  <Translation Id="command_god_enable_console" Value="{0} Ativou modo GOD" />
+  <Translation Id="command_god_enable_private" Value="Você pode sentir a Força!..." />
+  <Translation Id="command_god_disable_console" Value="{0} desativou modo GOD" />
+  <Translation Id="command_god_disable_private" Value="A força abandonou você." />
+  <Translation Id="command_vanish_enable_console" Value="{0} Ficou Invisivel" />
+  <Translation Id="command_vanish_enable_private" Value="Invisibilidade Ativada!" />
+  <Translation Id="command_vanish_disable_console" Value="{0} Está Visível!" />
+  <Translation Id="command_vanish_disable_private" Value="Invisibilidade Desativada!" />
+  <Translation Id="command_duty_enable_console" Value="{0} Está de serviço!" />
+  <Translation Id="command_duty_enable_private" Value="Você está em serviço" />
+  <Translation Id="command_duty_disable_console" Value="{0} Não está mais em serviço" />
+  <Translation Id="command_duty_disable_private" Value="Você saiu do serviço." />
+  <Translation Id="command_bed_no_bed_found_private" Value="Você não tem uma cama!" />
+  <Translation Id="command_i_giving_console" Value="Dando a {0} o item {1}:{2}" />
+  <Translation Id="command_i_giving_private" Value="Dando {0}x {1} ({2})" />
+  <Translation Id="command_i_giving_failed_private" Value="Falha ao lhe dar o item {0}x {1} ({2})" />
+  <Translation Id="command_v_giving_console" Value="Dando a {0} o carro {1}" />
+  <Translation Id="command_v_giving_private" Value="Dando o carro {0} ({1})" />
+  <Translation Id="command_v_giving_failed_private" Value="Falha ao lhe dar o carro {0} ({1})" />
+  <Translation Id="command_tps_tps" Value="TPS: {0}" />
+  <Translation Id="command_tps_running_since" Value="Ligado desde: {0}" />
+  <Translation Id="command_p_reload_private" Value="As permissões foram recarregadas." />
+  <Translation Id="command_p_groups_private" Value="{0} grupos são: {1}" />
+  <Translation Id="command_p_permissions_private" Value="{0} permissões são: {1}" />
+  <Translation Id="command_tp_teleport_console" Value="{0} teleportado para {1}" />
+  <Translation Id="command_tp_teleport_private" Value="Teleportado para {0}" />
+  <Translation Id="command_tp_failed_find_destination" Value="Destino não encontrado!" />
+  <Translation Id="command_tphere_teleport_console" Value="{0} foi teleportado para {1}" />
+  <Translation Id="command_tphere_teleport_from_private" Value="{0} foi teleportado a você" />
+  <Translation Id="command_tphere_teleport_to_private" Value="Você foi teleportado para {0}" />
+  <Translation Id="command_investigate_private" Value="{0} SteamID64 é {1}" />
+  <Translation Id="command_heal_success_me" Value="{0} Você foi curado!" />
+  <Translation Id="command_heal_success_other" Value="{0} Curou você!" />
+  <Translation Id="command_heal_success" Value="Você foi curado!" />
+  <Translation Id="command_compass_facing_private" Value="Você está olhando para: {0}" />
+  <Translation Id="command_compass_north" Value="Norte" />
+  <Translation Id="command_compass_east" Value="Leste" />
+  <Translation Id="command_compass_south" Value="Sul" />
+  <Translation Id="command_compass_west" Value="Oeste" />
+  <Translation Id="rocket_join_public" Value="{0} Entrou!" />
+  <Translation Id="rocket_leave_public" Value="{0} Saiu!" />
+  <Translation Id="rocket_restart_warning_public" Value="Reiniciando em 30 Segundos!!!" />
+  <Translation Id="command_z_giving_console" Value="Gerando {1} zumbis perto de {0}" />
+  <Translation Id="command_z_giving_private" Value="Gerando {0} zumbis aqui por perto." />
+  <Translation Id="command_compass_northwest" Value="Nordeste" />
+  <Translation Id="command_compass_northeast" Value="Noroeste" />
+  <Translation Id="command_compass_southwest" Value="Sudoeste" />
+  <Translation Id="command_compass_southeast" Value="Sudeste" />
+  <Translation Id="command_clear_private" Value="Inventario Limpo!!" />
+</Translations>
