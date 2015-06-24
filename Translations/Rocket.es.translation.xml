@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Translations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <TranslationEntry Id="rocket_join_public" Value="{0} se ha conectado" />
+  <TranslationEntry Id="rocket_leave_public" Value="{0} se ha desconectado" />
+  <TranslationEntry Id="rocket_restart_warning_public" Value="El servidor se reiniciará en 30 segundos" />
+  <TranslationEntry Id="command_generic_failed_find_player" Value="No se encontró el jugador" />
+  <TranslationEntry Id="command_generic_invalid_parameter" Value="Parámetro Invalido" />
+  <TranslationEntry Id="command_generic_target_player_not_found" Value="No se encontró el jugador destino" />
+  <TranslationEntry Id="command_generic_teleport_while_driving_error" Value="No puedes transportar mientras se conduce un vehículo" />
+  <TranslationEntry Id="command_god_enable_console" Value="{0} esta en Godmode" />
+  <TranslationEntry Id="command_god_enable_private" Value="Puedes sentir la fuerza ahora ..." />
+  <TranslationEntry Id="command_god_disable_console" Value="{0} ya no esta en Godmode" />
+  <TranslationEntry Id="command_god_disable_private" Value="Ahora eres un simple mortal..." />
+  <TranslationEntry Id="command_vanish_enable_console" Value="{0} esta en Vanishmode" />
+  <TranslationEntry Id="command_vanish_enable_private" Value="Eres invisible..." />
+  <TranslationEntry Id="command_vanish_disable_console" Value="{0} ya no esta en Vanishmode" />
+  <TranslationEntry Id="command_vanish_disable_private" Value="Eres visible nuevamente..." />
+  <TranslationEntry Id="command_duty_enable_console" Value="{0} esta en el deber" />
+  <TranslationEntry Id="command_duty_enable_private" Value="Estas en tus deberes..." />
+  <TranslationEntry Id="command_duty_disable_console" Value="{0} ya no esta en el deber" />
+  <TranslationEntry Id="command_duty_disable_private" Value="Ya no estas en tus deberes..." />
+  <TranslationEntry Id="command_bed_no_bed_found_private" Value="No tienes una cama donde transportarte." />
+  <TranslationEntry Id="command_i_giving_console" Value="Dando a {0} un {1}:{2}" />
+  <TranslationEntry Id="command_i_giving_private" Value="Tomando {0}x {1} ({2})" />
+  <TranslationEntry Id="command_z_giving_console" Value="Invocando {1} zombies cerca de {0}" />
+  <TranslationEntry Id="command_z_giving_private" Value="Invocando {0} zombies cerca" />
+  <TranslationEntry Id="command_i_giving_failed_private" Value="No puedes tomar {0}x {1} ({2})" />
+  <TranslationEntry Id="command_v_giving_console" Value="{0} maneja un {1}" />
+  <TranslationEntry Id="command_v_giving_private" Value="{0} maneja un ({1})" />
+  <TranslationEntry Id="command_v_giving_failed_private" Value="{0} no puede manejar un ({1})" />
+  <TranslationEntry Id="command_tps_tps" Value="TPS: {0}" />
+  <TranslationEntry Id="command_tps_running_since" Value="En funcionamiento desde: {0} UTC" />
+  <TranslationEntry Id="command_p_reload_private" Value="Permisos recargados" />
+  <TranslationEntry Id="command_p_groups_private" Value="{0} los grupos son: {1}" />
+  <TranslationEntry Id="command_p_permissions_private" Value="{0} los permisos son: {1}" />
+  <TranslationEntry Id="command_tp_teleport_console" Value="{0} fue transportado a {1}" />
+  <TranslationEntry Id="command_tp_teleport_private" Value="Transportado a {0}" />
+  <TranslationEntry Id="command_tp_failed_find_destination" Value="No se pudo ubicar destino" />
+  <TranslationEntry Id="command_tphere_teleport_console" Value="{0} fue transportado a {1}" />
+  <TranslationEntry Id="command_tphere_teleport_from_private" Value="{0} transportado a ti." />
+  <TranslationEntry Id="command_tphere_teleport_to_private" Value="Fuiste transportado a {0}" />
+  <TranslationEntry Id="command_clear_error" Value="Hubo un problema limpiando el inventario de {0}." />
+  <TranslationEntry Id="command_clear_private" Value="Tu inventario esta limpio!" />
+  <TranslationEntry Id="command_clear_other" Value="Tu inventario fue limpiando por {0}!" />
+  <TranslationEntry Id="command_clear_other_success" Value="Limpiaste el inventario de {0}." />
+  <TranslationEntry Id="command_investigate_private" Value="{0} SteamID64: {1}" />
+  <TranslationEntry Id="command_heal_success_me" Value="{0} fue curado" />
+  <TranslationEntry Id="command_heal_success_other" Value="Fuiste curado por {0}" />
+  <TranslationEntry Id="command_heal_success" Value="Fuiste curado" />
+  <TranslationEntry Id="command_compass_facing_private" Value="Estas mirando a {0}" />
+  <TranslationEntry Id="command_compass_north" Value="N" />
+  <TranslationEntry Id="command_compass_east" Value="E" />
+  <TranslationEntry Id="command_compass_south" Value="S" />
+  <TranslationEntry Id="command_compass_west" Value="O" />
+  <TranslationEntry Id="command_compass_northwest" Value="NO" />
+  <TranslationEntry Id="command_compass_northeast" Value="NE" />
+  <TranslationEntry Id="command_compass_southwest" Value="SO" />
+  <TranslationEntry Id="command_compass_southeast" Value="SE" />
+  <TranslationEntry Id="command_rocket_plugins_loaded" Value="Complementos cargados: {0}" />
+  <TranslationEntry Id="command_rocket_plugins_unloaded" Value="Complementos descargados: {0}" />
+  <TranslationEntry Id="command_rocket_reload_plugin" Value="Recargando {0}" />
+  <TranslationEntry Id="command_rocket_not_loaded" Value="El complemento {0} no esta cargado" />
+  <TranslationEntry Id="command_rocket_unload_plugin" Value="Descargando {0}" />
+  <TranslationEntry Id="command_rocket_load_plugin" Value="Cargando {0}" />
+  <TranslationEntry Id="command_rocket_already_loaded" Value="El complemento {0} ya esta cargado" />
+  <TranslationEntry Id="command_rocket_reload" Value="Recargando Rocket" />
+  <TranslationEntry Id="command_p_group_not_found" Value="El grupo no se encuentra" />
+  <TranslationEntry Id="command_p_group_assigned" Value="{0} fue asignado al grupo {1}" />
+  <TranslationEntry Id="command_rocket_plugin_not_found" Value="El complemento {0} no se encuentra" />
+</Translations>
