@@ -8,7 +8,7 @@
   <TranslationEntry Id="command_generic_target_player_not_found" Value="Obbiettivo non trovato" />
   <TranslationEntry Id="command_generic_teleport_while_driving_error" Value="Non puoi teletrasportarti mentre sei in un veicolo." />
   <TranslationEntry Id="command_god_enable_console" Value="{0} ha attivato la Godmode" />
-  <TranslationEntry Id="command_god_enable_private" Value="Puoi sentire la forza ora..." />
+  <TranslationEntry Id="command_god_enable_private" Value="Adesso puoi sentire la forza..." />
   <TranslationEntry Id="command_god_disable_console" Value="{0} ha disattivato la Godmode" />
   <TranslationEntry Id="command_god_disable_private" Value="I poteri divini ti lasciano..." />
   <TranslationEntry Id="command_vanish_enable_console" Value="{0} ha attivato la Vanishmode" />
@@ -22,8 +22,8 @@
   <TranslationEntry Id="command_bed_no_bed_found_private" Value="Non hai un letto dove teletrasportarti." />
   <TranslationEntry Id="command_i_giving_console" Value="Dando {0} oggetto {1}:{2}" />
   <TranslationEntry Id="command_i_giving_private" Value="Dandoti un oggetto {0}x {1} ({2})" />
-  <TranslationEntry Id="command_z_giving_console" Value="Spawna {1} zombies vicino {0}" />
-  <TranslationEntry Id="command_z_giving_private" Value="Spawnando {0} zombies vicino" />
+  <TranslationEntry Id="command_z_giving_console" Value="Spawna {1} zombies vicino a lui {0}" />
+  <TranslationEntry Id="command_z_giving_private" Value="Spawnando {0} zombies vicino a te..." />
   <TranslationEntry Id="command_i_giving_failed_private" Value="Impossibile darti l'oggetto {0}x {1} ({2})" />
   <TranslationEntry Id="command_v_giving_console" Value="Dando {0} veicolo {1}" />
   <TranslationEntry Id="command_v_giving_private" Value="Dandoti un veicolo {0} ({1})" />
@@ -37,7 +37,7 @@
   <TranslationEntry Id="command_tp_teleport_private" Value="Teletrasportato da {0}" />
   <TranslationEntry Id="command_tp_failed_find_destination" Value="Impossibile trovare la destinazione" />
   <TranslationEntry Id="command_tphere_teleport_console" Value="{0} è stato teletrasportato da {1}" />
-  <TranslationEntry Id="command_tphere_teleport_from_private" Value="Teletrasportado {0} da te" />
+  <TranslationEntry Id="command_tphere_teleport_from_private" Value="Teletrasportando {0} da te" />
   <TranslationEntry Id="command_tphere_teleport_to_private" Value="Se stato teletrasportato da {0}" />
   <TranslationEntry Id="command_clear_error" Value="Impossibile pulire l'inventario di {0}." />
   <TranslationEntry Id="command_clear_private" Value="Il tuo inventario è stato pulito!" />
@@ -46,7 +46,7 @@
   <TranslationEntry Id="command_investigate_private" Value="Lo SteamID64 di {0} è {1}" />
   <TranslationEntry Id="command_heal_success_me" Value="{0} curato." />
   <TranslationEntry Id="command_heal_success_other" Value="Sei stato curato da {0}" />
-  <TranslationEntry Id="command_heal_success" Value="Sei stato curato" />
+  <TranslationEntry Id="command_heal_success" Value="Sei stato curato." />
   <TranslationEntry Id="command_compass_facing_private" Value="Sei di fronte a {0}" />
   <TranslationEntry Id="command_compass_north" Value="Nord" />
   <TranslationEntry Id="command_compass_east" Value="Est" />
