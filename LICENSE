@@ -1,10 +1,3 @@
-Unturned 3 is property of Smartly Dressed Games.
-You are not allowed to change, mix or redistribute Unturned 3
-unless permission is explicitly given by Smartly Dressed Games.
-Copyright (C) 2015  Smartly Dressed Games
-
---------------------------------------------------------------------------------------
-
 The Rocket Wiki accesible at https://github.com/RocketFoundation/Rocket/wiki/ 
 is licensed under a Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) License.
 You are free to share and adapt it for any purpose as long as you give appropiate 
@@ -14,15 +7,9 @@ and http://creativecommons.org/licenses/by-sa/3.0/legalcode for the full license
 
 --------------------------------------------------------------------------------------
 
-Rocket.Core, as a modification to Unturned 3 is licensed under a 
+Rocket.Core, as a modding framework and tools collection to Unity 3D is licensed under a 
 Creative Commons Attribution-NoDerivs 3.0 Unported License.
 You are free to share it as long as you give appropiate credit and 
 don't distribute modified versions.
 See http://creativecommons.org/licenses/by-nd/3.0/ for the human-readable summary
 and http://creativecommons.org/licenses/by-nd/3.0/legalcode for the full license.
-
---------------------------------------------------------------------------------------
-
-Rocket.Unturned, the Unturned 3 implementation of the Rocket Server Mod is licensed under GPLv2.
-All plugins are automatically sub licensed under the same license.
-Copyright (C) 2015  Rocket Foundation
