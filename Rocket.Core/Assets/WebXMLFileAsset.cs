@@ -35,7 +35,7 @@ namespace Rocket.Core.Assets
                     waiting = true;
                     webclient.DownloadStringCompleted += (object sender, System.Net.DownloadStringCompletedEventArgs e) =>
                     {
-                        RocketDispatcher.QueueOnMainThread(() =>
+                        TaskDispatcher.QueueOnMainThread(() =>
                         {
                             using (StringReader reader = new StringReader(e.Result))
                             {

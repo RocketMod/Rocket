@@ -53,7 +53,7 @@ namespace Rocket.Core
             {
                 Implementation.OnRocketImplementationInitialized += () =>
                 {
-                    gameObject.TryAddComponent<RocketDispatcher>();
+                    gameObject.TryAddComponent<TaskDispatcher>();
                     gameObject.TryAddComponent<AutomaticShutdownWatchdog>();
                     if(Settings.Instance.RCON.Enabled) gameObject.TryAddComponent<RCONServer>();
                 };

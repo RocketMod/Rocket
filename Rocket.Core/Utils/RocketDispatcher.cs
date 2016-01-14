@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Rocket.Core.Utils
 {
-    public class RocketDispatcher : MonoBehaviour
+    public class TaskDispatcher : MonoBehaviour
     {
         private static int numThreads;
         private static bool awake = false;

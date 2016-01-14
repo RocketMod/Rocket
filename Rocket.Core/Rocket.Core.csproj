@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
-    <OutputPath>$(UNTURNED_HOME)\Unturned_Data\Managed\</OutputPath>
+    <OutputPath>..\..\..\..\Desktop\Hurtworld\Hurtworld_Data\Managed\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugType>full</DebugType>
