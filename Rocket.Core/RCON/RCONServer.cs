@@ -132,6 +132,12 @@ namespace Rocket.Core.RCON
         private void OnDestroy()
         {
             exiting = true;
+            // Force all connected RCON clients to disconnect from the server on shutdown. The server will get stuck in the shutdown process until all clients disconnect.
+            foreach (RCONConnection client in clients)
+            {
+                client.Close();
+            }
+            clients.Clear();
             waitingThread.Abort();
             listener.Stop();
         }
@@ -165,7 +171,7 @@ namespace Rocket.Core.RCON
         public static void Send(TcpClient client, string text)
         {
             byte[] data = new UTF8Encoding().GetBytes(text);
-            client.GetStream().Write(data, 0, text.Length);
+            client.GetStream().Write(data, 0, data.Length);
         }
     }
 }
