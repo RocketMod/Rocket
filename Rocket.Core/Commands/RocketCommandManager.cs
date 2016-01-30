@@ -155,7 +155,7 @@ namespace Rocket.Core.Commands
 
         internal class RocketAttributeCommand : IRocketCommand
         {
-            internal RocketAttributeCommand(string Name,string Help,string Syntax,AllowedCaller allowedCaller,List<string>Permissions,List<string>Aliases,MethodInfo Method)
+            internal RocketAttributeCommand(string Name,string Help,string Syntax,AllowedCaller AllowedCaller,List<string>Permissions,List<string>Aliases,MethodInfo Method)
             {
                 name = Name;
                 help = Help;
