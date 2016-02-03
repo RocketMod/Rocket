@@ -12,16 +12,16 @@ namespace Rocket.API.Serialisation
         {
         }
 
-        [XmlElement("DefaultGroupId")]
-        public string DefaultGroupId;
+        [XmlElement("DefaultGroup")]
+        public string DefaultGroup = "default";
 
         [XmlArray("Groups")]
         [XmlArrayItem(ElementName = "Group")]
-        public RocketPermissionsGroup[] Groups;
+        public RocketPermissionsGroup[] Groups = new RocketPermissionsGroup[0];
 
         public void LoadDefaults()
         {
-            DefaultGroupId = "default";
+            DefaultGroup = "default";
             Groups = new RocketPermissionsGroup[] {
                 new RocketPermissionsGroup("default","Guest",null, new List<string>() , new List<Permission>() { new Permission("p"), new Permission("reward"), new Permission("balance"), new Permission("pay"), new Permission("rocket")},"white"),
                 new RocketPermissionsGroup("vip","VIP", "default",new List<string>() { "76561198016438091" }, new List<Permission>() { new Permission("v",30) },"FF9900")

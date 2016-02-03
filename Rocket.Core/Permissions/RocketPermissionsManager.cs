@@ -149,7 +149,7 @@ namespace Rocket.Core.Permissions
         public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player, bool includeParentGroups)
         {
             List<RocketPermissionsGroup> groups = permissions.Instance.Groups.Where(g => g.Members.Contains(player.Id)).ToList(); // Get my Groups
-            RocketPermissionsGroup defaultGroup = permissions.Instance.Groups.Where(g => (String.Compare(g.Id, permissions.Instance.DefaultGroupId, true) == 0)).FirstOrDefault();
+            RocketPermissionsGroup defaultGroup = permissions.Instance.Groups.Where(g => (String.Compare(g.Id, permissions.Instance.DefaultGroup, true) == 0)).FirstOrDefault();
             if (defaultGroup != null) groups.Add(defaultGroup);
          
             if (includeParentGroups)
