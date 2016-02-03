@@ -12,6 +12,7 @@ namespace Rocket.Core.Permissions
     public sealed class RocketPermissionsManager : MonoBehaviour, IRocketPermissionsProvider
     {
         private Asset<RocketPermissions> permissions = null;
+        private List<PermissionCooldown> cooldown = new List<PermissionCooldown>();
 
         private void Start()
         {
@@ -68,36 +69,76 @@ namespace Rocket.Core.Permissions
             return permissions.Instance.Groups.Where(g => ids.Select(i => i.ToLower()).Contains(g.Id.ToLower())).ToList();
         }
 
-        private List<string> getParentGroups(List<string> parentGroups, string currentGroup)
+        private List<string> getParentGroups(string parentGroup, string currentGroup)
         {
             List<string> allgroups = new List<string>();
-            foreach (string g in parentGroups)
+            RocketPermissionsGroup group = permissions.Instance.Groups.Where(gr => (String.Compare(gr.Id, parentGroup, true) == 0)).FirstOrDefault();
+            if (group != null && (String.Compare(currentGroup, group.Id, true) != 0))
             {
-                RocketPermissionsGroup group = permissions.Instance.Groups.Where(gr => (String.Compare(gr.Id, g, true) == 0)).FirstOrDefault();
-                if (group != null && (String.Compare(currentGroup, group.Id, true) != 0))
-                {
-                    allgroups.Add(group.Id);
-                    allgroups.AddRange(getParentGroups(group.ParentGroups, currentGroup));
-                }
+                allgroups.Add(group.Id);
+                allgroups.AddRange(getParentGroups(group.ParentGroup, currentGroup));
             }
             return allgroups;
         }
 
-        private class PermissionCooldown
-        {
-            IRocketPlayer player;
+        private class PermissionCooldown{
+            public IRocketPlayer Player;
+            public DateTime PermissionRequested;
+            public Permission Permission;
 
+            public PermissionCooldown(IRocketPlayer player, Permission permission)
+            {
+                Player = player;
+                Permission = permission;
+                PermissionRequested = DateTime.Now;
+            }
         }
+
 
         public bool HasPermission(IRocketPlayer player, string requestedPermission, bool defaultReturnValue = false)
         {
+            uint? cooldownLeft;
+            return HasPermission(player, requestedPermission,out cooldownLeft, defaultReturnValue);
+        }
+
+        public bool HasPermission(IRocketPlayer player, string requestedPermission,out uint? cooldownLeft, bool defaultReturnValue = false)
+        {
+            cooldownLeft = null;
             List<Permission> permissions = R.Permissions.GetPermissions(player);
 
             List<Permission> applyingPermissions = permissions.Where(p => p == requestedPermission).ToList();
 
             if(permissions.Contains("*") || applyingPermissions.Count != 0)
             {
-                //TODO: Check cooldown
+                //Has permissions
+
+                Permission cooldownPermission = applyingPermissions.Where(p => p != null).OrderByDescending(p => p.Cooldown).FirstOrDefault();
+                if(cooldownPermission != null) 
+                {
+                    //Has a cooldown
+                    uint? cd = cooldownPermission.Cooldown;
+
+                    PermissionCooldown pc = cooldown.Where(c => c.Player == player && c.Permission == cooldownPermission).FirstOrDefault();
+                    if(pc == null)
+                    {
+                        //Is in cooldown list
+                        cooldown.Add(new PermissionCooldown(player,cooldownPermission));
+                    }
+                    else
+                    {
+                        double timeSinceExecution = (DateTime.Now - pc.PermissionRequested).TotalSeconds;
+                        if (pc.Permission.Cooldown.Value <= timeSinceExecution)
+                        {
+                            //Cooldown has it expired
+                            cooldown.Remove(pc);
+                        }
+                        else
+                        {
+                            cooldownLeft = (uint)timeSinceExecution;
+                            return false;
+                        }
+                    }
+                }
                 return true;
             }
             
@@ -116,7 +157,7 @@ namespace Rocket.Core.Permissions
                 List<RocketPermissionsGroup> parentGroups = new List<RocketPermissionsGroup>();
                 foreach (RocketPermissionsGroup g in groups)
                 {
-                    parentGroups.AddRange(getGroupsByIds(getParentGroups(g.ParentGroups, g.Id)));
+                    parentGroups.AddRange(getGroupsByIds(getParentGroups(g.ParentGroup, g.Id)));
                 }
                 groups.AddRange(parentGroups);
             }
@@ -132,7 +173,7 @@ namespace Rocket.Core.Permissions
 
             foreach (RocketPermissionsGroup g in myGroups)
             {
-                foreach (RocketPermissionsGroup myGroup in permissions.Instance.Groups.Where(group => group.ParentGroups.Select(parentGroup => parentGroup.ToLower()).Contains(g.Id.ToLower())))
+                foreach (RocketPermissionsGroup myGroup in permissions.Instance.Groups.Where(group => group.ParentGroup.Contains(g.Id.ToLower())))
                 {
                     if (myGroup.Members.Contains(player.Id))
                         p.AddRange(myGroup.Commands);

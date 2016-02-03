@@ -31,9 +31,11 @@ namespace Rocket.Core
 
         private static readonly TranslationList defaultTranslations = new TranslationList(){
                 {"rocket_join_public","{0} connected to the server" },
-                {"rocket_leave_public","{0} disconnected from the server"}
+                {"rocket_leave_public","{0} disconnected from the server"},
+                {"command_no_permission","You do not have permissions to execute this command."},
+                {"command_cooldown","You have to wait {0} seconds before you can use this command again."}
         };
-
+         
         private void Awake()
         {
             Instance = this;
@@ -73,6 +75,11 @@ namespace Rocket.Core
             {
                 Logger.LogException(ex);
             }
+        }
+
+        public static string Translate(string translationKey, params object[] placeholder)
+        {
+            return Translation.Instance.Translate(translationKey, placeholder);
         }
 
         public static void Reload()

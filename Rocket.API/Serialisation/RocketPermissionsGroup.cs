@@ -11,13 +11,14 @@ namespace Rocket.API.Serialisation
         {
         }
 
-        public RocketPermissionsGroup(string id, string displayName, List<string> parentGroups, List<string> members, List<Permission> commands)
+        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<Permission> commands,string color = null)
         {
             Id = id;
             DisplayName = displayName;
             Members = members;
             Commands = commands;
-            ParentGroups = parentGroups;
+            ParentGroup = parentGroup;
+            Color = color;
         }
 
         [XmlElement("Id")]
@@ -25,6 +26,9 @@ namespace Rocket.API.Serialisation
 
         [XmlElement("DisplayName")]
         public string DisplayName;
+
+        [XmlElement("Color")]
+        public string Color = "white";
 
         [XmlArray("Members")]
         [XmlArrayItem(ElementName = "Member")]
@@ -34,8 +38,7 @@ namespace Rocket.API.Serialisation
         [XmlArrayItem(ElementName = "Command")]
         public List<Permission> Commands;
 
-        [XmlArray("ParentGroups")]
-        [XmlArrayItem(ElementName = "ParentGroup")]
-        public List<string> ParentGroups;
+        [XmlElement("ParentGroup")]
+        public string ParentGroup;
     }
 }
