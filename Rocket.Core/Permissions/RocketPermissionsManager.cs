@@ -106,19 +106,19 @@ namespace Rocket.Core.Permissions
             cooldownLeft = null;
             List<Permission> permissions = R.Permissions.GetPermissions(player);
 
-            List<Permission> applyingPermissions = permissions.Where(p => p == requestedPermission).ToList();
+            List<Permission> applyingPermissions = permissions.Where(p => p.Name.ToLower() == requestedPermission.ToLower()).ToList();
 
-            if(permissions.Contains("*") || applyingPermissions.Count != 0)
+            if(permissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0)
             {
                 //Has permissions
 
-                Permission cooldownPermission = applyingPermissions.Where(p => p != null).OrderByDescending(p => p.Cooldown).FirstOrDefault();
+                Permission cooldownPermission = applyingPermissions.Where(p => p.Cooldown.HasValue).OrderByDescending(p => p.Cooldown).FirstOrDefault();
                 if(cooldownPermission != null) 
                 {
                     //Has a cooldown
                     uint? cd = cooldownPermission.Cooldown;
 
-                    PermissionCooldown pc = cooldown.Where(c => c.Player == player && c.Permission == cooldownPermission).FirstOrDefault();
+                    PermissionCooldown pc = cooldown.Where(c => c.Player.Id == player.Id && c.Permission == cooldownPermission).FirstOrDefault();
                     if(pc == null)
                     {
                         //Is in cooldown list
@@ -134,7 +134,7 @@ namespace Rocket.Core.Permissions
                         }
                         else
                         {
-                            cooldownLeft = (uint)timeSinceExecution;
+                            cooldownLeft = pc.Permission.Cooldown.Value - (uint)timeSinceExecution;
                             return false;
                         }
                     }
@@ -173,11 +173,6 @@ namespace Rocket.Core.Permissions
 
             foreach (RocketPermissionsGroup g in myGroups)
             {
-                foreach (RocketPermissionsGroup myGroup in permissions.Instance.Groups.Where(group => group.ParentGroup.Contains(g.Id.ToLower())))
-                {
-                    if (myGroup.Members.Contains(player.Id))
-                        p.AddRange(myGroup.Commands);
-                }
                 p.AddRange(g.Commands);
             }
 

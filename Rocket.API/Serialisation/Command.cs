@@ -23,30 +23,9 @@ namespace Rocket.API.Serialisation
             Cooldown = cooldown;
         }
 
-        public override bool Equals(object obj)
-        {
-            return Name.ToLower().Equals(obj.ToString().ToLower());
-        }
-
         public override string ToString()
         {
             return Name;
         }
-
-        public static implicit operator Permission(string value)
-        {
-            return new Permission { Name = value };
-        }
-
-        public static bool operator ==(Permission p1, Permission p2)
-        {
-            return p1.Equals(p2);
-        }
-
-        public static bool operator !=(Permission p1, Permission p2)
-        {
-            return !p1.Equals(p2);
-        }
-
     }
 }
