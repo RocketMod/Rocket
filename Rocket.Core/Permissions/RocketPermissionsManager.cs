@@ -108,10 +108,11 @@ namespace Rocket.Core.Permissions
 
             List<Permission> applyingPermissions = permissions.Where(p => p.Name.ToLower() == requestedPermission.ToLower()).ToList();
 
-            if(permissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0)
+            List<Permission> inheritedPermission = permissions.Where(p => p.Name.ToLower().StartsWith(requestedPermission.ToLower()+".")).ToList(); //Allow kit to be executed when kit.vip is assigned
+
+            if (permissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0 || inheritedPermission.Count != 0)
             {
                 //Has permissions
-
                 Permission cooldownPermission = applyingPermissions.Where(p => p.Cooldown.HasValue).OrderByDescending(p => p.Cooldown).FirstOrDefault();
                 if(cooldownPermission != null) 
                 {
