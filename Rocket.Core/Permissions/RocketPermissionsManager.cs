@@ -83,15 +83,24 @@ namespace Rocket.Core.Permissions
             return allgroups;
         }
 
+        private class PermissionCooldown
+        {
+            IRocketPlayer player;
+
+        }
+
         public bool HasPermission(IRocketPlayer player, string requestedPermission, bool defaultReturnValue = false)
         {
-            List<string> permissions = R.Permissions.GetPermissions(player);
+            List<Permission> permissions = R.Permissions.GetPermissions(player);
 
-            if (permissions.Where(p => p.ToLower() == requestedPermission || p.ToLower() == requestedPermission.Replace(".", ".*") || p.StartsWith(requestedPermission + ".")).Count() != 0 || permissions.Contains("*"))
+            List<Permission> applyingPermissions = permissions.Where(p => p == requestedPermission).ToList();
+
+            if(permissions.Contains("*") || applyingPermissions.Count != 0)
             {
+                //TODO: Check cooldown
                 return true;
             }
-
+            
             return defaultReturnValue;
         }
 
@@ -115,9 +124,9 @@ namespace Rocket.Core.Permissions
             return groups.Distinct().ToList();
         }
 
-        public List<string> GetPermissions(IRocketPlayer player)
+        public List<Permission> GetPermissions(IRocketPlayer player)
         {
-            List<string> p = new List<string>();
+            List<Permission> p = new List<Permission>();
 
             List<RocketPermissionsGroup> myGroups = GetGroups(player, true);
 

@@ -5,7 +5,7 @@ namespace Rocket.API
 {
     public class ConsolePlayer : IRocketPlayer
     {
-        string IRocketPlayer.Id
+        public string Id
         {
             get
             {
@@ -13,7 +13,7 @@ namespace Rocket.API
             }
         }
 
-        string IRocketPlayer.DisplayName
+        public string DisplayName
         {
             get
             {
@@ -27,6 +27,11 @@ namespace Rocket.API
             {
                 return true;
             }
+        }
+
+        public int CompareTo(object obj)
+        {
+            return Id.CompareTo(obj);
         }
     }
 }

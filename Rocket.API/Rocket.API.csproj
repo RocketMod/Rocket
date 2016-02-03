@@ -70,6 +70,7 @@
     <Compile Include="Collections\TranslationList.cs" />
     <Compile Include="IRocketPluginConfiguration.cs" />
     <Compile Include="IRocketPlayer.cs" />
+    <Compile Include="Serialisation\Command.cs" />
     <Compile Include="Serialisation\RocketPermissions.cs" />
     <Compile Include="Serialisation\RocketPermissionsGroup.cs" />
   </ItemGroup>

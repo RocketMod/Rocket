@@ -23,8 +23,8 @@ namespace Rocket.API.Serialisation
         {
             DefaultGroupId = "default";
             Groups = new RocketPermissionsGroup[] {
-                new RocketPermissionsGroup("default","Guest",new List<string>(), new List<string>() , new List<string>() { "p", "reward","balance","pay","rocket","color.white" }),
-                new RocketPermissionsGroup("vip","VIP", new List<string>(),new List<string>() { "76561198016438091" }, new List<string>() { "color.FF9900" })
+                new RocketPermissionsGroup("default","Guest",new List<string>(), new List<string>() , new List<Permission>() { new Permission("p"), new Permission("reward"), new Permission("balance"), new Permission("pay"), new Permission("rocket"), new Permission("color.white") }),
+                new RocketPermissionsGroup("vip","VIP", new List<string>(),new List<string>() { "76561198016438091" }, new List<Permission>() { new Permission("color.FF9900") })
             };
         }
     }

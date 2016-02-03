@@ -27,5 +27,10 @@ namespace Rocket.API
             }
             isAdmin = IsAdmin;
         }
+
+        public int CompareTo(object obj)
+        {
+            return Id.CompareTo(obj);
+        }
     }
 }

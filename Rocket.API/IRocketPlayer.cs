@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Rocket.API
 {
-    public interface IRocketPlayer
+    public interface IRocketPlayer : IComparable
     {
         string Id { get; }
         string DisplayName { get; }

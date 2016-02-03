@@ -10,7 +10,7 @@ namespace Rocket.API
 
         List<RocketPermissionsGroup> GetGroups(IRocketPlayer player, bool includeParentGroups);
 
-        List<string> GetPermissions(IRocketPlayer player);
+        List<Permission> GetPermissions(IRocketPlayer player);
 
         bool SetGroup(IRocketPlayer player, string groupID);
 
