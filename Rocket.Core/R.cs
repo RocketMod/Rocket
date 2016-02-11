@@ -61,11 +61,6 @@ namespace Rocket.Core
                 };
                 
                 Settings = new XMLFileAsset<RocketSettings>(Environment.SettingsFile);
-
-
-
-                if (Settings.Instance.CommandMappings == null) Settings.Instance.CommandMappings = new System.Collections.Generic.List<CommandMapping>();
-
                 Translation = new XMLFileAsset<TranslationList>(String.Format(Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, defaultTranslations);
                 Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
                 Plugins = gameObject.TryAddComponent<RocketPluginManager>();
