@@ -52,7 +52,6 @@ namespace Rocket.Core.Commands
 
             string name = command.Name;
             string className = getCommandClass(command);
-
             CommandMapping commandMapping = R.Settings.Instance.CommandMappings.Where(m => m.Class == className).FirstOrDefault();
             if (commandMapping != null) { name = commandMapping.Name;}
 
@@ -63,13 +62,13 @@ namespace Rocket.Core.Commands
                 R.Settings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).Skip(1).All(m => m.Enabled = false);
                 R.Settings.Save();
             }
-
+            
             CommandMapping mapping = R.Settings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled && m.Class != className).FirstOrDefault();
             
             if (mapping != null)
             {
                 Logger.Log("Not registering " + className + " (" + command.Name + ") because it has been replaced by " + mapping.Class);
-                if (commandMapping == null)
+                if (commandMapping != null && commandMapping == null)
                 {
                     R.Settings.Instance.CommandMappings.Add(new CommandMapping(name, false, className));
                     R.Settings.Save();
@@ -78,18 +77,19 @@ namespace Rocket.Core.Commands
             }
             else
             {
-                if (!commandMapping.Enabled)
+                if (commandMapping != null && !commandMapping.Enabled)
                 {
                     Logger.Log("Not registering " + getCommandClass(command) + " (" + name + ") because it has been disabled");
                     return false;
                 }
+
                 Logger.Log("Registering " + getCommandClass(command) + " (" + name + ")");
                 if (commandMapping == null)
                 {
                     R.Settings.Instance.CommandMappings.Add(new CommandMapping(name, true, className));
                     R.Settings.Save();
                 }
-
+                
                 if (command.Name != name)
                 {
                     commands.Add(new RenamedRocketCommand(name, command));
