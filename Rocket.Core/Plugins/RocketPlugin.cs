@@ -94,8 +94,6 @@ namespace Rocket.Core.Plugins
 
         internal virtual void LoadPlugin()
         {
-            Logger.Log("Loading plugin: " + Name);
-            
             translations = new XMLFileAsset<TranslationList>(directory + String.Format(Environment.PluginTranslationFileTemplate,Name,R.Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
 
             try
@@ -157,6 +155,7 @@ namespace Rocket.Core.Plugins
         {
             assembly = GetType().Assembly;
             name = Assembly.GetName().Name;
+            Logger.Log("Loading plugin: " + name);
             directory = String.Format(Core.Environment.PluginDirectory, Name);
             if (!System.IO.Directory.Exists(directory)) System.IO.Directory.CreateDirectory(directory);
             R.Commands.RegisterFromAssembly(Assembly);

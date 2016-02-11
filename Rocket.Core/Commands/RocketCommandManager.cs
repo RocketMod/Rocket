@@ -9,6 +9,7 @@ using System.Text.RegularExpressions;
 using System.Reflection;
 using Rocket.Core.Utils;
 using Rocket.Core.Logging;
+using Rocket.Core.Serialization;
 
 namespace Rocket.Core.Commands
 {
@@ -48,15 +49,57 @@ namespace Rocket.Core.Commands
 
         public bool Register(IRocketCommand command)
         {
-            Logger.Log("Registering " + getCommandClass(command) + " (" + command.Name+")");
-            IRocketCommand existingCommand = GetCommand(command.Name);
-            if (existingCommand != null)
+
+            string name = command.Name;
+            string className = getCommandClass(command);
+
+            CommandMapping commandMapping = R.Settings.Instance.CommandMappings.Where(m => m.Class == className).FirstOrDefault();
+            if (commandMapping != null) { name = commandMapping.Name;}
+
+            List<CommandMapping> otherEnabledCommandWithSameName = R.Settings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).ToList();
+            if (otherEnabledCommandWithSameName.Count > 1)
             {
-                Logger.Log("Degistering " + getCommandClass(existingCommand) + " (" + existingCommand.Name+")");
-                Deregister(existingCommand);
+                Logger.Log("Found multiple active CommandMappings for /"+ command.Name + ", using first and disabling the others...");
+                R.Settings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).Skip(1).All(m => m.Enabled = false);
+                R.Settings.Save();
             }
-            commands.Add(command);
-            return true;
+
+            CommandMapping mapping = R.Settings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled && m.Class != className).FirstOrDefault();
+            
+            if (mapping != null)
+            {
+                Logger.Log("Not registering " + className + " (" + command.Name + ") because it has been replaced by " + mapping.Class);
+                if (commandMapping == null)
+                {
+                    R.Settings.Instance.CommandMappings.Add(new CommandMapping(name, false, className));
+                    R.Settings.Save();
+                }
+                return false;
+            }
+            else
+            {
+                if (!commandMapping.Enabled)
+                {
+                    Logger.Log("Not registering " + getCommandClass(command) + " (" + name + ") because it has been disabled");
+                    return false;
+                }
+                Logger.Log("Registering " + getCommandClass(command) + " (" + name + ")");
+                if (commandMapping == null)
+                {
+                    R.Settings.Instance.CommandMappings.Add(new CommandMapping(name, true, className));
+                    R.Settings.Save();
+                }
+
+                if (command.Name != name)
+                {
+                    commands.Add(new RenamedRocketCommand(name, command));
+                }
+                else
+                {
+                    commands.Add(command);
+                }
+                return true;
+            }
         }
 
         public void Deregister(IRocketCommand command)
@@ -150,6 +193,73 @@ namespace Rocket.Core.Commands
                         Register(command);
                     }
                 }
+            }
+        }
+
+
+
+        internal class RenamedRocketCommand : IRocketCommand
+        {
+            private IRocketCommand originalCommand;
+            private string name;
+
+            public RenamedRocketCommand(string name,IRocketCommand command)
+            {
+                this.name = name;
+                this.originalCommand = command;
+            }
+
+            public List<string> Aliases
+            {
+                get
+                {
+                    return originalCommand.Aliases;
+                }
+            }
+
+            public AllowedCaller AllowedCaller
+            {
+                get
+                {
+                    return originalCommand.AllowedCaller;
+                }
+            }
+
+            public string Help
+            {
+                get
+                {
+                    return originalCommand.Help;
+                }
+            }
+
+            public string Name
+            {
+                get
+                {
+                    return name;
+                }
+            }
+
+            public List<string> Permissions
+            {
+                get
+                {
+                    return originalCommand.Permissions;
+                }
+            }
+
+            public string Syntax
+            {
+                get
+                {
+                    return originalCommand.Syntax;
+                }
+            }
+
+            public void Execute(IRocketPlayer caller, string[] command)
+            {
+                originalCommand.Execute(caller, command);
             }
         }
 
