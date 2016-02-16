@@ -89,13 +89,8 @@ namespace Rocket.Core.Serialization
             AutomaticShutdown = new AutomaticShutdown();
             WebConfigurations = new WebConfigurations();
             WebPermissions = new WebPermissions();
-            CommandMappings = new List<CommandMapping>();
             LanguageCode = "en";
             MaxFrames = 60;
         }
-
-        [XmlArray("CommandMappings")]
-        [XmlArrayItem("CommandMapping")]
-        public List<CommandMapping> CommandMappings = new List<CommandMapping>();
     }
 }

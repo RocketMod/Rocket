@@ -88,6 +88,7 @@ namespace Rocket.Core
             Translation.Reload();
             Permissions.Reload();
             Plugins.Reload();
+            Commands.Reload();
             Implementation.Reload();
         }
     }

@@ -27,6 +27,8 @@ namespace Rocket.Core
         public static readonly string LogFile = "Rocket.log";
         public static readonly string LogBackupFile = "Rocket.{0}.log";
         public static readonly string PermissionFile = "Permissions.config.xml";
+        public static readonly string CommandsFile = "Commands.config.xml";
+        
 
         public static readonly string PluginDirectory = "Plugins/{0}/";
         public static readonly string PluginTranslationFileTemplate = "{0}.{1}.translation.xml";

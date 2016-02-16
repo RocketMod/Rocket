@@ -80,6 +80,7 @@
     <Compile Include="Logging\AsyncLoggerQueue.cs" />
     <Compile Include="Logging\ELogType.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Serialisation\RocketCommands.cs" />
     <Compile Include="Steam\Profile.cs" />
     <Compile Include="Steam\Steam.cs" />
     <Compile Include="Utils\AutomaticShutdownWatchdog.cs" />

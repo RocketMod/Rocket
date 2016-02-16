@@ -10,6 +10,7 @@ using System.Reflection;
 using Rocket.Core.Utils;
 using Rocket.Core.Logging;
 using Rocket.Core.Serialization;
+using Rocket.Core.Assets;
 
 namespace Rocket.Core.Commands
 {
@@ -17,11 +18,23 @@ namespace Rocket.Core.Commands
     {
         private readonly List<IRocketCommand> commands = new List<IRocketCommand>();
         public ReadOnlyCollection<IRocketCommand> Commands { get; internal set; }
+        private XMLFileAsset<RocketCommands> commandMappings;
+
+        internal void Reload()
+        {
+            commandMappings.Reload();
+        }
 
         private void Awake()
         {
             Commands = commands.AsReadOnly();
+            commandMappings = new XMLFileAsset<RocketCommands>(Environment.CommandsFile);
+            R.Plugins.OnPluginsLoaded += Plugins_OnPluginsLoaded;
+        }
 
+        private void Plugins_OnPluginsLoaded()
+        {
+            commandMappings.Save();
         }
 
         private IRocketCommand GetCommand(IRocketCommand command)
@@ -57,26 +70,24 @@ namespace Rocket.Core.Commands
 
             string name = command.Name;
             string className = getCommandIdentity(command);
-            CommandMapping commandMapping = R.Settings.Instance.CommandMappings.Where(m => m.Class == className).FirstOrDefault();
+            CommandMapping commandMapping = commandMappings.Instance.CommandMappings.Where(m => m.Class == className).FirstOrDefault();
             if (commandMapping != null) { name = commandMapping.Name;}
 
-            List<CommandMapping> otherEnabledCommandWithSameName = R.Settings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).ToList();
+            List<CommandMapping> otherEnabledCommandWithSameName = commandMappings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).ToList();
             if (otherEnabledCommandWithSameName.Count > 1)
             {
                 Logger.Log("Found multiple active CommandMappings for /"+ command.Name + ", using first and disabling the others...");
-                R.Settings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).Skip(1).All(m => m.Enabled = false);
-                R.Settings.Save();
+                commandMappings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).Skip(1).All(m => m.Enabled = false);
             }
             
-            CommandMapping mapping = R.Settings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled && m.Class != className).FirstOrDefault();
+            CommandMapping mapping = commandMappings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled && m.Class != className).FirstOrDefault();
             
             if (mapping != null)
             {
                 Logger.Log("Not registering " + className + " (" + command.Name + ") because it has been replaced by " + mapping.Class);
                 if (commandMapping != null && commandMapping == null)
                 {
-                    R.Settings.Instance.CommandMappings.Add(new CommandMapping(name, false, className));
-                    R.Settings.Save();
+                    commandMappings.Instance.CommandMappings.Add(new CommandMapping(name, false, className));
                 }
                 return false;
             }
@@ -91,8 +102,7 @@ namespace Rocket.Core.Commands
                 Logger.Log("Registering " + className + " (" + name + ")");
                 if (commandMapping == null)
                 {
-                    R.Settings.Instance.CommandMappings.Add(new CommandMapping(name, true, className));
-                    R.Settings.Save();
+                    commandMappings.Instance.CommandMappings.Add(new CommandMapping(name, true, className));
                 }
                 
                 if (command.Name != name)
