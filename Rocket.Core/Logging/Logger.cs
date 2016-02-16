@@ -10,7 +10,13 @@ namespace Rocket.Core.Logging
     {
         private static string lastAssembly = "";
 
-        public static void Log(string message, bool writeToConsole = true)
+        [Obsolete("Log(string message,bool sendToConsole) is obsolete, use Log(string message,ConsoleColor color) instead",true)]
+        public static void Log(string message, bool sendToConsole)
+        {
+            Log(message, ConsoleColor.White);
+        }
+
+        public static void Log(string message, ConsoleColor color = ConsoleColor.White)
         {
             if (message == null) return;
             string assembly = "";
@@ -41,7 +47,7 @@ namespace Rocket.Core.Logging
             {
                 throw;
             }
-            ProcessInternalLog(ELogType.Info, message, writeToConsole);
+            ProcessInternalLog(ELogType.Info, message,color);
         }
 
         internal static string var_dump(object obj, int recursion)
@@ -163,28 +169,21 @@ namespace Rocket.Core.Logging
             ProcessInternalLog(ELogType.Exception, assembly + (message != null ? message +" -> ": "") + "Exception in " + source + ": " + ex);
         }
 
-        private static void ProcessInternalLog(ELogType type, string message, bool doWriteToConsole = true)
+        private static void ProcessInternalLog(ELogType type, string message, ConsoleColor color = ConsoleColor.White)
         {
-            if (doWriteToConsole)
+            if (type == ELogType.Error || type == ELogType.Exception)
             {
-                if (type == ELogType.Error || type == ELogType.Exception)
-                {
-
-                    // Debug.LogError(message);
-                    writeToConsole(message, ConsoleColor.Red);
-                }
-                else if (type == ELogType.Warning)
-                {
-                    //  Debug.LogWarning(message);
-                    writeToConsole(message, ConsoleColor.Yellow);
-                }
-                else
-                {
-                    //Debug.Log(message);
-                    writeToConsole(message, ConsoleColor.White);
-                }
-                ProcessLog(type, message);
+                writeToConsole(message, ConsoleColor.Red);
             }
+            else if (type == ELogType.Warning)
+            {
+                writeToConsole(message, ConsoleColor.Yellow);
+            }
+            else
+            {
+                writeToConsole(message, color);
+            }
+            ProcessLog(type, message);
         }
 
         internal static void logRCON(string message)
@@ -195,9 +194,12 @@ namespace Rocket.Core.Logging
             Console.WriteLine(m);
         }
 
-        private static void writeToConsole(string message,ConsoleColor color){
+        private static void writeToConsole(string message,ConsoleColor color)
+        {
+            ConsoleColor old = Console.ForegroundColor;
             Console.ForegroundColor = color;
             Console.WriteLine(message);
+            Console.ForegroundColor = old;
         }
 
 

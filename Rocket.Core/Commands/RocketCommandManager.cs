@@ -29,6 +29,7 @@ namespace Rocket.Core.Commands
         {
             Commands = commands.AsReadOnly();
             commandMappings = new XMLFileAsset<RocketCommands>(Environment.CommandsFile);
+            commandMappings.Instance.CommandMappings = commandMappings.Instance.CommandMappings.Distinct(new CommandMappingComparer()).ToList();
             R.Plugins.OnPluginsLoaded += Plugins_OnPluginsLoaded;
         }
 
@@ -49,71 +50,88 @@ namespace Rocket.Core.Commands
             return foundCommand;
         }
 
-        private string getCommandIdentity(IRocketCommand command)
+        private string getCommandIdentity(IRocketCommand command,string name)
         {
             if (command is RocketAttributeCommand)
             {
-                return ((RocketAttributeCommand)command).Method.ReflectedType.FullName+"/"+command.Name;
+                return ((RocketAttributeCommand)command).Method.ReflectedType.FullName+"/"+ name;
             }
             else if(command.GetType().ReflectedType != null)
             {
-                return command.GetType().ReflectedType.FullName + "/" + command.Name;
+                return command.GetType().ReflectedType.FullName + "/" + name;
             }
             else
             {
-                return command.GetType().FullName+"/"+command.Name;
+                return command.GetType().FullName+"/"+ name;
             }
         }
 
         public bool Register(IRocketCommand command)
         {
+            Register(command,null);
+            return true;
+        }
 
+
+        public class CommandMappingComparer : IEqualityComparer<CommandMapping>
+        {
+            public bool Equals(CommandMapping x, CommandMapping y)
+            {
+                return (x.Name == y.Name && x.Class == y.Class);
+            }
+
+            public int GetHashCode(CommandMapping obj)
+            {
+                return obj.Name.GetHashCode()+obj.Class.GetHashCode();
+            }
+        }
+
+        public void Register(IRocketCommand command, string alias)
+        {
             string name = command.Name;
-            string className = getCommandIdentity(command);
-            CommandMapping commandMapping = commandMappings.Instance.CommandMappings.Where(m => m.Class == className).FirstOrDefault();
-            if (commandMapping != null) { name = commandMapping.Name;}
+            if (alias != null) name = alias;
+            string className = getCommandIdentity(command,name);
 
-            List<CommandMapping> otherEnabledCommandWithSameName = commandMappings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).ToList();
-            if (otherEnabledCommandWithSameName.Count > 1)
-            {
-                Logger.Log("Found multiple active CommandMappings for /"+ command.Name + ", using first and disabling the others...");
-                commandMappings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled).Skip(1).All(m => m.Enabled = false);
+
+            //Add CommandMapping if not already existing
+            if(commandMappings.Instance.CommandMappings.Where(m => m.Class == className && m.Name == name).FirstOrDefault() == null){
+                commandMappings.Instance.CommandMappings.Add(new CommandMapping(name, true, className));
             }
-            
-            CommandMapping mapping = commandMappings.Instance.CommandMappings.Where(m => m.Name == name && m.Enabled && m.Class != className).FirstOrDefault();
-            
-            if (mapping != null)
+
+            //For each CommandMapping with current class
+            foreach(CommandMapping mapping in commandMappings.Instance.CommandMappings.Where(m => m.Class == className))
             {
-                Logger.Log("Not registering " + className + " (" + command.Name + ") because it has been replaced by " + mapping.Class);
-                if (commandMapping != null && commandMapping == null)
-                {
-                    commandMappings.Instance.CommandMappings.Add(new CommandMapping(name, false, className));
-                }
-                return false;
-            }
-            else
-            {
-                if (commandMapping != null && !commandMapping.Enabled)
-                {
-                    Logger.Log("Not registering " + className + " (" + name + ") because it has been disabled");
-                    return false;
+                string n = mapping.Name;
+                string c = mapping.Class;
+
+                //If there is another Command with the same /name that is enabled but not this then disable this one
+                CommandMapping replacingMapping = commandMappings.Instance.CommandMappings.Where(m => m.Name == n && m.Enabled && m.Class != c).FirstOrDefault();
+                if (replacingMapping != null) {
+                    mapping.Enabled = false;
                 }
 
-                Logger.Log("Registering " + className + " (" + name + ")");
-                if (commandMapping == null)
+                if (!mapping.Enabled)
                 {
-                    commandMappings.Instance.CommandMappings.Add(new CommandMapping(name, true, className));
+                    if (replacingMapping != null)
+                    {
+                        Logger.Log("[disabled] /" + n + " (" + c + ") {Replaced by " + replacingMapping.Class + "}", ConsoleColor.Yellow);
+                    }
+                    else
+                    {
+                        Logger.Log("[disabled] /" + n + " (" + c + ")", ConsoleColor.Red);
+                    }
                 }
-                
-                if (command.Name != name)
-                {
-                    commands.Add(new RenamedRocketCommand(name, command));
+                else {
+                    if (command.Name != n)
+                    {
+                        commands.Add(new RenamedRocketCommand(n, command));
+                    }
+                    else
+                    {
+                        commands.Add(command);
+                    }
+                    Logger.Log("[registered] /" + n + " (" + c + ")", ConsoleColor.Green);
                 }
-                else
-                {
-                    commands.Add(command);
-                }
-                return true;
             }
         }
 
@@ -169,6 +187,11 @@ namespace Rocket.Core.Commands
                 {
                     IRocketCommand command = (IRocketCommand)Activator.CreateInstance(commandType);
                     Register(command);
+
+                    foreach(string alias in command.Aliases)
+                    {
+                        Register(command,alias);
+                    }
                 }
             }
 
@@ -206,6 +229,10 @@ namespace Rocket.Core.Commands
 
                         IRocketCommand command = new RocketAttributeCommand(commandAttribute.Name, commandAttribute.Help, commandAttribute.Syntax, commandAttribute.AllowedCaller, Permissions, Aliases, method);
                         Register(command);
+                        foreach (string alias in command.Aliases)
+                        {
+                            Register(command, alias);
+                        }
                     }
                 }
             }

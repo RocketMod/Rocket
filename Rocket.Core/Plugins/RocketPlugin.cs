@@ -145,7 +145,7 @@ namespace Rocket.Core.Plugins
 
         internal virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            Logger.Log("Unloading plugin: " + Name);
+            Logger.Log("\n[unloading] " + Name, ConsoleColor.Cyan);
             OnPluginUnloading.TryInvoke(this);
             Unload();
             this.state = state;
@@ -155,7 +155,7 @@ namespace Rocket.Core.Plugins
         {
             assembly = GetType().Assembly;
             name = Assembly.GetName().Name;
-            Logger.Log("Loading plugin: " + name);
+            Logger.Log("\n[loading] " + name,ConsoleColor.Cyan);
             directory = String.Format(Core.Environment.PluginDirectory, Name);
             if (!System.IO.Directory.Exists(directory)) System.IO.Directory.CreateDirectory(directory);
             R.Commands.RegisterFromAssembly(Assembly);
