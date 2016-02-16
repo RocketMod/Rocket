@@ -21,6 +21,7 @@ namespace Rocket.Core.Commands
         private void Awake()
         {
             Commands = commands.AsReadOnly();
+
         }
 
         private IRocketCommand GetCommand(IRocketCommand command)
@@ -35,15 +36,19 @@ namespace Rocket.Core.Commands
             return foundCommand;
         }
 
-        private string getCommandClass(IRocketCommand command)
+        private string getCommandIdentity(IRocketCommand command)
         {
             if (command is RocketAttributeCommand)
             {
-                return ((RocketAttributeCommand)command).Method.ReflectedType.FullName;
+                return ((RocketAttributeCommand)command).Method.ReflectedType.FullName+"/"+command.Name;
+            }
+            else if(command.GetType().ReflectedType != null)
+            {
+                return command.GetType().ReflectedType.FullName + "/" + command.Name;
             }
             else
             {
-                return command.GetType().FullName;
+                return command.GetType().FullName+"/"+command.Name;
             }
         }
 
@@ -51,7 +56,7 @@ namespace Rocket.Core.Commands
         {
 
             string name = command.Name;
-            string className = getCommandClass(command);
+            string className = getCommandIdentity(command);
             CommandMapping commandMapping = R.Settings.Instance.CommandMappings.Where(m => m.Class == className).FirstOrDefault();
             if (commandMapping != null) { name = commandMapping.Name;}
 
@@ -79,11 +84,11 @@ namespace Rocket.Core.Commands
             {
                 if (commandMapping != null && !commandMapping.Enabled)
                 {
-                    Logger.Log("Not registering " + getCommandClass(command) + " (" + name + ") because it has been disabled");
+                    Logger.Log("Not registering " + className + " (" + name + ") because it has been disabled");
                     return false;
                 }
 
-                Logger.Log("Registering " + getCommandClass(command) + " (" + name + ")");
+                Logger.Log("Registering " + className + " (" + name + ")");
                 if (commandMapping == null)
                 {
                     R.Settings.Instance.CommandMappings.Add(new CommandMapping(name, true, className));
