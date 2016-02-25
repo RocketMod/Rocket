@@ -50,7 +50,7 @@ namespace Rocket.Core.Commands
             return foundCommand;
         }
 
-        private string getCommandIdentity(IRocketCommand command,string name)
+        private static string getCommandIdentity(IRocketCommand command,string name)
         {
             if (command is RocketAttributeCommand)
             {
@@ -63,6 +63,22 @@ namespace Rocket.Core.Commands
             else
             {
                 return command.GetType().FullName+"/"+ name;
+            }
+        }
+
+        private static Type getCommandType(IRocketCommand command)
+        {
+            if (command is RocketAttributeCommand)
+            {
+                return ((RocketAttributeCommand)command).Method.ReflectedType;
+            }
+            else if (command.GetType().ReflectedType != null)
+            {
+                return command.GetType().ReflectedType;
+            }
+            else
+            {
+                return command.GetType();
             }
         }
 
@@ -122,14 +138,7 @@ namespace Rocket.Core.Commands
                     }
                 }
                 else {
-                    if (command.Name != n)
-                    {
-                        commands.Add(new RenamedRocketCommand(n, command));
-                    }
-                    else
-                    {
-                        commands.Add(command);
-                    }
+                    commands.Add(new RegisteredRocketCommand(n, command));
                     Logger.Log("[registered] /" + n + " (" + c + ")", ConsoleColor.Green);
                 }
             }
@@ -237,18 +246,19 @@ namespace Rocket.Core.Commands
                 }
             }
         }
-
-
-
-        internal class RenamedRocketCommand : IRocketCommand
+        
+        internal class RegisteredRocketCommand : IRocketCommand
         {
+            public Type Type;
             private IRocketCommand originalCommand;
             private string name;
 
-            public RenamedRocketCommand(string name,IRocketCommand command)
+            public RegisteredRocketCommand(string name,IRocketCommand command)
             {
                 this.name = name;
                 this.originalCommand = command;
+
+                Type = getCommandType(command);
             }
 
             public List<string> Aliases
@@ -364,7 +374,7 @@ namespace Rocket.Core.Commands
 
         public void UnregisterFromAssembly(Assembly assembly)
         {
-            foreach (IRocketCommand command in R.Commands.Commands.Where(c => c.GetType().Assembly == assembly ||c is RocketAttributeCommand && ((RocketAttributeCommand)c).Method.ReflectedType.Assembly == assembly).ToList())
+            foreach (IRocketCommand command in R.Commands.Commands.Where(c => c is RegisteredRocketCommand && ((RegisteredRocketCommand)c).Type.Assembly == assembly).ToList())
             {
                 Deregister(command);
             }
