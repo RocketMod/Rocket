@@ -31,6 +31,11 @@ namespace Rocket.Core.Plugins
             return plugins.Select(g => g.GetComponent<IRocketPlugin>()).Where(p => p != null && p.GetType().Assembly == assembly).FirstOrDefault();
         }
 
+        public IRocketPlugin GetPlugin(string name)
+        {
+            return plugins.Select(g => g.GetComponent<IRocketPlugin>()).Where(p => p != null && p.GetType().Assembly.GetName().Name == name).FirstOrDefault();
+        }
+
         private void Awake() {
             AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
             {

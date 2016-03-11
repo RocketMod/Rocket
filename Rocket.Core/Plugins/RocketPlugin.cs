@@ -77,6 +77,19 @@ namespace Rocket.Core.Plugins
             }
         }
         
+        public static bool IsDependencyLoaded(string plugin)
+        {
+            return Rocket.Core.R.Plugins.GetPlugin(plugin) != null;
+        }
+
+        public delegate void ExecuteDependencyCodeDelegate(IRocketPlugin plugin);
+        public static void ExecuteDependencyCode(string plugin,ExecuteDependencyCodeDelegate a)
+        {
+            IRocketPlugin p = Rocket.Core.R.Plugins.GetPlugin(plugin);
+            if (p != null) 
+                a(p);
+        }
+
         public string Translate(string translationKey, params object[] placeholder)
         {
             return Translations.Instance.Translate(translationKey,placeholder);
@@ -95,7 +108,7 @@ namespace Rocket.Core.Plugins
         internal virtual void LoadPlugin()
         {
             translations = new XMLFileAsset<TranslationList>(directory + String.Format(Environment.PluginTranslationFileTemplate,Name,R.Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
-
+            
             try
             {
                 Load();
@@ -113,7 +126,7 @@ namespace Rocket.Core.Plugins
                     Logger.LogError("Failed to unload " + Name + ":" + ex1.ToString());
                 }
             }
-
+            
             bool cancelLoading = false;
             if (OnPluginLoading != null)
             {
