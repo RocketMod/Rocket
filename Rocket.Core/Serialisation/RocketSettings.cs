@@ -10,7 +10,7 @@ namespace Rocket.Core.Serialization
         [XmlAttribute]
         public bool Enabled = false;
         [XmlAttribute]
-        public short Port = 27115;
+        public ushort Port = 27115;
         [XmlAttribute]
         public string Password = "changeme";
     }
