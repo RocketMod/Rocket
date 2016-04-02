@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rocket.Core.Logging;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
@@ -43,7 +44,7 @@ namespace Rocket.Core.Steam
 
         public class Group
         {
-            public ulong SteamID64 { get; set; }
+            public ulong? SteamID64 { get; set; }
             public bool IsPrimary { get; set; }
             public string Name { get; set; }
             public string URL { get; set; }
@@ -67,67 +68,76 @@ namespace Rocket.Core.Steam
 
         public void Reload()
         {
-            XmlDocument doc = new XmlDocument();
-            doc.LoadXml(new WebClient().DownloadString("http://steamcommunity.com/profiles/" + SteamID64 + "?xml=1"));
-
-            SteamID = doc["profile"]["steamID"].ParseString();
-            OnlineState = doc["profile"]["onlineState"].ParseString();
-            StateMessage = doc["profile"]["stateMessage"].ParseString();
-            PrivacyState = doc["profile"]["privacyState"].ParseString();
-            VisibilityState = doc["profile"]["visibilityState"].ParseUInt16();
-            AvatarIcon = doc["profile"]["avatarIcon"].ParseUri();
-            AvatarMedium = doc["profile"]["avatarMedium"].ParseUri();
-            AvatarFull = doc["profile"]["avatarFull"].ParseUri();
-            IsVacBanned = doc["profile"]["vacBanned"].ParseBool();
-            TradeBanState = doc["profile"]["tradeBanState"].ParseString();
-            IsLimitedAccount = doc["profile"]["isLimitedAccount"].ParseBool();
-
-            CustomURL = doc["profile"]["customURL"]?.ParseString();
-            MemberSince = doc["profile"]["memberSince"]?.ParseDateTime(new CultureInfo("en-US", false));
-            HoursPlayedLastTwoWeeks = doc["profile"]["hoursPlayed2Wk"]?.ParseDouble();
-            Headline = doc["profile"]["headline"]?.ParseString();
-            Location = doc["profile"]["location"]?.ParseString();
-            RealName = doc["profile"]["realname"]?.ParseString();
-            Summary = doc["profile"]["summary"]?.ParseString();
-
-            if (doc["profile"]["mostPlayedGames"] != null)
+            string field = "unknown";
+            try
             {
-                MostPlayedGames = new List<MostPlayedGame>();
-                foreach (XmlElement mostPlayedGame in doc["profile"]["mostPlayedGames"].ChildNodes)
+
+                XmlDocument doc = new XmlDocument();
+                doc.LoadXml(new WebClient().DownloadString("http://steamcommunity.com/profiles/" + SteamID64 + "?xml=1"));
+
+                SteamID = doc["profile"]["steamID"]?.ParseString(); field = "SteamID";
+                OnlineState = doc["profile"]["onlineState"]?.ParseString(); field = "OnlineState";
+                StateMessage = doc["profile"]["stateMessage"]?.ParseString(); field = "StateMessage";
+                PrivacyState = doc["profile"]["privacyState"]?.ParseString(); field = "PrivacyState";
+                VisibilityState = doc["profile"]["visibilityState"]?.ParseUInt16(); field = "VisibilityState";
+                AvatarIcon = doc["profile"]["avatarIcon"]?.ParseUri(); field = "AvatarIcon";
+                AvatarMedium = doc["profile"]["avatarMedium"]?.ParseUri(); field = "AvatarMedium";
+                AvatarFull = doc["profile"]["avatarFull"]?.ParseUri(); field = "AvatarFull";
+                IsVacBanned = doc["profile"]["vacBanned"]?.ParseBool(); field = "IsVacBanned";
+                TradeBanState = doc["profile"]["tradeBanState"]?.ParseString(); field = "TradeBanState";
+                IsLimitedAccount = doc["profile"]["isLimitedAccount"]?.ParseBool(); field = "IsLimitedAccount";
+                 
+                CustomURL = doc["profile"]["customURL"]?.ParseString(); field = "CustomURL";
+                MemberSince = doc["profile"]["memberSince"]?.ParseDateTime(new CultureInfo("en-US", false)); field = "MemberSince";
+                HoursPlayedLastTwoWeeks = doc["profile"]["hoursPlayed2Wk"]?.ParseDouble(); field = "HoursPlayedLastTwoWeeks";
+                Headline = doc["profile"]["headline"]?.ParseString(); field = "Headline";
+                Location = doc["profile"]["location"]?.ParseString(); field = "Location";
+                RealName = doc["profile"]["realname"]?.ParseString(); field = "RealName";
+                Summary = doc["profile"]["summary"]?.ParseString(); field = "Summary";
+
+                if (doc["profile"]["mostPlayedGames"] != null)
                 {
-                    MostPlayedGame newMostPlayedGame = new MostPlayedGame();
-                    newMostPlayedGame.Name = mostPlayedGame["gameName"].ParseString();
-                    newMostPlayedGame.Link = mostPlayedGame["gameLink"].ParseUri();
-                    newMostPlayedGame.Icon = mostPlayedGame["gameIcon"].ParseUri();
-                    newMostPlayedGame.Logo = mostPlayedGame["gameLogo"].ParseUri();
-                    newMostPlayedGame.LogoSmall = mostPlayedGame["gameLogoSmall"].ParseUri();
-                    newMostPlayedGame.HoursPlayed = mostPlayedGame["hoursPlayed"].ParseDouble();
-                    newMostPlayedGame.HoursOnRecord = mostPlayedGame["hoursOnRecord"].ParseDouble();
-                    MostPlayedGames.Add(newMostPlayedGame);
+                    MostPlayedGames = new List<MostPlayedGame>(); field = "MostPlayedGames";
+                    foreach (XmlElement mostPlayedGame in doc["profile"]["mostPlayedGames"].ChildNodes)
+                    {
+                        MostPlayedGame newMostPlayedGame = new MostPlayedGame();
+                        newMostPlayedGame.Name = mostPlayedGame["gameName"]?.ParseString(); field = "MostPlayedGame.Name";
+                        newMostPlayedGame.Link = mostPlayedGame["gameLink"]?.ParseUri(); field = "MostPlayedGame.Link";
+                        newMostPlayedGame.Icon = mostPlayedGame["gameIcon"]?.ParseUri(); field = "MostPlayedGame.Icon";
+                        newMostPlayedGame.Logo = mostPlayedGame["gameLogo"]?.ParseUri(); field = "MostPlayedGame.Logo";
+                        newMostPlayedGame.LogoSmall = mostPlayedGame["gameLogoSmall"]?.ParseUri(); field = "MostPlayedGame.LogoSmall";
+                        newMostPlayedGame.HoursPlayed = mostPlayedGame["hoursPlayed"]?.ParseDouble(); field = "MostPlayedGame.HoursPlayed";
+                        newMostPlayedGame.HoursOnRecord = mostPlayedGame["hoursOnRecord"]?.ParseDouble(); field = "MostPlayedGame.HoursOnRecord";
+                        MostPlayedGames.Add(newMostPlayedGame); 
+                    }
+                }
+
+                if (doc["profile"]["groups"] != null)
+                {
+                    Groups = new List<Group>(); field = "Groups";
+                    foreach (XmlElement group in doc["profile"]["groups"].ChildNodes)
+                    {
+                        Group newGroup = new Group();
+                        newGroup.IsPrimary = group.Attributes["isPrimary"] != null && group.Attributes["isPrimary"].InnerText == "1"; field = "Group.IsPrimary";
+                        newGroup.SteamID64 = group["groupID64"]?.ParseUInt64(); field = "Group.SteamID64";
+                        newGroup.Name = group["groupName"]?.ParseString(); field = "Group.Name";
+                        newGroup.URL = group["groupURL"]?.ParseString(); field = "Group.URL";
+                        newGroup.Headline = group["headline"]?.ParseString(); field = "Group.Headline";
+                        newGroup.Summary = group["summary"]?.ParseString(); field = "Group.Summary";
+                        newGroup.AvatarIcon = group["avatarIcon"]?.ParseUri(); field = "Group.AvatarIcon";
+                        newGroup.AvatarMedium = group["avatarMedium"]?.ParseUri(); field = "Group.AvatarMedium";
+                        newGroup.AvatarFull = group["avatarFull"]?.ParseUri(); field = "Group.AvatarFull";
+                        newGroup.MemberCount = group["memberCount"]?.ParseUInt32(); field = "Group.MemberCount";
+                        newGroup.MembersInChat = group["membersInChat"]?.ParseUInt32(); field = "Group.MembersInChat";
+                        newGroup.MembersInGame = group["membersInGame"]?.ParseUInt32(); field = "Group.MembersInGame";
+                        newGroup.MembersOnline = group["membersOnline"]?.ParseUInt32(); field = "Group.MembersOnline";
+                        Groups.Add(newGroup);
+                    }
                 }
             }
-
-            if (doc["profile"]["groups"] != null)
+            catch (Exception ex)
             {
-                Groups = new List<Group>();
-                foreach (XmlElement group in doc["profile"]["groups"].ChildNodes)
-                {
-                    Group newGroup = new Group();
-                    newGroup.IsPrimary = group.Attributes["isPrimary"].InnerText == "1";
-                    newGroup.SteamID64 = ulong.Parse(group["groupID64"].InnerText);
-                    newGroup.Name = group["groupName"].ParseString();
-                    newGroup.URL = group["groupURL"].ParseString();
-                    newGroup.Headline = group["headline"].ParseString();
-                    newGroup.Summary = group["summary"].ParseString();
-                    newGroup.AvatarIcon = group["avatarIcon"].ParseUri();
-                    newGroup.AvatarMedium = group["avatarMedium"].ParseUri();
-                    newGroup.AvatarFull = group["avatarFull"].ParseUri();
-                    newGroup.MemberCount = group["memberCount"].ParseUInt32();
-                    newGroup.MembersInChat = group["membersInChat"].ParseUInt32();
-                    newGroup.MembersInGame = group["membersInGame"].ParseUInt32();
-                    newGroup.MembersOnline = group["membersOnline"].ParseUInt32();
-                    Groups.Add(newGroup);
-                }
+                Logger.LogException(ex, "Error reading Steam Profile, Field: " + field);
             }
         }
     }
