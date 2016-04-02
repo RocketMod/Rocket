@@ -20,6 +20,9 @@ namespace Rocket.Core.Commands
         public ReadOnlyCollection<IRocketCommand> Commands { get; internal set; }
         private XMLFileAsset<RocketCommands> commandMappings;
 
+        public delegate void ExecuteCommand(IRocketPlayer player, IRocketCommand command, ref bool cancel);
+        public event ExecuteCommand OnExecuteCommand;
+
         internal void Reload()
         {
             commandMappings.Reload();
@@ -174,7 +177,23 @@ namespace Rocket.Core.Commands
                     }
                     try
                     {
-                        rocketCommand.Execute(player, parameters);
+                        bool cancelCommand = false;
+                        if (OnExecuteCommand != null)
+                        {
+                            foreach (var handler in OnExecuteCommand.GetInvocationList().Cast<ExecuteCommand>())
+                            {
+                                try
+                                {
+                                    handler(player, rocketCommand, ref cancelCommand);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogException(ex);
+                                }
+                            }
+                        }
+                        if (!cancelCommand)
+                            rocketCommand.Execute(player, parameters);
                     }
                     catch (Exception ex)
                     {
