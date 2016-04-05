@@ -50,6 +50,7 @@ namespace Rocket.API.Serialisation
         {
             get {
                 if (OldPermissions != null) {
+                    if (permissions == null) permissions = new List<Permission>();
                     permissions.AddRange(OldPermissions);
                     OldPermissions = null;
                 }
