@@ -95,22 +95,32 @@ namespace Rocket.Core.Permissions
         }
 
 
-        public bool HasPermission(IRocketPlayer player, string requestedPermission, bool defaultReturnValue = false)
+        public bool HasPermission(IRocketPlayer player, string permission, bool defaultReturnValue = false)
         {
             uint? cooldownLeft;
-            return HasPermission(player, requestedPermission,out cooldownLeft, defaultReturnValue);
+            return HasPermission(player, new List<string>() { permission }, out cooldownLeft, defaultReturnValue);
         }
 
-        public bool HasPermission(IRocketPlayer player, string requestedPermission,out uint? cooldownLeft, bool defaultReturnValue = false)
+        public bool HasPermission(IRocketPlayer player, IRocketCommand command, out uint? cooldownLeft, bool defaultReturnValue = false)
+        {
+            List<string> commandPermissions = command.Permissions;
+            commandPermissions.Add(command.Name);
+            commandPermissions.AddRange(command.Aliases);
+            commandPermissions = commandPermissions.Select(a => a.ToLower()).ToList();
+            return HasPermission(player, commandPermissions, out cooldownLeft, defaultReturnValue);
+        }
+
+        public bool HasPermission(IRocketPlayer player, List<string> permissions, out uint? cooldownLeft, bool defaultReturnValue = false)
         {
             cooldownLeft = null;
-            List<Permission> permissions = R.Permissions.GetPermissions(player);
 
-            List<Permission> applyingPermissions = permissions.Where(p => p.Name.ToLower() == requestedPermission.ToLower()).ToList();
+            List<Permission> playerPermissions = R.Permissions.GetPermissions(player);
+            playerPermissions.ForEach((Permission p) => { p.Name = p.Name.ToLower(); });
 
-            List<Permission> inheritedPermission = permissions.Where(p => p.Name.ToLower().StartsWith(requestedPermission.ToLower()+".")).ToList(); //Allow kit to be executed when kit.vip is assigned
+            List<Permission> applyingPermissions = playerPermissions.Where(p => permissions.Contains(p.Name)).ToList();
+            List<Permission> inheritedPermission = playerPermissions.Where(p => permissions.Where(c => p.Name.StartsWith(c+".")).FirstOrDefault() != null).ToList(); //Allow kit to be executed when kit.vip is assigned
 
-            if (permissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0 || inheritedPermission.Count != 0)
+            if (playerPermissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0 || inheritedPermission.Count != 0)
             {
                 //Has permissions
                 Permission cooldownPermission = applyingPermissions.Where(p => p.Cooldown.HasValue).OrderByDescending(p => p.Cooldown).FirstOrDefault();
@@ -174,7 +184,7 @@ namespace Rocket.Core.Permissions
 
             foreach (RocketPermissionsGroup g in myGroups)
             {
-                p.AddRange(g.Commands);
+                p.AddRange(g.Permissions);
             }
 
             return p.Distinct().ToList();

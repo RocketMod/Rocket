@@ -11,12 +11,12 @@ namespace Rocket.API.Serialisation
         {
         }
 
-        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<Permission> commands,string color = null)
+        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<Permission> permissions, string color = null)
         {
             Id = id;
             DisplayName = displayName;
             Members = members;
-            Commands = commands;
+            Permissions = permissions;
             ParentGroup = parentGroup;
             Color = color;
         }
@@ -36,7 +36,31 @@ namespace Rocket.API.Serialisation
 
         [XmlArray("Commands")]
         [XmlArrayItem(ElementName = "Command")]
-        public List<Permission> Commands;
+        public List<Permission> OldPermissions;
+
+        public bool ShouldSerializeOldPermissions()
+        {
+            return OldPermissions != null && OldPermissions.Count != 0;
+        }
+
+        [XmlArray("Permissions")]
+        [XmlArrayItem(ElementName = "Permission")]
+        private List<Permission> permissions;
+        public List<Permission> Permissions
+        {
+            get {
+                if (OldPermissions != null) {
+                    permissions.AddRange(OldPermissions);
+                    OldPermissions = null;
+                }
+                return permissions;
+            }
+            set
+            {
+                permissions = value;
+            }
+        }
+
 
         [XmlElement("ParentGroup")]
         public string ParentGroup;
