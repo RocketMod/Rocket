@@ -46,7 +46,7 @@ namespace Rocket.Core.Commands
            return GetCommand(command.Name);
         }
 
-        private IRocketCommand GetCommand(string command)
+        public IRocketCommand GetCommand(string command)
         {
             IRocketCommand foundCommand = commands.Where(c => c.Name.ToLower() == command.ToLower()).FirstOrDefault();
             if(foundCommand == null) commands.Where(c => c.Aliases.Select(a => a.ToLower()).Contains(command.ToLower())).FirstOrDefault();
