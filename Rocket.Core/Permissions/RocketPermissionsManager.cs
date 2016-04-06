@@ -117,8 +117,11 @@ namespace Rocket.Core.Permissions
             List<Permission> playerPermissions = R.Permissions.GetPermissions(player);
             playerPermissions.ForEach((Permission p) => { p.Name = p.Name.ToLower(); });
 
+
             List<Permission> applyingPermissions = playerPermissions.Where(p => permissions.Contains(p.Name)).ToList();
             List<Permission> inheritedPermission = playerPermissions.Where(p => permissions.Where(c => p.Name.StartsWith(c+".")).FirstOrDefault() != null).ToList(); //Allow kit to be executed when kit.vip is assigned
+
+
 
             if (playerPermissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0 || inheritedPermission.Count != 0)
             {

@@ -155,6 +155,7 @@ namespace Rocket.Core.Commands
 
         public bool Execute(IRocketPlayer player, string command)
         {
+            command = command.TrimStart('/');
             string[] commandParts = Regex.Matches(command, @"[\""](.+?)[\""]|([^ ]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture).Cast<Match>().Select(m => m.Value.Trim('"').Trim()).ToArray();
 
             if (commandParts.Length != 0)
@@ -193,7 +194,9 @@ namespace Rocket.Core.Commands
                             }
                         }
                         if (!cancelCommand)
+                        {
                             rocketCommand.Execute(player, parameters);
+                        }
                     }
                     catch (Exception ex)
                     {
