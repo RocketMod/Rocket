@@ -16,7 +16,7 @@ namespace Rocket.Core.Plugins
         private IAsset<TConfiguration> configuration;
         public IAsset<TConfiguration> Configuration { get { return configuration; } }
 
-        internal override void LoadPlugin()
+        public RocketPlugin() : base()
         {
             if (Core.R.Settings.Instance.WebConfigurations.Enabled)
             {
@@ -25,8 +25,7 @@ namespace Rocket.Core.Plugins
             }
             else
             {
-                configuration = new XMLFileAsset<TConfiguration>(Directory + string.Format(Core.Environment.PluginConfigurationFileTemplate,Name));
-                base.LoadPlugin();
+                configuration = new XMLFileAsset<TConfiguration>(Directory + string.Format(Core.Environment.PluginConfigurationFileTemplate, Name));
             }
         }
     }
@@ -76,7 +75,16 @@ namespace Rocket.Core.Plugins
                 return new TranslationList();
             }
         }
-        
+
+        public RocketPlugin()
+        {
+            assembly = GetType().Assembly;
+            name = Assembly.GetName().Name;
+            directory = String.Format(Core.Environment.PluginDirectory, Name);
+            if (!System.IO.Directory.Exists(directory)) System.IO.Directory.CreateDirectory(directory);
+            translations = new XMLFileAsset<TranslationList>(directory + String.Format(Environment.PluginTranslationFileTemplate, Name, R.Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
+        }
+
         public static bool IsDependencyLoaded(string plugin)
         {
             return Rocket.Core.R.Plugins.GetPlugin(plugin) != null;
@@ -95,20 +103,17 @@ namespace Rocket.Core.Plugins
             return Translations.Instance.Translate(translationKey,placeholder);
         }
 
-        public void ForceLoad()
+        public void ReloadPlugin()
         {
+            UnloadPlugin();
             LoadPlugin();
         }
 
-        public void ForceUnload()
+        public void LoadPlugin()
         {
-            UnloadPlugin();
-        }
+            Logger.Log("\n[loading] " + name, ConsoleColor.Cyan);
+            R.Commands.RegisterFromAssembly(Assembly);
 
-        internal virtual void LoadPlugin()
-        {
-            translations = new XMLFileAsset<TranslationList>(directory + String.Format(Environment.PluginTranslationFileTemplate,Name,R.Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
-            
             try
             {
                 Load();
@@ -156,28 +161,22 @@ namespace Rocket.Core.Plugins
             state = PluginState.Loaded;
         }
 
-        internal virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
+        public void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
             Logger.Log("\n[unloading] " + Name, ConsoleColor.Cyan);
             OnPluginUnloading.TryInvoke(this);
+            R.Commands.DeregisterFromAssembly(Assembly);
             Unload();
             this.state = state;
         }
 
         private void OnEnable()
         {
-            assembly = GetType().Assembly;
-            name = Assembly.GetName().Name;
-            Logger.Log("\n[loading] " + name,ConsoleColor.Cyan);
-            directory = String.Format(Core.Environment.PluginDirectory, Name);
-            if (!System.IO.Directory.Exists(directory)) System.IO.Directory.CreateDirectory(directory);
-            R.Commands.RegisterFromAssembly(Assembly);
             LoadPlugin();
         }
 
         private void OnDisable()
         {
-            R.Commands.RegisterFromAssembly(Assembly);
             UnloadPlugin();
         }
 

@@ -16,8 +16,8 @@ namespace Rocket.Core.Commands
 {
     public class RocketCommandManager : MonoBehaviour
     {
-        private readonly List<IRocketCommand> commands = new List<IRocketCommand>();
-        public ReadOnlyCollection<IRocketCommand> Commands { get; internal set; }
+        private readonly List<RegisteredRocketCommand> commands = new List<RegisteredRocketCommand>();
+        public ReadOnlyCollection<RegisteredRocketCommand> Commands { get; internal set; }
         private XMLFileAsset<RocketCommands> commandMappings;
 
         public delegate void ExecuteCommand(IRocketPlayer player, IRocketCommand command, ref bool cancel);
@@ -26,14 +26,44 @@ namespace Rocket.Core.Commands
         internal void Reload()
         {
             commandMappings.Reload();
+            checkCommandMappings();
         }
 
         private void Awake()
         {
             Commands = commands.AsReadOnly();
             commandMappings = new XMLFileAsset<RocketCommands>(Environment.CommandsFile);
-            commandMappings.Instance.CommandMappings = commandMappings.Instance.CommandMappings.Distinct(new CommandMappingComparer()).ToList();
+            checkCommandMappings();
             R.Plugins.OnPluginsLoaded += Plugins_OnPluginsLoaded;
+        }
+
+        private void checkCommandMappings()
+        {
+            commandMappings.Instance.CommandMappings = commandMappings.Instance.CommandMappings.Distinct(new CommandMappingComparer()).ToList();
+            checkDuplicateCommandMappings();
+        }
+
+        private void checkDuplicateCommandMappings(string classname = null) {
+            foreach (CommandMapping mapping in (classname == null) ? commandMappings.Instance.CommandMappings : commandMappings.Instance.CommandMappings.Where(cm => cm.Class == classname))
+            {
+                string n = mapping.Name.ToLower();
+                string c = mapping.Class.ToLower();
+
+                if (mapping.Enabled)
+                    foreach (CommandMapping otherMappings in commandMappings.Instance.CommandMappings.Where(m => m.Name.ToLower() == n && m.Enabled && m.Class.ToLower() != c))
+                    {
+                        Logger.Log("Other mapping to: "+otherMappings.Class+" / "+mapping.Class);
+                        if (otherMappings.Priority > mapping.Priority)
+                        {
+                            mapping.Enabled = false;
+                        }
+                        else
+                        {
+                            otherMappings.Enabled = false;
+                        }
+                    }
+            }
+            commandMappings.Save();
         }
 
         private void Plugins_OnPluginsLoaded()
@@ -85,27 +115,32 @@ namespace Rocket.Core.Commands
             }
         }
 
-        public bool Register(IRocketCommand command)
-        {
-            Register(command,null);
-            return true;
-        }
 
 
         public class CommandMappingComparer : IEqualityComparer<CommandMapping>
         {
             public bool Equals(CommandMapping x, CommandMapping y)
             {
-                return (x.Name == y.Name && x.Class == y.Class);
+                return (x.Name.ToLower() == y.Name.ToLower() && x.Class.ToLower() == y.Class.ToLower());
             }
 
             public int GetHashCode(CommandMapping obj)
             {
-                return obj.Name.GetHashCode()+obj.Class.GetHashCode();
+                return (obj.Name.ToLower()+obj.Class.ToLower()).GetHashCode();
             }
+        }
+        public bool Register(IRocketCommand command)
+        {
+            Register(command, null);
+            return true;
         }
 
         public void Register(IRocketCommand command, string alias)
+        {
+            Register(command, alias, CommandPriority.Normal);
+        }
+
+        public void Register(IRocketCommand command, string alias, CommandPriority priority)
         {
             string name = command.Name;
             if (alias != null) name = alias;
@@ -114,43 +149,20 @@ namespace Rocket.Core.Commands
 
             //Add CommandMapping if not already existing
             if(commandMappings.Instance.CommandMappings.Where(m => m.Class == className && m.Name == name).FirstOrDefault() == null){
-                commandMappings.Instance.CommandMappings.Add(new CommandMapping(name, true, className));
+                commandMappings.Instance.CommandMappings.Add(new CommandMapping(name,className,true,priority));
             }
+            checkDuplicateCommandMappings(className);
 
-            //For each CommandMapping with current class
-            foreach(CommandMapping mapping in commandMappings.Instance.CommandMappings.Where(m => m.Class == className))
+            foreach(CommandMapping mapping in commandMappings.Instance.CommandMappings.Where(m => m.Class == className && m.Enabled))
             {
-                string n = mapping.Name;
-                string c = mapping.Class;
-
-                //If there is another Command with the same /name that is enabled but not this then disable this one
-                CommandMapping replacingMapping = commandMappings.Instance.CommandMappings.Where(m => m.Name == n && m.Enabled && m.Class != c).FirstOrDefault();
-                if (replacingMapping != null) {
-                    mapping.Enabled = false;
-                }
-
-                if (!mapping.Enabled)
-                {
-                    if (replacingMapping != null)
-                    {
-                        Logger.Log("[disabled] /" + n + " (" + c + ") {Replaced by " + replacingMapping.Class + "}", ConsoleColor.Yellow);
-                    }
-                    else
-                    {
-                        Logger.Log("[disabled] /" + n + " (" + c + ")", ConsoleColor.Red);
-                    }
-                }
-                else {
-                    commands.Add(new RegisteredRocketCommand(n, command));
-                    Logger.Log("[registered] /" + n + " (" + c + ")", ConsoleColor.Green);
-                }
+                commands.Add(new RegisteredRocketCommand(mapping.Name.ToLower(), command));
+                Logger.Log("[registered] /" + mapping.Name.ToLower() + " (" + mapping.Class + ")", ConsoleColor.Green);
             }
         }
 
-        public void Deregister(IRocketCommand command)
+        public void DeregisterFromAssembly(Assembly assembly)
         {
-            Logger.Log("Deregister " + command.GetType().FullName + " as "  + command.Name);
-            commands.Remove(command);
+            commands.RemoveAll(rc => rc.Command.GetType().Assembly == assembly);
         }
 
         public bool Execute(IRocketPlayer player, string command)
@@ -269,17 +281,16 @@ namespace Rocket.Core.Commands
             }
         }
         
-        internal class RegisteredRocketCommand : IRocketCommand
+        public class RegisteredRocketCommand : IRocketCommand
         {
             public Type Type;
-            private IRocketCommand originalCommand;
+            public IRocketCommand Command;
             private string name;
 
             public RegisteredRocketCommand(string name,IRocketCommand command)
             {
                 this.name = name;
-                this.originalCommand = command;
-
+                Command = command;
                 Type = getCommandType(command);
             }
 
@@ -287,7 +298,7 @@ namespace Rocket.Core.Commands
             {
                 get
                 {
-                    return originalCommand.Aliases;
+                    return Command.Aliases;
                 }
             }
 
@@ -295,7 +306,7 @@ namespace Rocket.Core.Commands
             {
                 get
                 {
-                    return originalCommand.AllowedCaller;
+                    return Command.AllowedCaller;
                 }
             }
 
@@ -303,7 +314,7 @@ namespace Rocket.Core.Commands
             {
                 get
                 {
-                    return originalCommand.Help;
+                    return Command.Help;
                 }
             }
 
@@ -319,7 +330,7 @@ namespace Rocket.Core.Commands
             {
                 get
                 {
-                    return originalCommand.Permissions;
+                    return Command.Permissions;
                 }
             }
 
@@ -327,13 +338,14 @@ namespace Rocket.Core.Commands
             {
                 get
                 {
-                    return originalCommand.Syntax;
+                    return Command.Syntax;
                 }
             }
 
             public void Execute(IRocketPlayer caller, string[] command)
             {
-                originalCommand.Execute(caller, command);
+
+                Command.Execute(caller, command);
             }
         }
 
@@ -391,14 +403,6 @@ namespace Rocket.Core.Commands
                             method.Invoke(R.Plugins.GetPlugin(method.ReflectedType.Assembly), new object[] { parameters, caller });
                         break;
                 }
-            }
-        }
-
-        public void UnregisterFromAssembly(Assembly assembly)
-        {
-            foreach (IRocketCommand command in R.Commands.Commands.Where(c => c is RegisteredRocketCommand && ((RegisteredRocketCommand)c).Type.Assembly == assembly).ToList())
-            {
-                Deregister(command);
             }
         }
     }
