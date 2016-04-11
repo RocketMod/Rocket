@@ -11,23 +11,35 @@ using UnityEngine;
 
 namespace Rocket.Core.Plugins
 {
-    public class RocketPlugin<TConfiguration> : RocketPlugin, IRocketPlugin<TConfiguration> where TConfiguration : class, IRocketPluginConfiguration
+    public class RocketPlugin<RocketPluginConfiguration> : RocketPlugin, IRocketPlugin<RocketPluginConfiguration> where RocketPluginConfiguration : class, IRocketPluginConfiguration
     {
-        private IAsset<TConfiguration> configuration;
-        public IAsset<TConfiguration> Configuration { get { return configuration; } }
+        private IAsset<RocketPluginConfiguration> configuration;
+        public IAsset<RocketPluginConfiguration> Configuration { get { return configuration; } }
 
         public RocketPlugin() : base()
         {
             if (Core.R.Settings.Instance.WebConfigurations.Enabled)
             {
                 string url = string.Format(Environment.WebConfigurationTemplate, Core.R.Settings.Instance.WebConfigurations.Url, Name, R.Implementation.InstanceId);
-                configuration = new WebXMLFileAsset<TConfiguration>(url, null, (IAsset<TConfiguration> asset) => { base.LoadPlugin(); });
+                configuration = new WebXMLFileAsset<RocketPluginConfiguration>(url, null, (IAsset<RocketPluginConfiguration> asset) => { base.LoadPlugin(); });
             }
             else
             {
-                configuration = new XMLFileAsset<TConfiguration>(Directory + string.Format(Core.Environment.PluginConfigurationFileTemplate, Name));
+                configuration = new XMLFileAsset<RocketPluginConfiguration>(Directory + string.Format(Core.Environment.PluginConfigurationFileTemplate, Name));
             }
         }
+
+        protected override void LoadPlugin()
+        {
+            configuration.Load();
+            if (!Core.R.Settings.Instance.WebConfigurations.Enabled)
+            {
+                base.LoadPlugin();
+            }
+        }
+
+
+
     }
 
     public class RocketPlugin : MonoBehaviour, IRocketPlugin
@@ -106,15 +118,16 @@ namespace Rocket.Core.Plugins
             return Translations.Instance.Translate(translationKey,placeholder);
         }
 
-        public void ReloadPlugin()
+        protected void ReloadPlugin()
         {
             UnloadPlugin();
             LoadPlugin();
         }
 
-        public void LoadPlugin()
+        protected virtual void LoadPlugin()
         {
             Logger.Log("\n[loading] " + name, ConsoleColor.Cyan);
+            translations.Load();
             R.Commands.RegisterFromAssembly(Assembly);
 
             try
@@ -164,7 +177,7 @@ namespace Rocket.Core.Plugins
             state = PluginState.Loaded;
         }
 
-        public void UnloadPlugin(PluginState state = PluginState.Unloaded)
+        protected virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
             Logger.Log("\n[unloading] " + Name, ConsoleColor.Cyan);
             OnPluginUnloading.TryInvoke(this);
@@ -175,7 +188,7 @@ namespace Rocket.Core.Plugins
 
         private void OnEnable()
         {
-            LoadPlugin();
+                LoadPlugin();
         }
 
         private void OnDisable()
