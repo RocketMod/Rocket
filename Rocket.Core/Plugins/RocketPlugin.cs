@@ -29,7 +29,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        protected override void LoadPlugin()
+        public override void LoadPlugin()
         {
             configuration.Load();
             if (!Core.R.Settings.Instance.WebConfigurations.Enabled)
@@ -105,7 +105,7 @@ namespace Rocket.Core.Plugins
             return Rocket.Core.R.Plugins.GetPlugin(plugin) != null;
         }
 
-        public delegate void ExecuteDependencyCodeDelegate(IRocketPlugin plugin);
+        public delegate void ExecuteDependencyCodeDelegate(IRocketPlugin plugin); 
         public static void ExecuteDependencyCode(string plugin,ExecuteDependencyCodeDelegate a)
         {
             IRocketPlugin p = Rocket.Core.R.Plugins.GetPlugin(plugin);
@@ -118,13 +118,13 @@ namespace Rocket.Core.Plugins
             return Translations.Instance.Translate(translationKey,placeholder);
         }
 
-        protected void ReloadPlugin()
+        public void ReloadPlugin()
         {
             UnloadPlugin();
             LoadPlugin();
         }
 
-        protected virtual void LoadPlugin()
+        public virtual void LoadPlugin()
         {
             Logger.Log("\n[loading] " + name, ConsoleColor.Cyan);
             translations.Load();
@@ -177,7 +177,7 @@ namespace Rocket.Core.Plugins
             state = PluginState.Loaded;
         }
 
-        protected virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
+        public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
             Logger.Log("\n[unloading] " + Name, ConsoleColor.Cyan);
             OnPluginUnloading.TryInvoke(this);
