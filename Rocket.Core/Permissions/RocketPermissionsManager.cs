@@ -49,7 +49,7 @@ namespace Rocket.Core.Permissions
                     updateWebPermissions = false;
                     permissions.Load((IAsset<RocketPermissions> asset) => {
                         updateWebPermissions = true;
-                    }, true);
+                    });
                 }
             }
 
@@ -61,7 +61,7 @@ namespace Rocket.Core.Permissions
 
         public void Reload()
         {
-            permissions.Reload();
+            permissions.Load();
         }
 
         private List<RocketPermissionsGroup> getGroupsByIds(List<string> ids)

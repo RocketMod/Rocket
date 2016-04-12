@@ -7,7 +7,7 @@
     {
         T Instance { get; set; }
         T Save();
-        void Load(AssetLoaded<T> callback = null, bool update = false);
+        void Load(AssetLoaded<T> callback = null);
         void Unload(AssetUnloaded<T> callback = null);
     }
 }

@@ -25,7 +25,7 @@ namespace Rocket.Core.Commands
 
         internal void Reload()
         {
-            commandMappings.Reload();
+            commandMappings.Load();
             checkCommandMappings();
         }
 

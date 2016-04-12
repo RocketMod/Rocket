@@ -16,7 +16,7 @@ namespace Rocket.Core.Assets
             serializer = new XmlSerializer(typeof(T), extraTypes);
             this.file = file;
             this.defaultInstance = defaultInstance;
-            Load(null, true);
+            Load();
         }
 
         public override T Save()
@@ -49,15 +49,10 @@ namespace Rocket.Core.Assets
             }
         }
 
-        public override void Load(AssetLoaded<T> callback = null, bool update = false)
+        public override void Load(AssetLoaded<T> callback = null)
         {
             try
             {
-                if (instance != null && !update)
-                {
-                    if (callback != null) { callback(this); }
-                    return;
-                }
                 if (!String.IsNullOrEmpty(file) && File.Exists(file))
                 {
                     using (StreamReader reader = new StreamReader(file))

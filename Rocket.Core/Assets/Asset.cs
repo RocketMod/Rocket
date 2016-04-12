@@ -28,13 +28,9 @@ namespace Rocket.Core.Assets
             return instance;
         }
 
-        public virtual void Load(AssetLoaded<T> callback = null, bool update = false)
+        public virtual void Load(AssetLoaded<T> callback = null)
         {
             callback(this);
-        }
-        public virtual void Reload()
-        {
-            Load(null, true);
         }
 
         public virtual void Unload(AssetUnloaded<T> callback = null)
