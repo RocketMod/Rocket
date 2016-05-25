@@ -20,18 +20,13 @@ namespace Rocket.Core.Assets
             Load(callback);
         }
 
-        public override void Load(AssetLoaded<T> callback = null, bool update = true)
+        public override void Load(AssetLoaded<T> callback = null)
         {
             try
             {
-                if ((instance != null && !update) || waiting)
+                if (!String.IsNullOrEmpty(url) && !waiting)
                 {
-                    if (callback != null) { callback(this); }
-                    return;
-                }
-                if (!String.IsNullOrEmpty(url))
-                {
-                    Logger.Log(String.Format("Updating WebXMLFileAsset {0} from {1}",typeof(T).Name,url));
+                    Logger.Log(String.Format("Updating WebXMLFileAsset {0} from {1}", typeof(T).Name, url));
                     waiting = true;
                     webclient.DownloadStringCompleted += (object sender, System.Net.DownloadStringCompletedEventArgs e) =>
                     {
@@ -48,7 +43,8 @@ namespace Rocket.Core.Assets
                         });
                     };
                     webclient.DownloadStringAsync(new Uri(url));
-                }else
+                }
+                else
                 {
                     throw new ArgumentNullException("WebXMLFileAsset url is blank");
                 }

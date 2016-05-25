@@ -48,7 +48,7 @@ namespace Rocket.Core.Permissions
                     updateWebPermissions = false;
                     helper.permissions.Load((IAsset<RocketPermissions> asset) => {
                         updateWebPermissions = true;
-                    }, true);
+                    });
                 }
             }
 
@@ -60,7 +60,7 @@ namespace Rocket.Core.Permissions
 
         public void Reload()
         {
-            helper.permissions.Reload();
+            helper.permissions.Load();
         }
 
         public bool HasPermission(IRocketPlayer player, string permission, bool defaultReturnValue = false)
