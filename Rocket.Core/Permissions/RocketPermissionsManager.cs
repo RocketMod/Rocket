@@ -125,9 +125,13 @@ namespace Rocket.Core.Permissions
                 {
                     foreach(string ps in permissions)
                     {
-                        if (p.Name.Equals(ps.ToLower() + ".*"))
+                        if (ps.Contains("."))
                         {
-                            applyingPermissions.Add(p);
+                            string b = ps.Substring(0, ps.IndexOf('.'));
+                            if (p.Name.Equals(b + ".*"))
+                            {
+                                applyingPermissions.Add(p);
+                            }
                         }
                     }
                 }
