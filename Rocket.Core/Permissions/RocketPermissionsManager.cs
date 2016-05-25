@@ -118,10 +118,22 @@ namespace Rocket.Core.Permissions
             playerPermissions.ForEach((Permission p) => { p.Name = p.Name.ToLower(); });
 
 
-            List<Permission> applyingPermissions = playerPermissions.Where(p => permissions.Contains(p.Name)).ToList();
-            List<Permission> inheritedPermission = playerPermissions.Where(p => permissions.Where(c => p.Name.StartsWith(c+".")).FirstOrDefault() != null).ToList(); //Allow kit to be executed when kit.vip is assigned
-
-
+            List<Permission> applyingPermissions = playerPermissions.Where(p => permissions.Equals(p.Name)).ToList();
+            foreach(Permission p in playerPermissions)
+            {
+                if (p.Name.EndsWith(".*"))
+                {
+                    foreach(string ps in permissions)
+                    {
+                        if (p.Name.Equals(ps.ToLower() + ".*"))
+                        {
+                            applyingPermissions.Add(p);
+                        }
+                    }
+                }
+            }
+            List<Permission> inheritedPermission = playerPermissions.Where(p => permissions.Where(c => p.Name.StartsWith(c + ".")).FirstOrDefault() != null).ToList();
+            
 
             if (playerPermissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0 || inheritedPermission.Count != 0)
             {
