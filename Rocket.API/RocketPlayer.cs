@@ -30,7 +30,7 @@ namespace Rocket.API
 
         public int CompareTo(object obj)
         {
-            return Id.CompareTo(obj);
+            return Id.CompareTo(((IRocketPlayer)obj).Id);
         }
     }
 }

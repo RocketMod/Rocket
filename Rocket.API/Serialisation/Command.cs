@@ -10,14 +10,14 @@ namespace Rocket.API.Serialisation
     public class Permission
     {
         [XmlAttribute]
-        public uint? Cooldown = null;
+        public uint Cooldown = 0;
 
         [XmlText]
         public string Name = "";
 
         public Permission() { }
 
-        public Permission(string name, uint? cooldown = null)
+        public Permission(string name, uint cooldown = 0)
         {
             Name = name;
             Cooldown = cooldown;
