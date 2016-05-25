@@ -28,7 +28,7 @@ namespace Rocket.Core
         public static IRocketPermissionsProvider Permissions = null;
         public static RocketPluginManager Plugins = null;
         public static RocketCommandManager Commands = null;
-
+        
         private static readonly TranslationList defaultTranslations = new TranslationList(){
                 {"rocket_join_public","{0} connected to the server" },
                 {"rocket_leave_public","{0} disconnected from the server"},
@@ -39,6 +39,7 @@ namespace Rocket.Core
         private void Awake()
         {
             Instance = this;
+
             Implementation = (IRocketImplementation)GetComponent(typeof(IRocketImplementation));
 
             #if DEBUG
@@ -84,8 +85,8 @@ namespace Rocket.Core
 
         public static void Reload()
         {
-            Settings.Reload();
-            Translation.Reload();
+            Settings.Load();
+            Translation.Load();
             Permissions.Reload();
             Plugins.Reload();
             Commands.Reload();
