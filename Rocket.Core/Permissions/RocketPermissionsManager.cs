@@ -88,9 +88,39 @@ namespace Rocket.Core.Permissions
             return helper.GetPermissions(player);
         }
 
-        public bool SetGroup(IRocketPlayer player, string groupID)
+        public RocketPermissionsProviderResult AddPlayerToGroup(string groupId,IRocketPlayer player)
         {
-            return helper.SetGroup(player,groupID);
+            return helper.AddPlayerToGroup(groupId,player);
+        }
+
+        public RocketPermissionsProviderResult RemovePlayerFromGroup(string groupId, IRocketPlayer player)
+        {
+            return helper.RemovePlayerFromGroup(groupId, player);
+        }
+
+        public RocketPermissionsGroup GetGroup(string groupId)
+        {
+            return helper.GetGroup(groupId);
+        }
+
+        public RocketPermissionsProviderResult SaveGroup(RocketPermissionsGroup group)
+        {
+            return helper.SaveGroup(group);
+        }
+
+        public RocketPermissionsProviderResult AddGroup(RocketPermissionsGroup group)
+        {
+            return helper.AddGroup(group);
+        }
+
+        public RocketPermissionsProviderResult DeleteGroup(RocketPermissionsGroup group)
+        {
+            return helper.DeleteGroup(group.Id);
+        }
+
+        public RocketPermissionsProviderResult DeleteGroup(string groupId)
+        {
+            return helper.DeleteGroup(groupId);
         }
     }
 }

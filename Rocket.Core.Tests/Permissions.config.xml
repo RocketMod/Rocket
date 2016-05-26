@@ -18,11 +18,26 @@
       <DisplayName>VIP</DisplayName>
       <Color>FF9900</Color>
       <Members>
-        <Member>12345678901234567</Member>
+        <Member>1</Member>
+      </Members>
+      <ParentGroup>default</ParentGroup>
+      <Permissions>
+        <Permission>kit.*</Permission>
+        <Permission Cooldown="120">heal</Permission>
+        <Permission Cooldown="30">v</Permission>
+      </Permissions>
+    </Group>
+    <Group>
+      <Id>moderator</Id>
+      <DisplayName>Mod</DisplayName>
+      <Color>FF9900</Color>
+      <Members>
+        <Member>2</Member>
       </Members>
       <ParentGroup>default</ParentGroup>
       <Permissions>
         <Permission>effect</Permission>
+        <Permission>kit.test2</Permission>
         <Permission Cooldown="120">heal</Permission>
         <Permission Cooldown="30">v</Permission>
       </Permissions>

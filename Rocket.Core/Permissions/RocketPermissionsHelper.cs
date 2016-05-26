@@ -49,19 +49,38 @@ namespace Rocket.Core.Permissions
             return HasPermission(player, commandPermissions, out cooldownLeft, defaultReturnValue);
         }
 
-        public bool HasPermission(IRocketPlayer player, List<string> permissions, out uint? cooldownLeft, bool defaultReturnValue = false)
+        public bool HasPermission(IRocketPlayer player, List<string> askedPermissions, out uint? cooldownLeft, bool defaultReturnValue = false)
         {
             cooldownLeft = null;
             List<Permission> playerPermissions = GetPermissions(player);
             playerPermissions.ForEach((Permission p) => { p.Name = p.Name.ToLower(); });
 
+            List<Permission> applyingPermissions = playerPermissions.Where(p => askedPermissions.Contains(p.Name)).ToList();
+            foreach (Permission p in playerPermissions)
+            {
+                string pb = p.Name;
+                    if(pb.Contains(".")) pb = p.Name.Substring(0, p.Name.IndexOf('.'));
 
-            List<Permission> applyingPermissions = playerPermissions.Where(p => permissions.Contains(p.Name)).ToList();
-            List<Permission> inheritedPermission = playerPermissions.Where(p => permissions.Where(c => p.Name.StartsWith(c + ".")).FirstOrDefault() != null).ToList(); //Allow kit to be executed when kit.vip is assigned
+                if (p.Name.EndsWith(".*")) //Player permission is a wildcard permission
+                {
+                    foreach (string ps in askedPermissions)
+                    {
+                        string b = ps;
+                        if(ps.Contains("."))
+                            b = ps.Substring(0, ps.IndexOf('.')).ToLower();
 
+                        if (ps.StartsWith(pb + ".")) //Check if wildcard base pb is the start of this permission
+                        {
+                            applyingPermissions.Add(p);
+                        }
+                    }
+                }
 
+                //Grant base permission if required
+                askedPermissions.Where(ps => ps == pb).ToList().ForEach((ap) => { applyingPermissions.Add(p); });
+            }
 
-            if (playerPermissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0 || inheritedPermission.Count != 0)
+            if (playerPermissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0 )
             {
                 //Has permissions
                 Permission cooldownPermission = applyingPermissions.Where(p => p.Cooldown != 0).OrderByDescending(p => p.Cooldown).FirstOrDefault();
@@ -97,6 +116,64 @@ namespace Rocket.Core.Permissions
             return defaultReturnValue;
         }
 
+        internal RocketPermissionsGroup GetGroup(string groupId)
+        {
+            return permissions.Instance.Groups.Where(g => g.Id.ToLower() == groupId.ToLower()).FirstOrDefault();
+        }
+
+        internal RocketPermissionsProviderResult RemovePlayerFromGroup(string groupId, IRocketPlayer player)
+        {
+            RocketPermissionsGroup g = GetGroup(groupId);
+            if (g == null) return RocketPermissionsProviderResult.GroupNotFound;
+
+            if (g.Members.Where(m => m == player.Id).FirstOrDefault() == null) return RocketPermissionsProviderResult.PlayerNotFound;
+
+            g.Members.Remove(player.Id);
+            SaveGroup(g);
+            return RocketPermissionsProviderResult.Success;
+        }
+
+        internal RocketPermissionsProviderResult AddPlayerToGroup(string groupId, IRocketPlayer player)
+        {
+            RocketPermissionsGroup g = GetGroup(groupId);
+            if (g == null) return RocketPermissionsProviderResult.GroupNotFound;
+
+            if (g.Members.Where(m => m == player.Id).FirstOrDefault() != null) return RocketPermissionsProviderResult.DuplicateEntry;
+
+            g.Members.Add(player.Id);
+            SaveGroup(g);
+            return RocketPermissionsProviderResult.Success;
+        }
+
+        internal RocketPermissionsProviderResult DeleteGroup(string groupId)
+        {
+            RocketPermissionsGroup g = GetGroup(groupId);
+            if (g == null) return RocketPermissionsProviderResult.GroupNotFound;
+
+            permissions.Instance.Groups.Remove(g); 
+            permissions.Save();
+            return RocketPermissionsProviderResult.Success;
+        }
+
+        internal RocketPermissionsProviderResult SaveGroup(RocketPermissionsGroup group)
+        {
+            int i = permissions.Instance.Groups.FindIndex(gr => gr.Id == group.Id);
+            if (i < 0) return RocketPermissionsProviderResult.GroupNotFound;
+            permissions.Instance.Groups[i] = group;
+            permissions.Save();
+            return RocketPermissionsProviderResult.Success;
+        }
+
+        internal RocketPermissionsProviderResult AddGroup(RocketPermissionsGroup group)
+        {
+            int i = permissions.Instance.Groups.FindIndex(gr => gr.Id == group.Id);
+            if (i != -1) return RocketPermissionsProviderResult.DuplicateEntry;
+            permissions.Instance.Groups.Add(group);
+            permissions.Save();
+            return RocketPermissionsProviderResult.Success;
+        }
+
+
         public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player, bool includeParentGroups)
         {
             List<RocketPermissionsGroup> groups = permissions.Instance.Groups.Where(g => g.Members.Contains(player.Id)).ToList(); // Get my Groups
@@ -128,30 +205,6 @@ namespace Rocket.Core.Permissions
             }
 
             return p.Distinct().ToList();
-        }
-
-        public bool SetGroup(IRocketPlayer player, string groupID)
-        {
-            bool added = false;
-            foreach (RocketPermissionsGroup g in permissions.Instance.Groups)
-            {
-                if (g.Members.Contains(player.Id))
-                {
-                    g.Members.Remove(player.Id);
-                }
-
-                if (String.Compare(g.Id, groupID, true) == 0)
-                {
-                    g.Members.Add(player.Id);
-                    added = true;
-                }
-            }
-            if (added)
-            {
-                permissions.Save();
-                return true;
-            }
-            return false;
         }
     }
 }

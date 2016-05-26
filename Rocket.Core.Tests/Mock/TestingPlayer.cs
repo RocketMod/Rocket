@@ -9,13 +9,6 @@ namespace Rocket.Core.Tests
 {
     public class TestingPlayer : IRocketPlayer
     {
-        private static TestingPlayer instance = null;
-        public static TestingPlayer GetPlayer()
-        {
-            if (instance == null) instance = new TestingPlayer();
-            return instance;
-        }
-
         public string DisplayName
         {
             get
@@ -23,16 +16,13 @@ namespace Rocket.Core.Tests
                 return "TestingPlayer";
             }
         }
-
-        public string Id
+        public TestingPlayer(string id= "1", bool admin= false)
         {
-            get
-            {
-                return "12345678901234567";
-            }
+            IsAdmin = admin;
+            Id = id;
         }
 
-        private bool isAdmin = false;
+        private bool isAdmin;
         public bool IsAdmin
         {
             get
@@ -40,6 +30,21 @@ namespace Rocket.Core.Tests
                 return isAdmin;
             }
             set { isAdmin = value; }
+        }
+
+        private string id;
+
+        public string Id
+        {
+            get
+            {
+                return id;
+            }
+
+            set
+            {
+                id = value;
+            }
         }
 
         public int CompareTo(object obj)
