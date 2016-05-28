@@ -34,10 +34,20 @@ namespace Rocket.Core.Assets
                         {
                             using (StringReader reader = new StringReader(e.Result))
                             {
-                                instance = (T)serializer.Deserialize(reader);
+                                try
+                                {
+                                    T result = (T)serializer.Deserialize(reader);
 
-                                if (callback != null)
+                                    instance = result;
+
+                                    if (callback != null)
+                                        callback(this);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogError("Error retrieving WebXMLFileAsset: "+ex.Message);
                                     callback(this);
+                                }
                             }
                             waiting = false;
                         });
