@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 namespace Rocket.API.Collections
 {
     [Serializable]
-    [XmlType(AnonymousType = false, IncludeInSchema = true,TypeName = "Translation")]
+    [XmlType(AnonymousType = false, IncludeInSchema = true, TypeName = "Translation")]
     public class TranslationListEntry
     {
         [XmlAttribute]
@@ -22,6 +22,22 @@ namespace Rocket.API.Collections
             Value = value;
         }
         public TranslationListEntry() { }
+    }
+
+    public static class TranslationListExtension{
+        public static void AddUnknownEntries(this TranslationList defaultTranslations, IAsset<TranslationList> translations)
+        {
+            bool hasChanged = false;
+            foreach(TranslationListEntry entry in defaultTranslations)
+            {
+                if (translations.Instance[entry.Id] == null) {
+                    translations.Instance.Add(entry);
+                    hasChanged = true;
+                }
+            }
+            if(hasChanged)
+                translations.Save();
+        }
     }
 
     [XmlRoot("Translations")]

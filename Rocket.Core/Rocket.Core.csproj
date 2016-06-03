@@ -66,6 +66,8 @@
     <Compile Include="Extensions\IRocketPlayerExtension.cs" />
     <Compile Include="Extensions\MonoBehaviourExtension.cs" />
     <Compile Include="Logging\ELogType.cs" />
+    <Compile Include="Permissions\PermissionCooldown.cs" />
+    <Compile Include="Permissions\RocketPermissionsHelper.cs" />
     <Compile Include="Plugins\RocketPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Assets\Asset.cs" />

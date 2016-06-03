@@ -24,9 +24,9 @@ namespace Rocket.Core.Assets
         {
             try
             {
-                if (!String.IsNullOrEmpty(url))
+                if (!String.IsNullOrEmpty(url) && !waiting)
                 {
-                    Logger.Log(String.Format("Updating WebXMLFileAsset {0} from {1}",typeof(T).Name,url));
+                    Logger.Log(String.Format("Updating WebXMLFileAsset {0} from {1}", typeof(T).Name, url));
                     waiting = true;
                     webclient.DownloadStringCompleted += (object sender, System.Net.DownloadStringCompletedEventArgs e) =>
                     {
@@ -34,16 +34,27 @@ namespace Rocket.Core.Assets
                         {
                             using (StringReader reader = new StringReader(e.Result))
                             {
-                                instance = (T)serializer.Deserialize(reader);
+                                try
+                                {
+                                    T result = (T)serializer.Deserialize(reader);
 
-                                if (callback != null)
+                                    instance = result;
+
+                                    if (callback != null)
+                                        callback(this);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogError("Error retrieving WebXMLFileAsset: "+ex.Message);
                                     callback(this);
+                                }
                             }
                             waiting = false;
                         });
                     };
                     webclient.DownloadStringAsync(new Uri(url));
-                }else
+                }
+                else
                 {
                     throw new ArgumentNullException("WebXMLFileAsset url is blank");
                 }

@@ -96,8 +96,11 @@ namespace Rocket.Core.Plugins
             if (!System.IO.Directory.Exists(directory))
                 System.IO.Directory.CreateDirectory(directory);
 
-            if(DefaultTranslations != null | DefaultTranslations.Count() != 0)
+            if (DefaultTranslations != null | DefaultTranslations.Count() != 0)
+            {
                 translations = new XMLFileAsset<TranslationList>(directory + String.Format(Environment.PluginTranslationFileTemplate, Name, R.Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
+                DefaultTranslations.AddUnknownEntries(translations);
+            }
         }
 
         public static bool IsDependencyLoaded(string plugin)

@@ -42,7 +42,7 @@ namespace Rocket.Core.Plugins
                 string file;
                 if (libraries.TryGetValue(args.Name, out file))
                 {
-                    return Assembly.LoadFile(file);
+                    return Assembly.Load(File.ReadAllBytes(file));
                 }
                 else
                 {
@@ -115,7 +115,7 @@ namespace Rocket.Core.Plugins
             {
                 try
                 {
-                    Assembly assembly = Assembly.LoadFile(library.FullName);
+                    Assembly assembly = Assembly.Load(File.ReadAllBytes(library.FullName));
 
                     if (RocketHelper.GetTypesFromInterface(assembly, "IRocketPlugin").Count == 1)
                     {

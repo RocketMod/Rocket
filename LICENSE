@@ -1,4 +1,11 @@
-The Rocket Wiki accesible at https://github.com/RocketFoundation/Rocket/wiki/ 
+Unturned 3 is property of Smartly Dressed Games.
+You are not allowed to change, mix or redistribute Unturned 3
+unless permission is explicitly given by Smartly Dressed Games.
+Copyright (C) | Smartly Dressed Games | Nelson Sexton
+
+--------------------------------------------------------------------------------------
+
+The Rocket Wiki accesible at https://github.com/RocketMod/Rocket/wiki/ 
 is licensed under a Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0) License.
 You are free to share and adapt it for any purpose as long as you give appropiate 
 credit and license any derivations under the same license as the original.
@@ -7,9 +14,25 @@ and http://creativecommons.org/licenses/by-sa/3.0/legalcode for the full license
 
 --------------------------------------------------------------------------------------
 
-Rocket.Core and Rocket.API, as a modding framework and tools collection to Unity 3D is licensed under a 
+Rocket.Core, as a modification to Unturned 3 is licensed under a 
 Creative Commons Attribution-NoDerivs 3.0 Unported License.
 You are free to share it as long as you give appropiate credit and 
 don't distribute modified versions.
 See http://creativecommons.org/licenses/by-nd/3.0/ for the human-readable summary
 and http://creativecommons.org/licenses/by-nd/3.0/legalcode for the full license.
+Copyright (C) | RocketMod | Sven Mawby <fr34kyn01535@bam.yt>
+
+--------------------------------------------------------------------------------------
+
+Rocket.Unturned, the API used in plugins is licensed under GPLv2.
+All plugins are automatically sub licensed under the same license.
+Copyright (C) | RocketMod | Sven Mawby <fr34kyn01535@bam.yt>
+
+--------------------------------------------------------------------------------------
+
+In order to automatically download Rocket you need an API key for our Download / Update API. 
+You may want to get your own key at https://rocketmod.net/api.
+You are not allowed to share this key with anyone. 
+The key is per server (or network) and should not be made public.
+We use this system to track the usage of Rocket and interest in this project and to also prevent license terms breaking.
+Make sure to comply with our license, breaking the terms will lead to a loss of your API key.
