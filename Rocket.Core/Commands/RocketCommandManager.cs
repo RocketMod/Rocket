@@ -242,14 +242,29 @@ namespace Rocket.Core.Commands
                         }
                         if (!cancelCommand)
                         {
-                            rocketCommand.Execute(player, parameters);
+                            try
+                            {
+                                rocketCommand.Execute(player, parameters);
+                                SetCooldown(player, rocketCommand);
+                            }
+                            catch (NoPermissionsForCommandException ex)
+                            {
+                                Logger.LogWarning(ex.Message);
+                            }
+                            catch (WrongUsageOfCommandException)
+                            {
+                                //
+                            }
+                            catch (Exception)
+                            {
+                                throw;
+                            }
                         }
                     }
                     catch (Exception ex)
                     {
                         Logger.LogError("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]: " + ex.ToString());
                     }
-                    SetCooldown(player,rocketCommand);
                     return true;
                 }
             }

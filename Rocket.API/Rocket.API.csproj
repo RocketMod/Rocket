@@ -64,6 +64,8 @@
     <Compile Include="IRocketImplementationEvents.cs" />
     <Compile Include="IRocketImplementation.cs" />
     <Compile Include="ConsolePlayer.cs" />
+    <Compile Include="WrongUsageOfCommandException.cs" />
+    <Compile Include="NoPermissionsForCommandException.cs" />
     <Compile Include="RocketPlayer.cs" />
     <Compile Include="IRocketPlugin.cs" />
     <Compile Include="IRocketPermissionsProvider.cs" />
