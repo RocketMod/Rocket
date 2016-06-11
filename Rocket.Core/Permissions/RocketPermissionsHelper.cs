@@ -10,7 +10,6 @@ namespace Rocket.Core.Permissions
     internal class RocketPermissionsHelper
     {
         internal Asset<RocketPermissions> permissions = null;
-        internal List<PermissionCooldown> cooldown = new List<PermissionCooldown>();
 
         public RocketPermissionsHelper(Asset<RocketPermissions> permissions)
         {
@@ -34,86 +33,15 @@ namespace Rocket.Core.Permissions
             return allgroups;
         }
 
-        public bool HasPermission(IRocketPlayer player, string permission, bool defaultReturnValue = false)
+        public bool HasPermission(IRocketPlayer player, List<string> requestedPermissions)
         {
-            uint? cooldownLeft;
-            return HasPermission(player, new List<string>() { permission }, out cooldownLeft, defaultReturnValue);
-        }
+            List<Permission> applyingPermissions = GetPermissions(player, requestedPermissions);
 
-        public bool HasPermission(IRocketPlayer player, IRocketCommand command, out uint? cooldownLeft, bool defaultReturnValue = false)
-        {
-            List<string> commandPermissions = command.Permissions;
-            commandPermissions.Add(command.Name);
-            commandPermissions.AddRange(command.Aliases);
-            commandPermissions = commandPermissions.Select(a => a.ToLower()).ToList();
-            return HasPermission(player, commandPermissions, out cooldownLeft, defaultReturnValue);
-        }
-
-        public bool HasPermission(IRocketPlayer player, List<string> askedPermissions, out uint? cooldownLeft, bool defaultReturnValue = false)
-        {
-            cooldownLeft = null;
-            List<Permission> playerPermissions = GetPermissions(player);
-            playerPermissions.ForEach((Permission p) => { p.Name = p.Name.ToLower(); });
-
-            List<Permission> applyingPermissions = playerPermissions.Where(p => askedPermissions.Contains(p.Name)).ToList();
-            foreach (Permission p in playerPermissions)
+            if (applyingPermissions.Count != 0 )
             {
-                string pb = p.Name;
-                    if(pb.Contains(".")) pb = p.Name.Substring(0, p.Name.IndexOf('.'));
-
-                if (p.Name.EndsWith(".*")) //Player permission is a wildcard permission
-                {
-                    foreach (string ps in askedPermissions)
-                    {
-                        string b = ps;
-                        if(ps.Contains("."))
-                            b = ps.Substring(0, ps.IndexOf('.')).ToLower();
-
-                        if (ps.StartsWith(pb + ".")) //Check if wildcard base pb is the start of this permission
-                        {
-                            applyingPermissions.Add(p);
-                        }
-                    }
-                }
-
-                //Grant base permission if required
-                askedPermissions.Where(ps => ps == pb).ToList().ForEach((ap) => { applyingPermissions.Add(p); });
-            }
-
-            if (playerPermissions.Exists(e => e.Name == "*") || applyingPermissions.Count != 0 )
-            {
-                //Has permissions
-                Permission cooldownPermission = applyingPermissions.Where(p => p.Cooldown != 0).OrderByDescending(p => p.Cooldown).FirstOrDefault();
-                if (cooldownPermission != null)
-                {
-                    //Has a cooldown
-                    uint? cd = cooldownPermission.Cooldown;
-
-                    PermissionCooldown pc = cooldown.Where(c => c.Player.Id == player.Id && c.Permission == cooldownPermission).FirstOrDefault();
-                    if (pc == null)
-                    {
-                        //Is in cooldown list
-                        cooldown.Add(new PermissionCooldown(player, cooldownPermission));
-                    }
-                    else
-                    {
-                        double timeSinceExecution = (DateTime.Now - pc.PermissionRequested).TotalSeconds;
-                        if (pc.Permission.Cooldown <= timeSinceExecution)
-                        {
-                            //Cooldown has it expired
-                            cooldown.Remove(pc);
-                        }
-                        else
-                        {
-                            cooldownLeft = pc.Permission.Cooldown - (uint)timeSinceExecution;
-                            return false;
-                        }
-                    }
-                }
                 return true;
             }
-
-            return defaultReturnValue;
+            return false;
         }
 
         internal RocketPermissionsGroup GetGroup(string groupId)
@@ -206,5 +134,42 @@ namespace Rocket.Core.Permissions
 
             return p.Distinct().ToList();
         }
+
+        public List<Permission> GetPermissions(IRocketPlayer player, List<string> requestedPermissions)
+        {
+            List<Permission> playerPermissions = GetPermissions(player);
+            playerPermissions.ForEach((Permission p) => { p.Name = p.Name.ToLower(); });
+
+            List<Permission> applyingPermissions = playerPermissions.Where(p => requestedPermissions.Contains(p.Name)).ToList();
+
+
+            if (playerPermissions.Where(p => p.Name == "*").FirstOrDefault() != null) applyingPermissions.Add(new Permission("*"));
+
+            foreach (Permission p in playerPermissions)
+            {
+                string pb = p.Name;
+                if (pb.Contains(".")) pb = p.Name.Substring(0, p.Name.IndexOf('.'));
+
+                if (p.Name.EndsWith(".*")) //Player permission is a wildcard permission
+                {
+                    foreach (string ps in requestedPermissions)
+                    {
+                        string b = ps;
+                        if (ps.Contains("."))
+                            b = ps.Substring(0, ps.IndexOf('.')).ToLower();
+
+                        if (ps.StartsWith(pb + ".")) //Check if wildcard base pb is the start of this permission
+                        {
+                            applyingPermissions.Add(p);
+                        }
+                    }
+                }
+
+                //Grant base permission if required
+                requestedPermissions.Where(ps => ps == pb).ToList().ForEach((ap) => { applyingPermissions.Add(p); });
+            }
+            return applyingPermissions;
+        }
+
     }
 }

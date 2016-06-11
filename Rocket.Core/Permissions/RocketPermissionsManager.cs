@@ -63,19 +63,9 @@ namespace Rocket.Core.Permissions
             helper.permissions.Load();
         }
 
-        public bool HasPermission(IRocketPlayer player, string permission, bool defaultReturnValue = false)
+        public bool HasPermission(IRocketPlayer player, List<string> permissions)
         {
-            return helper.HasPermission(player, permission, defaultReturnValue);
-        }
-
-        public bool HasPermission(IRocketPlayer player, IRocketCommand command, out uint? cooldownLeft, bool defaultReturnValue = false)
-        {
-            return helper.HasPermission(player, command,out cooldownLeft, defaultReturnValue);
-        }
-
-        public bool HasPermission(IRocketPlayer player, List<string> permissions, out uint? cooldownLeft, bool defaultReturnValue = false)
-        {
-            return helper.HasPermission(player, permissions, out cooldownLeft, defaultReturnValue);
+            return helper.HasPermission(player, permissions);
         }
 
         public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player, bool includeParentGroups)
@@ -86,6 +76,11 @@ namespace Rocket.Core.Permissions
         public List<Permission> GetPermissions(IRocketPlayer player)
         {
             return helper.GetPermissions(player);
+        }
+
+        public List<Permission> GetPermissions(IRocketPlayer player,List<string> requestedPermissions)
+        {
+            return helper.GetPermissions(player, requestedPermissions);
         }
 
         public RocketPermissionsProviderResult AddPlayerToGroup(string groupId,IRocketPlayer player)

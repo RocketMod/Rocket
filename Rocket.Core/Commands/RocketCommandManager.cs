@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using Rocket.API;
@@ -11,12 +10,15 @@ using Rocket.Core.Utils;
 using Rocket.Core.Logging;
 using Rocket.Core.Serialization;
 using Rocket.Core.Assets;
+using Rocket.Core.Permissions;
+using Rocket.API.Serialisation;
 
 namespace Rocket.Core.Commands
 {
     public class RocketCommandManager : MonoBehaviour
     {
         private readonly List<RegisteredRocketCommand> commands = new List<RegisteredRocketCommand>();
+        internal List<RocketCommandCooldown> cooldown = new List<RocketCommandCooldown>();
         public ReadOnlyCollection<RegisteredRocketCommand> Commands { get; internal set; }
         private XMLFileAsset<RocketCommands> commandMappings;
 
@@ -165,6 +167,33 @@ namespace Rocket.Core.Commands
             commands.RemoveAll(rc => rc.Command.GetType().Assembly == assembly);
         }
 
+        public double GetCooldown(IRocketPlayer player, IRocketCommand command)
+        {
+            RocketCommandCooldown c = cooldown.Where(rc => rc.Command == command).FirstOrDefault();
+            if (c == null) return -1;
+            double timeSinceExecution = (DateTime.Now - c.CommandRequested).TotalSeconds;
+            if (c.ApplyingPermission.Cooldown <= timeSinceExecution)
+            {
+                //Cooldown has it expired
+                cooldown.Remove(c);
+                return -1;
+            }
+            else
+            {
+                return  c.ApplyingPermission.Cooldown - (uint)timeSinceExecution;
+            }
+        }
+
+        public void SetCooldown(IRocketPlayer player, IRocketCommand command)
+        {
+            List<Permission> applyingPermissions = R.Permissions.GetPermissions(player, command);
+            Permission cooldownPermission = applyingPermissions.Where(p => p.Cooldown != 0).OrderByDescending(p => p.Cooldown).FirstOrDefault();
+            if (cooldownPermission != null)
+            {
+                cooldown.Add(new RocketCommandCooldown(player, command, cooldownPermission));
+            }
+        }
+
         public bool Execute(IRocketPlayer player, string command)
         {
             command = command.TrimStart('/');
@@ -176,6 +205,7 @@ namespace Rocket.Core.Commands
                 string[] parameters = commandParts.Skip(1).ToArray();
                 if (player == null) player = new ConsolePlayer();
                 IRocketCommand rocketCommand = GetCommand(name);
+                double cooldown = GetCooldown(player, rocketCommand);
                 if (rocketCommand != null)
                 {
                     if (rocketCommand.AllowedCaller == AllowedCaller.Player && player is ConsolePlayer)
@@ -186,6 +216,11 @@ namespace Rocket.Core.Commands
                     if (rocketCommand.AllowedCaller == AllowedCaller.Console && !(player is ConsolePlayer))
                     {
                         Logger.Log("This command can only be called from console");
+                        return false;
+                    }
+                    if(cooldown != -1)
+                    {
+                        Logger.Log("This command is still on cooldown");
                         return false;
                     }
                     try
@@ -214,6 +249,7 @@ namespace Rocket.Core.Commands
                     {
                         Logger.LogError("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]: " + ex.ToString());
                     }
+                    SetCooldown(player,rocketCommand);
                     return true;
                 }
             }
