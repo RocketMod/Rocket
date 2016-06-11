@@ -18,6 +18,8 @@ namespace Rocket.Core.RCON
         private bool exiting = false;
         private Thread waitingThread;
 
+        private static Queue<string> commands = new Queue<string>();
+
         public void Awake()
         {
             listener = new TcpListener(IPAddress.Any, R.Settings.Instance.RCON.Port);
@@ -103,9 +105,14 @@ namespace Rocket.Core.RCON
                     }
                     if (command != "ia")
                         Logger.Log("Client has executed command \"" + command + "\"");
-                    R.Commands.Execute(new ConsolePlayer(), command);
+
+                    lock (commands)
+                    {
+                        commands.Enqueue(command);
+                    }
                     command = "";
                 }
+
 
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
@@ -117,6 +124,15 @@ namespace Rocket.Core.RCON
             catch (Exception ex)
             {
                 Logger.LogException(ex);
+            }
+        }
+
+        private void FixedUpdate()
+        {
+            lock (commands)
+            {
+                while(commands.Count!=0)
+                    R.Commands.Execute(new ConsolePlayer(), commands.Dequeue());
             }
         }
 
