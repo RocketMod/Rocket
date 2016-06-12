@@ -169,7 +169,7 @@ namespace Rocket.Core.Commands
 
         public double GetCooldown(IRocketPlayer player, IRocketCommand command)
         {
-            RocketCommandCooldown c = cooldown.Where(rc => rc.Command == command && rc.Player == player).FirstOrDefault();
+            RocketCommandCooldown c = cooldown.Where(rc => rc.Command == command && rc.Player.Id == player.Id).FirstOrDefault();
             if (c == null) return -1;
             double timeSinceExecution = (DateTime.Now - c.CommandRequested).TotalSeconds;
             if (c.ApplyingPermission.Cooldown <= timeSinceExecution)
