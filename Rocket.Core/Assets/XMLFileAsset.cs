@@ -1,6 +1,7 @@
 ﻿using Rocket.Core.Assets;
 using System;
 using System.IO;
+using Rocket.API;
 using System.Xml.Serialization;
 
 namespace Rocket.Core.Assets

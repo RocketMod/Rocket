@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core.Assets
+﻿namespace Rocket.API
 {
     public interface IDefaultable
     {
