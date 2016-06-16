@@ -35,6 +35,7 @@ namespace Rocket.Core.Permissions
 
         public bool HasPermission(IRocketPlayer player, List<string> requestedPermissions)
         {
+            if (player.IsAdmin) return true;
             List<Permission> applyingPermissions = GetPermissions(player, requestedPermissions);
 
             if (applyingPermissions.Count != 0 )
