@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rocket.API;
+using System;
 
 namespace Rocket.Core.Assets
 {

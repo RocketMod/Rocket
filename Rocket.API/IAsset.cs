@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core.Assets
+﻿namespace Rocket.API
 {
     public delegate void AssetLoaded<T>(IAsset<T> asset) where T : class;
     public delegate void AssetUnloaded<T>(IAsset<T> asset) where T : class;
