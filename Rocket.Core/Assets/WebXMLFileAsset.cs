@@ -10,11 +10,11 @@ namespace Rocket.Core.Assets
     public class WebXMLFileAsset<T> : Asset<T> where T : class
     {
         private XmlSerializer serializer;
-        private string url;
+        private Uri url;
         RocketWebClient webclient = new RocketWebClient();
         private bool waiting = false;
 
-        public WebXMLFileAsset(string url = null, XmlRootAttribute attr = null, AssetLoaded<T> callback = null)
+        public WebXMLFileAsset(Uri url = null, XmlRootAttribute attr = null, AssetLoaded<T> callback = null)
         {
             serializer = new XmlSerializer(typeof(T), attr);
             this.url = url;
@@ -25,7 +25,7 @@ namespace Rocket.Core.Assets
         {
             try
             {
-                if (!String.IsNullOrEmpty(url) && !waiting)
+                if (!waiting)
                 {
                     Logger.Log(String.Format("Updating WebXMLFileAsset {0} from {1}", typeof(T).Name, url));
                     waiting = true;
@@ -53,11 +53,7 @@ namespace Rocket.Core.Assets
                             waiting = false;
                         });
                     };
-                    webclient.DownloadStringAsync(new Uri(url));
-                }
-                else
-                {
-                    throw new ArgumentNullException("WebXMLFileAsset url is blank");
+                    webclient.DownloadStringAsync(url);
                 }
             }
             catch (Exception ex)

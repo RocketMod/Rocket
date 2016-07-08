@@ -5,6 +5,7 @@ using Rocket.Core.Assets;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -18,14 +19,24 @@ namespace Rocket.Core.Plugins
 
         public RocketPlugin() : base()
         {
-            if (Core.R.Settings.Instance.WebConfigurations.Enabled)
+            string configurationFile = Directory + string.Format(Core.Environment.PluginConfigurationFileTemplate, Name);
+
+            string url = "";
+            
+            if (Core.R.Settings.Instance.WebConfigurations.Enabled) {
+                url = string.Format(Environment.WebConfigurationTemplate, Core.R.Settings.Instance.WebConfigurations.Url, Name, R.Implementation.InstanceId);
+            }else if (File.Exists(configurationFile)) { 
+                url = File.ReadAllLines(configurationFile).First().Trim();
+            }
+
+            Uri uri;
+            if (Uri.TryCreate(url,UriKind.Absolute,out uri))
             {
-                string url = string.Format(Environment.WebConfigurationTemplate, Core.R.Settings.Instance.WebConfigurations.Url, Name, R.Implementation.InstanceId);
-                configuration = new WebXMLFileAsset<RocketPluginConfiguration>(url, null, (IAsset<RocketPluginConfiguration> asset) => { base.LoadPlugin(); });
+                configuration = new WebXMLFileAsset<RocketPluginConfiguration>(uri, null, (IAsset<RocketPluginConfiguration> asset) => { base.LoadPlugin(); });
             }
             else
             {
-                configuration = new XMLFileAsset<RocketPluginConfiguration>(Directory + string.Format(Core.Environment.PluginConfigurationFileTemplate, Name));
+                configuration = new XMLFileAsset<RocketPluginConfiguration>(configurationFile);
             }
         }
 
