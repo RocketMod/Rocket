@@ -132,7 +132,7 @@ namespace Rocket.Core.Logging
 
         internal static void LogError(Exception ex, string v)
         {
-            throw new NotImplementedException();
+            LogException(ex,v);
         }
 
         public static void Log(Exception ex)
