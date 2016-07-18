@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Rocket.API.Extensions
 {
@@ -29,14 +26,14 @@ namespace Rocket.API.Extensions
             }
         }
 
-        public static void TryRemoveComponent(this UnityEngine.GameObject gameobject,Type T)
+        public static void TryRemoveComponent(this UnityEngine.GameObject gameobject, Type T)
         {
             tryRemoveComponent(gameobject, T);
         }
 
         public static void TryRemoveComponent<T>(this UnityEngine.GameObject gameobject) where T : UnityEngine.Component
         {
-            TryRemoveComponent(gameobject,typeof(T));
+            TryRemoveComponent(gameobject, typeof(T));
         }
 
         private static void tryRemoveComponent(UnityEngine.GameObject gameobject, Type T)
@@ -50,7 +47,5 @@ namespace Rocket.API.Extensions
                 throw new Exception(String.Format("An error occured while removing component {0}", T.Name), ex);
             }
         }
-
-
     }
 }

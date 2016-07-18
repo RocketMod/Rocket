@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
 
 namespace Rocket.API.Serialisation
@@ -15,7 +12,9 @@ namespace Rocket.API.Serialisation
         [XmlText]
         public string Name = "";
 
-        public Permission() { }
+        public Permission()
+        {
+        }
 
         public Permission(string name, uint cooldown = 0)
         {

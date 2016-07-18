@@ -65,13 +65,11 @@ namespace Rocket.Core.Steam
             Reload();
         }
 
-
         public void Reload()
         {
             string field = "unknown";
             try
             {
-
                 XmlDocument doc = new XmlDocument();
                 doc.LoadXml(new WebClient().DownloadString("http://steamcommunity.com/profiles/" + SteamID64 + "?xml=1"));
 
@@ -86,7 +84,7 @@ namespace Rocket.Core.Steam
                 IsVacBanned = doc["profile"]["vacBanned"]?.ParseBool(); field = "IsVacBanned";
                 TradeBanState = doc["profile"]["tradeBanState"]?.ParseString(); field = "TradeBanState";
                 IsLimitedAccount = doc["profile"]["isLimitedAccount"]?.ParseBool(); field = "IsLimitedAccount";
-                 
+
                 CustomURL = doc["profile"]["customURL"]?.ParseString(); field = "CustomURL";
                 MemberSince = doc["profile"]["memberSince"]?.ParseDateTime(new CultureInfo("en-US", false)); field = "MemberSince";
                 HoursPlayedLastTwoWeeks = doc["profile"]["hoursPlayed2Wk"]?.ParseDouble(); field = "HoursPlayedLastTwoWeeks";
@@ -108,7 +106,7 @@ namespace Rocket.Core.Steam
                         newMostPlayedGame.LogoSmall = mostPlayedGame["gameLogoSmall"]?.ParseUri(); field = "MostPlayedGame.LogoSmall";
                         newMostPlayedGame.HoursPlayed = mostPlayedGame["hoursPlayed"]?.ParseDouble(); field = "MostPlayedGame.HoursPlayed";
                         newMostPlayedGame.HoursOnRecord = mostPlayedGame["hoursOnRecord"]?.ParseDouble(); field = "MostPlayedGame.HoursOnRecord";
-                        MostPlayedGames.Add(newMostPlayedGame); 
+                        MostPlayedGames.Add(newMostPlayedGame);
                     }
                 }
 
@@ -141,13 +139,13 @@ namespace Rocket.Core.Steam
             }
         }
     }
+
     public static class XmlElementExtensions
     {
         public static string ParseString(this XmlElement element)
         {
             return element.InnerText;
         }
-
 
         public static DateTime? ParseDateTime(this XmlElement element, CultureInfo cultureInfo)
         {

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rocket.API.Assets;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace Rocket.API.Collections
     {
         [XmlAttribute]
         public string Id;
+
         [XmlAttribute]
         public string Value;
 
@@ -20,21 +22,26 @@ namespace Rocket.API.Collections
             Id = id;
             Value = value;
         }
-        public TranslationListEntry() { }
+
+        public TranslationListEntry()
+        {
+        }
     }
 
-    public static class TranslationListExtension{
+    public static class TranslationListExtension
+    {
         public static void AddUnknownEntries(this TranslationList defaultTranslations, IAsset<TranslationList> translations)
         {
             bool hasChanged = false;
-            foreach(TranslationListEntry entry in defaultTranslations)
+            foreach (TranslationListEntry entry in defaultTranslations)
             {
-                if (translations.Instance[entry.Id] == null) {
+                if (translations.Instance[entry.Id] == null)
+                {
                     translations.Instance.Add(entry);
                     hasChanged = true;
                 }
             }
-            if(hasChanged)
+            if (hasChanged)
                 translations.Save();
         }
     }
@@ -44,13 +51,17 @@ namespace Rocket.API.Collections
     [Serializable]
     public class TranslationList : IDefaultable, IEnumerable<TranslationListEntry>
     {
-        public TranslationList() { }
+        public TranslationList()
+        {
+        }
+
         protected List<TranslationListEntry> translations = new List<TranslationListEntry>();
 
         public IEnumerator<TranslationListEntry> GetEnumerator()
         {
             return translations.GetEnumerator();
         }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return translations.GetEnumerator();
@@ -92,7 +103,7 @@ namespace Rocket.API.Collections
         {
             string value = this[translationKey];
             if (String.IsNullOrEmpty(value)) return translationKey;
-                
+
             if (value.Contains("{") && value.Contains("}") && placeholder != null && placeholder.Length != 0)
             {
                 for (int i = 0; i < placeholder.Length; i++)
@@ -106,7 +117,6 @@ namespace Rocket.API.Collections
 
         public virtual void LoadDefaults()
         {
-            
         }
     }
 }

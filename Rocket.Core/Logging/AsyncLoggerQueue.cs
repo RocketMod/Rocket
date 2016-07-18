@@ -65,7 +65,9 @@ namespace Rocket.Core.Logging
                 }
             }
         }
-        private void processLog(LogEntry entry) {
+
+        private void processLog(LogEntry entry)
+        {
             StreamWriter streamWriter = File.AppendText(Path.Combine(Environment.LogsDirectory, Environment.LogFile));
             streamWriter.WriteLine("[" + DateTime.Now + "] [" + entry.Severity.ToString() + "] " + entry.Message);
             streamWriter.Close();

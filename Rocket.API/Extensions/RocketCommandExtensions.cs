@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace Rocket.API.Extensions
 {
@@ -47,6 +45,5 @@ namespace Rocket.API.Extensions
             if (array.Length - startingIndex <= 0) return null;
             return string.Join(" ", array.ToList().GetRange(startingIndex, array.Length - startingIndex).ToArray());
         }
-
     }
 }

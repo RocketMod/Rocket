@@ -1,13 +1,13 @@
-﻿using System;
-using System.Threading;
+﻿using Rocket.API;
+using Rocket.Core.Logging;
+using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Collections.Generic;
 using System.Reflection;
-using Rocket.Core.Logging;
+using System.Text;
+using System.Threading;
 using UnityEngine;
-using Rocket.API;
 
 namespace Rocket.Core.RCON
 {
@@ -76,7 +76,6 @@ namespace Rocket.Core.RCON
                         }
                         else
                         {
-
                             if (command.Split(' ')[1] == R.Settings.Instance.RCON.Password)
                             {
                                 newclient.Authenticated = true;
@@ -113,13 +112,11 @@ namespace Rocket.Core.RCON
                     command = "";
                 }
 
-
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
                 Thread.Sleep(1500);
                 Logger.Log("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
                 newclient.Close();
-
             }
             catch (Exception ex)
             {
@@ -131,7 +128,7 @@ namespace Rocket.Core.RCON
         {
             lock (commands)
             {
-                while(commands.Count!=0)
+                while (commands.Count != 0)
                     R.Commands.Execute(new ConsolePlayer(), commands.Dequeue());
             }
         }

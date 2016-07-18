@@ -1,16 +1,16 @@
 ﻿using System;
-using UnityEngine;
-using System.Linq;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using UnityEngine;
 
 #if !LINUX
+
 namespace Rocket.Core
 {
     public class Debugger : MonoBehaviour
     {
-
         public static IDictionary<IntPtr, string> GetOpenWindows()
         {
             IntPtr shellWindow = GetShellWindow();
@@ -29,7 +29,6 @@ namespace Rocket.Core
 
                 windows[hWnd] = builder.ToString();
                 return true;
-
             }, 0);
 
             return windows;
@@ -82,4 +81,5 @@ namespace Rocket.Core
         }
     }
 }
+
 #endif

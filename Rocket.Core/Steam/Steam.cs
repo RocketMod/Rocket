@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace Rocket.Core.Steam
+﻿namespace Rocket.Core.Steam
 {
     public static class Steam
     {

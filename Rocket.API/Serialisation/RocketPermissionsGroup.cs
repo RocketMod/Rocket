@@ -46,10 +46,13 @@ namespace Rocket.API.Serialisation
         [XmlArray("Permissions")]
         [XmlArrayItem(ElementName = "Permission")]
         private List<Permission> permissions;
+
         public List<Permission> Permissions
         {
-            get {
-                if (OldPermissions != null) {
+            get
+            {
+                if (OldPermissions != null)
+                {
                     if (permissions == null) permissions = new List<Permission>();
                     permissions.AddRange(OldPermissions);
                     OldPermissions = null;
@@ -61,7 +64,6 @@ namespace Rocket.API.Serialisation
                 permissions = value;
             }
         }
-
 
         [XmlElement("ParentGroup")]
         public string ParentGroup;

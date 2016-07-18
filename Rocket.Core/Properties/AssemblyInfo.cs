@@ -1,5 +1,5 @@
-﻿using System.Runtime.CompilerServices;
-using System.Reflection;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Rocket.Core")]
@@ -10,4 +10,3 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("2.4.8.0")]
 [assembly: InternalsVisibleTo("Rocket.Core.Tests")]
 [assembly: InternalsVisibleTo("Rocket.Core.Explorables")]
-

@@ -56,23 +56,36 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Asset.cs" />
+    <Compile Include="Assets\WebXMLFileAsset.cs" />
+    <Compile Include="Assets\XMLFileAsset.cs" />
+    <Compile Include="Commands\RocketCommandAttribute.cs" />
+    <Compile Include="Commands\RocketCommandCooldown.cs" />
+    <Compile Include="Extensions\AssemblyExtensions.cs" />
+    <Compile Include="Extensions\AssemblyListExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtension.cs" />
+    <Compile Include="Extensions\MonoBehaviourExtension.cs" />
+    <Compile Include="Extensions\MulticastDelegateExtension.cs" />
     <Compile Include="Extensions\RocketCommandExtensions.cs" />
-    <Compile Include="IDefaultable.cs" />
-    <Compile Include="IAsset.cs" />
-    <Compile Include="IRocketCommand.cs" />
-    <Compile Include="IRocketImplementationEvents.cs" />
-    <Compile Include="IRocketImplementation.cs" />
-    <Compile Include="ConsolePlayer.cs" />
-    <Compile Include="WrongUsageOfCommandException.cs" />
-    <Compile Include="NoPermissionsForCommandException.cs" />
-    <Compile Include="RocketPlayer.cs" />
-    <Compile Include="IRocketPlugin.cs" />
-    <Compile Include="IRocketPermissionsProvider.cs" />
+    <Compile Include="Plugins\IRocketPluginManager.cs" />
+    <Compile Include="Serialisation\IDefaultable.cs" />
+    <Compile Include="Assets\IAsset.cs" />
+    <Compile Include="Commands\IRocketCommand.cs" />
+    <Compile Include="Implementation\IRocketImplementationEvents.cs" />
+    <Compile Include="Implementation\IRocketImplementation.cs" />
+    <Compile Include="Player\ConsolePlayer.cs" />
+    <Compile Include="RocketWebClient.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Exceptions\WrongUsageOfCommandException.cs" />
+    <Compile Include="Exceptions\NoPermissionsForCommandException.cs" />
+    <Compile Include="Player\RocketPlayer.cs" />
+    <Compile Include="Plugins\IRocketPlugin.cs" />
+    <Compile Include="Permissions\IRocketPermissionsProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Collections\TranslationList.cs" />
-    <Compile Include="IRocketPluginConfiguration.cs" />
-    <Compile Include="IRocketPlayer.cs" />
+    <Compile Include="Serialisation\IRocketPluginConfiguration.cs" />
+    <Compile Include="Player\IRocketPlayer.cs" />
     <Compile Include="Serialisation\Command.cs" />
     <Compile Include="Serialisation\RocketPermissions.cs" />
     <Compile Include="Serialisation\RocketPermissionsGroup.cs" />

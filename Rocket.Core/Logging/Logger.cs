@@ -10,7 +10,7 @@ namespace Rocket.Core.Logging
     {
         private static string lastAssembly = "";
 
-        [Obsolete("Log(string message,bool sendToConsole) is obsolete, use Log(string message,ConsoleColor color) instead",true)]
+        [Obsolete("Log(string message,bool sendToConsole) is obsolete, use Log(string message,ConsoleColor color) instead", true)]
         public static void Log(string message, bool sendToConsole)
         {
             Log(message, ConsoleColor.White);
@@ -47,7 +47,7 @@ namespace Rocket.Core.Logging
             {
                 throw;
             }
-            ProcessInternalLog(ELogType.Info, message,color);
+            ProcessInternalLog(ELogType.Info, message, color);
         }
 
         internal static string var_dump(object obj, int recursion)
@@ -140,7 +140,7 @@ namespace Rocket.Core.Logging
             LogException(ex);
         }
 
-        public static void LogException(Exception ex,string message = null)
+        public static void LogException(Exception ex, string message = null)
         {
             string source = "";
             string assembly = "";
@@ -166,7 +166,7 @@ namespace Rocket.Core.Logging
                 Console.WriteLine("ouch...");
             }
 
-            ProcessInternalLog(ELogType.Exception, assembly + (message != null ? message +" -> ": "") + "Exception in " + source + ": " + ex);
+            ProcessInternalLog(ELogType.Exception, assembly + (message != null ? message + " -> " : "") + "Exception in " + source + ": " + ex);
         }
 
         private static void ProcessInternalLog(ELogType type, string message, ConsoleColor color = ConsoleColor.White)
@@ -194,7 +194,7 @@ namespace Rocket.Core.Logging
             Console.WriteLine(m);
         }
 
-        private static void writeToConsole(string message,ConsoleColor color)
+        private static void writeToConsole(string message, ConsoleColor color)
         {
             ConsoleColor old = Console.ForegroundColor;
             Console.ForegroundColor = color;
@@ -202,12 +202,10 @@ namespace Rocket.Core.Logging
             Console.ForegroundColor = old;
         }
 
-
-        private static void ProcessLog(ELogType type, string message,bool rcon = true)
+        private static void ProcessLog(ELogType type, string message, bool rcon = true)
         {
             AsyncLoggerQueue.Current.Enqueue(new LogEntry() { Severity = type, Message = message, RCON = rcon });
         }
-
 
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static void ExternalLog(object message, ConsoleColor color)
@@ -218,9 +216,11 @@ namespace Rocket.Core.Logging
                 case ConsoleColor.Red:
                     severity = ELogType.Error;
                     break;
+
                 case ConsoleColor.Yellow:
                     severity = ELogType.Warning;
                     break;
+
                 default:
                     severity = ELogType.Info;
                     break;
