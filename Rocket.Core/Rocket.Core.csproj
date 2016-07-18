@@ -61,8 +61,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\IRocketPlayerExtension.cs" />
-    <Compile Include="Plugins\RocketPlugin.cs" />
-    <Compile Include="RocketCommandManager.cs" />
     <Compile Include="Debugger.cs" />
     <Compile Include="Logging\ELogType.cs" />
     <Compile Include="RocketPermissionsHelper.cs" />
@@ -103,6 +101,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Plugins\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

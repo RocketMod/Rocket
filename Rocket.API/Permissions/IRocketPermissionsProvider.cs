@@ -1,4 +1,5 @@
 ﻿using Rocket.API.Commands;
+using Rocket.API.Plugins;
 using Rocket.API.Serialisation;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +15,7 @@ namespace Rocket.API.Permissions
             return rocketPermissionProvider.HasPermission(player, new List<string>() { permission });
         }
 
-        public static bool HasPermission(this IRocketPermissionsProvider rocketPermissionProvider, IRocketPlayer player, IRocketCommand command)
+        public static bool HasPermission(this IRocketPermissionsProvider rocketPermissionProvider, IRocketPlayer player, IRocketCommand<IRocketPlugin> command)
         {
             List<string> commandPermissions = command.Permissions;
             commandPermissions.Add(command.Name);
@@ -28,7 +29,7 @@ namespace Rocket.API.Permissions
             return rocketPermissionProvider.GetPermissions(player, new List<string>() { permission });
         }
 
-        public static List<Permission> GetPermissions(this IRocketPermissionsProvider rocketPermissionProvider, IRocketPlayer player, IRocketCommand command)
+        public static List<Permission> GetPermissions(this IRocketPermissionsProvider rocketPermissionProvider, IRocketPlayer player, IRocketCommand<IRocketPlugin> command)
         {
             List<string> commandPermissions = command.Permissions;
             commandPermissions.Add(command.Name);

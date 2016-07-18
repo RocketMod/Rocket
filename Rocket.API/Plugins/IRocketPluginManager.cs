@@ -14,6 +14,7 @@ namespace Rocket.API.Plugins
         T GetPlugin(string name);
         void Reload();
         string GetPluginDirectory(string name);
-        List<IRocketCommand> GetCommands(T plugin);
+        List<IRocketCommand<T>> GetCommands(T plugin);
+
     }
 }

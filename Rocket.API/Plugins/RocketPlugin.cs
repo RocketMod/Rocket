@@ -6,9 +6,7 @@ using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
 using Rocket.Logging;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 namespace Rocket.API.Plugins
@@ -16,15 +14,18 @@ namespace Rocket.API.Plugins
     public class RocketPlugin<T,RocketPluginConfiguration> : RocketPlugin<T>, IRocketPlugin<RocketPluginConfiguration> where RocketPluginConfiguration : class, IRocketPluginConfiguration where T : IRocketPlugin
     {
         private IAsset<RocketPluginConfiguration> configuration;
+        private IRocketPluginManager<T> manager;
+
         public IAsset<RocketPluginConfiguration> Configuration { get { return configuration; } }
 
         public delegate void LoadConfiguration(string pluginName,out IAsset<RocketPluginConfiguration> configuration);
         public event LoadConfiguration OnLoadConfiguration;
 
-        internal RocketPlugin(IRocketPluginManager<T> manager, string name) : base(manager,name)
+
+        protected RocketPlugin(IRocketPluginManager<T> manager, string name) : base(manager, name) 
         {
             IAsset<RocketPluginConfiguration> config = null;
-            OnLoadConfiguration?.Invoke(Name,out config);
+            OnLoadConfiguration?.Invoke(Name, out config);
             configuration = config;
         }
 
@@ -81,7 +82,7 @@ namespace Rocket.API.Plugins
             }
         }
 
-        internal RocketPlugin(IRocketPluginManager<T> manager, string name)
+        protected RocketPlugin(IRocketPluginManager<T> manager, string name)
         {
             this.pluginManager = manager;
             this.name = name;
@@ -91,6 +92,7 @@ namespace Rocket.API.Plugins
             if (!System.IO.Directory.Exists(directory))
                 System.IO.Directory.CreateDirectory(directory);
         }
+
 
         public bool IsDependencyLoaded(string plugin)
         {
@@ -121,7 +123,7 @@ namespace Rocket.API.Plugins
         {
             this.GetLogger().Info("\n[loading] " + name);
             translations.Load();
-
+           
             R.Commands.AddRange(pluginManager.GetCommands(this));
 
             try
@@ -130,7 +132,7 @@ namespace Rocket.API.Plugins
             }
             catch (Exception ex)
             {
-                Logger.LogError("Failed to load " + Name + ", unloading now... :" + ex.ToString());
+                this.GetLogger().Fatal("Failed to load " + Name+ ", unloading now...", ex);
                 try
                 {
                     UnloadPlugin(PluginState.Failure);
@@ -138,7 +140,7 @@ namespace Rocket.API.Plugins
                 }
                 catch (Exception ex1)
                 {
-                    Logger.LogError("Failed to unload " + Name + ":" + ex1.ToString());
+                    this.GetLogger().Fatal("Failed to unload " + Name ,ex1);
                 }
             }
 
@@ -153,7 +155,7 @@ namespace Rocket.API.Plugins
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogException(ex);
+                        this.GetLogger().Fatal(ex);
                     }
                     if (cancelLoading)
                     {
@@ -164,7 +166,7 @@ namespace Rocket.API.Plugins
                         }
                         catch (Exception ex1)
                         {
-                            Logger.LogError("Failed to unload " + Name + ":" + ex1.ToString());
+                            this.GetLogger().Fatal("Failed to unload " + Name , ex1);
                         }
                     }
                 }
@@ -174,9 +176,9 @@ namespace Rocket.API.Plugins
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            Logger.Log("\n[unloading] " + Name, ConsoleColor.Cyan);
+            this.GetLogger().Info("\n[unloading] " + Name);
             OnPluginUnloading.TryInvoke(this);
-            R.Commands.RemoveRange(pluginManager.GetCommands(this));
+            R.Commands.RemoveRange(pluginManager.GetCommands());
             Unload();
             this.state = state;
         }

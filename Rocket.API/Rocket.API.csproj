@@ -44,6 +44,9 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net">
+      <HintPath>..\lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -59,15 +62,21 @@
     <Compile Include="Assets\Asset.cs" />
     <Compile Include="Assets\WebXMLFileAsset.cs" />
     <Compile Include="Assets\XMLFileAsset.cs" />
+    <Compile Include="Class1.cs" />
+    <Compile Include="Commands\RegisteredRocketCommand.cs" />
+    <Compile Include="Commands\RocketAttributeCommand.cs" />
     <Compile Include="Commands\RocketCommandAttribute.cs" />
-    <Compile Include="Commands\RocketCommandCooldown.cs" />
+    <Compile Include="Collections\RocketCommandList.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\AssemblyListExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtension.cs" />
-    <Compile Include="Extensions\MonoBehaviourExtension.cs" />
-    <Compile Include="Extensions\MulticastDelegateExtension.cs" />
+    <Compile Include="Extensions\IRocketCommandExtensions.cs" />
+    <Compile Include="Extensions\MonoBehaviourExtensions.cs" />
+    <Compile Include="Extensions\MulticastDelegateExtensions.cs" />
     <Compile Include="Extensions\RocketCommandExtensions.cs" />
+    <Compile Include="Collections\CooldownList.cs" />
     <Compile Include="Plugins\IRocketPluginManager.cs" />
+    <Compile Include="Plugins\RocketPlugin.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
     <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
@@ -92,6 +101,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rocket.Logging\Rocket.Logging.csproj">
+      <Project>{cbd5785e-4bc3-4700-8103-8c2f5c35a662}</Project>
+      <Name>Rocket.Logging</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

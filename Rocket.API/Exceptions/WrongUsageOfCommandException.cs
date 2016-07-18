@@ -1,14 +1,15 @@
 ﻿using Rocket.API.Commands;
+using Rocket.API.Plugins;
 using System;
 
 namespace Rocket.API.Exceptions
 {
     public class WrongUsageOfCommandException : Exception
     {
-        private IRocketCommand command;
+        private IRocketCommand<IRocketPlugin> command;
         private IRocketPlayer player;
 
-        public WrongUsageOfCommandException(IRocketPlayer player, IRocketCommand command)
+        public WrongUsageOfCommandException(IRocketPlayer player, IRocketCommand<IRocketPlugin> command)
         {
             this.command = command;
             this.player = player;

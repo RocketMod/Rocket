@@ -3,8 +3,6 @@ using System.Xml.Serialization;
 
 namespace Rocket.Core.Serialization
 {
-    public enum CommandPriority { Low = -1, Normal = 0, High = 1 };
-
     public sealed class RemoteConsole
     {
         [XmlAttribute]
@@ -47,7 +45,7 @@ namespace Rocket.Core.Serialization
         public bool Enabled = true;
 
         [XmlAttribute]
-        public CommandPriority Priority = CommandPriority.Normal;
+        public ECommandPriority Priority = ECommandPriority.Normal;
 
         [XmlText]
         public string Class = "";
@@ -56,7 +54,7 @@ namespace Rocket.Core.Serialization
         {
         }
 
-        public CommandMapping(string name, string @class, bool enabled = true, CommandPriority priority = CommandPriority.Normal)
+        public CommandMapping(string name, string @class, bool enabled = true, ECommandPriority priority = ECommandPriority.Normal)
         {
             Name = name;
             Enabled = enabled;

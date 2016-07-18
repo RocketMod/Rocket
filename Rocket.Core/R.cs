@@ -3,7 +3,7 @@ using Rocket.API.Assets;
 using Rocket.API.Collections;
 using Rocket.API.Extensions;
 using Rocket.API.Permissions;
-using Rocket.Core.Commands;
+using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
@@ -12,6 +12,7 @@ using Rocket.Core.Serialization;
 using Rocket.Core.Tasks;
 using Rocket.Plugins.Native;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Rocket.Core
@@ -29,9 +30,7 @@ namespace Rocket.Core
         public static XMLFileAsset<TranslationList> Translation = null;
         public static IRocketPermissionsProvider Permissions = null;
 
-        public static NativeRocketPluginManager NativePlugins = null;
-
-        public static RocketCommandManager Commands = null;
+        public static List<IRocketPluginManager<IRocketPlugin>> Plugins = new List<IRocketPluginManager<IRocketPlugin>>();
 
         private static readonly TranslationList defaultTranslations = new TranslationList(){
                 {"rocket_join_public","{0} connected to the server" },
@@ -70,9 +69,7 @@ namespace Rocket.Core
                 defaultTranslations.AddUnknownEntries(Translation);
                 Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
 
-                NativePlugins = gameObject.TryAddComponent<NativeRocketPluginManager>();
-
-                Commands = gameObject.TryAddComponent<RocketCommandManager>();
+                Plugins.Add(gameObject.TryAddComponent<NativeRocketPluginManager<NativeRocketPlugin>>());
 
                 if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
                 Application.targetFrameRate = Settings.Instance.MaxFrames;
@@ -95,8 +92,6 @@ namespace Rocket.Core
             Settings.Load();
             Translation.Load();
             Permissions.Reload();
-            NativePlugins.Reload();
-            Commands.Reload();
             Implementation.Reload();
         }
     }
