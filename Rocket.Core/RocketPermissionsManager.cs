@@ -3,6 +3,7 @@ using Rocket.API.Assets;
 using Rocket.API.Permissions;
 using Rocket.API.Serialisation;
 using Rocket.Core.Logging;
+using Rocket.Logging;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,10 +18,10 @@ namespace Rocket.Core.Permissions
         {
             try
             {
-                if (R.Settings.Instance.WebPermissions.Enabled)
+                if (R.Instance.Settings.Instance.WebPermissions.Enabled)
                 {
                     lastWebPermissionsUpdate = DateTime.Now;
-                    helper = new RocketPermissionsHelper(new WebXMLFileAsset<RocketPermissions>(new Uri(R.Settings.Instance.WebPermissions.Url + "?instance=" + R.Implementation.InstanceId)));
+                    helper = new RocketPermissionsHelper(new WebXMLFileAsset<RocketPermissions>(new Uri(R.Instance.Settings.Instance.WebPermissions.Url + "?instance=" + R.Instance.Implementation.InstanceId)));
                     updateWebPermissions = true;
                 }
                 else
@@ -30,7 +31,7 @@ namespace Rocket.Core.Permissions
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex);
+                Logger.Fatal(ex);
             }
         }
 
@@ -41,7 +42,7 @@ namespace Rocket.Core.Permissions
         {
             try
             {
-                if (updateWebPermissions && R.Settings.Instance.WebPermissions.Interval > 0 && (DateTime.Now - lastWebPermissionsUpdate) > TimeSpan.FromSeconds(R.Settings.Instance.WebPermissions.Interval))
+                if (updateWebPermissions && R.Instance.Settings.Instance.WebPermissions.Interval > 0 && (DateTime.Now - lastWebPermissionsUpdate) > TimeSpan.FromSeconds(R.Instance.Settings.Instance.WebPermissions.Interval))
                 {
                     lastWebPermissionsUpdate = DateTime.Now;
                     updateWebPermissions = false;
@@ -53,7 +54,7 @@ namespace Rocket.Core.Permissions
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex);
+                Logger.Fatal(ex);
             }
         }
 
@@ -65,6 +66,11 @@ namespace Rocket.Core.Permissions
         public bool HasPermission(IRocketPlayer player, List<string> permissions)
         {
             return helper.HasPermission(player, permissions);
+        }
+
+        public bool HasPermission(IRocketPlayer player, string permission)
+        {
+            return helper.HasPermission(player, new List<string>() { permission });
         }
 
         public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player, bool includeParentGroups)

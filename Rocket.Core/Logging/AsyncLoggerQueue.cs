@@ -71,7 +71,7 @@ namespace Rocket.Core.Logging
             StreamWriter streamWriter = File.AppendText(Path.Combine(Environment.LogsDirectory, Environment.LogFile));
             streamWriter.WriteLine("[" + DateTime.Now + "] [" + entry.Severity.ToString() + "] " + entry.Message);
             streamWriter.Close();
-            if (entry.RCON && R.Settings != null && R.Settings.Instance.RCON.Enabled)
+            if (entry.RCON && R.Instance.Settings != null && R.Instance.Settings.Instance.RCON.Enabled)
             {
                 RCONServer.Broadcast(entry.Message);
             }

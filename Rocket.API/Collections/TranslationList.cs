@@ -53,6 +53,7 @@ namespace Rocket.API.Collections
     {
         public TranslationList()
         {
+
         }
 
         protected List<TranslationListEntry> translations = new List<TranslationListEntry>();

@@ -6,7 +6,7 @@ namespace Rocket.API.Extensions
 {
     public static class IRocketCommandExtensions
     {
-        public static Type GetCommandType<T>(this IRocketCommand<T> command) where T : IRocketPlugin
+        public static Type GetCommandType<T>(this IRocketCommand command) where T : IRocketPlugin
         {
             if (command is RocketAttributeCommand<T>)
             {

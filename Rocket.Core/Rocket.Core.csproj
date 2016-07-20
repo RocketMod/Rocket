@@ -72,25 +72,23 @@
     <Compile Include="R.cs" />
     <Compile Include="Logging\AsyncLoggerQueue.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Serialisation\RocketCommands.cs" />
     <Compile Include="Steam\Profile.cs" />
     <Compile Include="Steam\Steam.cs" />
     <Compile Include="Tasks\TaskDispatcher.cs" />
     <Compile Include="Environment.cs" />
-    <Compile Include="Serialisation\RocketSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
       <Project>{c362df2f-1336-4932-aadc-4f2074fedb64}</Project>
       <Name>Rocket.API</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Rocket.Logging\Rocket.Logging.csproj">
+      <Project>{cbd5785e-4bc3-4700-8103-8c2f5c35a662}</Project>
+      <Name>Rocket.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rocket.Plugins.Native\Rocket.Plugins.Native.csproj">
       <Project>{6d02a4ec-cfdd-4f20-a76f-bf9add9586f0}</Project>
       <Name>Rocket.Plugins.Native</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rocket.Plugins.Sandboxed\Rocket.Plugins.Sandboxed.csproj">
-      <Project>{c3c335c8-2093-4535-812a-b437965d28eb}</Project>
-      <Name>Rocket.Plugins.Sandboxed</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -102,9 +100,7 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Plugins\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

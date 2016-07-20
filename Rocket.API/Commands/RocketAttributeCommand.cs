@@ -7,69 +7,52 @@ using System.Text;
 
 namespace Rocket.API.Commands
 {
-    public class RocketAttributeCommand<T> : IRocketCommand<T> where T : IRocketPlugin
+    public class RocketAttributeCommand<T> : IRocketCommand
     {
-        IRocketPluginManager<T> manager;
-        public IRocketPluginManager<T> Manager { get { return manager; } }
+        public IRocketPluginManager Manager { get; private set; }
 
-        internal RocketAttributeCommand(IRocketPluginManager<T> manager,string Name, string Help, string Syntax, AllowedCaller AllowedCaller, List<string> Permissions, List<string> Aliases, MethodInfo Method)
+        internal RocketAttributeCommand(IRocketPluginManager manager,string name, string help, string syntax, AllowedCaller allowedCaller, List<string> permissions, List<string> aliases, MethodInfo method)
         {
-            this.manager = manager;
-            name = Name;
-            help = Help;
-            syntax = Syntax;
-            permissions = Permissions;
-            aliases = Aliases;
-            method = Method;
-            allowedCaller = AllowedCaller;
+            Manager = manager;
+            Name = name;
+            Help = help;
+            Syntax = syntax;
+            AllowedCaller = allowedCaller;
+            Permissions = permissions;
+            Method = method;
         }
 
-        private List<string> aliases;
-        public List<string> Aliases { get { return aliases; } }
-
-        private AllowedCaller allowedCaller;
-        public AllowedCaller AllowedCaller { get { return allowedCaller; } }
-
-        private string help;
-        public string Help { get { return help; } }
-
-        private string name;
-        public string Name { get { return name; } }
-
-        private string identifier;
-        public string Identifier { get { return identifier; } }
-
-        private string syntax;
-        public string Syntax { get { return syntax; } }
-
-        private List<string> permissions;
-        public List<string> Permissions { get { return permissions; } }
-
-        private MethodInfo method;
-        public MethodInfo Method { get { return method; } }
+        public List<string> Aliases { get; private set; }
+        public AllowedCaller AllowedCaller { get; private set; }
+        public string Help { get; private set; }
+        public string Name { get; private set; }
+        public string Identifier { get; private set; }
+        public string Syntax { get; private set; }
+        public List<string> Permissions { get; private set; }
+        public MethodInfo Method { get; private set; }
 
         public void Execute(IRocketPlayer caller, string[] parameters)
         {
-            ParameterInfo[] methodParameters = method.GetParameters();
-            IRocketPlugin plugin = manager.GetPlugin(method.ReflectedType.Assembly.GetName().Name);
+            ParameterInfo[] methodParameters = Method.GetParameters();
+            IRocketPlugin plugin = Manager.GetPlugin(Method.ReflectedType.Assembly.GetName().Name);
             switch (methodParameters.Length)
             {
                 case 0:
-                    method.Invoke(plugin, null);
+                    Method.Invoke(plugin, null);
                     break;
 
                 case 1:
                     if (methodParameters[0].ParameterType == typeof(IRocketPlayer))
-                        method.Invoke(plugin, new object[] { caller });
+                        Method.Invoke(plugin, new object[] { caller });
                     else if (methodParameters[0].ParameterType == typeof(string[]))
-                        method.Invoke(plugin, new object[] { parameters });
+                        Method.Invoke(plugin, new object[] { parameters });
                     break;
 
                 case 2:
                     if (methodParameters[0].ParameterType == typeof(IRocketPlayer) && methodParameters[1].ParameterType == typeof(string[]))
-                        method.Invoke(plugin, new object[] { caller, parameters });
+                        Method.Invoke(plugin, new object[] { caller, parameters });
                     else if (methodParameters[0].ParameterType == typeof(string[]) && methodParameters[1].ParameterType == typeof(IRocketPlayer))
-                        method.Invoke(plugin, new object[] { parameters, caller });
+                        Method.Invoke(plugin, new object[] { parameters, caller });
                     break;
             }
         }

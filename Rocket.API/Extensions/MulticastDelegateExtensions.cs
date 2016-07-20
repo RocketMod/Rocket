@@ -13,7 +13,7 @@ namespace Rocket.Core.Extensions
                 {
                     handler.DynamicInvoke(args);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     //
                 }

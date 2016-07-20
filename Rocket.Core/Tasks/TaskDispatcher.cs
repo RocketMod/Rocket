@@ -1,4 +1,5 @@
 ﻿using Rocket.Core.Logging;
+using Rocket.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -63,7 +64,7 @@ namespace Rocket.Core.Tasks
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "Error while running action");
+                Logger.Error("Error while running action", ex);
             }
             finally
             {

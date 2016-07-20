@@ -28,6 +28,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.Native", "Ro
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Logging", "Rocket.Logging\Rocket.Logging.csproj", "{CBD5785E-4BC3-4700-8103-8C2F5C35A662}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{E2720FC1-BB12-4026-8A81-5D89F05C7D19}"
+	ProjectSection(SolutionItems) = preProject
+		lib\log4net.dll = lib\log4net.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

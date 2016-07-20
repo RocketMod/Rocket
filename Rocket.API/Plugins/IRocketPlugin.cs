@@ -10,6 +10,10 @@ namespace Rocket.API.Plugins
         IAsset<TConfiguration> Configuration { get; }
     }
 
+    public delegate void RocketPluginUnloading(IRocketPlugin plugin);
+    public delegate void RocketPluginUnloaded(IRocketPlugin plugin);
+    public delegate void RocketPluginLoading(IRocketPlugin plugin, ref bool cancelLoading);
+    public delegate void RocketPluginLoaded(IRocketPlugin plugin);
     public interface IRocketPlugin
     {
         string Name { get; }
@@ -17,8 +21,10 @@ namespace Rocket.API.Plugins
         TranslationList DefaultTranslations { get; }
         IAsset<TranslationList> Translations { get; }
 
-        T TryAddComponent<T>() where T : UnityEngine.Component;
+        event RocketPluginUnloading OnPluginUnloading;
+        event RocketPluginUnloaded OnPluginUnloaded;
 
-        void TryRemoveComponent<T>() where T : UnityEngine.Component;
+        event RocketPluginLoading OnPluginLoading;
+        event RocketPluginLoaded OnPluginLoaded;
     }
 }

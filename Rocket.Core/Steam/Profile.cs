@@ -1,4 +1,5 @@
 ﻿using Rocket.Core.Logging;
+using Rocket.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -135,7 +136,7 @@ namespace Rocket.Core.Steam
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex, "Error reading Steam Profile, Field: " + field);
+                Logger.Error("Error reading Steam Profile, Field: " + field, ex);
             }
         }
     }

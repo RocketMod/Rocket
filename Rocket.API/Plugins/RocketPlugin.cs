@@ -11,68 +11,38 @@ using UnityEngine;
 
 namespace Rocket.API.Plugins
 {
-    public class RocketPlugin<T,RocketPluginConfiguration> : RocketPlugin<T>, IRocketPlugin<RocketPluginConfiguration> where RocketPluginConfiguration : class, IRocketPluginConfiguration where T : IRocketPlugin
+    public class RocketPluginBase<T> : RocketPluginBase, IRocketPlugin<T> where T : class, IRocketPluginConfiguration
     {
-        private IAsset<RocketPluginConfiguration> configuration;
-        private IRocketPluginManager<T> manager;
+        public IAsset<T> Configuration { get; private set; }
 
-        public IAsset<RocketPluginConfiguration> Configuration { get { return configuration; } }
-
-        public delegate void LoadConfiguration(string pluginName,out IAsset<RocketPluginConfiguration> configuration);
-        public event LoadConfiguration OnLoadConfiguration;
-
-
-        protected RocketPlugin(IRocketPluginManager<T> manager, string name) : base(manager, name) 
+        protected RocketPluginBase(IRocketPluginManager manager, string name) : base(manager, name) 
         {
-            IAsset<RocketPluginConfiguration> config = null;
-            OnLoadConfiguration?.Invoke(Name, out config);
-            configuration = config;
+            Configuration = (IAsset<T>)manager.GetPluginConfiguration(this,typeof(T));
         }
 
         public override void LoadPlugin()
         {
-            configuration.Load();
+            Configuration.Load();
             base.LoadPlugin();
         }
     }
 
-    public class RocketPlugin<T> : MonoBehaviour, IRocketPlugin where T : IRocketPlugin
+    public class RocketPluginBase : MonoBehaviour, IRocketPlugin
     {
-        public IRocketPluginManager<T> pluginManager;
-        public IRocketPluginManager<T> PluginManager { get { return pluginManager; } }
+        public string WorkingDirectory { get; internal set; }
 
-        private string directory;
+        public event RocketPluginUnloading OnPluginUnloading;
+        public event RocketPluginUnloaded OnPluginUnloaded;
 
-        public delegate void PluginUnloading(IRocketPlugin plugin);
+        public event RocketPluginLoading OnPluginLoading;
+        public event RocketPluginLoaded OnPluginLoaded;
 
-        public static event PluginUnloading OnPluginUnloading;
+        public IRocketPluginManager PluginManager { get; private set; }
+        public IAsset<TranslationList> Translations { get ; private set; }
+        public PluginState State { get; private set; } = PluginState.Unloaded;
+        public string Name { get; private set; }
 
-        public delegate void PluginLoading(IRocketPlugin plugin, ref bool cancelLoading);
 
-        public static event PluginLoading OnPluginLoading;
-
-        private XMLFileAsset<TranslationList> translations;
-        public IAsset<TranslationList> Translations { get { return translations; } }
-
-        private PluginState state = PluginState.Unloaded;
-
-        public PluginState State
-        {
-            get
-            {
-                return state;
-            }
-        }
-
-        private new string name;
-
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
 
         public virtual TranslationList DefaultTranslations
         {
@@ -82,32 +52,17 @@ namespace Rocket.API.Plugins
             }
         }
 
-        protected RocketPlugin(IRocketPluginManager<T> manager, string name)
+        protected RocketPluginBase(IRocketPluginManager manager, string name)
         {
-            this.pluginManager = manager;
+            this.PluginManager = manager;
             this.name = name;
 
-            directory = manager.GetPluginDirectory(name);
+            WorkingDirectory = manager.GetPluginDirectory(name);
 
-            if (!System.IO.Directory.Exists(directory))
-                System.IO.Directory.CreateDirectory(directory);
+            if (!System.IO.Directory.Exists(WorkingDirectory))
+                System.IO.Directory.CreateDirectory(WorkingDirectory);
         }
-
-
-        public bool IsDependencyLoaded(string plugin)
-        {
-            return pluginManager.GetPlugin(plugin) != null;
-        }
-
-        public delegate void ExecuteDependencyCodeDelegate(IRocketPlugin plugin);
-
-        public void ExecuteDependencyCode(string plugin, ExecuteDependencyCodeDelegate a)
-        {
-            IRocketPlugin p = pluginManager.GetPlugin(plugin);
-            if (p != null)
-                a(p);
-        }
-
+        
         public string Translate(string translationKey, params object[] placeholder)
         {
             return Translations.Instance.Translate(translationKey, placeholder);
@@ -121,10 +76,8 @@ namespace Rocket.API.Plugins
 
         public virtual void LoadPlugin()
         {
-            this.GetLogger().Info("\n[loading] " + name);
-            translations.Load();
-           
-            R.Commands.AddRange(pluginManager.GetCommands(this));
+            Logger.Info("\n[loading] " + name);
+            Translations.Load();
 
             try
             {
@@ -132,7 +85,7 @@ namespace Rocket.API.Plugins
             }
             catch (Exception ex)
             {
-                this.GetLogger().Fatal("Failed to load " + Name+ ", unloading now...", ex);
+                Logger.Fatal("Failed to load " + Name+ ", unloading now...", ex);
                 try
                 {
                     UnloadPlugin(PluginState.Failure);
@@ -140,14 +93,14 @@ namespace Rocket.API.Plugins
                 }
                 catch (Exception ex1)
                 {
-                    this.GetLogger().Fatal("Failed to unload " + Name ,ex1);
+                    Logger.Fatal("Failed to unload " + Name ,ex1);
                 }
             }
 
             bool cancelLoading = false;
             if (OnPluginLoading != null)
             {
-                foreach (var handler in OnPluginLoading.GetInvocationList().Cast<PluginLoading>())
+                foreach (var handler in OnPluginLoading.GetInvocationList().Cast<RocketPluginLoading>())
                 {
                     try
                     {
@@ -155,7 +108,7 @@ namespace Rocket.API.Plugins
                     }
                     catch (Exception ex)
                     {
-                        this.GetLogger().Fatal(ex);
+                        Logger.Fatal(ex);
                     }
                     if (cancelLoading)
                     {
@@ -166,21 +119,22 @@ namespace Rocket.API.Plugins
                         }
                         catch (Exception ex1)
                         {
-                            this.GetLogger().Fatal("Failed to unload " + Name , ex1);
+                            Logger.Fatal("Failed to unload " + Name , ex1);
                         }
                     }
                 }
             }
-            state = PluginState.Loaded;
+            State = PluginState.Loaded;
+            OnPluginLoaded.TryInvoke();
         }
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            this.GetLogger().Info("\n[unloading] " + Name);
+            Logger.Info("\n[unloading] " + Name);
             OnPluginUnloading.TryInvoke(this);
-            R.Commands.RemoveRange(pluginManager.GetCommands());
             Unload();
-            this.state = state;
+            State = state;
+            OnPluginUnloaded.TryInvoke(this);
         }
 
         private void OnEnable()
@@ -199,16 +153,6 @@ namespace Rocket.API.Plugins
 
         protected virtual void Unload()
         {
-        }
-
-        public T TryAddComponent<T>() where T : Component
-        {
-            return gameObject.TryAddComponent<T>();
-        }
-
-        public void TryRemoveComponent<T>() where T : Component
-        {
-            gameObject.TryRemoveComponent<T>();
         }
     }
 }

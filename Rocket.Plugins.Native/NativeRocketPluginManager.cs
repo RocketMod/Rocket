@@ -9,31 +9,33 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Rocket.API.Commands;
+using Rocket.API.Assets;
 
 namespace Rocket.Plugins.Native
 {
-    public sealed class NativeRocketPluginManager<T> : MonoBehaviour, IRocketPluginManager<T> where T : NativeRocketPlugin
+    public sealed class NativeRocketPluginManager : MonoBehaviour, IRocketPluginManager
     {
-        public event PluginsLoaded OnPluginsLoaded;
-
         private static List<Assembly> pluginAssemblies;
         private static List<GameObject> plugins = new List<GameObject>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
 
         private string pluginDirectory, librariesDirectory;
 
+        public RocketCommandList Commands { get; private set; }
+
         public NativeRocketPluginManager(string pluginDirectory, string librariesDirectory)
         {
+            Commands = new RocketCommandList(this);
             this.pluginDirectory = pluginDirectory;
             this.librariesDirectory = librariesDirectory;
         }
 
-        public List<T> GetPlugins()
+        public List<IRocketPlugin> GetPlugins()
         {
-            return plugins.Select(g => g.GetComponent<T>()).Where(p => p != null).ToList<T>();
+            return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null).Select(p => (IRocketPlugin)p).ToList();
         }
 
-        public T GetPlugin(string name)
+        public IRocketPlugin GetPlugin(string name)
         {
             return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null && p.GetType().Assembly.GetName().Name == name).FirstOrDefault();
         }
@@ -41,25 +43,6 @@ namespace Rocket.Plugins.Native
         public string GetPluginDirectory(string name)
         {
             return Path.Combine(pluginDirectory, name);
-        }
-
-        public List<IRocketCommand<T>> GetCommands(T plugin)
-        {
-            List<IRocketCommand<T>> commands = new List<IRocketCommand<T>>();
-            foreach (Type commandType in plugin.Assembly.GetTypesFromInterface("IRocketCommand"))
-            {
-                if (commandType.GetConstructor(Type.EmptyTypes) != null)
-                {
-                    IRocketCommand<T> command = (IRocketCommand<T>)Activator.CreateInstance(commandType);
-                    commands.Add(command);
-
-                    foreach (string alias in command.Aliases)
-                    {
-                        commands.Add(command, alias);
-                    }
-                }
-            }
-            return commands;
         }
 
         private void Awake()
@@ -96,7 +79,6 @@ namespace Rocket.Plugins.Native
                 DontDestroyOnLoad(plugin);
                 plugins.Add(plugin);
             }
-            OnPluginsLoaded.TryInvoke();
         }
 
         private void unloadPlugins()
@@ -114,8 +96,6 @@ namespace Rocket.Plugins.Native
             loadPlugins();
         }
 
-        
-
         private static Dictionary<string, string> GetAssembliesFromDirectory(string directory, string extension = "*.dll")
         {
             Dictionary<string, string> l = new Dictionary<string, string>();
@@ -130,6 +110,20 @@ namespace Rocket.Plugins.Native
                 catch { }
             }
             return l;
+        }
+
+        public List<IRocketCommand> GetCommands(IRocketPlugin plugin)
+        {
+            List<IRocketCommand> commands = new List<IRocketCommand>();
+            //foreach (Type commandType in plugin.Assembly.GetTypesFromInterface("IRocketCommand"))
+            //{
+            //    if (commandType.GetConstructor(Type.EmptyTypes) != null)
+            //    {
+            //        commands.Add((IRocketCommand)Activator.CreateInstance(commandType));
+
+            //    }
+            //}
+            return commands;
         }
 
         private static List<Assembly> LoadAssembliesFromDirectory(string directory, string extension = "*.dll")
@@ -149,17 +143,30 @@ namespace Rocket.Plugins.Native
                     }
                     else
                     {
-                        Logger.GetLogger(typeof(NativeRocketPluginManager<T>)).Error("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
+                        Logger.Error("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.GetLogger(typeof(NativeRocketPluginManager<T>)).Error("Could not load plugin assembly: " + library.Name,ex);
+                    Logger.Error("Could not load plugin assembly: " + library.Name, ex);
                 }
             }
             return assemblies;
         }
 
+        public void LoadPlugin(IRocketPlugin rocketPlugin)
+        {
+            throw new NotImplementedException();
+        }
 
+        public IAsset<IRocketPluginConfiguration> GetPluginConfiguration(IRocketPlugin plugin,Type configuration, string name = "")
+        {
+            throw new NotImplementedException();
+        }
+
+        public IAsset<IRocketPluginConfiguration> GetPluginTranslation(IRocketPlugin plugin)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

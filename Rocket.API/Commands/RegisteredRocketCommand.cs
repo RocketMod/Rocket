@@ -1,6 +1,7 @@
 ﻿using Rocket.API.Extensions;
 using Rocket.API.Plugins;
 using Rocket.Collections;
+using Rocket.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +9,16 @@ using System.Text;
 
 namespace Rocket.API.Commands
 {
-    public class RegisteredRocketCommand<T> : IRocketCommand<T>, ICooldownItem where T : IRocketPlugin
+    public class RegisteredRocketCommand : IRocketCommand, ICooldownItem
     {
-        public Type Type;
-        public IRocketCommand<T> Command;
+        public IRocketCommand Command;
         private string name;
 
-        public RegisteredRocketCommand(IRocketPluginManager<T>manager, string name, IRocketCommand<T> command)
+        public RegisteredRocketCommand(IRocketPluginManager manager, string name, IRocketCommand command)
         {
             this.manager = manager;
             this.name = name;
             Command = command;
-            Type = command.GetCommandType();
         }
 
         public List<string> Aliases
@@ -74,11 +73,11 @@ namespace Rocket.API.Commands
             }
         }
 
-        private IRocketPluginManager<T> manager;
+        private IRocketPluginManager manager;
 
         public event CooldownExpired OnCooldownExpired;
 
-        public IRocketPluginManager<T> Manager
+        public IRocketPluginManager Manager
         {
             get
             {
@@ -109,6 +108,7 @@ namespace Rocket.API.Commands
 
         public void Expire()
         {
+            OnCooldownExpired.TryInvoke();
             throw new NotImplementedException();
         }
     }

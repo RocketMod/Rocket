@@ -1,12 +1,14 @@
 ﻿namespace Rocket.API
 {
-    public delegate void RocketImplementationInitialized();
+    public delegate void ImplementationInitialized();
+    public delegate void ImplementationShutdown();
+    public delegate void ImplementationReload();
 
     public interface IRocketImplementation
     {
-        event RocketImplementationInitialized OnRocketImplementationInitialized;
-
-        IRocketImplementationEvents ImplementationEvents { get; }
+        event ImplementationInitialized OnInitialized;
+        event ImplementationShutdown OnShutdown;
+        event ImplementationReload OnReload;
 
         void Shutdown();
 

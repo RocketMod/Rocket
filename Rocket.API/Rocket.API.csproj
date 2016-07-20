@@ -44,9 +44,6 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net">
-      <HintPath>..\lib\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -62,7 +59,6 @@
     <Compile Include="Assets\Asset.cs" />
     <Compile Include="Assets\WebXMLFileAsset.cs" />
     <Compile Include="Assets\XMLFileAsset.cs" />
-    <Compile Include="Class1.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />
     <Compile Include="Commands\RocketAttributeCommand.cs" />
     <Compile Include="Commands\RocketCommandAttribute.cs" />
@@ -75,12 +71,12 @@
     <Compile Include="Extensions\MulticastDelegateExtensions.cs" />
     <Compile Include="Extensions\RocketCommandExtensions.cs" />
     <Compile Include="Collections\CooldownList.cs" />
+    <Compile Include="IRocketBase.cs" />
     <Compile Include="Plugins\IRocketPluginManager.cs" />
     <Compile Include="Plugins\RocketPlugin.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
     <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
-    <Compile Include="Implementation\IRocketImplementationEvents.cs" />
     <Compile Include="Implementation\IRocketImplementation.cs" />
     <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="RocketWebClient.cs">
@@ -98,6 +94,7 @@
     <Compile Include="Serialisation\Command.cs" />
     <Compile Include="Serialisation\RocketPermissions.cs" />
     <Compile Include="Serialisation\RocketPermissionsGroup.cs" />
+    <Compile Include="Serialisation\RocketSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README" />

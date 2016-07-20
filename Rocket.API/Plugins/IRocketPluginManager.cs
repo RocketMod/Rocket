@@ -3,18 +3,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Rocket.API.Assets;
 
 namespace Rocket.API.Plugins
 {
-    public delegate void PluginsLoaded();
-    public interface IRocketPluginManager<T> where T : IRocketPlugin
+    public interface IRocketPluginManager
     {
-        event PluginsLoaded OnPluginsLoaded;
-        List<T> GetPlugins();
-        T GetPlugin(string name);
+        List<IRocketPlugin> GetPlugins();
+        IRocketPlugin GetPlugin(string name);
         void Reload();
         string GetPluginDirectory(string name);
-        List<IRocketCommand<T>> GetCommands(T plugin);
+        RocketCommandList Commands { get; }
 
+        void LoadPlugin(IRocketPlugin rocketPlugin);
+
+        IAsset<IRocketPluginConfiguration> GetPluginConfiguration(IRocketPlugin plugin,Type configuration,string name = "");
+        IAsset<IRocketPluginConfiguration> GetPluginTranslation(IRocketPlugin plugin);
     }
 }

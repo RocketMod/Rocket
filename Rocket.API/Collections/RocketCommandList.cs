@@ -13,34 +13,32 @@ using System.Text.RegularExpressions;
 
 namespace Rocket.API.Commands
 {
-    public class RocketCommandList<T> : IEnumerable<RegisteredRocketCommand<T>> where T : IRocketPlugin
+    public class RocketCommandList : IEnumerable<RegisteredRocketCommand>
     {
-        private CooldownList<RegisteredRocketCommand<T>> cooldown;
-        private List<RegisteredRocketCommand<T>> commands = new List<RegisteredRocketCommand<T>>();
-        public ReadOnlyCollection<RegisteredRocketCommand<T>> Commands { get; internal set; }
+        private List<RegisteredRocketCommand> commands = new List<RegisteredRocketCommand>();
+        public ReadOnlyCollection<RegisteredRocketCommand> Commands { get; internal set; }
 
-        private IRocketPluginManager<T> manager;
+        private IRocketPluginManager manager;
 
-        public RocketCommandList(IRocketPluginManager<T> manager){
+        public RocketCommandList(IRocketPluginManager manager){
             this.manager = manager;
             Commands = commands.AsReadOnly();
-            
         }
 
-        public delegate void ExecuteCommand(IRocketPlayer player, IRocketCommand<T> command, ref bool cancel);
+        public delegate void ExecuteCommand(IRocketPlayer player, IRocketCommand command, ref bool cancel);
         public event ExecuteCommand OnExecuteCommand;
 
-        public IRocketCommand<T> GetCommand(IRocketCommand<T> plugin)
+        public IRocketCommand GetCommand(IRocketCommand plugin)
         {
             return GetCommand(plugin.Name);
         }
 
-        public IRocketCommand<T> GetCommand(string name)
+        public IRocketCommand GetCommand(string name)
         {
             return commands.Where(c => c.Name == name).FirstOrDefault();
         }
 
-        public IEnumerator<RegisteredRocketCommand<T>> GetEnumerator()
+        public IEnumerator<RegisteredRocketCommand> GetEnumerator()
         {
             return commands.GetEnumerator();
         }
@@ -51,13 +49,24 @@ namespace Rocket.API.Commands
         }
 
 
-        public void Add(IRocketCommand<T> command, string alias = null, ECommandPriority priority = ECommandPriority.Normal)
+        public void Add(IRocketCommand command)
         {
-            string name = command.Name;
-            if (alias != null) name = alias;
+            Add(new Commands.RegisteredRocketCommand(manager, command.Name, command));
+            Logger.Info("[registered] /" + command.Name + " (" + command.Identifier + ")");
 
-            Add(new Commands.RegisteredRocketCommand<T>(manager, name, command));
-            this.GetLogger().Info("[registered] /" + name + " (" + command.Identifier + ")");
+            foreach (string alias in command.Aliases)
+            {
+                Add(new Commands.RegisteredRocketCommand(manager, alias, command));
+                Logger.Info("[registered alias] /" + alias + " (" + command.Identifier + ")");
+            }
+        }
+
+        public void AddRange(IEnumerable<IRocketCommand> commands)
+        {
+            foreach(IRocketCommand command in commands)
+            {
+                Add(command);
+            }
         }
 
 
@@ -71,17 +80,17 @@ namespace Rocket.API.Commands
                 string name = commandParts[0];
                 string[] parameters = commandParts.Skip(1).ToArray();
                 if (player == null) player = new ConsolePlayer();
-                IRocketCommand<T> rocketCommand = GetCommand(name);
+                IRocketCommand rocketCommand = GetCommand(name);
                 if (rocketCommand != null)
                 {
                     if (rocketCommand.AllowedCaller == AllowedCaller.Player && player is ConsolePlayer)
                     {
-                        this.GetLogger().Warn("This command can't be called from console");
+                        Logger.Warn("This command can't be called from console");
                         return false;
                     }
                     if (rocketCommand.AllowedCaller == AllowedCaller.Console && !(player is ConsolePlayer))
                     {
-                        this.GetLogger().Warn("This command can only be called from console");
+                        Logger.Warn("This command can only be called from console");
                         return false;
                     }
                     try
@@ -97,7 +106,7 @@ namespace Rocket.API.Commands
                                 }
                                 catch (Exception ex)
                                 {
-                                    this.GetLogger().Error(ex);
+                                    Logger.Error(ex);
                                 }
                             }
                         }
@@ -109,11 +118,11 @@ namespace Rocket.API.Commands
                             }
                             catch (NoPermissionsForCommandException ex)
                             {
-                                this.GetLogger().Warn(ex.Message);
+                                Logger.Warn(ex.Message);
                             }
                             catch (WrongUsageOfCommandException ex)
                             {
-                                this.GetLogger().Info(ex.Message);
+                                Logger.Info(ex.Message);
                             }
                             catch (Exception)
                             {
@@ -123,7 +132,7 @@ namespace Rocket.API.Commands
                     }
                     catch (Exception ex)
                     {
-                        this.GetLogger().Error("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]", ex);
+                        Logger.Error("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]", ex);
                     }
                     return true;
                 }

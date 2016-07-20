@@ -6,10 +6,10 @@ namespace Rocket.API.Exceptions
 {
     public class WrongUsageOfCommandException : Exception
     {
-        private IRocketCommand<IRocketPlugin> command;
+        private IRocketCommand command;
         private IRocketPlayer player;
 
-        public WrongUsageOfCommandException(IRocketPlayer player, IRocketCommand<IRocketPlugin> command)
+        public WrongUsageOfCommandException(IRocketPlayer player, IRocketCommand command)
         {
             this.command = command;
             this.player = player;

@@ -1,5 +1,6 @@
 ﻿using Rocket.API;
 using Rocket.Core.Logging;
+using Rocket.Logging;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -22,7 +23,7 @@ namespace Rocket.Core.RCON
 
         public void Awake()
         {
-            listener = new TcpListener(IPAddress.Any, R.Settings.Instance.RCON.Port);
+            listener = new TcpListener(IPAddress.Any, R.Instance.Settings.Instance.RCON.Port);
             listener.Start();
 
             // Logger.Log("Waiting for new connection...");
@@ -76,7 +77,7 @@ namespace Rocket.Core.RCON
                         }
                         else
                         {
-                            if (command.Split(' ')[1] == R.Settings.Instance.RCON.Password)
+                            if (command.Split(' ')[1] == R.Instance.Settings.Instance.RCON.Password)
                             {
                                 newclient.Authenticated = true;
                                 //newclient.Send("Success: You have logged in!\r\n");
@@ -86,7 +87,7 @@ namespace Rocket.Core.RCON
                             else
                             {
                                 newclient.Send("Error: Invalid password!\r\n");
-                                Logger.Log("Client has failed to log in.");
+                                Logger.Info("Client has failed to log in.");
                                 break;
                             }
                         }
@@ -103,7 +104,7 @@ namespace Rocket.Core.RCON
                         continue;
                     }
                     if (command != "ia")
-                        Logger.Log("Client has executed command \"" + command + "\"");
+                        Logger.Info("Client has executed command \"" + command + "\"");
 
                     lock (commands)
                     {
@@ -115,12 +116,12 @@ namespace Rocket.Core.RCON
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
                 Thread.Sleep(1500);
-                Logger.Log("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
+                Logger.Info("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
                 newclient.Close();
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex);
+                Logger.Warn(ex);
             }
         }
 
@@ -129,7 +130,7 @@ namespace Rocket.Core.RCON
             lock (commands)
             {
                 while (commands.Count != 0)
-                    R.Commands.Execute(new ConsolePlayer(), commands.Dequeue());
+                    R.Instance.Execute(new ConsolePlayer(), commands.Dequeue());
             }
         }
 
