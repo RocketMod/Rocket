@@ -59,6 +59,7 @@
     <Compile Include="Assets\Asset.cs" />
     <Compile Include="Assets\WebXMLFileAsset.cs" />
     <Compile Include="Assets\XMLFileAsset.cs" />
+    <Compile Include="Chat\IChat.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />
     <Compile Include="Commands\RocketAttributeCommand.cs" />
     <Compile Include="Commands\RocketCommandAttribute.cs" />

@@ -7,7 +7,6 @@ using Rocket.API.Extensions;
 using Rocket.API.Permissions;
 using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
-using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
 using Rocket.Core.RCON;
 using Rocket.Core.Serialization;
@@ -19,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
+using System.Collections.ObjectModel;
 
 namespace Rocket.Core
 {
@@ -33,6 +33,44 @@ namespace Rocket.Core
         public XMLFileAsset<TranslationList> Translation { get; private set; }
 
         public List<IRocketPluginManager> PluginManagers { get; private set; } = new List<IRocketPluginManager>();
+
+        public static string Translate(string translationKey, params object[] placeholder)
+        {
+            return Instance.Translation.Instance.Translate(translationKey, placeholder);
+        }
+
+        public ReadOnlyCollection<IRocketPlugin> GetPlugins()
+        {
+            List<IRocketPlugin> plugins = new List<IRocketPlugin>();
+            foreach (IRocketPluginManager m in PluginManagers)
+            {
+                plugins.AddRange(m.GetPlugins());
+            }
+            return plugins.AsReadOnly();
+        }
+
+        public ReadOnlyCollection<IRocketCommand> GetCommands()
+        {
+            List<IRocketCommand> commands = new List<IRocketCommand>();
+            foreach (IRocketPluginManager m in PluginManagers)
+            {
+                foreach(IRocketCommand c in m.Commands.Commands)
+                {
+                    commands.Add(c);
+                }
+            }
+            return commands.AsReadOnly();
+        }
+
+        public IRocketCommand GetCommand(string name)
+        {
+            IRocketCommand commands = null;
+            foreach (IRocketPluginManager m in PluginManagers)
+            {
+                commands = m.Commands.GetCommand(name);
+            }
+            return commands;
+        }
 
         private static readonly TranslationList defaultTranslations = new TranslationList(){
                 {"rocket_join_public","{0} connected to the server" },
@@ -51,6 +89,11 @@ namespace Rocket.Core
 #else
                 Initialize();
 #endif
+        }
+
+        public void AddNativeCommand(IRocketCommand command)
+        {
+            PluginManagers.Where(p => p.GetType() == typeof(NativeRocketPluginManager)).Cast<NativeRocketPluginManager>().First().Commands.Add(command);
         }
 
         internal void Initialize()
@@ -73,8 +116,7 @@ namespace Rocket.Core
 
                 if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
                 Application.targetFrameRate = Settings.Instance.MaxFrames;
-
-                
+                OnInitialized.TryInvoke();
             }
             catch (Exception ex)
             {
@@ -91,9 +133,8 @@ namespace Rocket.Core
             Implementation.Reload();
         }
 
-        public event RockedInitialized OnInitialized;
-        public event RockedReload OnReload;
         public event RockedCommandExecute OnCommandExecute;
+        public event RockedInitialized OnInitialized;
 
         public bool Execute(IRocketPlayer caller, string commandString)
         {

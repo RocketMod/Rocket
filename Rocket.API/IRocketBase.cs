@@ -5,6 +5,7 @@ using Rocket.API.Permissions;
 using Rocket.API.Plugins;
 using Rocket.Core.Serialization;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rocket.API
 {
@@ -15,12 +16,15 @@ namespace Rocket.API
     public interface IRocketBase
     {
         event RockedInitialized OnInitialized;
-        event RockedReload OnReload;
         event RockedCommandExecute OnCommandExecute;
 
         IRocketImplementation Implementation { get; }
         IRocketPermissionsProvider Permissions { get; set; }
-        List<IRocketPluginManager> PluginManagers { get;}
+        List<IRocketPluginManager> PluginManagers { get; }
+
+        ReadOnlyCollection<IRocketPlugin> GetPlugins();
+        ReadOnlyCollection<IRocketCommand> GetCommands();
+        IRocketCommand GetCommand(string name);
 
         XMLFileAsset<RocketSettings> Settings { get; }
         XMLFileAsset<TranslationList> Translation { get; }

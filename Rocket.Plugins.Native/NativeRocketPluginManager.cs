@@ -23,6 +23,8 @@ namespace Rocket.Plugins.Native
 
         public RocketCommandList Commands { get; private set; }
 
+        public string Name { get; } = "NativeRocketPluginManager";
+       
         public NativeRocketPluginManager(string pluginDirectory, string librariesDirectory)
         {
             Commands = new RocketCommandList(this);

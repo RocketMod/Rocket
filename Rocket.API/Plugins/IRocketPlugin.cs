@@ -14,12 +14,17 @@ namespace Rocket.API.Plugins
     public delegate void RocketPluginUnloaded(IRocketPlugin plugin);
     public delegate void RocketPluginLoading(IRocketPlugin plugin, ref bool cancelLoading);
     public delegate void RocketPluginLoaded(IRocketPlugin plugin);
+
     public interface IRocketPlugin
     {
         string Name { get; }
         PluginState State { get; }
         TranslationList DefaultTranslations { get; }
         IAsset<TranslationList> Translations { get; }
+
+        void LoadPlugin();
+        void UnloadPlugin(PluginState state = PluginState.Unloaded);
+        void ReloadPlugin();
 
         event RocketPluginUnloading OnPluginUnloading;
         event RocketPluginUnloaded OnPluginUnloaded;

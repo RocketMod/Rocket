@@ -7,5 +7,7 @@ namespace Rocket.API
         string Id { get; }
         string DisplayName { get; }
         bool IsAdmin { get; }
+        void Kick(string message);
+        void Ban(string message);
     }
 }

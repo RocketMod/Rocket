@@ -1,8 +1,8 @@
 ﻿using Rocket.API;
 using Rocket.API.Assets;
+using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Serialisation;
-using Rocket.Core.Logging;
 using Rocket.Logging;
 using System;
 using System.Collections.Generic;
@@ -63,14 +63,18 @@ namespace Rocket.Core.Permissions
             helper.permissions.Load();
         }
 
-        public bool HasPermission(IRocketPlayer player, List<string> permissions)
-        {
-            return helper.HasPermission(player, permissions);
-        }
-
         public bool HasPermission(IRocketPlayer player, string permission)
         {
             return helper.HasPermission(player, new List<string>() { permission });
+        }
+
+        public bool HasPermission(IRocketPlayer player, IRocketCommand command)
+        {
+            List<string> permissions = new List<string>();
+            permissions.Add(command.Name);
+            permissions.AddRange(command.Aliases);
+            permissions.AddRange(command.Permissions);
+            return helper.HasPermission(player, permissions);
         }
 
         public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player, bool includeParentGroups)

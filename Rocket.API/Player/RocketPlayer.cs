@@ -1,4 +1,6 @@
-﻿namespace Rocket.API
+﻿using System;
+
+namespace Rocket.API
 {
     public class RocketPlayer : IRocketPlayer
     {
@@ -28,6 +30,16 @@
         public int CompareTo(object obj)
         {
             return Id.CompareTo(((IRocketPlayer)obj).Id);
+        }
+
+        public void Kick(string message)
+        {
+            //
+        }
+
+        public void Ban(string message)
+        {
+            //
         }
     }
 }

@@ -7,10 +7,8 @@ namespace Rocket.API.Commands
 
     public interface IRocketCommand
     {
-        IRocketPluginManager Manager { get; }
         AllowedCaller AllowedCaller { get; }
         string Name { get; }
-        string Identifier { get; }
         string Help { get; }
         string Syntax { get; }
         List<string> Aliases { get; }

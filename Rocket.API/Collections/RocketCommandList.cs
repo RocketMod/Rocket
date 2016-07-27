@@ -28,12 +28,12 @@ namespace Rocket.API.Commands
         public delegate void ExecuteCommand(IRocketPlayer player, IRocketCommand command, ref bool cancel);
         public event ExecuteCommand OnExecuteCommand;
 
-        public IRocketCommand GetCommand(IRocketCommand plugin)
+        public RegisteredRocketCommand GetCommand(IRocketPlugin plugin)
         {
             return GetCommand(plugin.Name);
         }
 
-        public IRocketCommand GetCommand(string name)
+        public RegisteredRocketCommand GetCommand(string name)
         {
             return commands.Where(c => c.Name == name).FirstOrDefault();
         }
@@ -48,22 +48,22 @@ namespace Rocket.API.Commands
             throw new NotImplementedException();
         }
 
-
         public void Add(IRocketCommand command)
         {
+            string identifier = manager.Name+"."+command.GetType().Assembly.GetName().Name+"."+command.Name;
             Add(new Commands.RegisteredRocketCommand(manager, command.Name, command));
-            Logger.Info("[registered] /" + command.Name + " (" + command.Identifier + ")");
+            Logger.Info("[registered] /" + command.Name + " (" + identifier + ")");
 
             foreach (string alias in command.Aliases)
             {
                 Add(new Commands.RegisteredRocketCommand(manager, alias, command));
-                Logger.Info("[registered alias] /" + alias + " (" + command.Identifier + ")");
+                Logger.Info("[registered alias] /" + alias + " (" +identifier + ")");
             }
         }
 
-        public void AddRange(IEnumerable<IRocketCommand> commands)
+        public void AddRange(IEnumerable<RegisteredRocketCommand> commands)
         {
-            foreach(IRocketCommand command in commands)
+            foreach(RegisteredRocketCommand command in commands)
             {
                 Add(command);
             }

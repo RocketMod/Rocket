@@ -1,5 +1,4 @@
 ﻿using Rocket.API;
-using Rocket.Core.Logging;
 using Rocket.Logging;
 using System;
 using System.Collections.Generic;

@@ -1,4 +1,5 @@
-﻿using Rocket.API.Serialisation;
+﻿using Rocket.API.Commands;
+using Rocket.API.Serialisation;
 using Rocket.Core;
 using System.Collections.Generic;
 
@@ -11,9 +12,9 @@ namespace Rocket.API
             return R.Instance.Permissions.HasPermission(player, permission) || player.IsAdmin;
         }
 
-        public static bool HasPermissions(this IRocketPlayer player, List<string> permissions)
+        public static bool HasPermissions(this IRocketPlayer player, IRocketCommand command)
         {
-            return R.Instance.Permissions.HasPermission(player, permissions) || player.IsAdmin;
+            return R.Instance.Permissions.HasPermission(player, command) || player.IsAdmin;
         }
 
         public static List<Permission> GetPermissions(this IRocketPlayer player)
