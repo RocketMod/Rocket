@@ -245,7 +245,7 @@ namespace Rocket.Core.Commands
                             try
                             {
                                 rocketCommand.Execute(player, parameters);
-                                SetCooldown(player, rocketCommand);
+                                if (!player.HasPermission("*")) { SetCooldown(player, rocketCommand); }
                             }
                             catch (NoPermissionsForCommandException ex)
                             {
