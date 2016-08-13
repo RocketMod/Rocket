@@ -1,4 +1,5 @@
 ﻿using Rocket.API.Chat;
+using Rocket.API.Commands;
 using System.Collections.ObjectModel;
 
 namespace Rocket.API
@@ -16,6 +17,8 @@ namespace Rocket.API
         IChat Chat { get; }
 
         ReadOnlyCollection<IRocketPlayer> GetPlayers();
+
+        ReadOnlyCollection<IRocketCommand> GetCommands();
 
         void Shutdown();
 

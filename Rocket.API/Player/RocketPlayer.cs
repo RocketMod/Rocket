@@ -37,7 +37,7 @@ namespace Rocket.API
             //
         }
 
-        public void Ban(string message)
+        public void Ban(string message, uint duration)
         {
             //
         }

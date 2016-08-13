@@ -8,6 +8,6 @@ namespace Rocket.API
         string DisplayName { get; }
         bool IsAdmin { get; }
         void Kick(string message);
-        void Ban(string message);
+        void Ban(string message, uint duration = 0);
     }
 }

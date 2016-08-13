@@ -10,10 +10,10 @@ namespace Rocket.API.Plugins
         IAsset<TConfiguration> Configuration { get; }
     }
 
-    public delegate void RocketPluginUnloading(IRocketPlugin plugin);
-    public delegate void RocketPluginUnloaded(IRocketPlugin plugin);
-    public delegate void RocketPluginLoading(IRocketPlugin plugin, ref bool cancelLoading);
-    public delegate void RocketPluginLoaded(IRocketPlugin plugin);
+    public delegate void RocketPluginUnloading(RocketPluginBase plugin);
+    public delegate void RocketPluginUnloaded(RocketPluginBase plugin);
+    public delegate void RocketPluginLoading(RocketPluginBase plugin, ref bool cancelLoading);
+    public delegate void RocketPluginLoaded(RocketPluginBase plugin);
 
     public interface IRocketPlugin
     {

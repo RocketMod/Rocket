@@ -31,11 +31,19 @@ namespace Rocket.API.Plugins
     {
         public string WorkingDirectory { get; internal set; }
 
+
+
         public event RocketPluginUnloading OnPluginUnloading;
         public event RocketPluginUnloaded OnPluginUnloaded;
 
         public event RocketPluginLoading OnPluginLoading;
         public event RocketPluginLoaded OnPluginLoaded;
+
+        public static event RocketPluginUnloading OnPluginsUnloading;
+        public static event RocketPluginUnloaded OnPluginsUnloaded;
+
+        public static event RocketPluginLoading OnPluginsLoading;
+        public static event RocketPluginLoaded OnPluginsLoaded;
 
         public IRocketPluginManager PluginManager { get; private set; }
         public IAsset<TranslationList> Translations { get ; private set; }
@@ -97,6 +105,7 @@ namespace Rocket.API.Plugins
                 }
             }
 
+            bool doCancelLoading = false;
             bool cancelLoading = false;
             if (OnPluginLoading != null)
             {
@@ -105,36 +114,58 @@ namespace Rocket.API.Plugins
                     try
                     {
                         handler(this, ref cancelLoading);
+                        if (cancelLoading) doCancelLoading = true;
                     }
                     catch (Exception ex)
                     {
                         Logger.Fatal(ex);
                     }
-                    if (cancelLoading)
+                }
+            }
+
+            if (OnPluginsLoading != null)
+            {
+                foreach (var handler in OnPluginsLoading.GetInvocationList().Cast<RocketPluginLoading>())
+                {
+                    try
                     {
-                        try
-                        {
-                            UnloadPlugin(PluginState.Cancelled);
-                            return;
-                        }
-                        catch (Exception ex1)
-                        {
-                            Logger.Fatal("Failed to unload " + Name , ex1);
-                        }
+                        handler(this, ref cancelLoading);
+                        if (cancelLoading) doCancelLoading = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Fatal(ex);
                     }
                 }
             }
+
+            if (doCancelLoading)
+            {
+                try
+                {
+                    UnloadPlugin(PluginState.Cancelled);
+                    return;
+                }
+                catch (Exception ex1)
+                {
+                    Logger.Fatal("Failed to unload " + Name, ex1);
+                }
+            }
+
             State = PluginState.Loaded;
-            OnPluginLoaded.TryInvoke();
+            OnPluginLoaded.TryInvoke(this);
+            OnPluginsLoaded.TryInvoke(this);
         }
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
             Logger.Info("\n[unloading] " + Name);
             OnPluginUnloading.TryInvoke(this);
+            OnPluginsUnloading.TryInvoke(this);
             Unload();
             State = state;
             OnPluginUnloaded.TryInvoke(this);
+            OnPluginsUnloaded.TryInvoke(this);
         }
 
         private void OnEnable()
