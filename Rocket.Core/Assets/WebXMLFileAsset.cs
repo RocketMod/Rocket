@@ -33,13 +33,20 @@ namespace Rocket.Core.Assets
                     {
                         TaskDispatcher.QueueOnMainThread(() =>
                         {
+                            if(e.Error != null)
+                            {
+                                Logger.LogError("Error retrieving WebXMLFileAsset: " + e.Error.Message);
+                                callback(this);
+                                return;
+                            }
+
                             using (StringReader reader = new StringReader(e.Result))
                             {
                                 try
                                 {
                                     T result = (T)serializer.Deserialize(reader);
-
-                                    instance = result;
+                                    if(result != null)
+                                        instance = result;
 
                                     if (callback != null)
                                         callback(this);
