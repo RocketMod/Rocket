@@ -19,6 +19,38 @@ namespace Rocket.Core.Assets
             serializer = new XmlSerializer(typeof(T), attr);
             this.url = url;
             Load(callback);
+
+            webclient.DownloadStringCompleted += (object sender, System.Net.DownloadStringCompletedEventArgs e) =>
+            {
+                if (e.Error != null)
+                {
+                    Logger.LogError("Error retrieving WebXMLFileAsset: " + e.Error.Message);
+                }
+                else
+                {
+                    try
+                    {
+                        using (StringReader reader = new StringReader(e.Result))
+                        {
+                            T result = (T)serializer.Deserialize(reader);
+                            if (result != null)
+                                instance = result;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogError("Error retrieving WebXMLFileAsset: " + ex.Message);
+                    }
+                }
+
+                TaskDispatcher.QueueOnMainThread(() =>
+                {
+                    if (callback != null)
+                        callback(this);
+                    waiting = false;
+                });
+
+            };
         }
 
         public override void Load(AssetLoaded<T> callback = null)
@@ -29,37 +61,6 @@ namespace Rocket.Core.Assets
                 {
                     Logger.Log(String.Format("Updating WebXMLFileAsset {0} from {1}", typeof(T).Name, url));
                     waiting = true;
-                    webclient.DownloadStringCompleted += (object sender, System.Net.DownloadStringCompletedEventArgs e) =>
-                    {
-                        TaskDispatcher.QueueOnMainThread(() =>
-                        {
-                            if(e.Error != null)
-                            {
-                                Logger.LogError("Error retrieving WebXMLFileAsset: " + e.Error.Message);
-                                callback(this);
-                                return;
-                            }
-
-                            using (StringReader reader = new StringReader(e.Result))
-                            {
-                                try
-                                {
-                                    T result = (T)serializer.Deserialize(reader);
-                                    if(result != null)
-                                        instance = result;
-
-                                    if (callback != null)
-                                        callback(this);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.LogError("Error retrieving WebXMLFileAsset: "+ex.Message);
-                                    callback(this);
-                                }
-                            }
-                            waiting = false;
-                        });
-                    };
                     webclient.DownloadStringAsync(url);
                 }
             }
