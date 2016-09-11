@@ -140,7 +140,7 @@ namespace Rocket.Core.Plugins
 
         public virtual void LoadPlugin()
         {
-            Logger.Log("\n[loading] " + name, ConsoleColor.Cyan);
+            Logging.Logger.Log("\n[loading] " + name, ConsoleColor.Cyan);
             translations.Load();
             R.Commands.RegisterFromAssembly(Assembly);
 
@@ -150,7 +150,7 @@ namespace Rocket.Core.Plugins
             }
             catch (Exception ex)
             {
-                Logger.LogError("Failed to load " + Name + ", unloading now... :" + ex.ToString());
+                Logging.Logger.LogError("Failed to load " + Name + ", unloading now... :" + ex.ToString());
                 try
                 {
                     UnloadPlugin(PluginState.Failure);
@@ -158,7 +158,7 @@ namespace Rocket.Core.Plugins
                 }
                 catch (Exception ex1)
                 {
-                    Logger.LogError("Failed to unload " + Name + ":" + ex1.ToString());
+                    Logging.Logger.LogError("Failed to unload " + Name + ":" + ex1.ToString());
                 }
             }
             
@@ -173,7 +173,7 @@ namespace Rocket.Core.Plugins
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogException(ex);
+                        Logging.Logger.LogException(ex);
                     }
                     if (cancelLoading) {
                         try
@@ -183,7 +183,7 @@ namespace Rocket.Core.Plugins
                         }
                         catch (Exception ex1)
                         {
-                            Logger.LogError("Failed to unload " + Name + ":" + ex1.ToString());
+                            Logging.Logger.LogError("Failed to unload " + Name + ":" + ex1.ToString());
                         }
                     }
                 }
@@ -193,7 +193,7 @@ namespace Rocket.Core.Plugins
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            Logger.Log("\n[unloading] " + Name, ConsoleColor.Cyan);
+            Logging.Logger.Log("\n[unloading] " + Name, ConsoleColor.Cyan);
             OnPluginUnloading.TryInvoke(this);
             R.Commands.DeregisterFromAssembly(Assembly);
             Unload();

@@ -75,7 +75,7 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex);
+                Logging.Logger.LogException(ex);
             }
         }
 

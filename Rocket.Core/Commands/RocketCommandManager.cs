@@ -54,7 +54,7 @@ namespace Rocket.Core.Commands
                 if (mapping.Enabled)
                     foreach (CommandMapping otherMappings in commandMappings.Instance.CommandMappings.Where(m => m.Name.ToLower() == n && m.Enabled && m.Class.ToLower() != c))
                     {
-                        Logger.Log("Other mapping to: "+otherMappings.Class+" / "+mapping.Class);
+                        Logging.Logger.Log("Other mapping to: "+otherMappings.Class+" / "+mapping.Class);
                         if (otherMappings.Priority > mapping.Priority)
                         {
                             mapping.Enabled = false;
@@ -158,7 +158,7 @@ namespace Rocket.Core.Commands
             foreach(CommandMapping mapping in commandMappings.Instance.CommandMappings.Where(m => m.Class == className && m.Enabled))
             {
                 commands.Add(new RegisteredRocketCommand(mapping.Name.ToLower(), command));
-                Logger.Log("[registered] /" + mapping.Name.ToLower() + " (" + mapping.Class + ")", ConsoleColor.Green);
+                Logging.Logger.Log("[registered] /" + mapping.Name.ToLower() + " (" + mapping.Class + ")", ConsoleColor.Green);
             }
         }
 
@@ -210,17 +210,17 @@ namespace Rocket.Core.Commands
                 {
                     if (rocketCommand.AllowedCaller == AllowedCaller.Player && player is ConsolePlayer)
                     {
-                        Logger.Log("This command can't be called from console");
+                        Logging.Logger.Log("This command can't be called from console");
                         return false;
                     }
                     if (rocketCommand.AllowedCaller == AllowedCaller.Console && !(player is ConsolePlayer))
                     {
-                        Logger.Log("This command can only be called from console");
+                        Logging.Logger.Log("This command can only be called from console");
                         return false;
                     }
                     if(cooldown != -1)
                     {
-                        Logger.Log("This command is still on cooldown");
+                        Logging.Logger.Log("This command is still on cooldown");
                         return false;
                     }
                     try
@@ -236,7 +236,7 @@ namespace Rocket.Core.Commands
                                 }
                                 catch (Exception ex)
                                 {
-                                    Logger.LogException(ex);
+                                    Logging.Logger.LogException(ex);
                                 }
                             }
                         }
@@ -249,7 +249,7 @@ namespace Rocket.Core.Commands
                             }
                             catch (NoPermissionsForCommandException ex)
                             {
-                                Logger.LogWarning(ex.Message);
+                                Logging.Logger.LogWarning(ex.Message);
                             }
                             catch (WrongUsageOfCommandException)
                             {
@@ -263,7 +263,7 @@ namespace Rocket.Core.Commands
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]: " + ex.ToString());
+                        Logging.Logger.LogError("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]: " + ex.ToString());
                     }
                     return true;
                 }

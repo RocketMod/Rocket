@@ -31,7 +31,7 @@ namespace Rocket.Core.Permissions
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex);
+                Logging.Logger.LogException(ex);
             }
         }
         
@@ -54,7 +54,7 @@ namespace Rocket.Core.Permissions
 
             catch (Exception ex)
             {
-                Logger.LogException(ex);
+                Logging.Logger.LogException(ex);
             }
         }
 

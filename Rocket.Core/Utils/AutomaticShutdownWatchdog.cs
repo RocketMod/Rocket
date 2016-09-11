@@ -26,7 +26,7 @@ namespace Rocket.Core.Utils
             if (R.Settings.Instance.AutomaticShutdown.Enabled)
             {
                 shutdownTime = startedTime.ToUniversalTime().AddSeconds(R.Settings.Instance.AutomaticShutdown.Interval);
-                Logger.Log("This server will automatically shutdown in " + R.Settings.Instance.AutomaticShutdown.Interval + " seconds (" + shutdownTime.ToString() + " UTC)");
+                Logging.Logger.Log("This server will automatically shutdown in " + R.Settings.Instance.AutomaticShutdown.Interval + " seconds (" + shutdownTime.ToString() + " UTC)");
             }
             started = true;
         }
@@ -46,7 +46,7 @@ namespace Rocket.Core.Utils
             }
             catch (Exception er)
             {
-                Logger.LogException(er);
+                Logging.Logger.LogException(er);
             }
         }
     }

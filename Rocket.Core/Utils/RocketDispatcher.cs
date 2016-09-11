@@ -63,7 +63,7 @@ namespace Rocket.Core.Utils
             }
             catch(Exception ex)
             {
-                Logger.LogException(ex,"Error while running action");
+                Logging.Logger.LogException(ex,"Error while running action");
             }
             finally
             {

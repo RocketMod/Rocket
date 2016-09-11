@@ -87,7 +87,7 @@ namespace Rocket.Core.RCON
                             else
                             {
                                 newclient.Send("Error: Invalid password!\r\n");
-                                Logger.Log("Client has failed to log in.");
+                                Logging.Logger.Log("Client has failed to log in.");
                                 break;
                             }
                         }
@@ -104,7 +104,7 @@ namespace Rocket.Core.RCON
                         continue;
                     }
                     if (command != "ia")
-                        Logger.Log("Client has executed command \"" + command + "\"");
+                        Logging.Logger.Log("Client has executed command \"" + command + "\"");
 
                     lock (commands)
                     {
@@ -117,13 +117,13 @@ namespace Rocket.Core.RCON
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
                 Thread.Sleep(1500);
-                Logger.Log("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
+                Logging.Logger.Log("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
                 newclient.Close();
 
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex);
+                Logging.Logger.LogException(ex);
             }
         }
 
