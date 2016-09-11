@@ -21,7 +21,7 @@ namespace Rocket.Core.Assets
             {
                 if (e.Error != null)
                 {
-                    Logger.LogError("Error retrieving WebXMLFileAsset from " + url + " : " + e.Error.Message);
+                    Logger.Log(String.Format("Error retrieving WebXMLFileAsset {0} from {1}: {2}", typeof(T).Name, url, e.Error.Message));
                 }
                 else
                 {
@@ -34,14 +34,14 @@ namespace Rocket.Core.Assets
                             if (result != null)
                                 TaskDispatcher.QueueOnMainThread(() =>
                                 {
-                                    Logger.LogError("Updating WebXMLFileAsset from " + url);
                                     instance = result;
+                                    Logger.Log(String.Format("Successfully updated WebXMLFileAsset {0} from {1}", typeof(T).Name, url));
                                 });
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError("Error retrieving WebXMLFileAsset from " + url+" : " + ex.Message);
+                        Logger.Log(String.Format("Error retrieving WebXMLFileAsset {0} from {1}: {2}", typeof(T).Name, url,ex.Message));
                     }
                 }
 
@@ -69,7 +69,7 @@ namespace Rocket.Core.Assets
             }
             catch (Exception ex)
             {
-                throw new Exception(String.Format("Failed to deserialize WebXMLFileAsset: {0}", url), ex);
+                Logger.Log(String.Format("Error retrieving WebXMLFileAsset {0} from {1}: {2}", typeof(T).Name, url, ex.Message));
             }
         }
     }
