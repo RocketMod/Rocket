@@ -111,24 +111,16 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Local (
-copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
- $(SolutionDir)dev\pdb2mdb.exe $(TargetPath)
-)</PostBuildEvent>
-  </PropertyGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Release'">
     <GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
       <Output TaskParameter="Assemblies" ItemName="AssemblyVersion" />
     </GetAssemblyIdentity>
     <Exec WorkingDirectory="$(TargetDir)" Command="..\..\nuget\nuget.exe pack Rocket.Core.nuspec -Version %(AssemblyVersion.Version)" />
     <Message Text="..\..\nuget\nuget.exe pack Rocket.Core.nuspec -Version %(AssemblyVersion.Version)" Importance="high" />
+  </Target>
+  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Local'">
+    <Exec WorkingDirectory="$(TargetDir)" Command="copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\" />
+    <Exec WorkingDirectory="$(TargetDir)" Command="$(SolutionDir)dev\pdb2mdb.exe $(TargetPath)" />
+    <Message Text="Setting up local environment..." Importance="high" />
   </Target>
 </Project>

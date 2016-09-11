@@ -89,14 +89,11 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>if $(ConfigurationName) == Local (
-copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
-$(SolutionDir)dev\pdb2mdb.exe $(TargetPath)
-)</PostBuildEvent>
-  </PropertyGroup>
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
+  <Target Name="AfterBuild" Condition="'$(Configuration)' == 'Local'">
+    <Exec WorkingDirectory="$(TargetDir)" Command="copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\" />
+    <Exec WorkingDirectory="$(TargetDir)" Command="$(SolutionDir)dev\pdb2mdb.exe $(TargetPath)" />
+    <Message Text="Setting up local environment..." Importance="high" />
   </Target>
 </Project>
