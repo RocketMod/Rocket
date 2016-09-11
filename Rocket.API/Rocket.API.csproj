@@ -90,8 +90,8 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
-if $(ConfigurationName) == Local (
+    <PostBuildEvent>if $(ConfigurationName) == Local (
+copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
 $(SolutionDir)dev\pdb2mdb.exe $(TargetPath)
 )</PostBuildEvent>
   </PropertyGroup>

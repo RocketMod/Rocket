@@ -112,9 +112,9 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
-if $(ConfigurationName) == Local (
-      $(SolutionDir)dev\pdb2mdb.exe $(TargetPath)
+    <PostBuildEvent>if $(ConfigurationName) == Local (
+copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
+ $(SolutionDir)dev\pdb2mdb.exe $(TargetPath)
 )</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
