@@ -9,22 +9,19 @@ namespace Rocket.Core.Assets
 {
     public class WebXMLFileAsset<T> : Asset<T> where T : class
     {
-        private XmlSerializer serializer;
         private Uri url;
-        RocketWebClient webclient = new RocketWebClient();
+        RocketWebClient webclient;
         private bool waiting = false;
 
         public WebXMLFileAsset(Uri url = null, XmlRootAttribute attr = null, AssetLoaded<T> callback = null)
         {
-            serializer = new XmlSerializer(typeof(T), attr);
             this.url = url;
-            Load(callback);
-
+            webclient = new RocketWebClient();
             webclient.DownloadStringCompleted += (object sender, System.Net.DownloadStringCompletedEventArgs e) =>
             {
                 if (e.Error != null)
                 {
-                    Logger.LogError("Error retrieving WebXMLFileAsset: " + e.Error.Message);
+                    Logger.LogError("Error retrieving WebXMLFileAsset from " + url + " : " + e.Error.Message);
                 }
                 else
                 {
@@ -32,14 +29,19 @@ namespace Rocket.Core.Assets
                     {
                         using (StringReader reader = new StringReader(e.Result))
                         {
+                            XmlSerializer serializer = new XmlSerializer(typeof(T), attr);
                             T result = (T)serializer.Deserialize(reader);
                             if (result != null)
-                                instance = result;
+                                TaskDispatcher.QueueOnMainThread(() =>
+                                {
+                                    Logger.LogError("Updating WebXMLFileAsset from " + url);
+                                    instance = result;
+                                });
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.LogError("Error retrieving WebXMLFileAsset: " + ex.Message);
+                        Logger.LogError("Error retrieving WebXMLFileAsset from " + url+" : " + ex.Message);
                     }
                 }
 
@@ -51,6 +53,7 @@ namespace Rocket.Core.Assets
                 });
 
             };
+            Load(callback);
         }
 
         public override void Load(AssetLoaded<T> callback = null)
