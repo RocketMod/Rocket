@@ -57,7 +57,7 @@
     <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\UnityEngine.dll</HintPath>
-      <Private>False</Private>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -112,12 +112,10 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>
-      copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
-      if $(ConfigurationName) == Local (
+    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
+if $(ConfigurationName) == Local (
       $(SolutionDir)dev\pdb2mdb.exe $(TargetPath)
-      )
-</PostBuildEvent>
+)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
