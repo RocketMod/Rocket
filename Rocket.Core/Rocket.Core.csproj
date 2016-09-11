@@ -83,7 +83,7 @@
     <Compile Include="R.cs" />
     <Compile Include="Logging\AsyncLoggerQueue.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Serialisation\RocketCommands.cs" />
+    <Compile Include="Serialization\RocketCommands.cs" />
     <Compile Include="Steam\Profile.cs" />
     <Compile Include="Steam\Steam.cs" />
     <Compile Include="Utils\AutomaticShutdownWatchdog.cs" />
@@ -93,7 +93,7 @@
     <Compile Include="Utils\RocketWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Serialisation\RocketSettings.cs" />
+    <Compile Include="Serialization\RocketSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
