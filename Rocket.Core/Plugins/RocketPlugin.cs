@@ -42,11 +42,7 @@ namespace Rocket.Core.Plugins
 
         public override void LoadPlugin()
         {
-            configuration.Load();
-            if (!Core.R.Settings.Instance.WebConfigurations.Enabled)
-            {
-                base.LoadPlugin();
-            }
+            configuration.Load((IAsset<RocketPluginConfiguration> asset)=> { base.LoadPlugin(); });
         }
 
 
