@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
-    <OutputPath>..\..\..\..\Desktop\Unturned\Unturned_Data\Managed\</OutputPath>
+    <OutputPath>..\..\..\..\..\Desktop\Unturned\Unturned_Data\Managed\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugType>full</DebugType>
@@ -50,6 +50,28 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Security, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\System.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\System.ServiceModel.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceModel.Web, Version=3.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\System.ServiceModel.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\System.Web.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Services, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>lib\System.Web.Services.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
@@ -67,6 +89,7 @@
     <Compile Include="Commands\CommandRocket.cs" />
     <Compile Include="Extensions\IRocketPlayerExtension.cs" />
     <Compile Include="Debugger.cs" />
+    <Compile Include="IO\PipeServer.cs" />
     <Compile Include="RocketPermissionsHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RocketPermissionsManager.cs" />
@@ -93,6 +116,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lib\System.Security.dll" />
+    <Content Include="lib\System.ServiceModel.dll" />
+    <Content Include="lib\System.ServiceModel.Web.dll" />
+    <Content Include="lib\System.Web.dll" />
+    <Content Include="lib\System.Web.Services.dll" />
     <Content Include="lib\UnityEngine.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -101,7 +129,6 @@
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>

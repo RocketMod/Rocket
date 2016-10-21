@@ -84,7 +84,7 @@ namespace Rocket.API.Plugins
 
         public virtual void LoadPlugin()
         {
-            Logger.Info("\n[loading] " + name);
+            Logging.Logger.Info("\n[loading] " + name);
             Translations.Load();
 
             try
@@ -93,7 +93,7 @@ namespace Rocket.API.Plugins
             }
             catch (Exception ex)
             {
-                Logger.Fatal("Failed to load " + Name+ ", unloading now...", ex);
+                Logging.Logger.Fatal("Failed to load " + Name+ ", unloading now...", ex);
                 try
                 {
                     UnloadPlugin(PluginState.Failure);
@@ -101,7 +101,7 @@ namespace Rocket.API.Plugins
                 }
                 catch (Exception ex1)
                 {
-                    Logger.Fatal("Failed to unload " + Name ,ex1);
+                    Logging.Logger.Fatal("Failed to unload " + Name ,ex1);
                 }
             }
 
@@ -118,7 +118,7 @@ namespace Rocket.API.Plugins
                     }
                     catch (Exception ex)
                     {
-                        Logger.Fatal(ex);
+                        Logging.Logger.Fatal(ex);
                     }
                 }
             }
@@ -134,7 +134,7 @@ namespace Rocket.API.Plugins
                     }
                     catch (Exception ex)
                     {
-                        Logger.Fatal(ex);
+                        Logging.Logger.Fatal(ex);
                     }
                 }
             }
@@ -148,7 +148,7 @@ namespace Rocket.API.Plugins
                 }
                 catch (Exception ex1)
                 {
-                    Logger.Fatal("Failed to unload " + Name, ex1);
+                    Logging.Logger.Fatal("Failed to unload " + Name, ex1);
                 }
             }
 
@@ -159,7 +159,7 @@ namespace Rocket.API.Plugins
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            Logger.Info("\n[unloading] " + Name);
+            Logging.Logger.Info("\n[unloading] " + Name);
             OnPluginUnloading.TryInvoke(this);
             OnPluginsUnloading.TryInvoke(this);
             Unload();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Rocket.API;
+using Rocket.API.Commands;
 
 namespace Rocket.Core.Tests
 {

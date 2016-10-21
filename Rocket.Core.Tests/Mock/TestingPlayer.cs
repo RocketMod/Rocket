@@ -51,5 +51,15 @@ namespace Rocket.Core.Tests
         {
             return Id.CompareTo(((IRocketPlayer)obj).Id);
         }
+
+        public void Kick(string message)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Ban(string message, uint duration = 0)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

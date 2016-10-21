@@ -11,7 +11,6 @@ using Rocket.Core.Permissions;
 using Rocket.Core.RCON;
 using Rocket.Core.Serialization;
 using Rocket.Core.Tasks;
-using Rocket.Logging;
 using Rocket.Plugins.Native;
 using System;
 using System.Collections.Generic;
@@ -19,6 +18,8 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Collections.ObjectModel;
+using System.Reflection;
+using Rocket.Core.IO;
 
 namespace Rocket.Core
 {
@@ -28,7 +29,7 @@ namespace Rocket.Core
         public static R Instance { get; internal set; }
         public IRocketImplementation Implementation { get; private set; }
         public IRocketPermissionsProvider Permissions { get; set; }
-        
+
         public XMLFileAsset<RocketSettings> Settings { get; private set; }
         public XMLFileAsset<TranslationList> Translation { get; private set; }
 
@@ -38,6 +39,8 @@ namespace Rocket.Core
         {
             return Instance.Translation.Instance.Translate(translationKey, placeholder);
         }
+
+        public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         public ReadOnlyCollection<IRocketPlugin> GetPlugins()
         {
@@ -79,10 +82,22 @@ namespace Rocket.Core
                 {"command_cooldown","You have to wait {0} seconds before you can use this command again."}
         };
 
-        private void Awake()
+
+        public R()
         {
             R.Instance = this;
-            Logger.Initialize();
+            Logging.Logger.Initialize();
+            try
+            {
+                new PipeServer();
+            }
+            catch (TypeLoadException t)
+            {
+                Console.WriteLine(t.TypeName);
+                Console.WriteLine(t);
+                Console.WriteLine(t.InnerException);
+                System.Threading.Thread.Sleep(40000);
+            }
             Implementation = (IRocketImplementation)GetComponent(typeof(IRocketImplementation));
 #if DEBUG
             gameObject.TryAddComponent<Debugger>();
@@ -120,10 +135,10 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logger.Fatal(ex);
+                Logging.Logger.Fatal(ex);
             }
         }
-        
+
         public void Reload()
         {
             Settings.Load();
@@ -178,7 +193,7 @@ namespace Rocket.Core
                             }
                             catch (Exception ex)
                             {
-                                Logger.Error(ex);
+                                Logging.Logger.Error(ex);
                             }
                         }
                     }
@@ -191,7 +206,7 @@ namespace Rocket.Core
                         }
                         catch (NoPermissionsForCommandException ex)
                         {
-                            Logger.Warn(ex);
+                            Logging.Logger.Warn(ex);
                         }
                         catch (WrongUsageOfCommandException)
                         {
@@ -206,7 +221,7 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logger.Error("An error occured while executing " + name + " [" + String.Join(", ", parameters) + "]", ex);
+                Logging.Logger.Error("An error occured while executing " + name + " [" + String.Join(", ", parameters) + "]", ex);
             }
             return false;
         }

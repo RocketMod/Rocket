@@ -145,12 +145,12 @@ namespace Rocket.Plugins.Native
                     }
                     else
                     {
-                        Logger.Error("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
+                        Logging.Logger.Error("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logger.Error("Could not load plugin assembly: " + library.Name, ex);
+                    Logging.Logger.Error("Could not load plugin assembly: " + library.Name, ex);
                 }
             }
             return assemblies;
