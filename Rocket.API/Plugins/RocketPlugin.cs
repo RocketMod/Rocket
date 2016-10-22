@@ -4,10 +4,11 @@ using Rocket.API.Collections;
 using Rocket.API.Extensions;
 using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
-using Rocket.Logging;
+using Rocket.API.Logging;
 using System;
 using System.Linq;
 using UnityEngine;
+using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.API.Plugins
 {
@@ -84,7 +85,7 @@ namespace Rocket.API.Plugins
 
         public virtual void LoadPlugin()
         {
-            Logging.Logger.Info("\n[loading] " + name);
+            Logger.Info("\n[loading] " + name);
             Translations.Load();
 
             try
@@ -93,7 +94,7 @@ namespace Rocket.API.Plugins
             }
             catch (Exception ex)
             {
-                Logging.Logger.Fatal("Failed to load " + Name+ ", unloading now...", ex);
+                Logger.Fatal("Failed to load " + Name+ ", unloading now...", ex);
                 try
                 {
                     UnloadPlugin(PluginState.Failure);
@@ -101,7 +102,7 @@ namespace Rocket.API.Plugins
                 }
                 catch (Exception ex1)
                 {
-                    Logging.Logger.Fatal("Failed to unload " + Name ,ex1);
+                    Logger.Fatal("Failed to unload " + Name ,ex1);
                 }
             }
 
@@ -118,7 +119,7 @@ namespace Rocket.API.Plugins
                     }
                     catch (Exception ex)
                     {
-                        Logging.Logger.Fatal(ex);
+                        Logger.Fatal(ex);
                     }
                 }
             }
@@ -134,7 +135,7 @@ namespace Rocket.API.Plugins
                     }
                     catch (Exception ex)
                     {
-                        Logging.Logger.Fatal(ex);
+                        Logger.Fatal(ex);
                     }
                 }
             }
@@ -148,7 +149,7 @@ namespace Rocket.API.Plugins
                 }
                 catch (Exception ex1)
                 {
-                    Logging.Logger.Fatal("Failed to unload " + Name, ex1);
+                    Logger.Fatal("Failed to unload " + Name, ex1);
                 }
             }
 
@@ -159,7 +160,7 @@ namespace Rocket.API.Plugins
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            Logging.Logger.Info("\n[unloading] " + Name);
+            Logger.Info("\n[unloading] " + Name);
             OnPluginUnloading.TryInvoke(this);
             OnPluginsUnloading.TryInvoke(this);
             Unload();

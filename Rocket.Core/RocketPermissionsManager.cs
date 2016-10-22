@@ -3,10 +3,10 @@ using Rocket.API.Assets;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Serialisation;
-using Rocket.Logging;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.Core.Permissions
 {
@@ -31,7 +31,7 @@ namespace Rocket.Core.Permissions
             }
             catch (Exception ex)
             {
-                Logging.Logger.Fatal(ex);
+                Logger.Fatal(ex);
             }
         }
 
@@ -54,7 +54,7 @@ namespace Rocket.Core.Permissions
             }
             catch (Exception ex)
             {
-                Logging.Logger.Fatal(ex);
+                Logger.Fatal(ex);
             }
         }
 

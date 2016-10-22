@@ -1,8 +1,8 @@
 ﻿using Rocket.API.Commands;
 using Rocket.API.Exceptions;
+using Rocket.API.Logging;
 using Rocket.API.Plugins;
 using Rocket.Collections;
-using Rocket.Logging;
 using System;
 using System.Collections;
 using System.Collections.Generic;

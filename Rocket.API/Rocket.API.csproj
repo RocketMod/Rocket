@@ -44,6 +44,10 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -72,7 +76,7 @@
     <Compile Include="Extensions\MulticastDelegateExtensions.cs" />
     <Compile Include="Extensions\RocketCommandExtensions.cs" />
     <Compile Include="Collections\CooldownList.cs" />
-    <Compile Include="IRocketBase.cs" />
+    <Compile Include="Logging\Logger.cs" />
     <Compile Include="Plugins\IRocketPluginManager.cs" />
     <Compile Include="Plugins\RocketPlugin.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
@@ -99,12 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="README" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rocket.Logging\Rocket.Logging.csproj">
-      <Project>{cbd5785e-4bc3-4700-8103-8c2f5c35a662}</Project>
-      <Name>Rocket.Logging</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,9 +1,9 @@
-﻿using Rocket.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net;
 using System.Xml;
+using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.Core.Steam
 {

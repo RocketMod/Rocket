@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using log4net.Config;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("Rocket.API")]

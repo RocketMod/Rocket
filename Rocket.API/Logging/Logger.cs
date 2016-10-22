@@ -2,15 +2,44 @@
 using log4net;
 using log4net.Config;
 using System.Diagnostics;
+using System.Collections;
+using System.IO;
 
-namespace Rocket.Logging
+namespace Rocket.API.Logging
 {
     public class Logger
     {
-        public static void Initialize()
+        public static void Initialize(string logFile)
         {
-           XmlConfigurator.Configure();
-        }
+
+            if (!File.Exists(logFile))
+            {
+                var config = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
+<log4net>
+    <appender name=""RollingFile"" type=""log4net.Appender.RollingFileAppender"">
+    <file value=""Logs/Rocket.log"" />
+    <appendToFile value=""true"" />
+    <maximumFileSize value=""100KB"" />
+    <maxSizeRollBackups value=""2"" />
+
+    <layout type=""log4net.Layout.PatternLayout"">
+        <conversionPattern value=""%level %thread %logger - %message%newline"" />
+    </layout>
+    </appender>
+    <root>
+    <level value=""DEBUG"" />
+    <appender-ref ref=""RollingFile"" />
+    </root>
+</log4net>";
+                File.WriteAllText(logFile, config);
+            }
+                ICollection configMessages = XmlConfigurator.Configure(new FileInfo(logFile));
+
+                foreach (var msg in configMessages)
+                {
+                    System.IO.File.AppendAllText("test.txt", msg.ToString() + Environment.NewLine);
+                }
+            }
 
         private static ILog GetLogger()
         {
@@ -18,7 +47,6 @@ namespace Rocket.Logging
             var method = frame.GetMethod();
             return LogManager.GetLogger(method.DeclaringType);
         }
-
 
         public static bool IsDebugEnabled { get { return GetLogger().IsDebugEnabled; } }
         public static bool IsErrorEnabled { get { return GetLogger().IsErrorEnabled; } }

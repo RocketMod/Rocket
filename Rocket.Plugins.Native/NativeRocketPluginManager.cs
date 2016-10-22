@@ -1,7 +1,6 @@
 ﻿using Rocket.API;
 using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
-using Rocket.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +9,7 @@ using System.Reflection;
 using UnityEngine;
 using Rocket.API.Commands;
 using Rocket.API.Assets;
+using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.Plugins.Native
 {
@@ -145,12 +145,12 @@ namespace Rocket.Plugins.Native
                     }
                     else
                     {
-                        Logging.Logger.Error("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
+                        Logger.Error("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
                     }
                 }
                 catch (Exception ex)
                 {
-                    Logging.Logger.Error("Could not load plugin assembly: " + library.Name, ex);
+                    Logger.Error("Could not load plugin assembly: " + library.Name, ex);
                 }
             }
             return assemblies;

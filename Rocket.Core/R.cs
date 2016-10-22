@@ -8,7 +8,6 @@ using Rocket.API.Permissions;
 using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
 using Rocket.Core.Permissions;
-using Rocket.Core.RCON;
 using Rocket.Core.Serialization;
 using Rocket.Core.Tasks;
 using Rocket.Plugins.Native;
@@ -19,16 +18,20 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using Rocket.Core.IO;
-
+using Rocket.Core.IPC;
+using Logger = Rocket.API.Logging.Logger;
 namespace Rocket.Core
 {
-
-    public class R : MonoBehaviour,IRocketBase
+    public delegate void RockedInitialized();
+    public delegate void RockedReload();
+    public delegate void RockedCommandExecute(IRocketPlayer player, IRocketCommand command, ref bool cancel);
+    public class R : MonoBehaviour
     {
         public static R Instance { get; internal set; }
         public IRocketImplementation Implementation { get; private set; }
         public IRocketPermissionsProvider Permissions { get; set; }
+
+        private RocketServiceHost IPC;
 
         public XMLFileAsset<RocketSettings> Settings { get; private set; }
         public XMLFileAsset<TranslationList> Translation { get; private set; }
@@ -86,24 +89,21 @@ namespace Rocket.Core
         public R()
         {
             R.Instance = this;
-            Logging.Logger.Initialize();
-            try
-            {
-                new PipeServer();
-            }
-            catch (TypeLoadException t)
-            {
-                Console.WriteLine(t.TypeName);
-                Console.WriteLine(t);
-                Console.WriteLine(t.InnerException);
-                System.Threading.Thread.Sleep(40000);
-            }
+        }
+
+        public void Awake()
+        {
             Implementation = (IRocketImplementation)GetComponent(typeof(IRocketImplementation));
-#if DEBUG
-            gameObject.TryAddComponent<Debugger>();
-#else
-                Initialize();
-#endif
+            Logger.Initialize(Environment.LogConfigurationFile);
+            Logger.Info("##########################################");
+            Logger.Info("Starting RocketMod "+Version+" for "+Implementation.Name +" on instance "+Implementation.InstanceId);
+            Logger.Info("##########################################");
+
+            //#if DEBUG
+            //            gameObject.TryAddComponent<Debugger>();
+            //#else
+            Initialize();
+//#endif
         }
 
         public void AddNativeCommand(IRocketCommand command)
@@ -119,7 +119,14 @@ namespace Rocket.Core
                 Implementation.OnInitialized += () =>
                 {
                     gameObject.TryAddComponent<TaskDispatcher>();
-                    if (Settings.Instance.RCON.Enabled) gameObject.TryAddComponent<RCONServer>();
+                    try
+                    {
+                        IPC = new RocketServiceHost(Implementation.Name, Implementation.InstanceId);
+                    }
+                    catch (Exception t)
+                    {
+                        Logger.Error(t);
+                    }
                 };
 
                 Settings = new XMLFileAsset<RocketSettings>(Environment.SettingsFile);
@@ -127,15 +134,16 @@ namespace Rocket.Core
                 defaultTranslations.AddUnknownEntries(Translation);
                 Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
 
-                PluginManagers.Add(gameObject.TryAddComponent<NativeRocketPluginManager>());
+                //PluginManagers.Add(gameObject.TryAddComponent<NativeRocketPluginManager>());
 
                 if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
                 Application.targetFrameRate = Settings.Instance.MaxFrames;
+
                 OnInitialized.TryInvoke();
             }
             catch (Exception ex)
             {
-                Logging.Logger.Fatal(ex);
+                Logger.Fatal(ex);
             }
         }
 
@@ -148,8 +156,8 @@ namespace Rocket.Core
             Implementation.Reload();
         }
 
-        public event RockedCommandExecute OnCommandExecute;
-        public event RockedInitialized OnInitialized;
+        public static event RockedCommandExecute OnCommandExecute;
+        public static event RockedInitialized OnInitialized;
 
         public bool Execute(IRocketPlayer caller, string commandString)
         {
@@ -193,7 +201,7 @@ namespace Rocket.Core
                             }
                             catch (Exception ex)
                             {
-                                Logging.Logger.Error(ex);
+                                Logger.Error(ex);
                             }
                         }
                     }
@@ -206,7 +214,7 @@ namespace Rocket.Core
                         }
                         catch (NoPermissionsForCommandException ex)
                         {
-                            Logging.Logger.Warn(ex);
+                            Logger.Warn(ex);
                         }
                         catch (WrongUsageOfCommandException)
                         {
@@ -221,7 +229,7 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logging.Logger.Error("An error occured while executing " + name + " [" + String.Join(", ", parameters) + "]", ex);
+                Logger.Error("An error occured while executing " + name + " [" + String.Join(", ", parameters) + "]", ex);
             }
             return false;
         }
