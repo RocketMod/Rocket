@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 
-#if !LINUX
 
 namespace Rocket.Core
 {
@@ -81,5 +80,3 @@ namespace Rocket.Core
         }
     }
 }
-
-#endif

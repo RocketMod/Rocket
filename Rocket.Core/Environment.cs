@@ -10,7 +10,19 @@ namespace Rocket.Core
             if (!Directory.Exists(PluginsDirectory)) Directory.CreateDirectory(PluginsDirectory);
             if (!Directory.Exists(LibrariesDirectory)) Directory.CreateDirectory(LibrariesDirectory);
             if (!Directory.Exists(LogsDirectory)) Directory.CreateDirectory(LogsDirectory);
+            if (System.Environment.OSVersion.Platform == PlatformID.Unix || System.Environment.OSVersion.Platform == PlatformID.MacOSX)
+            {
+                OperationSystem = OperationSystems.Unix;
+            }
+            else
+            {
+                OperationSystem = OperationSystems.Windows;
+            }
         }
+
+        public enum OperationSystems { Windows, Unix };
+        public static OperationSystems OperationSystem = OperationSystems.Unix;
+        
 
         public static readonly string PluginsDirectory = "Plugins";
         public static readonly string LibrariesDirectory = "Libraries";

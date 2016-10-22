@@ -33,6 +33,7 @@ namespace Rocket.Core
 
         private RocketServiceHost IPC;
 
+
         public XMLFileAsset<RocketSettings> Settings { get; private set; }
         public XMLFileAsset<TranslationList> Translation { get; private set; }
 
@@ -99,11 +100,11 @@ namespace Rocket.Core
             Logger.Info("Starting RocketMod "+Version+" for "+Implementation.Name +" on instance "+Implementation.InstanceId);
             Logger.Info("##########################################");
 
-            //#if DEBUG
-            //            gameObject.TryAddComponent<Debugger>();
-            //#else
-            Initialize();
-//#endif
+            #if FALSE//DEBUG
+                gameObject.TryAddComponent<Debugger>();
+            #else
+                Initialize();
+            #endif
         }
 
         public void AddNativeCommand(IRocketCommand command)
@@ -121,7 +122,8 @@ namespace Rocket.Core
                     gameObject.TryAddComponent<TaskDispatcher>();
                     try
                     {
-                        IPC = new RocketServiceHost(Implementation.Name, Implementation.InstanceId);
+                        if(Settings.Instance.RPC.Enabled)
+                            IPC = new RocketServiceHost(Settings.Instance.RPC.Port);
                     }
                     catch (Exception t)
                     {
