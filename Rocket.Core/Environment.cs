@@ -21,7 +21,7 @@ namespace Rocket.Core
             }
             Logger.Initialize(Environment.LogConfigurationFile);
             Logger.Info("##########################################");
-            Logger.Info("Starting RocketMod " + R.Version + " for " + R.Implementation.Name + " on instance " + R.Implementation.InstanceId);
+            Logger.Info("Starting RocketMod " + R.Version + " for " + R.Implementation.Name + " on instance " + R.Implementation.InstanceName);
             Logger.Info("##########################################");
         }
 

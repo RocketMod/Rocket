@@ -98,7 +98,7 @@ namespace Rocket.Core
             #endif
         }
 
-        private void Initialize()
+        internal void Initialize()
         {
             try
             {

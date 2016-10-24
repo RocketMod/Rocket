@@ -12,13 +12,6 @@ namespace Rocket.API
     public delegate void PlayerConnected(IRocketPlayer player);
     public delegate void PlayerDisconnected(IRocketPlayer player);
 
-    public static class IRocketImplementationExtension{
-        public static string Translate(this IRocketImplementation implementation,string translationKey, params object[] placeholder)
-        {
-            return implementation.Translation.Instance.Translate(translationKey, placeholder);
-        }
-    }
-
     public interface IRocketImplementation
     {
         XMLFileAsset<TranslationList> Translation { get; }

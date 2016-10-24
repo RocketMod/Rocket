@@ -21,7 +21,7 @@ namespace Rocket.Core.Permissions
                 if (R.Instance.Settings.Instance.WebPermissions.Enabled)
                 {
                     lastWebPermissionsUpdate = DateTime.Now;
-                    helper = new RocketPermissionsHelper(new WebXMLFileAsset<RocketPermissions>(new Uri(R.Instance.Settings.Instance.WebPermissions.Url + "?instance=" + R.Implementation.InstanceId)));
+                    helper = new RocketPermissionsHelper(new WebXMLFileAsset<RocketPermissions>(new Uri(R.Instance.Settings.Instance.WebPermissions.Url + "?instance=" + R.Implementation.InstanceName)));
                     updateWebPermissions = true;
                 }
                 else
