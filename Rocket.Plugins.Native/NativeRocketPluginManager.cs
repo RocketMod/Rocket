@@ -15,6 +15,7 @@ namespace Rocket.Plugins.Native
 {
     public sealed class NativeRocketPluginManager : MonoBehaviour, IRocketPluginManager
     {
+        public static NativeRocketPluginManager Instance { get; private set; }
         private static List<Assembly> pluginAssemblies;
         private static List<GameObject> plugins = new List<GameObject>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
@@ -23,10 +24,9 @@ namespace Rocket.Plugins.Native
 
         public RocketCommandList Commands { get; private set; }
 
-        public string Name { get; } = "NativeRocketPluginManager";
-       
         public NativeRocketPluginManager(string pluginDirectory, string librariesDirectory)
         {
+            Instance = this;
             Commands = new RocketCommandList(this);
             this.pluginDirectory = pluginDirectory;
             this.librariesDirectory = librariesDirectory;

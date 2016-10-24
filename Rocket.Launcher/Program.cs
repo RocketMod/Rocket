@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 ﻿using Gtk;
+=======
+﻿using Rocket.Launcher.R;
+>>>>>>> origin/sandbox
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -121,13 +121,16 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Service References\R\service.wsdl" />
     <None Include="Service References\R\service.xsd">
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="gtk-gui\gui.stetic">
       <LogicalName>gui.stetic</LogicalName>
     </EmbeddedResource>
+    <None Include="Service References\R\service1.wsdl" />
+    <None Include="Service References\R\service1.xsd">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

@@ -21,11 +21,12 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost:13378/mex" Protocol="mex" SourceId="1" />
+    <MetadataSource Address="http://localhost:27115/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="27b65974-8122-4168-94e2-b4a6e3476211" SourceId="1" SourceUrl="http://localhost:13378/mex" />
-    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="2f30331f-ba7f-4f74-8e66-079d4ffad737" SourceId="1" SourceUrl="http://localhost:13378/mex" />
+    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="0b737ff2-76ff-4218-a72b-f69e76bde921" SourceId="1" SourceUrl="http://localhost:27115/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="f44e108a-10bf-4096-80fa-d3624c736b58" SourceId="1" SourceUrl="http://localhost:27115/mex" />
+    <MetadataFile FileName="service.xsd" MetadataType="Schema" ID="a198e334-9a7b-46c8-ad1c-ff05b328eb06" SourceId="1" SourceUrl="http://localhost:27115/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

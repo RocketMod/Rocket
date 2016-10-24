@@ -12,7 +12,7 @@ namespace Rocket.Launcher.R {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="R.IRocketService")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="R.IRocketService", CallbackContract=typeof(Rocket.Launcher.R.IRocketServiceCallback), SessionMode=System.ServiceModel.SessionMode.Required)]
     public interface IRocketService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/HelloWorld", ReplyAction="http://tempuri.org/IRocketService/HelloWorldResponse")]
@@ -20,6 +20,22 @@ namespace Rocket.Launcher.R {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/HelloWorld", ReplyAction="http://tempuri.org/IRocketService/HelloWorldResponse")]
         System.Threading.Tasks.Task HelloWorldAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/Subscribe", ReplyAction="http://tempuri.org/IRocketService/SubscribeResponse")]
+        void Subscribe();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/Subscribe", ReplyAction="http://tempuri.org/IRocketService/SubscribeResponse")]
+        System.Threading.Tasks.Task SubscribeAsync();
+    }
+    
+    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
+    public interface IRocketServiceCallback {
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IRocketService/NotifyPlayerJoined")]
+        void NotifyPlayerJoined(string guestName);
+        
+        [System.ServiceModel.OperationContractAttribute(IsOneWay=true, Action="http://tempuri.org/IRocketService/NotifyPlayerLeft")]
+        void NotifyPlayerLeft(string guestName);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -28,25 +44,26 @@ namespace Rocket.Launcher.R {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class RocketServiceClient : System.ServiceModel.ClientBase<Rocket.Launcher.R.IRocketService>, Rocket.Launcher.R.IRocketService {
+    public partial class RocketServiceClient : System.ServiceModel.DuplexClientBase<Rocket.Launcher.R.IRocketService>, Rocket.Launcher.R.IRocketService {
         
-        public RocketServiceClient() {
+        public RocketServiceClient(System.ServiceModel.InstanceContext callbackInstance) : 
+                base(callbackInstance) {
         }
         
-        public RocketServiceClient(string endpointConfigurationName) : 
-                base(endpointConfigurationName) {
+        public RocketServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName) : 
+                base(callbackInstance, endpointConfigurationName) {
         }
         
-        public RocketServiceClient(string endpointConfigurationName, string remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
+        public RocketServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, string remoteAddress) : 
+                base(callbackInstance, endpointConfigurationName, remoteAddress) {
         }
         
-        public RocketServiceClient(string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(endpointConfigurationName, remoteAddress) {
+        public RocketServiceClient(System.ServiceModel.InstanceContext callbackInstance, string endpointConfigurationName, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(callbackInstance, endpointConfigurationName, remoteAddress) {
         }
         
-        public RocketServiceClient(System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
-                base(binding, remoteAddress) {
+        public RocketServiceClient(System.ServiceModel.InstanceContext callbackInstance, System.ServiceModel.Channels.Binding binding, System.ServiceModel.EndpointAddress remoteAddress) : 
+                base(callbackInstance, binding, remoteAddress) {
         }
         
         public void HelloWorld() {
@@ -55,6 +72,14 @@ namespace Rocket.Launcher.R {
         
         public System.Threading.Tasks.Task HelloWorldAsync() {
             return base.Channel.HelloWorldAsync();
+        }
+        
+        public void Subscribe() {
+            base.Channel.Subscribe();
+        }
+        
+        public System.Threading.Tasks.Task SubscribeAsync() {
+            return base.Channel.SubscribeAsync();
         }
     }
 }

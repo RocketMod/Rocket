@@ -47,30 +47,31 @@ namespace Rocket.Unturned.Commands
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            ReadOnlyCollection<IRocketCommand> commands = R.Instance.GetCommands();
+            ReadOnlyCollection<IRocketCommand> commands = R.Instance.GetAllCommands();
             if (command.Length == 0)
             {
-                System.Console.ForegroundColor = ConsoleColor.Cyan;
-                System.Console.WriteLine("[Vanilla]");
-                System.Console.ForegroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("[Vanilla]");
+                Console.ForegroundColor = ConsoleColor.White;
                 commands.OrderBy(c => c.Name).All(c => { System.Console.WriteLine(c.Name.ToLower().PadRight(20, ' ') + " " + c.Syntax.Replace(c.Name, "").TrimStart().ToLower()); return true; });
 
-                System.Console.WriteLine();
+                Console.WriteLine();
 
-                System.Console.ForegroundColor = ConsoleColor.Cyan;
-                System.Console.WriteLine("[Rocket]");
-                System.Console.ForegroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("[Rocket]");
+                Console.ForegroundColor = ConsoleColor.White;
                 commands.Where(c => c.GetType().Assembly == Assembly.GetExecutingAssembly()).OrderBy(c => c.Name).All(c => { System.Console.WriteLine(c.Name.ToLower().PadRight(20, ' ') + " " + c.Syntax.ToLower()); return true; });
 
-                System.Console.WriteLine();
+                Console.WriteLine();
 
                 foreach (IRocketPluginManager pluginManager in R.Instance.PluginManagers)
                 {
-                    System.Console.ForegroundColor = ConsoleColor.Cyan;
-                    System.Console.WriteLine("[" + pluginManager.Name + "]");
-                    System.Console.ForegroundColor = ConsoleColor.White;
+                    string name = pluginManager.GetType().Assembly.GetName().Name;
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("[" + name + "]");
+                    Console.ForegroundColor = ConsoleColor.White;
                     pluginManager.Commands.OrderBy(c => c.Name).All(c => { System.Console.WriteLine(c.Name.ToLower().PadRight(20, ' ') + " " + c.Syntax.ToLower()); return true; });
-                    System.Console.WriteLine();
+                    Console.WriteLine();
                 }
             }
             else
@@ -80,11 +81,11 @@ namespace Rocket.Unturned.Commands
                 {
                     string commandName = cmd.GetType().Assembly.GetName().Name + " / " + cmd.Name;
 
-                    System.Console.ForegroundColor = ConsoleColor.Cyan;
-                    System.Console.WriteLine("[" + commandName + "]");
-                    System.Console.ForegroundColor = ConsoleColor.White;
-                    System.Console.WriteLine(cmd.Name + "\t\t" + cmd.Syntax);
-                    System.Console.WriteLine(cmd.Help);
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine("[" + commandName + "]");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    Console.WriteLine(cmd.Name + "\t\t" + cmd.Syntax);
+                    Console.WriteLine(cmd.Help);
                 }
             }
         }

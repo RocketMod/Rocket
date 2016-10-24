@@ -13,8 +13,10 @@ namespace Rocket.IPC.Host
     {
         static void Main(string[] args)
         {
+            Rocket.Core.Environment.Initialize();
             new RocketServiceHost(27115);
             Console.ReadKey();
         }
     }
+
 }

@@ -30,7 +30,7 @@ namespace Rocket.API.Collections
 
     public static class TranslationListExtension
     {
-        public static void AddUnknownEntries(this TranslationList defaultTranslations, IAsset<TranslationList> translations)
+        public static void AddUnknownEntries(this IAsset<TranslationList> translations, TranslationList defaultTranslations)
         {
             bool hasChanged = false;
             foreach (TranslationListEntry entry in defaultTranslations)
