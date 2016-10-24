@@ -27,6 +27,12 @@ namespace Rocket.API.Serialisation
         [XmlElement("DisplayName")]
         public string DisplayName;
 
+        [XmlElement("Prefix")]
+        public string Prefix ="";
+
+        [XmlElement("Suffix")]
+        public string Suffix ="";
+
         [XmlElement("Color")]
         public string Color = "white";
 
