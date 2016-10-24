@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Rocket.Launcher.R;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -11,15 +12,38 @@ namespace Rocket.Launcher
     {
         static void Main()
         {
-            EndpointAddress address = new EndpointAddress("http://localhost:13378/");
-            R.RocketServiceClient R = new R.RocketServiceClient(new BasicHttpBinding(),address);
+            RocketServiceClient R = new RocketServiceClient();
 
             while (true)
             {
                 Console.ReadKey();
-                R.HelloWorld();
+                R.Client.HelloWorld();
             }
+        }
 
+    }
+    public class RocketServiceClient : IRocketServiceCallback
+    {
+        public R.RocketServiceClient Client;
+        public RocketServiceClient(string url = "http://localhost:27115/")
+        {
+            EndpointAddress address = new EndpointAddress(url);
+            Client = new R.RocketServiceClient(new InstanceContext(this), new WSHttpBinding(), address);
+            Client.Subscribe();
+        }
+
+        public delegate void PlayerJoined(string name);
+        public event PlayerJoined OnPlayerJoined;
+        void IRocketServiceCallback.NotifyPlayerJoined(string guestName)
+        {
+            OnPlayerJoined?.Invoke(guestName);
+        }
+
+        public delegate void PlayerLeft(string name);
+        public event PlayerLeft OnPlayerLeft;
+        void IRocketServiceCallback.NotifyPlayerLeft(string guestName)
+        {
+            OnPlayerLeft?.Invoke(guestName);
         }
     }
 }

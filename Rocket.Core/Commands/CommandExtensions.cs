@@ -18,7 +18,7 @@ namespace Rocket.Core.Commands
                     return new RocketPlayer(id.ToString());
                 }
             }
-            return R.Instance.Implementation.GetPlayers().Where(p => p.DisplayName.Contains(array[index].ToString())).FirstOrDefault();
+            return R.Implementation.GetAllPlayers().Where(p => p.DisplayName.Contains(array[index].ToString())).FirstOrDefault();
         }
     }
 }

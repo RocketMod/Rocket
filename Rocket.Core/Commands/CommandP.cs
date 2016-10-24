@@ -51,7 +51,7 @@ namespace Rocket.Unturned.Commands
             if(command.Length == 1 && command[0].ToLower() == "reload" && caller.HasPermission("p.reload"))
             {
                 R.Instance.Permissions.Reload();
-                R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_reload"));
+                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_reload"));
                 return;
             }
 
@@ -60,19 +60,19 @@ namespace Rocket.Unturned.Commands
 
             if (command.Length == 0 && !(caller is ConsolePlayer))
             {
-                R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Instance.Permissions.GetGroups(caller, true).Select(g => g.DisplayName).ToArray())));
-                R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Instance.Permissions.GetPermissions(caller).Select(p => p.Name + (p.Cooldown != 0 ? "(" + p.Cooldown + ")" : "")).ToArray())));
+                R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Instance.Permissions.GetGroups(caller, true).Select(g => g.DisplayName).ToArray())));
+                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Instance.Permissions.GetPermissions(caller).Select(p => p.Name + (p.Cooldown != 0 ? "(" + p.Cooldown + ")" : "")).ToArray())));
             }
             else if(command.Length == 1) {
 
                 IRocketPlayer player = command.GetRocketPlayerParameter(0);
                 if (player != null) {
-                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Instance.Permissions.GetGroups(player, true).Select(g => g.DisplayName).ToArray())));
-                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Instance.Permissions.GetPermissions(player).Select(p => p.Name +(p.Cooldown != 0? "(" + p.Cooldown + ")" : "")).ToArray())));
+                    R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Instance.Permissions.GetGroups(player, true).Select(g => g.DisplayName).ToArray())));
+                    R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Instance.Permissions.GetPermissions(player).Select(p => p.Name +(p.Cooldown != 0? "(" + p.Cooldown + ")" : "")).ToArray())));
                 }
                 else
                 {
-                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_generic_invalid_parameter"));
+                    R.Implementation.Chat.Say(caller, R.Translate("command_generic_invalid_parameter"));
                     return;
                 }
             }
@@ -91,19 +91,19 @@ namespace Rocket.Unturned.Commands
                             switch (R.Instance.Permissions.AddPlayerToGroup(groupName, player))
                             {
                                 case RocketPermissionsProviderResult.Success:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_added", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_added", player.DisplayName, groupName));
                                     return;
                                 case RocketPermissionsProviderResult.DuplicateEntry:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_duplicate_entry", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_duplicate_entry", player.DisplayName, groupName));
                                     return;
                                 case RocketPermissionsProviderResult.GroupNotFound:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_group_not_found", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_group_not_found", player.DisplayName, groupName));
                                     return;
                                 case RocketPermissionsProviderResult.PlayerNotFound:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_player_not_found", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_player_not_found", player.DisplayName, groupName));
                                     return;
                                 default:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_unknown_error", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_unknown_error", player.DisplayName, groupName));
                                     return;
                             }
                         }
@@ -113,25 +113,25 @@ namespace Rocket.Unturned.Commands
                             switch (R.Instance.Permissions.RemovePlayerFromGroup(groupName, player))
                             {
                                 case RocketPermissionsProviderResult.Success:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_removed", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_removed", player.DisplayName, groupName));
                                     return;
                                 case RocketPermissionsProviderResult.DuplicateEntry:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_duplicate_entry", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_duplicate_entry", player.DisplayName, groupName));
                                     return;
                                 case RocketPermissionsProviderResult.GroupNotFound:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_group_not_found", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_group_not_found", player.DisplayName, groupName));
                                     return;
                                 case RocketPermissionsProviderResult.PlayerNotFound:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_player_not_found", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_player_not_found", player.DisplayName, groupName));
                                     return;
                                 default:
-                                    R.Instance.Implementation.Chat.Say(caller, R.Translate("command_p_unknown_error", player.DisplayName, groupName));
+                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_unknown_error", player.DisplayName, groupName));
                                     return;
                             }
                         }
                         return;
                     default:
-                        R.Instance.Implementation.Chat.Say(caller, R.Translate("command_generic_invalid_parameter"));
+                        R.Implementation.Chat.Say(caller, R.Translate("command_generic_invalid_parameter"));
                         throw new WrongUsageOfCommandException(caller, this);
                 }
 
@@ -139,7 +139,7 @@ namespace Rocket.Unturned.Commands
             }
             else
             {
-                R.Instance.Implementation.Chat.Say(caller, R.Translate("command_generic_invalid_parameter"));
+                R.Implementation.Chat.Say(caller, R.Translate("command_generic_invalid_parameter"));
                 throw new WrongUsageOfCommandException(caller, this);
             }
 

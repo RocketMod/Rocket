@@ -86,8 +86,11 @@
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
     <AppDesigner Include="Properties\" />
-    <None Include="Service References\R\service.wsdl" />
     <None Include="Service References\R\service.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\R\service1.wsdl" />
+    <None Include="Service References\R\service1.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

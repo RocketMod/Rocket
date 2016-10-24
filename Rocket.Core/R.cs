@@ -10,7 +10,6 @@ using Rocket.Core.Extensions;
 using Rocket.Core.Permissions;
 using Rocket.Core.Serialization;
 using Rocket.Core.Tasks;
-using Rocket.Plugins.Native;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,33 +19,41 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using Rocket.Core.IPC;
 using Logger = Rocket.API.Logging.Logger;
+
 namespace Rocket.Core
 {
     public delegate void RockedInitialized();
-    public delegate void RockedReload();
     public delegate void RockedCommandExecute(IRocketPlayer player, IRocketCommand command, ref bool cancel);
+
     public class R : MonoBehaviour
     {
-        public static R Instance { get; internal set; }
-        public IRocketImplementation Implementation { get; private set; }
-        public IRocketPermissionsProvider Permissions { get; set; }
+        #region Events
+            public static event RockedCommandExecute OnCommandExecute;
+            public static event RockedInitialized OnInitialized;
+        #endregion
 
-        private RocketServiceHost IPC;
+        #region Static Properties
+        public static R Instance { get; private set; }
+        public static IRocketImplementation Implementation { get; private set; }
+        public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        #endregion
 
-
-        public XMLFileAsset<RocketSettings> Settings { get; private set; }
-        public XMLFileAsset<TranslationList> Translation { get; private set; }
-
-        public List<IRocketPluginManager> PluginManagers { get; private set; } = new List<IRocketPluginManager>();
-
+        #region Static Methods
         public static string Translate(string translationKey, params object[] placeholder)
         {
             return Instance.Translation.Instance.Translate(translationKey, placeholder);
         }
+        #endregion
 
-        public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        #region Properties
+        public IRocketPermissionsProvider Permissions { get; set; }
+        public RocketServiceHost IPC { get; private set; }
+        public XMLFileAsset<RocketSettings> Settings { get; private set; }
+        public XMLFileAsset<TranslationList> Translation { get; private set; }
+        public List<IRocketPluginManager> PluginManagers { get; private set; } = new List<IRocketPluginManager>();
+        #endregion
 
-        public ReadOnlyCollection<IRocketPlugin> GetPlugins()
+        public ReadOnlyCollection<IRocketPlugin> GetAllPlugins()
         {
             List<IRocketPlugin> plugins = new List<IRocketPlugin>();
             foreach (IRocketPluginManager m in PluginManagers)
@@ -55,8 +62,7 @@ namespace Rocket.Core
             }
             return plugins.AsReadOnly();
         }
-
-        public ReadOnlyCollection<IRocketCommand> GetCommands()
+        public ReadOnlyCollection<IRocketCommand> GetAllCommands()
         {
             List<IRocketCommand> commands = new List<IRocketCommand>();
             foreach (IRocketPluginManager m in PluginManagers)
@@ -79,26 +85,11 @@ namespace Rocket.Core
             return commands;
         }
 
-        private static readonly TranslationList defaultTranslations = new TranslationList(){
-                {"rocket_join_public","{0} connected to the server" },
-                {"rocket_leave_public","{0} disconnected from the server"},
-                {"command_no_permission","You do not have permissions to execute this command."},
-                {"command_cooldown","You have to wait {0} seconds before you can use this command again."}
-        };
-
-
-        public R()
+        private void Awake()
         {
-            R.Instance = this;
-        }
-
-        public void Awake()
-        {
+            Instance = this;
             Implementation = (IRocketImplementation)GetComponent(typeof(IRocketImplementation));
-            Logger.Initialize(Environment.LogConfigurationFile);
-            Logger.Info("##########################################");
-            Logger.Info("Starting RocketMod "+Version+" for "+Implementation.Name +" on instance "+Implementation.InstanceId);
-            Logger.Info("##########################################");
+            Environment.Initialize();
 
             #if FALSE//DEBUG
                 gameObject.TryAddComponent<Debugger>();
@@ -107,40 +98,37 @@ namespace Rocket.Core
             #endif
         }
 
-        public void AddNativeCommand(IRocketCommand command)
+        private void Initialize()
         {
-            PluginManagers.Where(p => p.GetType() == typeof(NativeRocketPluginManager)).Cast<NativeRocketPluginManager>().First().Commands.Add(command);
-        }
-
-        internal void Initialize()
-        {
-            Environment.Initialize();
             try
             {
-                Implementation.OnInitialized += () =>
-                {
-                    gameObject.TryAddComponent<TaskDispatcher>();
-                    try
-                    {
-                        if(Settings.Instance.RPC.Enabled)
-                            IPC = new RocketServiceHost(Settings.Instance.RPC.Port);
-                    }
-                    catch (Exception t)
-                    {
-                        Logger.Error(t);
-                    }
-                };
 
                 Settings = new XMLFileAsset<RocketSettings>(Environment.SettingsFile);
+
+                RocketTranslations defaultTranslations = new RocketTranslations();
                 Translation = new XMLFileAsset<TranslationList>(String.Format(Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, defaultTranslations);
-                defaultTranslations.AddUnknownEntries(Translation);
+                Translation.AddUnknownEntries(defaultTranslations);
+
                 Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
+                gameObject.TryAddComponent<TaskDispatcher>();
 
                 //PluginManagers.Add(gameObject.TryAddComponent<NativeRocketPluginManager>());
 
-                if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
-                Application.targetFrameRate = Settings.Instance.MaxFrames;
+                try
+                {
+                    if (Settings.Instance.RPC.Enabled)
+                        IPC = new RocketServiceHost(Settings.Instance.RPC.Port);
+                }
+                catch (Exception t)
+                {
+                    Logger.Error(t);
+                }
 
+                Implementation.OnInitialized += () =>
+                {
+                    if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
+                    Application.targetFrameRate = Settings.Instance.MaxFrames;
+                };
                 OnInitialized.TryInvoke();
             }
             catch (Exception ex)
@@ -157,10 +145,7 @@ namespace Rocket.Core
             PluginManagers.ForEach(p => p.Reload());
             Implementation.Reload();
         }
-
-        public static event RockedCommandExecute OnCommandExecute;
-        public static event RockedInitialized OnInitialized;
-
+        
         public bool Execute(IRocketPlayer caller, string commandString)
         {
             string name = "";
@@ -235,6 +220,5 @@ namespace Rocket.Core
             }
             return false;
         }
-
     }
 }

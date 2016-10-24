@@ -79,6 +79,7 @@
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Plugins\IRocketPluginManager.cs" />
     <Compile Include="Plugins\RocketPlugin.cs" />
+    <Compile Include="RocketTranslations.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
     <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />

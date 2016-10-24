@@ -50,7 +50,8 @@ namespace Rocket.API.Commands
 
         public void Add(IRocketCommand command)
         {
-            string identifier = manager.Name+"."+command.GetType().Assembly.GetName().Name+"."+command.Name;
+            string name = manager.GetType().Assembly.GetName().Name;
+            string identifier = name+"."+command.GetType().Assembly.GetName().Name+"."+command.Name;
             Add(new Commands.RegisteredRocketCommand(manager, command.Name, command));
             Logger.Info("[registered] /" + command.Name + " (" + identifier + ")");
 

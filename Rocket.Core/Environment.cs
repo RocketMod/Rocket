@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.Core
 {
@@ -18,6 +19,10 @@ namespace Rocket.Core
             {
                 OperationSystem = OperationSystems.Windows;
             }
+            Logger.Initialize(Environment.LogConfigurationFile);
+            Logger.Info("##########################################");
+            Logger.Info("Starting RocketMod " + R.Version + " for " + R.Implementation.Name + " on instance " + R.Implementation.InstanceId);
+            Logger.Info("##########################################");
         }
 
         public enum OperationSystems { Windows, Unix };
