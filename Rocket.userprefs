@@ -1,0 +1,16 @@
+﻿<Properties StartupConfiguration="{986270D2-6F5F-48A7-972E-93E13ABC2907}|Default">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+  <MonoDevelop.Ide.ItemProperties.Rocket.IPC.Host PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.Workbench ActiveDocument="Rocket.Launcher\Program.cs">
+    <Files>
+      <File FileName="Rocket.Launcher\MainWindow.cs" Line="12" Column="2" />
+      <File FileName="Rocket.Launcher\Program.cs" Line="9" Column="26" />
+      <File FileName="Rocket.Launcher\App.config" Line="17" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.ItemProperties.Rocket.Launcher PreferredExecutionTarget="MonoDevelop.Default" />
+</Properties>

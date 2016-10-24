@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Gtk;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -11,15 +12,11 @@ namespace Rocket.Launcher
     {
         static void Main()
         {
-            EndpointAddress address = new EndpointAddress("http://localhost:13378/");
-            R.RocketServiceClient R = new R.RocketServiceClient(new BasicHttpBinding(),address);
-
-            while (true)
-            {
-                Console.ReadKey();
-                R.HelloWorld();
-            }
-
+            Application.Init();
+            MainWindow win = new MainWindow();
+            win.Show();
+			win.DeleteEvent+=(o, args) => Application.Quit();
+            Application.Run();
         }
     }
 }
