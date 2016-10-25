@@ -50,19 +50,16 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\System.ServiceModel.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="System.ServiceModel">
+      <HintPath>lib\System.ServiceModel.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine">
       <HintPath>lib\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
@@ -88,11 +85,11 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
-      <Project>{c362df2f-1336-4932-aadc-4f2074fedb64}</Project>
+      <Project>{C362DF2F-1336-4932-AADC-4F2074FEDB64}</Project>
       <Name>Rocket.API</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rocket.Plugins.Native\Rocket.Plugins.Native.csproj">
-      <Project>{6d02a4ec-cfdd-4f20-a76f-bf9add9586f0}</Project>
+      <Project>{6D02A4EC-CFDD-4F20-A76F-BF9ADD9586F0}</Project>
       <Name>Rocket.Plugins.Native</Name>
     </ProjectReference>
   </ItemGroup>
