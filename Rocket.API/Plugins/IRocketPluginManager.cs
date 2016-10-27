@@ -7,6 +7,7 @@ using Rocket.API.Assets;
 
 namespace Rocket.API.Plugins
 {
+    public delegate void InitialiseDelegate(string pluginDirectory, string librariesDirectory);
     public interface IRocketPluginManager
     {
         List<IRocketPlugin> GetPlugins();
@@ -15,7 +16,7 @@ namespace Rocket.API.Plugins
         string GetPluginDirectory(string name);
         RocketCommandList Commands { get; }
         void LoadPlugin(IRocketPlugin rocketPlugin);
-
+        InitialiseDelegate Initialise { set; }
         IAsset<IRocketPluginConfiguration> GetPluginConfiguration(IRocketPlugin plugin,Type configuration,string name = "");
         IAsset<IRocketPluginConfiguration> GetPluginTranslation(IRocketPlugin plugin);
     }

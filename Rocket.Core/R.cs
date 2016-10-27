@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using Rocket.Core.IPC;
 using Logger = Rocket.API.Logging.Logger;
+using Rocket.Plugins.Native;
 
 namespace Rocket.Core
 {
@@ -112,7 +113,10 @@ namespace Rocket.Core
                 Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
                 gameObject.TryAddComponent<TaskDispatcher>();
 
-                //PluginManagers.Add(gameObject.TryAddComponent<NativeRocketPluginManager>());
+                NativeRocketPluginManager native = gameObject.TryAddComponent<NativeRocketPluginManager>()
+                native.add
+                PluginManagers.Add();
+
 
                 try
                 {

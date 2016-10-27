@@ -20,18 +20,11 @@ namespace Rocket.Plugins.Native
         private static List<GameObject> plugins = new List<GameObject>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
 
-        private string pluginDirectory, librariesDirectory;
 
+        public InitialiseDelegate Initialise { get; set; }
+        
         public RocketCommandList Commands { get; private set; }
-
-        public NativeRocketPluginManager(string pluginDirectory, string librariesDirectory)
-        {
-            Instance = this;
-            Commands = new RocketCommandList(this);
-            this.pluginDirectory = pluginDirectory;
-            this.librariesDirectory = librariesDirectory;
-        }
-
+         
         public List<IRocketPlugin> GetPlugins()
         {
             return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null).Select(p => (IRocketPlugin)p).ToList();
@@ -49,6 +42,16 @@ namespace Rocket.Plugins.Native
 
         private void Awake()
         {
+            Instance = this;
+            Commands = new RocketCommandList(this);
+
+            
+        private string pluginDirectory, librariesDirectory;
+        private string pluginDirectory, librariesDirectory;
+            this.pluginDirectory = pluginDirectory;
+            this.librariesDirectory = librariesDirectory;
+
+
             AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
             {
                 string file;
@@ -98,10 +101,10 @@ namespace Rocket.Plugins.Native
             loadPlugins();
         }
 
-        private static Dictionary<string, string> GetAssembliesFromDirectory(string directory, string extension = "*.dll")
+        private static Dictionary<string, string> GetAssembliesFromDirectory(string directory, string searchPattern = "*.dll")
         {
             Dictionary<string, string> l = new Dictionary<string, string>();
-            IEnumerable<FileInfo> libraries = new DirectoryInfo(directory).GetFiles(extension, SearchOption.AllDirectories);
+            IEnumerable<FileInfo> libraries = new DirectoryInfo(directory).GetFiles(searchPattern, SearchOption.AllDirectories);
             foreach (FileInfo library in libraries)
             {
                 try
@@ -127,7 +130,7 @@ namespace Rocket.Plugins.Native
             //}
             return commands;
         }
-
+        
         private static List<Assembly> LoadAssembliesFromDirectory(string directory, string extension = "*.dll")
         {
             List<Assembly> assemblies = new List<Assembly>();
