@@ -12,7 +12,9 @@ namespace Rocket.API.Plugins
     {
         List<IRocketPlugin> GetPlugins();
         IRocketPlugin GetPlugin(string name);
+        void Load(string pluginDirectory, string librariesDirectory);
         void Reload();
+        void Unload();
         string GetPluginDirectory(string name);
         RocketCommandList Commands { get; }
         void LoadPlugin(IRocketPlugin rocketPlugin);

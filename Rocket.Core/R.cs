@@ -113,10 +113,9 @@ namespace Rocket.Core
                 Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
                 gameObject.TryAddComponent<TaskDispatcher>();
 
-                NativeRocketPluginManager native = gameObject.TryAddComponent<NativeRocketPluginManager>()
-                native.add
-                PluginManagers.Add();
-
+                NativeRocketPluginManager nativeRocketPluginManager = gameObject.TryAddComponent<NativeRocketPluginManager>();
+                nativeRocketPluginManager.AddImplementationCommands(Implementation.GetAllCommands());
+                PluginManagers.Add(nativeRocketPluginManager);
 
                 try
                 {

@@ -10,6 +10,7 @@ using UnityEngine;
 using Rocket.API.Commands;
 using Rocket.API.Assets;
 using Logger = Rocket.API.Logging.Logger;
+using System.Collections.ObjectModel;
 
 namespace Rocket.Plugins.Native
 {
@@ -19,7 +20,6 @@ namespace Rocket.Plugins.Native
         private static List<Assembly> pluginAssemblies;
         private static List<GameObject> plugins = new List<GameObject>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
-
 
         public InitialiseDelegate Initialise { get; set; }
         
@@ -40,17 +40,18 @@ namespace Rocket.Plugins.Native
             return Path.Combine(pluginDirectory, name);
         }
 
+        string pluginDirectory, librariesDirectory;
+        public void Load(string pluginDirectory, string librariesDirectory)
+        {
+            this.pluginDirectory = pluginDirectory;
+            this.librariesDirectory = librariesDirectory;
+            loadPlugins();
+        }
+
         private void Awake()
         {
             Instance = this;
             Commands = new RocketCommandList(this);
-
-            
-        private string pluginDirectory, librariesDirectory;
-        private string pluginDirectory, librariesDirectory;
-            this.pluginDirectory = pluginDirectory;
-            this.librariesDirectory = librariesDirectory;
-
 
             AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
             {
@@ -63,26 +64,79 @@ namespace Rocket.Plugins.Native
             };
         }
 
-        private void Start()
-        {
-            loadPlugins();
-        }
-
-        private Type GetMainTypeFromAssembly(Assembly assembly)
+        private Type GetPluginTypeFromAssembly(Assembly assembly)
         {
             return assembly.GetTypesFromInterface("IRocketPlugin").FirstOrDefault();
+        }
+
+        public List<IRocketCommand> GetCommandTypesFromAssembly(Assembly assembly, Type plugin)
+        {
+            List<IRocketCommand> commands = new List<IRocketCommand>();
+            List<Type> commandTypes = assembly.GetTypesFromInterface("IRocketCommand");
+            foreach (Type commandType in commandTypes)
+            {
+                if (commandType.GetConstructor(Type.EmptyTypes) != null)
+                {
+                    IRocketCommand command = (IRocketCommand)Activator.CreateInstance(commandType);
+                    commands.Add(command);
+                }
+            }
+
+            if (plugin != null)
+            {
+                MethodInfo[] methodInfos = plugin.GetMethods(BindingFlags.Public | BindingFlags.Instance);
+
+                foreach (MethodInfo method in methodInfos)
+                {
+                    RocketCommandAttribute commandAttribute = (RocketCommandAttribute)Attribute.GetCustomAttribute(method, typeof(RocketCommandAttribute));
+                    RocketCommandAliasAttribute[] commandAliasAttributes = (RocketCommandAliasAttribute[])Attribute.GetCustomAttributes(method, typeof(RocketCommandAliasAttribute));
+                    RocketCommandPermissionAttribute[] commandPermissionAttributes = (RocketCommandPermissionAttribute[])Attribute.GetCustomAttributes(method, typeof(RocketCommandPermissionAttribute));
+
+                    if (commandAttribute != null)
+                    {
+                        List<string> Permissions = new List<string>();
+                        List<string> Aliases = new List<string>();
+
+                        if (commandAliasAttributes != null)
+                        {
+                            foreach (RocketCommandAliasAttribute commandAliasAttribute in commandAliasAttributes)
+                            {
+                                Aliases.Add(commandAliasAttribute.Name);
+                            }
+                        }
+
+                        if (commandPermissionAttributes != null)
+                        {
+                            foreach (RocketCommandPermissionAttribute commandPermissionAttribute in commandPermissionAttributes)
+                            {
+                                Aliases.Add(commandPermissionAttribute.Name);
+                            }
+                        }
+
+                        IRocketCommand command = new RocketAttributeCommand(this,commandAttribute.Name, commandAttribute.Help, commandAttribute.Syntax, commandAttribute.AllowedCaller, Permissions, Aliases, method);
+                        commands.Add(command);
+                    }
+                }
+            }
+            return commands;
         }
 
         private void loadPlugins()
         {
             libraries = GetAssembliesFromDirectory(librariesDirectory);
             pluginAssemblies = LoadAssembliesFromDirectory(pluginDirectory);
-            List<Type> pluginImplemenations = pluginAssemblies.GetTypesFromInterface("IRocketPlugin");
-            foreach (Type pluginType in pluginImplemenations)
-            {
-                GameObject plugin = new GameObject(pluginType.Name, pluginType);
-                DontDestroyOnLoad(plugin);
-                plugins.Add(plugin);
+            
+            foreach (Assembly pluginAssembly in pluginAssemblies) {
+                List<Type> pluginImplemenations = pluginAssembly.GetTypesFromInterface("IRocketPlugin");
+           
+                foreach (Type pluginType in pluginImplemenations)
+                {
+                    GameObject plugin = new GameObject(pluginType.Name, pluginType);
+                    Commands.AddRange(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
+                    
+                    DontDestroyOnLoad(plugin);
+                    plugins.Add(plugin);
+                }
             }
         }
 
@@ -93,6 +147,11 @@ namespace Rocket.Plugins.Native
                 Destroy(plugins[i - 1]);
             }
             plugins.Clear();
+        }
+
+        public void Unload()
+        {
+            unloadPlugins();
         }
 
         public void Reload()
@@ -117,20 +176,11 @@ namespace Rocket.Plugins.Native
             return l;
         }
 
-        public List<IRocketCommand> GetCommands(IRocketPlugin plugin)
+        public void AddImplementationCommands(ReadOnlyCollection<IRocketCommand> commands)
         {
-            List<IRocketCommand> commands = new List<IRocketCommand>();
-            //foreach (Type commandType in plugin.Assembly.GetTypesFromInterface("IRocketCommand"))
-            //{
-            //    if (commandType.GetConstructor(Type.EmptyTypes) != null)
-            //    {
-            //        commands.Add((IRocketCommand)Activator.CreateInstance(commandType));
-
-            //    }
-            //}
-            return commands;
+            Commands.AddRange(commands.AsEnumerable());
         }
-        
+
         private static List<Assembly> LoadAssembliesFromDirectory(string directory, string extension = "*.dll")
         {
             List<Assembly> assemblies = new List<Assembly>();

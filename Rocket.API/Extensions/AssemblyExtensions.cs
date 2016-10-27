@@ -30,16 +30,6 @@ namespace Rocket.Core.Extensions
             return allTypes;
         }
 
-        public static List<Type> GetTypesFromInterface(this List<Assembly> assemblies, string interfaceName)
-        {
-            List<Type> allTypes = new List<Type>();
-            foreach (Assembly assembly in assemblies)
-            {
-                allTypes.AddRange(GetTypesFromInterface(assembly, interfaceName));
-            }
-            return allTypes;
-        }
-
         public static List<Type> GetTypesFromInterface(this Assembly assembly, string interfaceName)
         {
             List<Type> allTypes = new List<Type>();

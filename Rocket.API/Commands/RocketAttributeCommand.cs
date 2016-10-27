@@ -7,11 +7,11 @@ using System.Text;
 
 namespace Rocket.API.Commands
 {
-    public class RocketAttributeCommand<T> : IRocketCommand
+    public class RocketAttributeCommand : IRocketCommand
     {
         public IRocketPluginManager Manager { get; private set; }
 
-        internal RocketAttributeCommand(IRocketPluginManager manager,string name, string help, string syntax, AllowedCaller allowedCaller, List<string> permissions, List<string> aliases, MethodInfo method)
+        public RocketAttributeCommand(IRocketPluginManager manager,string name, string help, string syntax, AllowedCaller allowedCaller, List<string> permissions, List<string> aliases, MethodInfo method)
         {
             Manager = manager;
             Name = name;

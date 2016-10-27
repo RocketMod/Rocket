@@ -69,7 +69,6 @@
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\AssemblyListExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtension.cs" />
-    <Compile Include="Extensions\IRocketCommandExtensions.cs" />
     <Compile Include="Extensions\MonoBehaviourExtensions.cs" />
     <Compile Include="Extensions\MulticastDelegateExtensions.cs" />
     <Compile Include="Extensions\RocketCommandExtensions.cs" />

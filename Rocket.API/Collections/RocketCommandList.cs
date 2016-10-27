@@ -62,14 +62,13 @@ namespace Rocket.API.Commands
             }
         }
 
-        public void AddRange(IEnumerable<RegisteredRocketCommand> commands)
+        public void AddRange(IEnumerable<IRocketCommand> commands)
         {
-            foreach(RegisteredRocketCommand command in commands)
+            foreach (IRocketCommand command in commands)
             {
                 Add(command);
             }
         }
-
 
         public bool Execute(IRocketPlayer player, string command)
         {
