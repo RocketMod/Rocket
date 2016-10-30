@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Rocket.API;
+using Rocket.API.Logging;
 
 namespace Rocket.Launcher
 {
@@ -17,6 +19,10 @@ namespace Rocket.Launcher
         {
             this.service = service;
             InitializeComponent();
+            service.OnPlayerConnected += (IRocketPlayer player) => { TellLog("New Player: " + player.DisplayName); };
+            service.OnPlayerDisconnected += (IRocketPlayer player) => { TellLog("Leaving Player: " + player.DisplayName); };
+            service.OnLog += (LogMessage message) => { TellLog(message.Message); };
+            service.OnImplementationShutdown += () => { TellLog("Shutdown"); };
         }
 
         public Dashboard()

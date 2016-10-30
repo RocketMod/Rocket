@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Rocket.API;
+using Rocket.API.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
@@ -17,5 +19,17 @@ namespace Rocket.Core.IPC
 
         [OperationContract]
         void Disconnect(bool shutdown);
+
+        [OperationContract]
+        RocketPlayer OnPlayerConnected();
+
+        [OperationContract]
+        RocketPlayer OnPlayerDisconnected();
+
+        [OperationContract]
+        LogMessage OnLog();
+
+        [OperationContract]
+        bool OnShutdown();
     }
 }

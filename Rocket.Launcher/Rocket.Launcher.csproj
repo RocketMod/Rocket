@@ -123,9 +123,17 @@
       <DependentUpon>Service.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Rocket.API.Logging.LogMessage.datasource" />
+    <None Include="Properties\DataSources\Rocket.API.RocketPlayer.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="Service References\IPC\Rocket.API.Logging.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\IPC\Rocket.API.xsd">
+      <SubType>Designer</SubType>
     </None>
     <None Include="Service References\IPC\service.xsd">
       <SubType>Designer</SubType>
@@ -136,6 +144,9 @@
     </None>
     <AppDesigner Include="Properties\" />
     <None Include="Service References\IPC\service2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Service References\IPC\System.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

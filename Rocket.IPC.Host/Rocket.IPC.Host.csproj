@@ -48,6 +48,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
+      <Project>{C362DF2F-1336-4932-AADC-4F2074FEDB64}</Project>
+      <Name>Rocket.API</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj">
       <Project>{7A9D652F-DC18-45FD-8964-DBAAD6384C3D}</Project>
       <Name>Rocket.Core</Name>

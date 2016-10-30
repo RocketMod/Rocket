@@ -74,6 +74,7 @@
     <Compile Include="Extensions\RocketCommandExtensions.cs" />
     <Compile Include="Collections\CooldownList.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Plugins\IRocketPluginManager.cs" />
     <Compile Include="Plugins\RocketPlugin.cs" />
     <Compile Include="RocketTranslations.cs" />

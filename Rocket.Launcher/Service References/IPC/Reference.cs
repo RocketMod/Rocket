@@ -32,6 +32,30 @@ namespace Rocket.Launcher.IPC {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/Disconnect", ReplyAction="http://tempuri.org/IRocketService/DisconnectResponse")]
         System.Threading.Tasks.Task DisconnectAsync(bool shutdown);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerConnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerConnectedResponse")]
+        Rocket.API.RocketPlayer OnPlayerConnected();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerConnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerConnectedResponse")]
+        System.Threading.Tasks.Task<Rocket.API.RocketPlayer> OnPlayerConnectedAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerDisconnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerDisconnectedResponse")]
+        Rocket.API.RocketPlayer OnPlayerDisconnected();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerDisconnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerDisconnectedResponse")]
+        System.Threading.Tasks.Task<Rocket.API.RocketPlayer> OnPlayerDisconnectedAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnLog", ReplyAction="http://tempuri.org/IRocketService/OnLogResponse")]
+        Rocket.API.Logging.LogMessage OnLog();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnLog", ReplyAction="http://tempuri.org/IRocketService/OnLogResponse")]
+        System.Threading.Tasks.Task<Rocket.API.Logging.LogMessage> OnLogAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnShutdown", ReplyAction="http://tempuri.org/IRocketService/OnShutdownResponse")]
+        bool OnShutdown();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnShutdown", ReplyAction="http://tempuri.org/IRocketService/OnShutdownResponse")]
+        System.Threading.Tasks.Task<bool> OnShutdownAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -83,6 +107,38 @@ namespace Rocket.Launcher.IPC {
         
         public System.Threading.Tasks.Task DisconnectAsync(bool shutdown) {
             return base.Channel.DisconnectAsync(shutdown);
+        }
+        
+        public Rocket.API.RocketPlayer OnPlayerConnected() {
+            return base.Channel.OnPlayerConnected();
+        }
+        
+        public System.Threading.Tasks.Task<Rocket.API.RocketPlayer> OnPlayerConnectedAsync() {
+            return base.Channel.OnPlayerConnectedAsync();
+        }
+        
+        public Rocket.API.RocketPlayer OnPlayerDisconnected() {
+            return base.Channel.OnPlayerDisconnected();
+        }
+        
+        public System.Threading.Tasks.Task<Rocket.API.RocketPlayer> OnPlayerDisconnectedAsync() {
+            return base.Channel.OnPlayerDisconnectedAsync();
+        }
+        
+        public Rocket.API.Logging.LogMessage OnLog() {
+            return base.Channel.OnLog();
+        }
+        
+        public System.Threading.Tasks.Task<Rocket.API.Logging.LogMessage> OnLogAsync() {
+            return base.Channel.OnLogAsync();
+        }
+        
+        public bool OnShutdown() {
+            return base.Channel.OnShutdown();
+        }
+        
+        public System.Threading.Tasks.Task<bool> OnShutdownAsync() {
+            return base.Channel.OnShutdownAsync();
         }
     }
 }

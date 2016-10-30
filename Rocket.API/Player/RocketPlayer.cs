@@ -2,6 +2,7 @@
 
 namespace Rocket.API
 {
+    [Serializable]
     public class RocketPlayer : IRocketPlayer
     {
         private string id;

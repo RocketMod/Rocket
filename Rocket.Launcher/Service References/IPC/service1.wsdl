@@ -4,6 +4,9 @@
     <xsd:schema targetNamespace="http://tempuri.org/Imports">
       <xsd:import namespace="http://tempuri.org/" />
       <xsd:import namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/Rocket.API" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/Rocket.API.Logging" />
+      <xsd:import namespace="http://schemas.datacontract.org/2004/07/System" />
     </xsd:schema>
   </wsdl:types>
   <wsdl:message name="IRocketService_Execute_InputMessage">
@@ -24,6 +27,30 @@
   <wsdl:message name="IRocketService_Disconnect_OutputMessage">
     <wsdl:part name="parameters" element="tns:DisconnectResponse" />
   </wsdl:message>
+  <wsdl:message name="IRocketService_OnPlayerConnected_InputMessage">
+    <wsdl:part name="parameters" element="tns:OnPlayerConnected" />
+  </wsdl:message>
+  <wsdl:message name="IRocketService_OnPlayerConnected_OutputMessage">
+    <wsdl:part name="parameters" element="tns:OnPlayerConnectedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRocketService_OnPlayerDisconnected_InputMessage">
+    <wsdl:part name="parameters" element="tns:OnPlayerDisconnected" />
+  </wsdl:message>
+  <wsdl:message name="IRocketService_OnPlayerDisconnected_OutputMessage">
+    <wsdl:part name="parameters" element="tns:OnPlayerDisconnectedResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRocketService_OnLog_InputMessage">
+    <wsdl:part name="parameters" element="tns:OnLog" />
+  </wsdl:message>
+  <wsdl:message name="IRocketService_OnLog_OutputMessage">
+    <wsdl:part name="parameters" element="tns:OnLogResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRocketService_OnShutdown_InputMessage">
+    <wsdl:part name="parameters" element="tns:OnShutdown" />
+  </wsdl:message>
+  <wsdl:message name="IRocketService_OnShutdown_OutputMessage">
+    <wsdl:part name="parameters" element="tns:OnShutdownResponse" />
+  </wsdl:message>
   <wsdl:portType name="IRocketService">
     <wsdl:operation name="Execute">
       <wsdl:input wsaw:Action="http://tempuri.org/IRocketService/Execute" message="tns:IRocketService_Execute_InputMessage" />
@@ -36,6 +63,22 @@
     <wsdl:operation name="Disconnect">
       <wsdl:input wsaw:Action="http://tempuri.org/IRocketService/Disconnect" message="tns:IRocketService_Disconnect_InputMessage" />
       <wsdl:output wsaw:Action="http://tempuri.org/IRocketService/DisconnectResponse" message="tns:IRocketService_Disconnect_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="OnPlayerConnected">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRocketService/OnPlayerConnected" message="tns:IRocketService_OnPlayerConnected_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRocketService/OnPlayerConnectedResponse" message="tns:IRocketService_OnPlayerConnected_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="OnPlayerDisconnected">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRocketService/OnPlayerDisconnected" message="tns:IRocketService_OnPlayerDisconnected_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRocketService/OnPlayerDisconnectedResponse" message="tns:IRocketService_OnPlayerDisconnected_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="OnLog">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRocketService/OnLog" message="tns:IRocketService_OnLog_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRocketService/OnLogResponse" message="tns:IRocketService_OnLog_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="OnShutdown">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRocketService/OnShutdown" message="tns:IRocketService_OnShutdown_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRocketService/OnShutdownResponse" message="tns:IRocketService_OnShutdown_OutputMessage" />
     </wsdl:operation>
   </wsdl:portType>
   <wsdl:binding name="BasicHttpBinding_IRocketService" type="tns:IRocketService">
@@ -60,6 +103,42 @@
     </wsdl:operation>
     <wsdl:operation name="Disconnect">
       <soap:operation soapAction="http://tempuri.org/IRocketService/Disconnect" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnPlayerConnected">
+      <soap:operation soapAction="http://tempuri.org/IRocketService/OnPlayerConnected" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnPlayerDisconnected">
+      <soap:operation soapAction="http://tempuri.org/IRocketService/OnPlayerDisconnected" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnLog">
+      <soap:operation soapAction="http://tempuri.org/IRocketService/OnLog" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="OnShutdown">
+      <soap:operation soapAction="http://tempuri.org/IRocketService/OnShutdown" style="document" />
       <wsdl:input>
         <soap:body use="literal" />
       </wsdl:input>

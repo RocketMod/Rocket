@@ -10,7 +10,7 @@ namespace Rocket.API.Logging
     public enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL };
     public class Logger
     {
-        public delegate void Log(LogLevel level,object message,Exception exception);
+        public delegate void Log(LogMessage message);
         public static event Log OnLog;
 
         public static void Initialize(string logFile)
@@ -61,61 +61,61 @@ namespace Rocket.API.Logging
         public static void Debug(object message)
         {
             GetLogger().Debug(message);
-            OnLog?.Invoke(LogLevel.DEBUG, message, null);
+            OnLog?.Invoke(new LogMessage(LogLevel.DEBUG, message));
         }
 
         public static void Debug(object message, Exception exception)
         {
             GetLogger().Debug(message, exception);
-            OnLog?.Invoke(LogLevel.DEBUG, message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.DEBUG, message, exception));
         }
 
         public static void Error(object message)
         {
             GetLogger().Error(message);
-            OnLog?.Invoke(LogLevel.ERROR, message, null);
+            OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message));
         }
 
         public static void Error(object message, Exception exception)
         {
             GetLogger().Error(message, exception);
-            OnLog?.Invoke(LogLevel.ERROR, message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message, exception));
         }
 
         public static void Fatal(object message)
         {
             GetLogger().Fatal(message);
-            OnLog?.Invoke(LogLevel.FATAL, message, null);
+            OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message));
         }
 
         public static void Fatal(object message, Exception exception)
         {
             GetLogger().Fatal(message, exception);
-            OnLog?.Invoke(LogLevel.FATAL, message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message, exception));
         }
 
         public static void Info(object message)
         {
             GetLogger().Info(message);
-            OnLog?.Invoke(LogLevel.INFO, message, null);
+            OnLog?.Invoke(new LogMessage(LogLevel.INFO, message));
         }
 
         public static void Info(object message, Exception exception)
         {
             GetLogger().Info(message, exception);
-            OnLog?.Invoke(LogLevel.INFO, message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.INFO, message, exception));
         }
 
         public static void Warn(object message)
         {
             GetLogger().Warn(message);
-            OnLog?.Invoke(LogLevel.WARN, message, null);
+            OnLog?.Invoke(new LogMessage(LogLevel.WARN, message));
         }
 
         public static void Warn(object message, Exception exception)
         {
             GetLogger().Warn(message, exception);
-            OnLog?.Invoke(LogLevel.WARN, message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.WARN, message, exception));
         }
     }
 }

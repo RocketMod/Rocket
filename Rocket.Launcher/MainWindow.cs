@@ -20,12 +20,11 @@ namespace Rocket.Launcher
         public MainWindow()
         {
             InitializeComponent();
-            this.StyleManager = msmMain;
-            this.Text = "Rocket Launcher " + typeof(MainWindow).Assembly.GetName().Version;
-
+            StyleManager = msmMain;
+            Text = "Rocket Launcher " + typeof(MainWindow).Assembly.GetName().Version;
             AddService(27115);
         }
-
+        
         public void AddService(ushort port)
         {
             Service s = new Service(port);
