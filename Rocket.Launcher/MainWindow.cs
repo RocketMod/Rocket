@@ -1,5 +1,4 @@
-﻿using Rocket.Core.IPC;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,29 +9,43 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Rocket.API;
+using System.Reflection;
 
 namespace Rocket.Launcher
 {
-    public partial class MainWIndow : Form, IRocketServiceCallback
+    public partial class MainWindow : MetroFramework.Forms.MetroForm
     {
-        public MainWIndow()
+        private Service currentService = null;
+
+        public MainWindow()
         {
             InitializeComponent();
-            
-            EndpointAddress address = new EndpointAddress("net.tcp://localhost:13378/");
-            R.RocketServiceClient R = new R.RocketServiceClient(new InstanceContext(this),new NetTcpBinding(), address);
-     
+            this.StyleManager = msmMain;
+            this.Text = "Rocket Launcher " + typeof(MainWindow).Assembly.GetName().Version;
 
+            AddService(27115);
         }
 
-        public void NotifyPlayerConnected(IRocketPlayer player)
+        public void AddService(ushort port)
         {
-            throw new NotImplementedException();
+            Service s = new Service(port);
+            s.Click += (object sender, EventArgs e) =>
+            {
+                currentService = (Service)sender;
+                pDashboardContainer.Controls.Clear();
+                pDashboardContainer.Controls.Add(currentService.Dashboard);
+            };
+            flpServiceContainer.Controls.Add(s);
+
+            if (currentService == null)
+            {
+                currentService =s;
+                pDashboardContainer.Controls.Clear();
+                pDashboardContainer.Controls.Add(currentService.Dashboard);
+            }
+            s.Connect();
         }
 
-        public void NotifyPlayerDisconnected(IRocketPlayer player)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

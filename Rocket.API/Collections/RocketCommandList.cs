@@ -45,19 +45,19 @@ namespace Rocket.API.Commands
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            throw new NotImplementedException();
+            return Commands.GetEnumerator();
         }
 
         public void Add(IRocketCommand command)
         {
             string name = manager.GetType().Assembly.GetName().Name;
             string identifier = name+"."+command.GetType().Assembly.GetName().Name+"."+command.Name;
-            Add(new Commands.RegisteredRocketCommand(manager, command.Name, command));
+            commands.Add(new RegisteredRocketCommand(manager, command.Name, command));
             Logger.Info("[registered] /" + command.Name + " (" + identifier + ")");
 
             foreach (string alias in command.Aliases)
             {
-                Add(new Commands.RegisteredRocketCommand(manager, alias, command));
+                commands.Add(new RegisteredRocketCommand(manager, alias, command));
                 Logger.Info("[registered alias] /" + alias + " (" +identifier + ")");
             }
         }

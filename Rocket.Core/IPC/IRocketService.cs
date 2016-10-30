@@ -6,22 +6,16 @@ using System.Text;
 
 namespace Rocket.Core.IPC
 {
-    [ServiceContract(SessionMode = SessionMode.Required, CallbackContract = typeof(IRocketServiceCallback))]
+    [ServiceContract]
     public interface IRocketService
     {
         [OperationContract]
-        void HelloWorld();
+        void Execute(string command);
 
-        [OperationContract()]
-        void Subscribe();
-    }
+        [OperationContract]
+        bool Test();
 
-    public interface IRocketServiceCallback
-    {
-        [OperationContract(IsOneWay = true)]
-        void NotifyPlayerConnected(API.IRocketPlayer player);
-
-        [OperationContract(IsOneWay = true)]
-        void NotifyPlayerDisconnected(API.IRocketPlayer player);
+        [OperationContract]
+        void Disconnect(bool shutdown);
     }
 }

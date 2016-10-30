@@ -1,11 +1,5 @@
 ﻿using Rocket.Core.IPC;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.Text;
 
 namespace Rocket.IPC.Host
 {
@@ -13,7 +7,7 @@ namespace Rocket.IPC.Host
     {
         static void Main(string[] args)
         {
-            Rocket.Core.Environment.Initialize();
+            Core.Environment.Initialize();
             new RocketServiceHost(27115);
             Console.ReadKey();
         }

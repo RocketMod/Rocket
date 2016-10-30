@@ -48,7 +48,7 @@ namespace Rocket.Core
 
         #region Properties
         public IRocketPermissionsProvider Permissions { get; set; }
-        public RocketServiceHost IPC { get; private set; }
+        public RocketServiceHost RPC { get; private set; }
         public XMLFileAsset<RocketSettings> Settings { get; private set; }
         public XMLFileAsset<TranslationList> Translation { get; private set; }
         public List<IRocketPluginManager> PluginManagers { get; private set; } = new List<IRocketPluginManager>();
@@ -106,7 +106,8 @@ namespace Rocket.Core
 
                 Settings = new XMLFileAsset<RocketSettings>(Environment.SettingsFile);
 
-                RocketTranslations defaultTranslations = new RocketTranslations();
+                TranslationList defaultTranslations = new TranslationList();
+                defaultTranslations.AddRange(new RocketTranslations());
                 Translation = new XMLFileAsset<TranslationList>(String.Format(Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, defaultTranslations);
                 Translation.AddUnknownEntries(defaultTranslations);
 
@@ -120,11 +121,11 @@ namespace Rocket.Core
                 try
                 {
                     if (Settings.Instance.RPC.Enabled)
-                        IPC = new RocketServiceHost(Settings.Instance.RPC.Port);
+                        RPC = new RocketServiceHost(Settings.Instance.RPC.Port);
                 }
-                catch (Exception t)
+                catch (Exception e)
                 {
-                    Logger.Error(t);
+                    Logger.Error(e);
                 }
 
                 Implementation.OnInitialized += () =>
@@ -142,11 +143,18 @@ namespace Rocket.Core
 
         public void Reload()
         {
-            Settings.Load();
-            Translation.Load();
-            Permissions.Reload();
-            PluginManagers.ForEach(p => p.Reload());
-            Implementation.Reload();
+            try
+            {
+                Settings.Load();
+                Translation.Load();
+                Permissions.Reload();
+                PluginManagers.ForEach(p => p.Reload());
+                Implementation.Reload();
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex);
+            }
         }
         
         public bool Execute(IRocketPlayer caller, string commandString)

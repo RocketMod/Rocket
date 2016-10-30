@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 using Logger = Rocket.API.Logging.Logger;
+using System.Reflection;
 
 namespace Rocket.API.Plugins
 {
@@ -16,7 +17,7 @@ namespace Rocket.API.Plugins
     {
         public IAsset<T> Configuration { get; private set; }
 
-        protected RocketPluginBase(IRocketPluginManager manager, string name) : base(manager, name) 
+        protected RocketPluginBase(IRocketPluginManager manager) : base(manager) 
         {
             Configuration = (IAsset<T>)manager.GetPluginConfiguration(this,typeof(T));
         }
@@ -31,8 +32,6 @@ namespace Rocket.API.Plugins
     public class RocketPluginBase : MonoBehaviour, IRocketPlugin
     {
         public string WorkingDirectory { get; internal set; }
-
-
 
         public event RocketPluginUnloading OnPluginUnloading;
         public event RocketPluginUnloaded OnPluginUnloaded;
@@ -52,6 +51,21 @@ namespace Rocket.API.Plugins
         public string Name { get; private set; }
 
 
+        public bool IsDependencyLoaded(string plugin)
+        {
+            return PluginManager.GetPlugin(plugin) != null;
+        }
+
+        public delegate void ExecuteDependencyCodeDelegate(IRocketPlugin plugin);
+
+        public void ExecuteDependencyCode(string plugin, ExecuteDependencyCodeDelegate a)
+        {
+            IRocketPlugin p = PluginManager.GetPlugin(plugin);
+            if (p != null)
+                a(p);
+        }
+
+        public Assembly Assembly { get { return GetType().Assembly; } }
 
         public virtual TranslationList DefaultTranslations
         {
@@ -61,10 +75,9 @@ namespace Rocket.API.Plugins
             }
         }
 
-        protected RocketPluginBase(IRocketPluginManager manager, string name)
+        protected RocketPluginBase(IRocketPluginManager manager)
         {
             this.PluginManager = manager;
-            this.name = name;
 
             WorkingDirectory = manager.GetPluginDirectory(name);
 

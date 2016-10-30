@@ -43,6 +43,7 @@ namespace Rocket.Plugins.Native
         string pluginDirectory, librariesDirectory;
         public void Load(string pluginDirectory, string librariesDirectory)
         {
+            Logger.Info("loading");
             this.pluginDirectory = pluginDirectory;
             this.librariesDirectory = librariesDirectory;
             loadPlugins();
@@ -50,23 +51,25 @@ namespace Rocket.Plugins.Native
 
         private void Awake()
         {
-            Instance = this;
-            Commands = new RocketCommandList(this);
-
-            AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
+            try
             {
-                string file;
-                if (libraries.TryGetValue(args.Name, out file))
+                Instance = this;
+                Commands = new RocketCommandList(this);
+                AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
                 {
-                    return Assembly.Load(File.ReadAllBytes(file));
-                }
-                return null;
-            };
-        }
+                    string file;
+                    if (libraries.TryGetValue(args.Name, out file))
+                    {
+                        return Assembly.Load(File.ReadAllBytes(file));
+                    }
+                    return null;
+                };
 
-        private Type GetPluginTypeFromAssembly(Assembly assembly)
-        {
-            return assembly.GetTypesFromInterface("IRocketPlugin").FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex);
+            }
         }
 
         public List<IRocketCommand> GetCommandTypesFromAssembly(Assembly assembly, Type plugin)
@@ -125,15 +128,17 @@ namespace Rocket.Plugins.Native
         {
             libraries = GetAssembliesFromDirectory(librariesDirectory);
             pluginAssemblies = LoadAssembliesFromDirectory(pluginDirectory);
-            
+
+            Logger.Info("loadingPlugins");
             foreach (Assembly pluginAssembly in pluginAssemblies) {
                 List<Type> pluginImplemenations = pluginAssembly.GetTypesFromInterface("IRocketPlugin");
-           
+
                 foreach (Type pluginType in pluginImplemenations)
                 {
                     GameObject plugin = new GameObject(pluginType.Name, pluginType);
                     Commands.AddRange(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
-                    
+
+                    Logger.Info("newplugin");
                     DontDestroyOnLoad(plugin);
                     plugins.Add(plugin);
                 }

@@ -1,52 +1,60 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Rocket.API;
+using Rocket.API.Logging;
+using System;
 using System.ServiceModel;
-using System.Text;
 using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.Core.IPC
 {
+
     public class RocketService : IRocketService
     {
-        public RocketService()
+        public void Connect(ushort port)
         {
-            R.Implementation.OnPlayerConnected += (API.IRocketPlayer player) =>
-            {
-                foreach (IRocketServiceCallback callback in callbacks)
-                {
-                    callback.NotifyPlayerConnected(player);
-                };
-            };
-
-            R.Implementation.OnPlayerDisconnected += (API.IRocketPlayer player) =>
-            {
-                foreach (IRocketServiceCallback callback in callbacks)
-                {
-                    callback.NotifyPlayerDisconnected(player);
-                };
-            };
+            EndpointAddress address = new EndpointAddress(String.Format("http://localhost:{0}/", port));
+            R.Implementation.OnPlayerConnected += Implementation_OnPlayerConnected;
+            R.Implementation.OnPlayerDisconnected += Implementation_OnPlayerDisconnected;
+            R.Implementation.OnShutdown += Implementation_OnShutdown;
+            Logger.OnLog += Implemenation_OnLog;
         }
 
-        private void Implementation_OnPlayerJoined(API.IRocketPlayer player)
+        private void Implemenation_OnLog(LogLevel level, object message, Exception exception)
         {
-            throw new NotImplementedException();
+            //
         }
 
-        public void HelloWorld()
+        private void Implementation_OnShutdown()
         {
-            Logger.Info("Hello World!");
-            Console.WriteLine("Hello World!");
+            //
         }
 
-        private List<IRocketServiceCallback> callbacks = new List<IRocketServiceCallback>();
-        public void Subscribe()
+        private void Implementation_OnPlayerDisconnected(IRocketPlayer player)
         {
-            IRocketServiceCallback subscriber = OperationContext.Current.GetCallbackChannel<IRocketServiceCallback>();
+            //
+        }
 
-            if (!callbacks.Contains(subscriber)){
-                callbacks.Add(subscriber);
-            }
+        private void Implementation_OnPlayerConnected(IRocketPlayer player)
+        {
+            //
+        }
+
+        public void Disconnect(bool shutdown)
+        {
+            R.Implementation.OnPlayerConnected -= Implementation_OnPlayerConnected;
+            R.Implementation.OnPlayerDisconnected -= Implementation_OnPlayerDisconnected;
+            R.Implementation.OnShutdown -= Implementation_OnShutdown;
+            Logger.OnLog -= Implemenation_OnLog;
+            if (shutdown) R.Implementation.Shutdown();
+        }
+
+        public void Execute(string command)
+        {
+           R.Instance.Execute(new ConsolePlayer(), command);
+        }
+
+        public bool Test()
+        {
+            return true;
         }
     }
 
