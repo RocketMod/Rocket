@@ -20,6 +20,7 @@ using System.Reflection;
 using Rocket.Core.IPC;
 using Logger = Rocket.API.Logging.Logger;
 using Rocket.Plugins.Native;
+using System.Threading;
 
 namespace Rocket.Core
 {
@@ -120,8 +121,10 @@ namespace Rocket.Core
 
                 try
                 {
+                    new Thread(new ThreadStart(()=>{ 
                     if (Settings.Instance.RPC.Enabled)
                         RPC = new RocketServiceHost(Settings.Instance.RPC.Port);
+                    })).Start();
                 }
                 catch (Exception e)
                 {
