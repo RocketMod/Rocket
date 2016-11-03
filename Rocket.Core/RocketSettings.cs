@@ -13,9 +13,6 @@ namespace Rocket.Core.Serialization
 
         [XmlAttribute]
         public string Password = "changeme";
-
-        [XmlAttribute]
-        public string Username = "username";
     }
 
     public sealed class WebPermissions
@@ -44,6 +41,9 @@ namespace Rocket.Core.Serialization
         [XmlElement("RPC")]
         public RemoteConsole RPC = new RemoteConsole();
 
+        [XmlElement("RCON")]
+        public RemoteConsole RCON = new RemoteConsole();
+
         [XmlElement("WebConfigurations")]
         public WebConfigurations WebConfigurations = new WebConfigurations();
 
@@ -59,6 +59,7 @@ namespace Rocket.Core.Serialization
         public void LoadDefaults()
         {
             RPC = new RemoteConsole();
+            RCON = new RemoteConsole();
             WebConfigurations = new WebConfigurations();
             WebPermissions = new WebPermissions();
             LanguageCode = "en";

@@ -77,7 +77,6 @@
     <Compile Include="Logging\LogMessage.cs" />
     <Compile Include="Plugins\IRocketPluginManager.cs" />
     <Compile Include="Plugins\RocketPlugin.cs" />
-    <Compile Include="RocketTranslations.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
     <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
@@ -98,7 +97,6 @@
     <Compile Include="Serialisation\Command.cs" />
     <Compile Include="Serialisation\RocketPermissions.cs" />
     <Compile Include="Serialisation\RocketPermissionsGroup.cs" />
-    <Compile Include="Serialisation\RocketSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="README" />

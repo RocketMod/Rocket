@@ -121,10 +121,13 @@ namespace Rocket.Core
 
                 try
                 {
-                    new Thread(new ThreadStart(()=>{ 
                     if (Settings.Instance.RPC.Enabled)
-                        RPC = new RocketServiceHost(Settings.Instance.RPC.Port);
-                    })).Start();
+                        new Thread(new ThreadStart(()=>{ 
+                            RPC = new RocketServiceHost(Settings.Instance.RPC.Port);
+                        })).Start();
+                    if (Settings.Instance.RCON.Enabled)
+                        gameObject.TryAddComponent<RCONServer>();
+
                 }
                 catch (Exception e)
                 {
