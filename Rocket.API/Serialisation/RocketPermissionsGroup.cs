@@ -19,6 +19,8 @@ namespace Rocket.API.Serialisation
             Permissions = permissions;
             ParentGroup = parentGroup;
             Color = color;
+            Prefix = "[";
+            Suffix = "]";
         }
 
         [XmlElement("Id")]
@@ -29,6 +31,12 @@ namespace Rocket.API.Serialisation
 
         [XmlElement("Color")]
         public string Color = "white";
+
+        [XmlElement("Prefix")]
+        public string Prefix = "";
+
+        [XmlElement("Suffix")]
+        public string Suffix = "";
 
         [XmlArray("Members")]
         [XmlArrayItem(ElementName = "Member")]

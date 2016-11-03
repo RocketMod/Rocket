@@ -8,7 +8,6 @@ using Rocket.API.Permissions;
 using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
 using Rocket.Core.Permissions;
-using Rocket.Core.Serialization;
 using Rocket.Core.Tasks;
 using System;
 using System.Collections.Generic;
