@@ -145,6 +145,7 @@ namespace Rocket.Plugins.Native
                 foreach (Type pluginType in pluginImplemenations)
                 {
                     gameObject.TryAddComponent(pluginType);
+                    Commands.AddRange(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
                 }
             }
         }
