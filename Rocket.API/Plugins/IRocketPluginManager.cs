@@ -1,9 +1,7 @@
 ﻿using Rocket.API.Commands;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Rocket.API.Assets;
+using Rocket.API.Collections;
 
 namespace Rocket.API.Plugins
 {
@@ -12,14 +10,12 @@ namespace Rocket.API.Plugins
     {
         List<IRocketPlugin> GetPlugins();
         IRocketPlugin GetPlugin(string name);
-        void Load(string pluginDirectory, string librariesDirectory);
+        string PluginsDirectory { get; }
+        void Load(string pluginDirectory, string languageCode);
         void Reload();
         void Unload();
         string GetPluginDirectory(string name);
         RocketCommandList Commands { get; }
-        void LoadPlugin(IRocketPlugin rocketPlugin);
         InitialiseDelegate Initialise { set; }
-        IAsset<IRocketPluginConfiguration> GetPluginConfiguration(IRocketPlugin plugin,Type configuration,string name = "");
-        IAsset<IRocketPluginConfiguration> GetPluginTranslation(IRocketPlugin plugin);
     }
 }

@@ -47,24 +47,10 @@ namespace Rocket.Unturned.Commands
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            ReadOnlyCollection<IRocketCommand> commands = R.Instance.GetAllCommands();
+            ReadOnlyCollection<IRocketCommand> commands = R.GetAllCommands();
             if (command.Length == 0)
             {
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("[Vanilla]");
-                Console.ForegroundColor = ConsoleColor.White;
-                commands.OrderBy(c => c.Name).All(c => { System.Console.WriteLine(c.Name.ToLower().PadRight(20, ' ') + " " + c.Syntax.Replace(c.Name, "").TrimStart().ToLower()); return true; });
-
-                Console.WriteLine();
-
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("[Rocket]");
-                Console.ForegroundColor = ConsoleColor.White;
-                commands.Where(c => c.GetType().Assembly == Assembly.GetExecutingAssembly()).OrderBy(c => c.Name).All(c => { System.Console.WriteLine(c.Name.ToLower().PadRight(20, ' ') + " " + c.Syntax.ToLower()); return true; });
-
-                Console.WriteLine();
-
-                foreach (IRocketPluginManager pluginManager in R.Instance.PluginManagers)
+                foreach (IRocketPluginManager pluginManager in R.PluginManagers)
                 {
                     string name = pluginManager.GetType().Assembly.GetName().Name;
                     Console.ForegroundColor = ConsoleColor.Cyan;

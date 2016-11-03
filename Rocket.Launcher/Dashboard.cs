@@ -39,14 +39,14 @@ namespace Rocket.Launcher
         {
             if (e.KeyCode == Keys.Enter)
             {
-                richTextBox1.Text += textBox1.Text + Environment.NewLine;
+                richTextBox1.Text += textBox1.Text + System.Environment.NewLine;
                 textBox1.Text = "";
             }
         }
 
         internal void TellLog(string message)
         {
-            richTextBox1.Text += message + Environment.NewLine;
+            richTextBox1.Text += message + System.Environment.NewLine;
         }
     }
 }

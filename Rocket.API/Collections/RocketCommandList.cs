@@ -1,24 +1,29 @@
-﻿using Rocket.API.Commands;
+﻿using Rocket.API.Assets;
 using Rocket.API.Exceptions;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
-using Rocket.Collections;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Rocket.API.Commands
 {
-    public class RocketCommandList : IEnumerable<RegisteredRocketCommand>
+    [Serializable]
+    public class RocketCommandList : IEnumerable<RegisteredRocketCommand>, IDefaultable
     {
         private List<RegisteredRocketCommand> commands = new List<RegisteredRocketCommand>();
         public ReadOnlyCollection<RegisteredRocketCommand> Commands { get; internal set; }
 
         private IRocketPluginManager manager;
+
+        public RocketCommandList()
+        {
+            Commands = commands.AsReadOnly();
+        }
 
         public RocketCommandList(IRocketPluginManager manager){
             this.manager = manager;
@@ -35,7 +40,7 @@ namespace Rocket.API.Commands
 
         public RegisteredRocketCommand GetCommand(string name)
         {
-            return commands.Where(c => c.Name == name).FirstOrDefault();
+            return commands.Where(c => c.Name.ToLower() == name.ToLower() && c.Enabled).FirstOrDefault();
         }
 
         public IEnumerator<RegisteredRocketCommand> GetEnumerator()
@@ -46,6 +51,11 @@ namespace Rocket.API.Commands
         IEnumerator IEnumerable.GetEnumerator()
         {
             return Commands.GetEnumerator();
+        }
+
+        public void Add(RegisteredRocketCommand command)
+        {
+            commands.Add(command);
         }
 
         public void Add(IRocketCommand command)
@@ -141,5 +151,50 @@ namespace Rocket.API.Commands
             return false;
         }
 
+        public void Persist()
+        {
+            string persistenseFile = String.Format(API.Environment.CommandsFile, manager.GetType().Name);
+            XMLFileAsset<RocketCommandList> a = new XMLFileAsset<RocketCommandList>(persistenseFile,null,this);
+            
+
+            foreach (RegisteredRocketCommand command in a.Instance.ToList())
+            {
+                command.Name = command.Name.ToLower();
+            }
+
+            foreach(RegisteredRocketCommand command in a.Instance)
+            {
+                foreach (RegisteredRocketCommand rcommand in a.Instance.Where(c => c.Identifier == command.Identifier && c.Enabled).Skip(1).ToList())
+                {
+                    rcommand.Enabled = false;
+                }
+                foreach (RegisteredRocketCommand rcommand in a.Instance.Commands.Where(c => c.Name == command.Name && c.Enabled).Skip(1).ToList())
+                {
+                    rcommand.Enabled = false;
+                }
+            }
+
+
+            foreach (RegisteredRocketCommand command in Commands.ToList())
+            {
+                RegisteredRocketCommand entry = a.Instance.Where(c => c.Identifier == command.Identifier && c.Enabled).FirstOrDefault();
+                if (entry != null)
+                {
+                    command.Name = entry.Name;
+                    command.Help = entry.Help;
+                    command.Syntax = entry.Syntax;
+                }
+                else
+                {
+                    a.Instance.commands.Add(command);
+                }
+            }
+            a.Save();
+        }
+
+        public void LoadDefaults()
+        {
+            Commands = new ReadOnlyCollection<RegisteredRocketCommand>(new List<RegisteredRocketCommand>());
+        }
     }
 }

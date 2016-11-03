@@ -43,6 +43,13 @@
     <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -66,6 +73,7 @@
     <Compile Include="Commands\RocketAttributeCommand.cs" />
     <Compile Include="Commands\RocketCommandAttribute.cs" />
     <Compile Include="Collections\RocketCommandList.cs" />
+    <Compile Include="Environment.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\AssemblyListExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtension.cs" />

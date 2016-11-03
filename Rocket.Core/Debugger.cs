@@ -56,7 +56,7 @@ namespace Rocket.Core
         {
             if (GetOpenWindows().Where(k => k.Value == "Select Unity Instance").Count() == 0)
             {
-                R.Instance.Initialize();
+                R.instance.Initialize();
                 Destroy(this);
                 return;
             }
@@ -74,7 +74,7 @@ namespace Rocket.Core
             if (System.Diagnostics.Debugger.IsAttached)
             {
                 Console.WriteLine("\nDebugger found, continuing...");
-                R.Instance.Initialize();
+                R.instance.Initialize();
                 Destroy(this);
             }
         }

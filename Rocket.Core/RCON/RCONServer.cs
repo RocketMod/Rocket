@@ -5,7 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Collections.Generic;
 using System.Reflection;
-using Rocket.Core.Logging;
+using Logger =  Rocket.API.Logging.Logger;
 using UnityEngine;
 using Rocket.API;
 
@@ -87,7 +87,7 @@ namespace Rocket.Core.RCON
                             else
                             {
                                 newclient.Send("Error: Invalid password!\r\n");
-                                Logging.Logger.Log("Client has failed to log in.");
+                                Logger.Error("Client has failed to log in.");
                                 break;
                             }
                         }
@@ -104,7 +104,7 @@ namespace Rocket.Core.RCON
                         continue;
                     }
                     if (command != "ia")
-                        Logging.Logger.Log("Client has executed command \"" + command + "\"");
+                        Logger.Info("Client has executed command \"" + command + "\"");
 
                     lock (commands)
                     {
@@ -117,13 +117,13 @@ namespace Rocket.Core.RCON
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
                 Thread.Sleep(1500);
-                Logging.Logger.Log("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
+                Logger.Info("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
                 newclient.Close();
 
             }
             catch (Exception ex)
             {
-                Logging.Logger.LogException(ex);
+                Logger.Error(ex);
             }
         }
 
@@ -132,7 +132,7 @@ namespace Rocket.Core.RCON
             lock (commands)
             {
                 while (commands.Count != 0)
-                    R.Commands.Execute(new ConsolePlayer(), commands.Dequeue());
+                    R.Execute(new ConsolePlayer(), commands.Dequeue());
             }
         }
 

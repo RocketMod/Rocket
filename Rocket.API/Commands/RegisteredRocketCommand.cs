@@ -6,111 +6,65 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace Rocket.API.Commands
 {
-    public class RegisteredRocketCommand : IRocketCommand, ICooldownItem
+    [Serializable]
+    public class RegisteredRocketCommand : IRocketCommand
     {
-        public IRocketCommand Command;
-        private string name;
 
         public RegisteredRocketCommand(IRocketPluginManager manager, string name, IRocketCommand command)
         {
-            this.manager = manager;
-            this.name = name;
+            Manager = manager;
+            Name = name.ToLower();
             Command = command;
+
+            AllowedCaller = command.AllowedCaller;
+            Help = command.Help;
+            Identifier = command.GetType().Assembly.GetName().Name+"."+name;
+            Permissions = command.Permissions;
+            Aliases = command.Aliases;
+            Syntax = command.Syntax;
+            Enabled = true;
         }
 
-        public List<string> Aliases
-        {
-            get
-            {
-                return Command.Aliases;
-            }
-        }
+        [XmlIgnore]
+        public IRocketCommand Command;
 
-        public AllowedCaller AllowedCaller
-        {
-            get
-            {
-                return Command.AllowedCaller;
-            }
-        }
-
-        public string Help
-        {
-            get
-            {
-                return Command.Help;
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
-
-        public string Identifier  {
-            get { return name; }
-        }
-
-        public List<string> Permissions
-        {
-            get
-            {
-                return Command.Permissions;
-            }
-        }
-
-        public string Syntax
-        {
-            get
-            {
-                return Command.Syntax;
-            }
-        }
-
-        private IRocketPluginManager manager;
-
-        public event CooldownExpired OnCooldownExpired;
-
-        public IRocketPluginManager Manager
-        {
-            get
-            {
-                return manager;
-            }
-        }
-
-        public double Cooldown
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        private DateTime started;
-
-        public DateTime Started
-        {
-            get { return started; }
-            set { started = value; }
-        }
+        [XmlIgnore]
+        public IRocketPluginManager Manager { get; private set; }
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
             Command.Execute(caller, command);
         }
 
-        public void Expire()
-        {
-            OnCooldownExpired.TryInvoke();
-            throw new NotImplementedException();
-        }
+        public RegisteredRocketCommand() { }
+
+        [XmlAttribute]
+        public string Identifier { get; set; }
+
+        [XmlAttribute]
+        public string Name { get; set; }
+
+        [XmlElement]
+        public string Help { get; set; }
+
+        [XmlIgnore]
+        public AllowedCaller AllowedCaller { get; set; }
+
+        [XmlElement]
+        public string Syntax { get; set; }
+
+        [XmlAttribute]
+        public bool Enabled { get; set; }
+
+        [XmlIgnore]
+        public List<string> Permissions { get; set; }
+
+        [XmlIgnore]
+        public List<string> Aliases { get; set; }
     }
 
 }

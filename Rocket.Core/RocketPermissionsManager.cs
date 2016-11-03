@@ -18,15 +18,15 @@ namespace Rocket.Core.Permissions
         {
             try
             {
-                if (R.Instance.Settings.Instance.WebPermissions.Enabled)
+                if (R.Settings.Instance.WebPermissions.Enabled)
                 {
                     lastWebPermissionsUpdate = DateTime.Now;
-                    helper = new RocketPermissionsHelper(new WebXMLFileAsset<RocketPermissions>(new Uri(R.Instance.Settings.Instance.WebPermissions.Url + "?instance=" + R.Implementation.InstanceName)));
+                    helper = new RocketPermissionsHelper(new WebXMLFileAsset<RocketPermissions>(new Uri(R.Settings.Instance.WebPermissions.Url + "?instance=" + R.Implementation.InstanceName)));
                     updateWebPermissions = true;
                 }
                 else
                 {
-                    helper = new RocketPermissionsHelper(new XMLFileAsset<RocketPermissions>(Environment.PermissionFile));
+                    helper = new RocketPermissionsHelper(new XMLFileAsset<RocketPermissions>(API.Environment.PermissionFile));
                 }
             }
             catch (Exception ex)
@@ -42,7 +42,7 @@ namespace Rocket.Core.Permissions
         {
             try
             {
-                if (updateWebPermissions && R.Instance.Settings.Instance.WebPermissions.Interval > 0 && (DateTime.Now - lastWebPermissionsUpdate) > TimeSpan.FromSeconds(R.Instance.Settings.Instance.WebPermissions.Interval))
+                if (updateWebPermissions && R.Settings.Instance.WebPermissions.Interval > 0 && (DateTime.Now - lastWebPermissionsUpdate) > TimeSpan.FromSeconds(R.Settings.Instance.WebPermissions.Interval))
                 {
                     lastWebPermissionsUpdate = DateTime.Now;
                     updateWebPermissions = false;

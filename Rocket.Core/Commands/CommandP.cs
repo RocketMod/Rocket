@@ -50,7 +50,7 @@ namespace Rocket.Unturned.Commands
         {
             if(command.Length == 1 && command[0].ToLower() == "reload" && caller.HasPermission("p.reload"))
             {
-                R.Instance.Permissions.Reload();
+                R.Permissions.Reload();
                 R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_reload"));
                 return;
             }
@@ -60,15 +60,15 @@ namespace Rocket.Unturned.Commands
 
             if (command.Length == 0 && !(caller is ConsolePlayer))
             {
-                R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Instance.Permissions.GetGroups(caller, true).Select(g => g.DisplayName).ToArray())));
-                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Instance.Permissions.GetPermissions(caller).Select(p => p.Name + (p.Cooldown != 0 ? "(" + p.Cooldown + ")" : "")).ToArray())));
+                R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Permissions.GetGroups(caller, true).Select(g => g.DisplayName).ToArray())));
+                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Permissions.GetPermissions(caller).Select(p => p.Name + (p.Cooldown != 0 ? "(" + p.Cooldown + ")" : "")).ToArray())));
             }
             else if(command.Length == 1) {
 
                 IRocketPlayer player = command.GetRocketPlayerParameter(0);
                 if (player != null) {
-                    R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Instance.Permissions.GetGroups(player, true).Select(g => g.DisplayName).ToArray())));
-                    R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Instance.Permissions.GetPermissions(player).Select(p => p.Name +(p.Cooldown != 0? "(" + p.Cooldown + ")" : "")).ToArray())));
+                    R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Permissions.GetGroups(player, true).Select(g => g.DisplayName).ToArray())));
+                    R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Permissions.GetPermissions(player).Select(p => p.Name +(p.Cooldown != 0? "(" + p.Cooldown + ")" : "")).ToArray())));
                 }
                 else
                 {
@@ -88,7 +88,7 @@ namespace Rocket.Unturned.Commands
                 {
                     case "add":
                         if (caller.HasPermission("p.add")&& player != null && groupName != null) {
-                            switch (R.Instance.Permissions.AddPlayerToGroup(groupName, player))
+                            switch (R.Permissions.AddPlayerToGroup(groupName, player))
                             {
                                 case RocketPermissionsProviderResult.Success:
                                     R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_added", player.DisplayName, groupName));
@@ -110,7 +110,7 @@ namespace Rocket.Unturned.Commands
                         return;
                     case "remove":
                         if (caller.HasPermission("p.remove") && player != null && groupName != null) {
-                            switch (R.Instance.Permissions.RemovePlayerFromGroup(groupName, player))
+                            switch (R.Permissions.RemovePlayerFromGroup(groupName, player))
                             {
                                 case RocketPermissionsProviderResult.Success:
                                     R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_removed", player.DisplayName, groupName));

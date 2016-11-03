@@ -21,6 +21,8 @@ using Rocket.Core.IPC;
 using Logger = Rocket.API.Logging.Logger;
 using Rocket.Plugins.Native;
 using System.Threading;
+using Rocket.Core.RCON;
+using Rocket.Unturned.Commands;
 
 namespace Rocket.Core
 {
@@ -35,27 +37,23 @@ namespace Rocket.Core
         #endregion
 
         #region Static Properties
-        public static R Instance { get; private set; }
+        internal static R instance;
         public static IRocketImplementation Implementation { get; private set; }
         public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        public static IRocketPermissionsProvider Permissions { get; set; }
+        public static RocketServiceHost RPC { get; private set; }
+        public static XMLFileAsset<RocketSettings> Settings { get; private set; }
+        public static XMLFileAsset<TranslationList> Translation { get; private set; }
+        public static List<IRocketPluginManager> PluginManagers { get; private set; } = new List<IRocketPluginManager>();
         #endregion
 
         #region Static Methods
         public static string Translate(string translationKey, params object[] placeholder)
         {
-            return Instance.Translation.Instance.Translate(translationKey, placeholder);
+            return Translation.Instance.Translate(translationKey, placeholder);
         }
-        #endregion
-
-        #region Properties
-        public IRocketPermissionsProvider Permissions { get; set; }
-        public RocketServiceHost RPC { get; private set; }
-        public XMLFileAsset<RocketSettings> Settings { get; private set; }
-        public XMLFileAsset<TranslationList> Translation { get; private set; }
-        public List<IRocketPluginManager> PluginManagers { get; private set; } = new List<IRocketPluginManager>();
-        #endregion
-
-        public ReadOnlyCollection<IRocketPlugin> GetAllPlugins()
+        
+        public static ReadOnlyCollection<IRocketPlugin> GetAllPlugins()
         {
             List<IRocketPlugin> plugins = new List<IRocketPlugin>();
             foreach (IRocketPluginManager m in PluginManagers)
@@ -64,7 +62,8 @@ namespace Rocket.Core
             }
             return plugins.AsReadOnly();
         }
-        public ReadOnlyCollection<IRocketCommand> GetAllCommands()
+
+        public static ReadOnlyCollection<IRocketCommand> GetAllCommands()
         {
             List<IRocketCommand> commands = new List<IRocketCommand>();
             foreach (IRocketPluginManager m in PluginManagers)
@@ -77,7 +76,7 @@ namespace Rocket.Core
             return commands.AsReadOnly();
         }
 
-        public IRocketCommand GetCommand(string name)
+        public static IRocketCommand GetCommand(string name)
         {
             IRocketCommand commands = null;
             foreach (IRocketPluginManager m in PluginManagers)
@@ -87,67 +86,7 @@ namespace Rocket.Core
             return commands;
         }
 
-        private void Awake()
-        {
-            Instance = this;
-            Implementation = (IRocketImplementation)GetComponent(typeof(IRocketImplementation));
-            Environment.Initialize();
-
-            #if FALSE//DEBUG
-                gameObject.TryAddComponent<Debugger>();
-            #else
-                Initialize();
-            #endif
-        }
-
-        internal void Initialize()
-        {
-            try
-            {
-
-                Settings = new XMLFileAsset<RocketSettings>(Environment.SettingsFile);
-
-                TranslationList defaultTranslations = new TranslationList();
-                defaultTranslations.AddRange(new RocketTranslations());
-                Translation = new XMLFileAsset<TranslationList>(String.Format(Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, defaultTranslations);
-                Translation.AddUnknownEntries(defaultTranslations);
-
-                Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
-                gameObject.TryAddComponent<TaskDispatcher>();
-
-                NativeRocketPluginManager nativeRocketPluginManager = gameObject.TryAddComponent<NativeRocketPluginManager>();
-                nativeRocketPluginManager.AddImplementationCommands(Implementation.GetAllCommands());
-                PluginManagers.Add(nativeRocketPluginManager);
-
-                try
-                {
-                    if (Settings.Instance.RPC.Enabled)
-                        new Thread(new ThreadStart(()=>{ 
-                            RPC = new RocketServiceHost(Settings.Instance.RPC.Port);
-                        })).Start();
-                    if (Settings.Instance.RCON.Enabled)
-                        gameObject.TryAddComponent<RCONServer>();
-
-                }
-                catch (Exception e)
-                {
-                    Logger.Error(e);
-                }
-
-                Implementation.OnInitialized += () =>
-                {
-                    if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
-                    Application.targetFrameRate = Settings.Instance.MaxFrames;
-                };
-                OnInitialized.TryInvoke();
-            }
-            catch (Exception ex)
-            {
-                Logger.Fatal(ex);
-            }
-        }
-
-        public void Reload()
+        public static void Reload()
         {
             try
             {
@@ -162,9 +101,10 @@ namespace Rocket.Core
                 Logger.Fatal(ex);
             }
         }
-        
-        public bool Execute(IRocketPlayer caller, string commandString)
+
+        public static bool Execute(IRocketPlayer caller, string commandString)
         {
+            Logger.Debug("EXECUTE:"+commandString);
             string name = "";
             string[] parameters = new string[0];
             try
@@ -181,8 +121,9 @@ namespace Rocket.Core
 
                 List<IRocketCommand> commands = new List<IRocketCommand>();
 
+                Logger.Debug("NAME:"+name);
 
-                foreach (IRocketPluginManager p in Instance.PluginManagers)
+                foreach (IRocketPluginManager p in PluginManagers)
                 {
                     IRocketCommand c = p.Commands.GetCommand(name);
                     if (c != null) commands.Add(c);
@@ -214,6 +155,7 @@ namespace Rocket.Core
                         try
                         {
                             command.Execute(caller, parameters);
+                            Logger.Debug("EXECUTED");
                             return true;
                         }
                         catch (NoPermissionsForCommandException ex)
@@ -229,6 +171,9 @@ namespace Rocket.Core
                             throw;
                         }
                     }
+                }else
+                {
+                    Logger.Info("Command not found");
                 }
             }
             catch (Exception ex)
@@ -236,6 +181,80 @@ namespace Rocket.Core
                 Logger.Error("An error occured while executing " + name + " [" + String.Join(", ", parameters) + "]", ex);
             }
             return false;
+        }
+        #endregion
+
+        private void Awake()
+        {
+            instance = this;
+            Implementation = (IRocketImplementation)GetComponent(typeof(IRocketImplementation));
+            API.Environment.Initialize();
+            Logger.Initialize(API.Environment.LogConfigurationFile);
+            Logger.Info("##########################################");
+            Logger.Info("Starting RocketMod " + R.Version + " for " + R.Implementation?.Name + " on instance " + R.Implementation?.InstanceName);
+            Logger.Info("##########################################");
+
+            #if DEBUG
+                gameObject.TryAddComponent<Debugger>();
+            #else
+                Initialize();
+            #endif
+        }
+
+        internal void Initialize()
+        {
+            try
+            {
+                Settings = new XMLFileAsset<RocketSettings>(API.Environment.SettingsFile);
+                API.Environment.LanguageCode = Settings.Instance.LanguageCode;
+                TranslationList defaultTranslations = new TranslationList();
+                defaultTranslations.AddRange(new RocketTranslations());
+                Translation = new XMLFileAsset<TranslationList>(String.Format(API.Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, defaultTranslations);
+                Translation.AddUnknownEntries(defaultTranslations);
+
+                Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
+                gameObject.TryAddComponent<TaskDispatcher>();
+
+                NativeRocketPluginManager nativeRocketPluginManager = gameObject.TryAddComponent<NativeRocketPluginManager>();
+                nativeRocketPluginManager.AddCommands(new List<IRocketCommand>()
+                {
+                    new CommandExit(),
+                    new CommandHelp(),
+                    new CommandP(),
+                    new CommandRocket()
+                });
+                nativeRocketPluginManager.AddCommands(Implementation.GetAllCommands());
+                nativeRocketPluginManager.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
+                nativeRocketPluginManager.Commands.Persist();
+
+                PluginManagers.Add(nativeRocketPluginManager);
+
+                try
+                {
+                    if (Settings.Instance.RPC.Enabled)
+                        new Thread(new ThreadStart(()=>{ 
+                            RPC = new RocketServiceHost(Settings.Instance.RPC.Port);
+                        })).Start();
+                    if (Settings.Instance.RCON.Enabled)
+                        gameObject.TryAddComponent<RCONServer>();
+
+                }
+                catch (Exception e)
+                {
+                    Logger.Error(e);
+                }
+
+                Implementation.OnInitialized += () =>
+                {
+                    if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
+                    Application.targetFrameRate = Settings.Instance.MaxFrames;
+                };
+                OnInitialized.TryInvoke();
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex);
+            }
         }
     }
 }

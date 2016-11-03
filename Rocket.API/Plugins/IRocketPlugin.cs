@@ -21,6 +21,7 @@ namespace Rocket.API.Plugins
         PluginState State { get; }
         TranslationList DefaultTranslations { get; }
         IAsset<TranslationList> Translations { get; }
+        string WorkingDirectory { get; }
 
         void LoadPlugin();
         void UnloadPlugin(PluginState state = PluginState.Unloaded);

@@ -18,7 +18,7 @@ namespace Rocket.API.Logging
         public LogMessage(LogLevel logLevel, object message, Exception exception = null)
         {
             LogLevel = logLevel;
-            Message = message.ToString();
+            Message = message?.ToString();
             Exception = exception;
         }
     }

@@ -11,6 +11,8 @@ using Rocket.API.Commands;
 using Rocket.API.Assets;
 using Logger = Rocket.API.Logging.Logger;
 using System.Collections.ObjectModel;
+using Rocket.API.Collections;
+using Rocket.API.Extensions;
 
 namespace Rocket.Plugins.Native
 {
@@ -18,13 +20,13 @@ namespace Rocket.Plugins.Native
     {
         public static NativeRocketPluginManager Instance { get; private set; }
         private static List<Assembly> pluginAssemblies;
-        private static List<GameObject> plugins = new List<GameObject>();
+        private static List<NativeRocketPlugin> plugins = new List<NativeRocketPlugin>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
 
         public InitialiseDelegate Initialise { get; set; }
-        
+
         public RocketCommandList Commands { get; private set; }
-         
+
         public List<IRocketPlugin> GetPlugins()
         {
             return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null).Select(p => (IRocketPlugin)p).ToList();
@@ -37,16 +39,23 @@ namespace Rocket.Plugins.Native
 
         public string GetPluginDirectory(string name)
         {
-            return Path.Combine(pluginDirectory, name);
+            return Path.Combine(PluginsDirectory, name)+"/";
         }
 
-        string pluginDirectory, librariesDirectory;
-        public void Load(string pluginDirectory, string librariesDirectory)
+        public string PluginsDirectory { get; private set; }
+        string librariesDirectory;
+        string languageCode = "en";
+        public void Load(string pluginDirectory, string languageCode, string librariesDirectory)
         {
-            Logger.Info("loading");
-            this.pluginDirectory = pluginDirectory;
+            PluginsDirectory = pluginDirectory;
             this.librariesDirectory = librariesDirectory;
+            this.languageCode = languageCode;
             loadPlugins();
+        }
+
+        public void Load(string pluginDirectory, string languageCode)
+        {
+            throw new NotImplementedException();
         }
 
         private void Awake()
@@ -127,7 +136,7 @@ namespace Rocket.Plugins.Native
         private void loadPlugins()
         {
             libraries = GetAssembliesFromDirectory(librariesDirectory);
-            pluginAssemblies = LoadAssembliesFromDirectory(pluginDirectory);
+            pluginAssemblies = LoadAssembliesFromDirectory(PluginsDirectory);
 
             Logger.Info("loadingPlugins");
             foreach (Assembly pluginAssembly in pluginAssemblies) {
@@ -135,12 +144,7 @@ namespace Rocket.Plugins.Native
 
                 foreach (Type pluginType in pluginImplemenations)
                 {
-                    GameObject plugin = new GameObject(pluginType.Name, pluginType);
-                    Commands.AddRange(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
-
-                    Logger.Info("newplugin");
-                    DontDestroyOnLoad(plugin);
-                    plugins.Add(plugin);
+                    gameObject.TryAddComponent(pluginType);
                 }
             }
         }
@@ -181,7 +185,7 @@ namespace Rocket.Plugins.Native
             return l;
         }
 
-        public void AddImplementationCommands(ReadOnlyCollection<IRocketCommand> commands)
+        public void AddCommands(IEnumerable<IRocketCommand> commands)
         {
             Commands.AddRange(commands.AsEnumerable());
         }
@@ -212,21 +216,6 @@ namespace Rocket.Plugins.Native
                 }
             }
             return assemblies;
-        }
-
-        public void LoadPlugin(IRocketPlugin rocketPlugin)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IAsset<IRocketPluginConfiguration> GetPluginConfiguration(IRocketPlugin plugin,Type configuration, string name = "")
-        {
-            throw new NotImplementedException();
-        }
-
-        public IAsset<IRocketPluginConfiguration> GetPluginTranslation(IRocketPlugin plugin)
-        {
-            throw new NotImplementedException();
         }
     }
 }

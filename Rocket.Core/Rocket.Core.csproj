@@ -87,7 +87,6 @@
     <Compile Include="Steam\Profile.cs" />
     <Compile Include="Steam\Steam.cs" />
     <Compile Include="Tasks\TaskDispatcher.cs" />
-    <Compile Include="Environment.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">

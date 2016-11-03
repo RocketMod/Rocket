@@ -10,25 +10,40 @@ using System.Linq;
 using UnityEngine;
 using Logger = Rocket.API.Logging.Logger;
 using System.Reflection;
+using System.IO;
 
 namespace Rocket.API.Plugins
 {
     public class RocketPluginBase<T> : RocketPluginBase, IRocketPlugin<T> where T : class, IRocketPluginConfiguration
     {
         public IAsset<T> Configuration { get; private set; }
-
-        protected RocketPluginBase(IRocketPluginManager manager) : base(manager) 
+        public void Initialize()
         {
-            Configuration = (IAsset<T>)manager.GetPluginConfiguration(this,typeof(T));
-        }
+            base.Initialize(false);
 
+            string configurationFile = Path.Combine(WorkingDirectory,string.Format(API.Environment.PluginConfigurationFileTemplate, Name));
+            string url = null;
+            if (File.Exists(configurationFile))
+                url = File.ReadAllLines(configurationFile).First().Trim();
+
+            Uri uri;
+            if (url != null && Uri.TryCreate(url, UriKind.Absolute, out uri))
+            {
+                Configuration = new WebXMLFileAsset<T>(uri, null, (IAsset<T> config)=> { LoadPlugin(); });
+            }
+            else
+            {
+                Configuration = new XMLFileAsset<T>(configurationFile);
+                LoadPlugin();
+            }
+        }
         public override void LoadPlugin()
         {
-            Configuration.Load();
             base.LoadPlugin();
+            Configuration.Load();
         }
     }
-
+    
     public class RocketPluginBase : MonoBehaviour, IRocketPlugin
     {
         public string WorkingDirectory { get; internal set; }
@@ -45,10 +60,10 @@ namespace Rocket.API.Plugins
         public static event RocketPluginLoading OnPluginsLoading;
         public static event RocketPluginLoaded OnPluginsLoaded;
 
-        public IRocketPluginManager PluginManager { get; private set; }
+        public IRocketPluginManager PluginManager { get; protected set; }
         public IAsset<TranslationList> Translations { get ; private set; }
         public PluginState State { get; private set; } = PluginState.Unloaded;
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
 
         public bool IsDependencyLoaded(string plugin)
@@ -75,16 +90,21 @@ namespace Rocket.API.Plugins
             }
         }
 
-        protected RocketPluginBase(IRocketPluginManager manager)
+        public virtual void Initialize(bool loadPlugin = true)
         {
-            this.PluginManager = manager;
-
-            WorkingDirectory = manager.GetPluginDirectory(name);
-
+            WorkingDirectory = PluginManager.GetPluginDirectory(Name);
             if (!System.IO.Directory.Exists(WorkingDirectory))
                 System.IO.Directory.CreateDirectory(WorkingDirectory);
+
+            if (DefaultTranslations != null | DefaultTranslations.Count() != 0)
+            {
+                Translations = new XMLFileAsset<TranslationList>(Path.Combine(WorkingDirectory, String.Format(Environment.PluginTranslationFileTemplate, Name, Environment.LanguageCode)), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
+                Translations.AddUnknownEntries(DefaultTranslations);
+            }
+            if(loadPlugin)
+                LoadPlugin();
         }
-        
+
         public string Translate(string translationKey, params object[] placeholder)
         {
             return Translations.Instance.Translate(translationKey, placeholder);
@@ -180,11 +200,6 @@ namespace Rocket.API.Plugins
             State = state;
             OnPluginUnloaded.TryInvoke(this);
             OnPluginsUnloaded.TryInvoke(this);
-        }
-
-        private void OnEnable()
-        {
-            LoadPlugin();
         }
 
         private void OnDisable()

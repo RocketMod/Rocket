@@ -38,11 +38,6 @@ namespace Rocket.API.Logging
                 File.WriteAllText(logFile, config);
             }
                 ICollection configMessages = XmlConfigurator.Configure(new FileInfo(logFile));
-
-                foreach (var msg in configMessages)
-                {
-                    System.IO.File.AppendAllText("test.txt", msg.ToString() + Environment.NewLine);
-                }
             }
 
         private static ILog GetLogger()

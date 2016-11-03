@@ -7,8 +7,8 @@
     <ProjectGuid>{8888CBB9-7175-4E25-BEB9-A2A7E095D278}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rocket.Core.IPC.Host</RootNamespace>
-    <AssemblyName>Rocket.Core.IPC.Host</AssemblyName>
+    <RootNamespace>Rocket.IPC.Host</RootNamespace>
+    <AssemblyName>Rocket.IPC.Host</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProductVersion>12.0.0</ProductVersion>

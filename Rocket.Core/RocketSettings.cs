@@ -1,7 +1,7 @@
 ﻿using Rocket.API;
 using System.Xml.Serialization;
 
-namespace Rocket.Core.Serialization
+namespace Rocket.Core
 {
     public sealed class RemoteConsole
     {
@@ -27,15 +27,6 @@ namespace Rocket.Core.Serialization
         public int Interval = 180;
     }
 
-    public sealed class WebConfigurations
-    {
-        [XmlAttribute]
-        public bool Enabled = false;
-
-        [XmlAttribute]
-        public string Url = "";
-    }
-
     public sealed class RocketSettings : IDefaultable
     {
         [XmlElement("RPC")]
@@ -43,9 +34,6 @@ namespace Rocket.Core.Serialization
 
         [XmlElement("RCON")]
         public RemoteConsole RCON = new RemoteConsole();
-
-        [XmlElement("WebConfigurations")]
-        public WebConfigurations WebConfigurations = new WebConfigurations();
 
         [XmlElement("WebPermissions")]
         public WebPermissions WebPermissions = new WebPermissions();
@@ -60,7 +48,6 @@ namespace Rocket.Core.Serialization
         {
             RPC = new RemoteConsole();
             RCON = new RemoteConsole();
-            WebConfigurations = new WebConfigurations();
             WebPermissions = new WebPermissions();
             LanguageCode = "en";
             MaxFrames = 60;

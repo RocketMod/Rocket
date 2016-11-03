@@ -19,7 +19,7 @@ namespace Rocket.Core.IPC
 
         public void Execute(string command)
         {
-           R.Instance.Execute(new ConsolePlayer(), command);
+           R.Execute(new ConsolePlayer(), command);
         }
 
         public bool Test()

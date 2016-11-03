@@ -59,7 +59,7 @@ namespace Rocket.Unturned.Commands
                 switch (command[0].ToLower()) {
                     case "plugins":
                         if (caller != null && !caller.HasPermission("rocket.plugins")) return;
-                        ReadOnlyCollection<IRocketPlugin> plugins = R.Instance.GetAllPlugins();
+                        ReadOnlyCollection<IRocketPlugin> plugins = R.GetAllPlugins();
                         R.Implementation.Chat.Say(caller, R.Translate("command_rocket_plugins_loaded", String.Join(", ", plugins.Where(p => p.State == PluginState.Loaded).Select(p => p.GetType().Assembly.GetName().Name).ToArray())));
                         R.Implementation.Chat.Say(caller, R.Translate("command_rocket_plugins_unloaded", String.Join(", ", plugins.Where(p => p.State == PluginState.Unloaded).Select(p => p.GetType().Assembly.GetName().Name).ToArray())));
                         R.Implementation.Chat.Say(caller, R.Translate("command_rocket_plugins_failure", String.Join(", ", plugins.Where(p => p.State == PluginState.Failure).Select(p => p.GetType().Assembly.GetName().Name).ToArray())));
@@ -68,14 +68,14 @@ namespace Rocket.Unturned.Commands
                     case "reload":
                         if (caller!=null && !caller.HasPermission("rocket.reload")) return;
                             R.Implementation.Chat.Say(caller, R.Translate("command_rocket_reload"));
-                            R.Instance.Reload();
+                            R.Reload();
                         break;
                 }
             }
 
             if (command.Length == 2)
             {
-                IRocketPlugin p = R.Instance.GetAllPlugins().Where(pl => pl.Name.ToLower().Contains(command[1].ToLower())).FirstOrDefault();
+                IRocketPlugin p = R.GetAllPlugins().Where(pl => pl.Name.ToLower().Contains(command[1].ToLower())).FirstOrDefault();
                 if (p != null)
                 {
                     switch (command[0].ToLower())

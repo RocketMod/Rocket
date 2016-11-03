@@ -9,17 +9,17 @@ namespace Rocket.API
     {
         public static bool HasPermission(this IRocketPlayer player, string permission)
         {
-            return R.Instance.Permissions.HasPermission(player, permission) || player.IsAdmin;
+            return R.Permissions.HasPermission(player, permission) || player.IsAdmin;
         }
 
         public static bool HasPermissions(this IRocketPlayer player, IRocketCommand command)
         {
-            return R.Instance.Permissions.HasPermission(player, command) || player.IsAdmin;
+            return R.Permissions.HasPermission(player, command) || player.IsAdmin;
         }
 
         public static List<Permission> GetPermissions(this IRocketPlayer player)
         {
-            return R.Instance.Permissions.GetPermissions(player);
+            return R.Permissions.GetPermissions(player);
         }
     }
 }
