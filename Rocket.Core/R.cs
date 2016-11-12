@@ -226,8 +226,11 @@ namespace Rocket.Core
                 nativeRocketPluginManager.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
                 nativeRocketPluginManager.Commands.Persist();
 
+                Logger.Debug("another one");
+
                 PluginManagers.Add(nativeRocketPluginManager);
 
+                Logger.Debug("another onex1");
                 try
                 {
                     if (Settings.Instance.RPC.Enabled)
@@ -243,12 +246,14 @@ namespace Rocket.Core
                     Logger.Error(e);
                 }
 
+                Logger.Debug("another onex2");
                 Implementation.OnInitialized += () =>
                 {
                     if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
                     Application.targetFrameRate = Settings.Instance.MaxFrames;
                 };
                 OnInitialized.TryInvoke();
+                Logger.Debug("another onex3");
             }
             catch (Exception ex)
             {

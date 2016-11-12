@@ -8,11 +8,18 @@ namespace Rocket.IPC.Host
     {
         static void Main(string[] args)
         {
-            API.Environment.Initialize();
-            RocketServiceHost host = new RocketServiceHost(27115);
-            while (true)
+            try
             {
-                Logger.Info(Console.ReadLine());
+                API.Environment.Initialize();
+                RocketServiceHost host = new RocketServiceHost(27115);
+                while (true)
+                {
+                    Logger.Info(Console.ReadLine());
+                }
+            }
+            catch (Exception ex)
+            {
+                throw;
             }
         }
     }

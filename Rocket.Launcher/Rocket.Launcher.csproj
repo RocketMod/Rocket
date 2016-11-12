@@ -24,10 +24,11 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\..\Desktop\Unturned\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -36,9 +37,13 @@
     <OutputPath>..\..\..\..\..\Desktop\Unturned\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Rocket.Launcher.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MetroFramework, Version=1.2.0.3, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
@@ -54,6 +59,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
@@ -122,6 +128,9 @@
     <EmbeddedResource Include="Service.resx">
       <DependentUpon>Service.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="app.manifest">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Rocket.API.Logging.LogMessage.datasource" />
     <None Include="Properties\DataSources\Rocket.API.RocketPlayer.datasource" />
@@ -135,18 +144,18 @@
     <None Include="Service References\IPC\Rocket.API.xsd">
       <SubType>Designer</SubType>
     </None>
+    <None Include="Service References\IPC\service.wsdl" />
     <None Include="Service References\IPC\service.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\IPC\service1.wsdl" />
+    <AppDesigner Include="Properties\" />
     <None Include="Service References\IPC\service1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <AppDesigner Include="Properties\" />
     <None Include="Service References\IPC\service2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Service References\IPC\System.xsd">
+    <None Include="Service References\IPC\System.Collections.Generic.xsd">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>

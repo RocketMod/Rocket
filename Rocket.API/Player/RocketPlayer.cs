@@ -1,31 +1,33 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Rocket.API
 {
     [Serializable]
+    [DataContract]
     public class RocketPlayer : IRocketPlayer
     {
-        private string id;
-        public string Id { get { return id; } }
+        [DataMember]
+        public string Id { get; private set; }
 
-        private string displayName;
-        public string DisplayName { get { return displayName; } }
+        [DataMember]
+        public string DisplayName { get; private set; }
 
-        private bool isAdmin;
-        public bool IsAdmin { get { return isAdmin; } }
+        [DataMember]
+        public bool IsAdmin { get; private set; }
 
         public RocketPlayer(string Id, string DisplayName = null, bool IsAdmin = false)
         {
-            id = Id;
+            this.Id = Id;
             if (DisplayName == null)
             {
                 DisplayName = Id;
             }
             else
             {
-                displayName = DisplayName;
+                this.DisplayName = DisplayName;
             }
-            isAdmin = IsAdmin;
+            this.IsAdmin = IsAdmin;
         }
 
         public int CompareTo(object obj)

@@ -45,17 +45,17 @@ namespace Rocket.Launcher.IPC {
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerDisconnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerDisconnectedResponse")]
         System.Threading.Tasks.Task<Rocket.API.RocketPlayer> OnPlayerDisconnectedAsync();
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnLog", ReplyAction="http://tempuri.org/IRocketService/OnLogResponse")]
-        Rocket.API.Logging.LogMessage OnLog();
-        
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnLog", ReplyAction="http://tempuri.org/IRocketService/OnLogResponse")]
-        System.Threading.Tasks.Task<Rocket.API.Logging.LogMessage> OnLogAsync();
-        
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnShutdown", ReplyAction="http://tempuri.org/IRocketService/OnShutdownResponse")]
         bool OnShutdown();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnShutdown", ReplyAction="http://tempuri.org/IRocketService/OnShutdownResponse")]
         System.Threading.Tasks.Task<bool> OnShutdownAsync();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnLog", ReplyAction="http://tempuri.org/IRocketService/OnLogResponse")]
+        System.Collections.Generic.Queue<Rocket.API.Logging.LogMessage> OnLog();
+        
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnLog", ReplyAction="http://tempuri.org/IRocketService/OnLogResponse")]
+        System.Threading.Tasks.Task<System.Collections.Generic.Queue<Rocket.API.Logging.LogMessage>> OnLogAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -125,20 +125,20 @@ namespace Rocket.Launcher.IPC {
             return base.Channel.OnPlayerDisconnectedAsync();
         }
         
-        public Rocket.API.Logging.LogMessage OnLog() {
-            return base.Channel.OnLog();
-        }
-        
-        public System.Threading.Tasks.Task<Rocket.API.Logging.LogMessage> OnLogAsync() {
-            return base.Channel.OnLogAsync();
-        }
-        
         public bool OnShutdown() {
             return base.Channel.OnShutdown();
         }
         
         public System.Threading.Tasks.Task<bool> OnShutdownAsync() {
             return base.Channel.OnShutdownAsync();
+        }
+        
+        public System.Collections.Generic.Queue<Rocket.API.Logging.LogMessage> OnLog() {
+            return base.Channel.OnLog();
+        }
+        
+        public System.Threading.Tasks.Task<System.Collections.Generic.Queue<Rocket.API.Logging.LogMessage>> OnLogAsync() {
+            return base.Channel.OnLogAsync();
         }
     }
 }

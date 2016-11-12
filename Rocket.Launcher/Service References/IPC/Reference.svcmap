@@ -24,12 +24,12 @@
     <MetadataSource Address="http://localhost:27115/mex" Protocol="mex" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="service1.wsdl" MetadataType="Wsdl" ID="0b737ff2-76ff-4218-a72b-f69e76bde921" SourceId="1" SourceUrl="http://localhost:27115/mex" />
-    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="f44e108a-10bf-4096-80fa-d3624c736b58" SourceId="1" SourceUrl="http://localhost:27115/mex" />
-    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="93f34693-ae7d-4a6d-9766-f94924f3e6e1" SourceId="1" SourceUrl="http://localhost:27115/mex" />
-    <MetadataFile FileName="Rocket.API.xsd" MetadataType="Schema" ID="853de7e1-579d-4b04-8200-3ce6a6bc9c1d" SourceId="1" SourceUrl="http://localhost:27115/mex" />
-    <MetadataFile FileName="Rocket.API.Logging.xsd" MetadataType="Schema" ID="5d40aabb-11d9-4bf5-94c9-e38f1aaddf4e" SourceId="1" SourceUrl="http://localhost:27115/mex" />
-    <MetadataFile FileName="System.xsd" MetadataType="Schema" ID="ca3af7d9-e686-4ff9-a414-f772e2b2dadd" SourceId="1" SourceUrl="http://localhost:27115/mex" />
+    <MetadataFile FileName="service.wsdl" MetadataType="Wsdl" ID="752a723f-c842-43ef-889b-b2cf0cc58e48" SourceId="1" SourceUrl="http://localhost:27115/mex" />
+    <MetadataFile FileName="service1.xsd" MetadataType="Schema" ID="fe1eb690-48e9-4358-a5bd-ccd38f5a1afa" SourceId="1" SourceUrl="http://localhost:27115/mex" />
+    <MetadataFile FileName="service2.xsd" MetadataType="Schema" ID="98142790-7dcf-4e3b-950e-9c076128c0c3" SourceId="1" SourceUrl="http://localhost:27115/mex" />
+    <MetadataFile FileName="Rocket.API.xsd" MetadataType="Schema" ID="124c5271-297c-4ffa-a87e-fe9b686d1be7" SourceId="1" SourceUrl="http://localhost:27115/mex" />
+    <MetadataFile FileName="System.Collections.Generic.xsd" MetadataType="Schema" ID="ec3cabd6-3ead-4f74-b1a5-96ece782df53" SourceId="1" SourceUrl="http://localhost:27115/mex" />
+    <MetadataFile FileName="Rocket.API.Logging.xsd" MetadataType="Schema" ID="bc073ffd-14c8-41bd-adf4-1721fec77436" SourceId="1" SourceUrl="http://localhost:27115/mex" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />

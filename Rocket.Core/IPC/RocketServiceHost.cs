@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ServiceModel;
 using System.ServiceModel.Description;
-using System.Threading;
 using Logger = Rocket.API.Logging.Logger;
 namespace Rocket.Core.IPC
 {
@@ -13,16 +12,11 @@ namespace Rocket.Core.IPC
         private ServiceHost serviceHost = null;
         private Uri endpoint;
 
-        internal static ManualResetEvent OnPlayerConnectedReset = new ManualResetEvent(false);
-        internal static ManualResetEvent OnPlayerDisconnectedReset = new ManualResetEvent(false);
-        internal static ManualResetEvent OnLogReset = new ManualResetEvent(false);
-        internal static ManualResetEvent OnShutdownReset = new ManualResetEvent(false);
-
-        internal static Queue<RocketPlayer> OnPlayerConnectedQueue = new Queue<RocketPlayer>();
-        internal static Queue<RocketPlayer> OnPlayerDisconnectedQueue = new Queue<RocketPlayer>();
-        internal static Queue<LogMessage> OnLogQueue = new Queue<LogMessage>();
-
-
+        public static LongPollingEvent<RocketPlayer> OnPlayerConnected = new LongPollingEvent<RocketPlayer>();
+        public static LongPollingEvent<RocketPlayer> OnPlayerDisconnected = new LongPollingEvent<RocketPlayer>();
+        public static LongPollingEvent<LogMessage> OnLog = new LongPollingEvent<LogMessage>();
+        public static LongPollingEvent OnShutdown = new LongPollingEvent();
+        
         public RocketServiceHost(ushort port)
         {
             endpoint = new Uri(String.Format("http://localhost:{0}/", port));
@@ -41,14 +35,15 @@ namespace Rocket.Core.IPC
                 serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
 #endif
                 serviceHost.Open();
-
+                
                 if (R.Implementation != null)
                 {
-                    R.Implementation.OnPlayerConnected += Implementation_OnPlayerConnected;
-                    R.Implementation.OnPlayerDisconnected += Implementation_OnPlayerDisconnected;
-                    R.Implementation.OnShutdown += Implementation_OnShutdown;
+                    R.Implementation.OnPlayerConnected += (IRocketPlayer player) => { OnPlayerConnected.Invoke((RocketPlayer)player); };
+                    R.Implementation.OnPlayerDisconnected += (IRocketPlayer player) => { OnPlayerDisconnected.Invoke((RocketPlayer)player); };
+                    R.Implementation.OnShutdown += () => { OnShutdown.Invoke(); };
                 }
-                Logger.OnLog += Implemenation_OnLog;
+                
+                Logger.OnLog += (LogMessage message) => { if (message.LogLevel != LogLevel.DEBUG) ; OnLog.Invoke(message); };
 
                 Logger.Info("Starting IPC at " + endpoint);
             }
@@ -56,46 +51,6 @@ namespace Rocket.Core.IPC
             {
                 Logger.Error("Failed to start IPC at " + endpoint, e);
             }
-        }
-
-
-        private void Implementation_OnPlayerConnected(IRocketPlayer player)
-        {
-            lock (OnPlayerConnectedQueue)
-            {
-                OnPlayerConnectedQueue.Enqueue((RocketPlayer)player);
-            }
-            OnPlayerConnectedReset.Set();
-        }
-
-        private void Implementation_OnPlayerDisconnected(IRocketPlayer player)
-        {
-            lock (OnPlayerDisconnectedQueue)
-            {
-                OnPlayerDisconnectedQueue.Enqueue((RocketPlayer)player);
-            }
-            OnPlayerDisconnectedReset.Set();
-        }
-
-        private void Implemenation_OnLog(LogMessage message)
-        {
-            try
-            {
-                lock (OnLogQueue)
-                {
-                    OnLogQueue.Enqueue(message);
-                }
-                OnLogReset.Set();
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(ex);
-            }
-        }
-
-        private void Implementation_OnShutdown()
-        {
-            OnShutdownReset.Set();
         }
 
         public void Stop()

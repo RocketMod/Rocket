@@ -1,5 +1,4 @@
-﻿using Rocket.API;
-using Rocket.API.Plugins;
+﻿using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
 using System;
 using System.Collections.Generic;
@@ -8,10 +7,7 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Rocket.API.Commands;
-using Rocket.API.Assets;
 using Logger = Rocket.API.Logging.Logger;
-using System.Collections.ObjectModel;
-using Rocket.API.Collections;
 using Rocket.API.Extensions;
 
 namespace Rocket.Plugins.Native
@@ -138,8 +134,8 @@ namespace Rocket.Plugins.Native
             libraries = GetAssembliesFromDirectory(librariesDirectory);
             pluginAssemblies = LoadAssembliesFromDirectory(PluginsDirectory);
 
-            Logger.Info("loadingPlugins");
-            foreach (Assembly pluginAssembly in pluginAssemblies) {
+            foreach (Assembly pluginAssembly in pluginAssemblies)
+            {
                 List<Type> pluginImplemenations = pluginAssembly.GetTypesFromInterface("IRocketPlugin");
 
                 foreach (Type pluginType in pluginImplemenations)

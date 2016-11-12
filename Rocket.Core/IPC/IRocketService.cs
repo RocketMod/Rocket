@@ -19,7 +19,7 @@ namespace Rocket.Core.IPC
 
         [OperationContract]
         void Disconnect(bool shutdown);
-
+        
         [OperationContract]
         RocketPlayer OnPlayerConnected();
 
@@ -27,9 +27,9 @@ namespace Rocket.Core.IPC
         RocketPlayer OnPlayerDisconnected();
 
         [OperationContract]
-        LogMessage OnLog();
-
-        [OperationContract]
         bool OnShutdown();
+        
+        [OperationContract]
+        Queue<LogMessage> OnLog();
     }
 }

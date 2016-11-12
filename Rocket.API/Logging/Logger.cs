@@ -4,6 +4,7 @@ using log4net.Config;
 using System.Diagnostics;
 using System.Collections;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace Rocket.API.Logging
 {
@@ -37,8 +38,13 @@ namespace Rocket.API.Logging
 </log4net>";
                 File.WriteAllText(logFile, config);
             }
-                ICollection configMessages = XmlConfigurator.Configure(new FileInfo(logFile));
+               XmlConfigurator.Configure(new FileInfo(logFile));
+                AppDomain.CurrentDomain.UnhandledException += (object sender, UnhandledExceptionEventArgs e) =>
+                {
+                    Fatal(e.ExceptionObject);
+                };
             }
+
 
         private static ILog GetLogger()
         {
@@ -48,10 +54,10 @@ namespace Rocket.API.Logging
         }
 
         public static bool IsDebugEnabled { get { return GetLogger().IsDebugEnabled; } }
-        public static bool IsErrorEnabled { get { return GetLogger().IsErrorEnabled; } }
-        public static bool IsFatalEnabled { get { return GetLogger().IsFatalEnabled; } }
         public static bool IsInfoEnabled { get { return GetLogger().IsInfoEnabled; } }
         public static bool IsWarnEnabled { get { return GetLogger().IsWarnEnabled; } }
+        public static bool IsErrorEnabled { get { return GetLogger().IsErrorEnabled; } }
+        public static bool IsFatalEnabled { get { return GetLogger().IsFatalEnabled; } }
 
         public static void Debug(object message)
         {
@@ -63,30 +69,6 @@ namespace Rocket.API.Logging
         {
             GetLogger().Debug(message, exception);
             OnLog?.Invoke(new LogMessage(LogLevel.DEBUG, message, exception));
-        }
-
-        public static void Error(object message)
-        {
-            GetLogger().Error(message);
-            OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message));
-        }
-
-        public static void Error(object message, Exception exception)
-        {
-            GetLogger().Error(message, exception);
-            OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message, exception));
-        }
-
-        public static void Fatal(object message)
-        {
-            GetLogger().Fatal(message);
-            OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message));
-        }
-
-        public static void Fatal(object message, Exception exception)
-        {
-            GetLogger().Fatal(message, exception);
-            OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message, exception));
         }
 
         public static void Info(object message)
@@ -111,6 +93,29 @@ namespace Rocket.API.Logging
         {
             GetLogger().Warn(message, exception);
             OnLog?.Invoke(new LogMessage(LogLevel.WARN, message, exception));
+        }
+        public static void Error(object message)
+        {
+            GetLogger().Error(message);
+            OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message));
+        }
+
+        public static void Error(object message, Exception exception)
+        {
+            GetLogger().Error(message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message, exception));
+        }
+
+        public static void Fatal(object message)
+        {
+            GetLogger().Fatal(message);
+            OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message));
+        }
+
+        public static void Fatal(object message, Exception exception)
+        {
+            GetLogger().Fatal(message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message, exception));
         }
     }
 }

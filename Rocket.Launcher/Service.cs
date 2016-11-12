@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ServiceModel;
 using Rocket.Launcher.IPC;
 using System.Threading;
-using Rocket.API;
-using System.ServiceModel.Description;
 using Rocket.API.Logging;
+using Rocket.API;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rocket.Launcher
 {
@@ -24,226 +18,183 @@ namespace Rocket.Launcher
         public Service(ushort serverPort)
         {
             this.serverPort = serverPort;
-            Dashboard = new Dashboard(this); 
+            Dashboard = new Dashboard(this);
             InitializeComponent();
             Application.ApplicationExit += (object sender, EventArgs e) => { Disconnect(); };
         }
 
         public RocketServiceClient R = null;
         private ushort serverPort;
+        
+        private int errorCount = 0;
 
-        public void Connect()
+        public void Connect(bool retry = true)
         {
+            Task.Factory.StartNew(() =>
+            {
+                
                 pause();
-
                 try
                 {
-                    BasicHttpBinding binding = new BasicHttpBinding();
-                    binding.CloseTimeout = new TimeSpan(0, 10, 0);
-                    binding.OpenTimeout = new TimeSpan(0, 10, 0);
-                    binding.ReceiveTimeout = new TimeSpan(0, 10, 0);
-                    binding.SendTimeout = new TimeSpan(0, 10, 0);
+                    R = new RocketServiceClient(new BasicHttpBinding(), new EndpointAddress(String.Format("http://localhost:{0}/", serverPort)));
 
-                    new Thread(new ThreadStart(() =>
+                    R.Open();
+
+                    R.InnerChannel.OperationTimeout = new TimeSpan(0, 1, 0);
+                    R.Endpoint.Binding.CloseTimeout = new TimeSpan(0, 1, 0);
+                    R.Endpoint.Binding.OpenTimeout = new TimeSpan(0, 1, 0);
+                    R.Endpoint.Binding.ReceiveTimeout = new TimeSpan(0, 1, 0);
+                    R.Endpoint.Binding.SendTimeout = new TimeSpan(0, 1, 0);
+
+                    if (R.Test())
                     {
-                        try
+                        connected = true;
+                        InvokePlease(()=>
                         {
-                            R = new RocketServiceClient(binding, new EndpointAddress(String.Format("http://localhost:{0}/", serverPort)));
-                            R.Open();
-                            if (R.Test())
-                            {
-                                InvokePlease(() =>
-                                {
-                                    connected = true;
-                                    startThreads();
-                                    activate();
-                                });
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            Disconnect(ex);
-                        }
-                    })).Start();
-                   
+                            getLog();
+                            getPlayerConnected();
+                            getPlayerDisconnected();
+                            getShutdown();
+                        });
+                        activate();
+                    }
                 }
                 catch (Exception ex)
                 {
+                    if (retry && errorCount < 10)
+                    {
+                        
+                        Thread.Sleep(1000);
+                        Connect();
+                        return;
+                    }
+                    errorCount = 0;
                     Disconnect(ex);
                 }
-         
+            });
         }
 
-        private Thread OnPlayerConnectedThread = null;
+        public delegate void Log(LogMessage message);
+        public Log OnLog;
+        private async void getLog()
+        {
+            try
+            {
+                Queue<LogMessage> messages = await R.OnLogAsync();
+                while (messages.Count > 0)
+                {
+                    OnLog?.Invoke(messages.Dequeue());
+                }
+            }
+            catch (TimeoutException) { }
+            catch (ThreadAbortException) {  }
+            catch (Exception ce)
+            {
+                Disconnect(ce);
+            }
+            getLog();
+        }
+
+
+        public delegate void PlayerConnected(RocketPlayer message);
         public PlayerConnected OnPlayerConnected;
+        private async void getPlayerConnected()
+        {
+            try
+            {
+                RocketPlayer player = await R.OnPlayerConnectedAsync();
+                if (player != null)
+                    OnPlayerConnected?.Invoke(player);
+            }
+            catch (TimeoutException) { }
+            catch (ThreadAbortException) { }
+            catch (Exception ce)
+            {
+                Disconnect(ce);
+            }
+            getPlayerConnected();
+        }
 
-        private Thread OnPlayerDisconnectedThread = null;
+
+        public delegate void PlayerDisconnected(RocketPlayer message);
         public PlayerDisconnected OnPlayerDisconnected;
-
-        private Thread OnLogThread = null;
-        public Logger.Log OnLog;
-
-        private Thread OnImplementationShutdownThread = null;
-        public ImplementationShutdown OnImplementationShutdown;
-
-
-        private void prepareThreads()
+        private async void getPlayerDisconnected()
         {
-            OnPlayerConnectedThread = new Thread(new ThreadStart(() =>
+            try
             {
-                while (connected)
-                {
-                    RocketPlayer player = null;
-                    try
-                    {
-                        player = R.OnPlayerConnected();
-                        if (player != null)
-                            InvokePlease(() => { OnPlayerConnected?.Invoke(player); });
-                    }
-                    catch (TimeoutException)
-                    {
-                        //
-                    }
-                    catch (ThreadAbortException)
-                    {
-                        //
-                    }
-                    catch (Exception ce)
-                    {
-                        Disconnect(ce);
-                    }
-                }
-            }));
-
-
-            OnPlayerDisconnectedThread = new Thread(new ThreadStart(() =>
+                RocketPlayer player = await R.OnPlayerDisconnectedAsync();
+                if (player != null)
+                    OnPlayerDisconnected?.Invoke(player);
+            }
+            catch (TimeoutException) { }
+            catch (ThreadAbortException) { }
+            catch (Exception ce)
             {
-                while (connected)
-                {
-                    RocketPlayer player = null;
-                    try
-                    {
-                        player = R.OnPlayerDisconnected();
-                        if (player != null)
-                            InvokePlease(() => { OnPlayerDisconnected?.Invoke(player); });
-                    }
-                    catch (TimeoutException)
-                    {
-                        //
-                    }
-                    catch (ThreadAbortException)
-                    {
-                        //
-                    }
-                    catch (Exception ce)
-                    {
-                        Disconnect(ce);
-                    }
-                }
-            }));
-
-            OnLogThread = new Thread(new ThreadStart(() =>
-            {
-                while (connected)
-                {
-                    LogMessage message = null;
-                    try
-                    {
-                        message = R.OnLog();
-                        if (message != null)
-                            InvokePlease(() => { OnLog?.Invoke(message); });
-                    }
-                    catch (TimeoutException)
-                    {
-                        //
-                    }
-                    catch (ThreadAbortException)
-                    {
-                        //
-                    }
-                    catch (Exception ce)
-                    {
-                        Disconnect(ce);
-                    }
-                }
-            }));
-
-            OnImplementationShutdownThread = new Thread(new ThreadStart(() =>
-            {
-                while (connected)
-                {
-                    bool shutdown = false;
-                    try
-                    {
-                        shutdown = R.OnShutdown();
-                        InvokePlease(() => { OnImplementationShutdown?.Invoke(); });
-                    }
-                    catch (TimeoutException)
-                    {
-                        //
-                    }
-                    catch (ThreadAbortException)
-                    {
-                        //
-                    }
-                    catch (Exception ce)
-                    {
-                        Disconnect(ce);
-                    }
-                }
-            }));
+                Disconnect(ce);
+            }
+            getPlayerDisconnected();
         }
 
-        public void startThreads()
-        {
-            prepareThreads();
-            OnPlayerConnectedThread.Start();
-            OnPlayerDisconnectedThread.Start();
-            OnLogThread.Start();
-            OnImplementationShutdownThread.Start();
-        }
 
-        public void stopThreads()
+        public delegate void Shutdown();
+        public Shutdown OnShutdown;
+        private async void getShutdown()
         {
-            OnPlayerConnectedThread?.Abort();
-            OnPlayerDisconnectedThread?.Abort();
-            OnLogThread?.Abort();
-            OnImplementationShutdownThread?.Abort();
+            try
+            {
+                bool shutdown = await R.OnShutdownAsync();
+                if (shutdown)
+                     OnShutdown?.Invoke(); 
+            }
+            catch (TimeoutException) { }
+            catch (ThreadAbortException) { }
+            catch (Exception ce)
+            {
+                Disconnect(ce);
+            }
+            getShutdown();
         }
 
         private void activate()
         {
-            Dashboard.Enabled = true;
-            cbInstance.Enabled = true;
-
-            ignoreCheckBoxChanged = true;
-            cbInstance.Checked = true;
-            ignoreCheckBoxChanged = false;
+            InvokePlease(() =>
+            {
+                Dashboard.Enabled = true;
+                cbInstance.Enabled = true;
+                ignoreCheckBoxChanged = true;
+                cbInstance.Checked = true;
+                ignoreCheckBoxChanged = false;
+            });
         }
 
         private void pause()
         {
-            Dashboard.Enabled = false;
-            cbInstance.Enabled = false;
-            ignoreCheckBoxChanged = true;
-            cbInstance.Checked = true;
-            ignoreCheckBoxChanged = false;
+            InvokePlease(() =>
+            {
+                Dashboard.Enabled = false;
+                cbInstance.Enabled = false;
+                ignoreCheckBoxChanged = true;
+                cbInstance.Checked = true;
+                ignoreCheckBoxChanged = false;
+            });
         }
 
         private void deactviate()
         {
-            Dashboard.Enabled = false;
-            cbInstance.Enabled = true;
-
-            ignoreCheckBoxChanged = true;
-            cbInstance.Checked = false;
-            ignoreCheckBoxChanged = false;
+            InvokePlease(() =>
+            {
+                Dashboard.Enabled = false;
+                cbInstance.Enabled = true;
+                ignoreCheckBoxChanged = true;
+                cbInstance.Checked = false;
+                ignoreCheckBoxChanged = false;
+            });
         }
 
         public void InvokePlease(MethodInvoker invoker)
         {
-            if (IsHandleCreated && InvokeRequired)
-                Invoke(invoker);
+            if (InvokeRequired)
+                BeginInvoke(invoker);
             else
                 invoker();
         }
@@ -255,13 +206,16 @@ namespace Rocket.Launcher
                     MessageBox.Show(ex.ToString());
                 connected = false;
                 deactviate();
-                stopThreads();
             });
             try
             {
                 if (R != null && R.State == CommunicationState.Opened)
                 {
-                    R.Disconnect(false);
+                    R.Disconnect(true);
+                    R.Close();
+                }
+                if(R.State == CommunicationState.Created)
+                {
                     R.Close();
                 }
             }

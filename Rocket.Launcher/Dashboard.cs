@@ -19,10 +19,10 @@ namespace Rocket.Launcher
         {
             this.service = service;
             InitializeComponent();
-            service.OnPlayerConnected += (IRocketPlayer player) => { TellLog("New Player: " + player.DisplayName); };
-            service.OnPlayerDisconnected += (IRocketPlayer player) => { TellLog("Leaving Player: " + player.DisplayName); };
+            service.OnPlayerConnected += (RocketPlayer player) => { TellLog("New Player: " + player.DisplayName); };
+            service.OnPlayerDisconnected += (RocketPlayer player) => { TellLog("Leaving Player: " + player.DisplayName); };
+            service.OnShutdown += () => { TellLog("Shutdown"); };
             service.OnLog += (LogMessage message) => { TellLog(message.Message); };
-            service.OnImplementationShutdown += () => { TellLog("Shutdown"); };
         }
 
         public Dashboard()
@@ -47,6 +47,8 @@ namespace Rocket.Launcher
         internal void TellLog(string message)
         {
             richTextBox1.Text += message + System.Environment.NewLine;
+            richTextBox1.SelectionStart = richTextBox1.Text.Length;
+            richTextBox1.ScrollToCaret();
         }
     }
 }

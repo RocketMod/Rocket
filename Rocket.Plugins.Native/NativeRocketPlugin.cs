@@ -1,6 +1,5 @@
 ﻿using Rocket.API;
 using Rocket.API.Plugins;
-using System.Reflection;
 using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.Plugins.Native
