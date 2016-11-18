@@ -16,34 +16,42 @@ namespace Rocket.API.Logging
 
         public static void Initialize(string logFile)
         {
-             
-            if (!File.Exists(logFile))
+            try
             {
-                var config = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
-<log4net>
-    <appender name=""RollingFile"" type=""log4net.Appender.RollingFileAppender"">
-    <file value=""Logs/Rocket.log"" />
-    <appendToFile value=""true"" />
-    <maximumFileSize value=""100KB"" />
-    <maxSizeRollBackups value=""2"" />
+                if (!File.Exists(logFile))
+                {
+                    var config = @"<?xml version=""1.0"" encoding=""utf-8"" ?>
+                        <log4net>
+                            <appender name=""RollingFile"" type=""log4net.Appender.RollingFileAppender"">
+                            <file value=""Logs/Rocket.log"" />
+                            <appendToFile value=""false"" />
+                            <maximumFileSize value=""5MB"" />
+                            <maxSizeRollBackups value=""-1"" />
+                            <layout type=""log4net.Layout.PatternLayout"">
+                                <conversionPattern value=""%level %thread %logger - %message%newline"" />
+                            </layout>
+                            </appender>
+                            <root>
+                            <level value=""DEBUG"" />
+                            <appender-ref ref=""RollingFile"" />
+                            </root>
+                        </log4net>";
+                    File.WriteAllText(logFile, config);
+                }
 
-    <layout type=""log4net.Layout.PatternLayout"">
-        <conversionPattern value=""%level %thread %logger - %message%newline"" />
-    </layout>
-    </appender>
-    <root>
-    <level value=""DEBUG"" />
-    <appender-ref ref=""RollingFile"" />
-    </root>
-</log4net>";
-                File.WriteAllText(logFile, config);
-            }
-               XmlConfigurator.Configure(new FileInfo(logFile));
+                XmlConfigurator.Configure(new FileInfo(logFile));
+
                 AppDomain.CurrentDomain.UnhandledException += (object sender, UnhandledExceptionEventArgs e) =>
                 {
                     Fatal(e.ExceptionObject);
                 };
             }
+            catch (Exception ex)
+            {
+                File.AppendAllText("error.txt",ex.ToString());
+            }
+
+        }
 
 
         private static ILog GetLogger()
@@ -59,60 +67,31 @@ namespace Rocket.API.Logging
         public static bool IsErrorEnabled { get { return GetLogger().IsErrorEnabled; } }
         public static bool IsFatalEnabled { get { return GetLogger().IsFatalEnabled; } }
 
-        public static void Debug(object message)
-        {
-            GetLogger().Debug(message);
-            OnLog?.Invoke(new LogMessage(LogLevel.DEBUG, message));
-        }
-
-        public static void Debug(object message, Exception exception)
+        public static void Debug(object message, Exception exception = null)
         {
             GetLogger().Debug(message, exception);
             OnLog?.Invoke(new LogMessage(LogLevel.DEBUG, message, exception));
         }
 
-        public static void Info(object message)
-        {
-            GetLogger().Info(message);
-            OnLog?.Invoke(new LogMessage(LogLevel.INFO, message));
-        }
-
-        public static void Info(object message, Exception exception)
+        public static void Info(object message, Exception exception = null)
         {
             GetLogger().Info(message, exception);
             OnLog?.Invoke(new LogMessage(LogLevel.INFO, message, exception));
         }
 
-        public static void Warn(object message)
-        {
-            GetLogger().Warn(message);
-            OnLog?.Invoke(new LogMessage(LogLevel.WARN, message));
-        }
-
-        public static void Warn(object message, Exception exception)
+        public static void Warn(object message, Exception exception = null)
         {
             GetLogger().Warn(message, exception);
             OnLog?.Invoke(new LogMessage(LogLevel.WARN, message, exception));
         }
-        public static void Error(object message)
-        {
-            GetLogger().Error(message);
-            OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message));
-        }
 
-        public static void Error(object message, Exception exception)
+        public static void Error(object message, Exception exception = null)
         {
             GetLogger().Error(message, exception);
             OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message, exception));
         }
-
-        public static void Fatal(object message)
-        {
-            GetLogger().Fatal(message);
-            OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message));
-        }
-
-        public static void Fatal(object message, Exception exception)
+        
+        public static void Fatal(object message, Exception exception = null)
         {
             GetLogger().Fatal(message, exception);
             OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message, exception));

@@ -1,5 +1,5 @@
 ﻿using Logger = Rocket.API.Logging.Logger;
-using Rocket.Core.IPC;
+using Rocket.Core.RPC;
 using System;
 
 namespace Rocket.IPC.Host

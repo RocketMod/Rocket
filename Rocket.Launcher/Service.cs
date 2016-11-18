@@ -15,18 +15,24 @@ namespace Rocket.Launcher
         public Dashboard Dashboard { get; private set; }
         private bool ignoreCheckBoxChanged = false;
         private bool connected = false;
-        public Service(ushort serverPort)
-        {
-            this.serverPort = serverPort;
-            Dashboard = new Dashboard(this);
-            InitializeComponent();
-            Application.ApplicationExit += (object sender, EventArgs e) => { Disconnect(); };
-        }
-
         public RocketServiceClient R = null;
         private ushort serverPort;
-        
+        private string username;
+        private string host;
+        private string password;
+
         private int errorCount = 0;
+
+        public Service(string host,ushort serverPort,string username,string password)
+        {
+            this.serverPort = serverPort;
+            this.host = host;
+            this.username = username;
+            this.password = password;
+            Dashboard = new Dashboard(this);
+            InitializeComponent();
+        }
+
 
         public void Connect(bool retry = true)
         {
@@ -36,8 +42,13 @@ namespace Rocket.Launcher
                 pause();
                 try
                 {
-                    R = new RocketServiceClient(new BasicHttpBinding(), new EndpointAddress(String.Format("http://localhost:{0}/", serverPort)));
-
+                    BasicHttpBinding binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
+                    binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+                    binding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
+                    R = new RocketServiceClient(binding, new EndpointAddress(String.Format("http://{0}:{1}/",host, serverPort)));
+                    R.ClientCredentials.UserName.UserName = username;
+                    R.ClientCredentials.UserName.Password = password;
+                    
                     R.Open();
 
                     R.InnerChannel.OperationTimeout = new TimeSpan(0, 1, 0);

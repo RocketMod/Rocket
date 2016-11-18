@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using Logger = Rocket.API.Logging.Logger;
 
-namespace Rocket.Core.IPC
+namespace Rocket.Core.RPC
 {
 
     public class LongPollingEvent<T>

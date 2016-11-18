@@ -15,6 +15,21 @@ namespace Rocket.Core
         public string Password = "changeme";
     }
 
+    public sealed class RemoteProcedureCall
+    {
+        [XmlAttribute]
+        public bool Enabled = false;
+
+        [XmlAttribute]
+        public ushort Port = 27115;
+
+        [XmlAttribute]
+        public string Password = "changeme";
+
+        [XmlAttribute]
+        public string Username = "admin";
+    }
+
     public sealed class WebPermissions
     {
         [XmlAttribute]
@@ -30,7 +45,7 @@ namespace Rocket.Core
     public sealed class RocketSettings : IDefaultable
     {
         [XmlElement("RPC")]
-        public RemoteConsole RPC = new RemoteConsole();
+        public RemoteProcedureCall RPC = new RemoteProcedureCall();
 
         [XmlElement("RCON")]
         public RemoteConsole RCON = new RemoteConsole();
@@ -46,7 +61,7 @@ namespace Rocket.Core
 
         public void LoadDefaults()
         {
-            RPC = new RemoteConsole();
+            RPC = new RemoteProcedureCall();
             RCON = new RemoteConsole();
             WebPermissions = new WebPermissions();
             LanguageCode = "en";

@@ -9,6 +9,7 @@ using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
 using Rocket.Core.Permissions;
 using Rocket.Core.Tasks;
+using Rocket.Core.RPC;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,23 +17,19 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Collections.ObjectModel;
 using System.Reflection;
-using Rocket.Core.IPC;
 using Logger = Rocket.API.Logging.Logger;
 using Rocket.Plugins.Native;
-using System.Threading;
 using Rocket.Core.RCON;
 using Rocket.Unturned.Commands;
 
 namespace Rocket.Core
 {
-    public delegate void RockedInitialized();
     public delegate void RockedCommandExecute(IRocketPlayer player, IRocketCommand command, ref bool cancel);
 
     public class R : MonoBehaviour
     {
         #region Events
             public static event RockedCommandExecute OnCommandExecute;
-            public static event RockedInitialized OnInitialized;
         #endregion
 
         #region Static Properties
@@ -40,7 +37,6 @@ namespace Rocket.Core
         public static IRocketImplementation Implementation { get; private set; }
         public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         public static IRocketPermissionsProvider Permissions { get; set; }
-        public static RocketServiceHost RPC { get; private set; }
         public static XMLFileAsset<RocketSettings> Settings { get; private set; }
         public static XMLFileAsset<TranslationList> Translation { get; private set; }
         public static List<IRocketPluginManager> PluginManagers { get; private set; } = new List<IRocketPluginManager>();
@@ -189,9 +185,10 @@ namespace Rocket.Core
             Implementation = (IRocketImplementation)GetComponent(typeof(IRocketImplementation));
             API.Environment.Initialize();
             Logger.Initialize(API.Environment.LogConfigurationFile);
-            Logger.Info("##########################################");
+            Logger.Info("####################################################################################");
             Logger.Info("Starting RocketMod " + R.Version + " for " + R.Implementation?.Name + " on instance " + R.Implementation?.InstanceName);
-            Logger.Info("##########################################");
+            Logger.Info("####################################################################################");
+
 
             #if DEBUG
                 gameObject.TryAddComponent<Debugger>();
@@ -226,34 +223,27 @@ namespace Rocket.Core
                 nativeRocketPluginManager.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
                 nativeRocketPluginManager.Commands.Persist();
 
-                Logger.Debug("another one");
 
                 PluginManagers.Add(nativeRocketPluginManager);
 
-                Logger.Debug("another onex1");
                 try
                 {
                     if (Settings.Instance.RPC.Enabled)
-                        new Thread(new ThreadStart(()=>{ 
-                            RPC = new RocketServiceHost(Settings.Instance.RPC.Port);
-                        })).Start();
+                        new RocketServiceHost(Settings.Instance.RPC.Port);
                     if (Settings.Instance.RCON.Enabled)
                         gameObject.TryAddComponent<RCONServer>();
 
                 }
                 catch (Exception e)
                 {
-                    Logger.Error(e);
+                    Logger.Error("Uh ohh.."+e);
                 }
 
-                Logger.Debug("another onex2");
                 Implementation.OnInitialized += () =>
                 {
                     if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
                     Application.targetFrameRate = Settings.Instance.MaxFrames;
                 };
-                OnInitialized.TryInvoke();
-                Logger.Debug("another onex3");
             }
             catch (Exception ex)
             {

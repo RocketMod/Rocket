@@ -25,9 +25,6 @@ namespace Rocket.Launcher
 
         public Mode Mode = Mode.MultiInstance;
         public Process Game;
-        private string executable;
-        private string arguments;
-        private string serverPath;
         XMLFileAsset<RocketSettings> settings;
 
         public MainWindow()
@@ -43,9 +40,21 @@ namespace Rocket.Launcher
                     {
                         s.Disconnect();
                     }
-                    System.Threading.Thread.Sleep(2000);
-                    Game.CloseMainWindow();
-                    Game.Close();
+                    if (Game != null)
+                    {
+                        System.Threading.Thread.Sleep(2000);
+                        try
+                        {
+
+                            Game.CloseMainWindow();
+                            Game.Close();
+                        }
+                        catch (Exception)
+                        {
+
+                            //throw;
+                        }
+                    }
                 };
             }
             catch (Exception ex)
@@ -58,27 +67,28 @@ namespace Rocket.Launcher
         {
             try
             {
-                executable = ConfigurationManager.AppSettings["Executable"];
-                arguments = String.Format(ConfigurationManager.AppSettings["Arguments"], Program.Instance);
-                serverPath = String.Format(ConfigurationManager.AppSettings["ServerPath"], Program.Instance);
-
-                if (File.Exists(executable))
+                if (File.Exists(Program.Executable))
                 {
                     Mode = Mode.SingleInstance;
-                    if (!Directory.Exists(serverPath)) Directory.CreateDirectory(serverPath);
-                    settings = new XMLFileAsset<RocketSettings>(Path.Combine(serverPath, "Rocket.config.xml"));
+                    if (!Directory.Exists(Program.ServerPath)) Directory.CreateDirectory(Program.ServerPath);
+                    settings = new XMLFileAsset<RocketSettings>(Path.Combine(Program.ServerPath, "Rocket.config.xml"));
                     if (!settings.Instance.RPC.Enabled) settings.Instance.RPC.Enabled = true;
                     settings.Save();
 
 
-                    ProcessStartInfo info = new ProcessStartInfo(executable, arguments);
+                    ProcessStartInfo info = new ProcessStartInfo(Program.Executable, Program.Arguments);
                     info.UseShellExecute = true;
-                    //info.CreateNoWindow = true;
-                    //info.WindowStyle = ProcessWindowStyle.Hidden;
+#if DEBUG
+                    info.CreateNoWindow = true;
+                    info.WindowStyle = ProcessWindowStyle.Hidden;
+#endif
                     Game = Process.Start(info);
 
-                    AddService(settings.Instance.RPC.Port);
-                    splitContainer1.Panel1.Hide();
+                    AddService("localhost", settings.Instance.RPC.Port, settings.Instance.RPC.Username, settings.Instance.RPC.Password);
+                    panel2.Hide();
+                    Width -= panel2.Width;
+                    panel1.Left-= panel2.Width;
+                    panel1.Width += panel2.Width;
                 }
 
 
@@ -92,9 +102,9 @@ namespace Rocket.Launcher
             }
         }
 
-        public void AddService(ushort port)
+        public void AddService(string host,ushort port,string username,string password)
         {
-            Service s = new Service(port);
+            Service s = new Service(host,port,username,password);
             s.Click += (object sender, EventArgs e) =>
             {
                 currentService = (Service)sender;
