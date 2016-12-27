@@ -19,7 +19,7 @@ namespace Rocket.Core.Plugins
 
         public RocketPlugin() : base()
         {
-            string configurationFile = Directory + string.Format(Core.Environment.PluginConfigurationFileTemplate, Name);
+            string configurationFile = Path.Combine(Directory, string.Format(Core.Environment.PluginConfigurationFileTemplate, Name));
 
             string url = "";
             
@@ -69,23 +69,9 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        private Assembly assembly;
-        public Assembly Assembly { get { return assembly; } }
-
-        private string directory = null;
-        public string Directory
-        {
-            get { return directory; }
-        }
-
-        private new string name;
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-        }
+        public Assembly Assembly { get; private set; }
+        public string Directory { get; private set; }
+        public string Name { get; private set; }
 
         public virtual TranslationList DefaultTranslations
         {
@@ -97,15 +83,17 @@ namespace Rocket.Core.Plugins
 
         public RocketPlugin()
         {
-            assembly = GetType().Assembly;
-            name = Assembly.GetName().Name;
-            directory = String.Format(Core.Environment.PluginDirectory, Name);
-            if (!System.IO.Directory.Exists(directory))
-                System.IO.Directory.CreateDirectory(directory);
+            Assembly = GetType().Assembly;
+            Name = Assembly.GetName().Name;
+            Directory = Path.Combine(Path.GetDirectoryName(Assembly.Location), Name); // String.Format(Core.Environment.PluginDirectory, Name);
+            if (!System.IO.Directory.Exists(Directory))
+                System.IO.Directory.CreateDirectory(Directory);
 
+            Console.WriteLine(Directory);
+            Console.WriteLine(Path.Combine(Directory, String.Format(Environment.PluginTranslationFileTemplate, Name, R.Settings.Instance.LanguageCode)));
             if (DefaultTranslations != null | DefaultTranslations.Count() != 0)
             {
-                translations = new XMLFileAsset<TranslationList>(directory + String.Format(Environment.PluginTranslationFileTemplate, Name, R.Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
+                translations = new XMLFileAsset<TranslationList>(Path.Combine(Directory,String.Format(Environment.PluginTranslationFileTemplate, Name, R.Settings.Instance.LanguageCode)), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
                 DefaultTranslations.AddUnknownEntries(translations);
             }
         }
@@ -136,7 +124,7 @@ namespace Rocket.Core.Plugins
 
         public virtual void LoadPlugin()
         {
-            Logging.Logger.Log("\n[loading] " + name, ConsoleColor.Cyan);
+            Logging.Logger.Log("\n[loading] " + Name, ConsoleColor.Cyan);
             translations.Load();
             R.Commands.RegisterFromAssembly(Assembly);
 

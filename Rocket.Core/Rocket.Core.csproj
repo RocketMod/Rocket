@@ -31,7 +31,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
-    <OutputPath>..\..\..\..\Desktop\Unturned\Unturned_Data\Managed\</OutputPath>
+    <OutputPath>..\..\..\..\..\Desktop\Unturned\Modules\Rocket.Unturned\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <Optimize>True</Optimize>
     <DebugType>full</DebugType>

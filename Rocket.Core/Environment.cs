@@ -30,7 +30,6 @@ namespace Rocket.Core
         public static readonly string CommandsFile = "Commands.config.xml";
         
 
-        public static readonly string PluginDirectory = "Plugins/{0}/";
         public static readonly string PluginTranslationFileTemplate = "{0}.{1}.translation.xml";
         public static readonly string PluginConfigurationFileTemplate = "{0}.configuration.xml";
 

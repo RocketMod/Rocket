@@ -109,13 +109,13 @@ namespace Rocket.Core.Plugins
         public static List<Assembly> LoadAssembliesFromDirectory(string directory, string extension = "*.dll")
         {
             List<Assembly> assemblies = new List<Assembly>();
-            IEnumerable<FileInfo> pluginsLibraries = new DirectoryInfo(directory).GetFiles(extension, SearchOption.TopDirectoryOnly);
+            IEnumerable<FileInfo> pluginsLibraries = new DirectoryInfo(directory).GetFiles(extension, SearchOption.AllDirectories);
 
             foreach (FileInfo library in pluginsLibraries)
             {
                 try
                 {
-                    Assembly assembly = Assembly.Load(File.ReadAllBytes(library.FullName));
+                    Assembly assembly = Assembly.LoadFile(library.FullName);//Assembly.Load(File.ReadAllBytes(library.FullName));
 
                     if (RocketHelper.GetTypesFromInterface(assembly, "IRocketPlugin").Count == 1)
                     {

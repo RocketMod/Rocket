@@ -38,7 +38,7 @@
     <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Local|AnyCPU'">
-    <OutputPath>..\..\..\..\Desktop\Unturned\Unturned_Data\Managed\</OutputPath>
+    <OutputPath>..\..\..\..\..\Desktop\Unturned\Modules\Rocket.Unturned\</OutputPath>
     <DefineConstants>DEBUG</DefineConstants>
     <DebugType>full</DebugType>
     <WarningLevel>4</WarningLevel>
