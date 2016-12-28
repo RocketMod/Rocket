@@ -40,13 +40,10 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public override void LoadPlugin()
+        internal override void LoadPlugin()
         {
             configuration.Load((IAsset<RocketPluginConfiguration> asset)=> { base.LoadPlugin(); });
         }
-
-
-
     }
 
     public class RocketPlugin : MonoBehaviour, IRocketPlugin
@@ -120,7 +117,7 @@ namespace Rocket.Core.Plugins
             LoadPlugin();
         }
 
-        public virtual void LoadPlugin()
+        internal virtual void LoadPlugin()
         {
             Logging.Logger.Log("\n[loading] " + Name, ConsoleColor.Cyan);
             translations.Load();

@@ -65,6 +65,10 @@ namespace Rocket.Core.Plugins
         private void loadPlugins()
         {
             libraries = GetAssembliesFromDirectory(Environment.LibrariesDirectory);
+            foreach(KeyValuePair<string,string> pair in GetAssembliesFromDirectory(Environment.PluginsDirectory))
+            {
+                libraries.Add(pair.Key,pair.Value);
+            }
             pluginAssemblies = LoadAssembliesFromDirectory(Environment.PluginsDirectory);
             List<Type> pluginImplemenations = RocketHelper.GetTypesFromInterface(pluginAssemblies, "IRocketPlugin");
             foreach (Type pluginType in pluginImplemenations)
@@ -119,11 +123,12 @@ namespace Rocket.Core.Plugins
 
                     if (RocketHelper.GetTypesFromInterface(assembly, "IRocketPlugin").Count == 1)
                     {
+                        Logging.Logger.Log("Loading "+ assembly.GetName().Name +" from "+ assembly.Location);
                         assemblies.Add(assembly);
                     }
                     else
                     {
-                        Logging.Logger.LogError("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
+                        //Logging.Logger.LogError("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
                     }
                 }
                 catch (Exception ex)
