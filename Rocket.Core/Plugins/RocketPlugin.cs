@@ -89,8 +89,6 @@ namespace Rocket.Core.Plugins
             if (!System.IO.Directory.Exists(Directory))
                 System.IO.Directory.CreateDirectory(Directory);
 
-            Console.WriteLine(Directory);
-            Console.WriteLine(Path.Combine(Directory, String.Format(Environment.PluginTranslationFileTemplate, Name, R.Settings.Instance.LanguageCode)));
             if (DefaultTranslations != null | DefaultTranslations.Count() != 0)
             {
                 translations = new XMLFileAsset<TranslationList>(Path.Combine(Directory,String.Format(Environment.PluginTranslationFileTemplate, Name, R.Settings.Instance.LanguageCode)), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
