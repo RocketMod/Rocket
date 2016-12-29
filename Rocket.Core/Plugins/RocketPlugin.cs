@@ -117,7 +117,7 @@ namespace Rocket.Core.Plugins
             LoadPlugin();
         }
 
-        internal virtual void LoadPlugin()
+        public virtual void LoadPlugin()
         {
             Logging.Logger.Log("\n[loading] " + Name, ConsoleColor.Cyan);
             translations.Load();
