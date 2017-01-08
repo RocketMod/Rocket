@@ -40,7 +40,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        internal override void LoadPlugin()
+        public override void LoadPlugin()
         {
             configuration.Load((IAsset<RocketPluginConfiguration> asset)=> { base.LoadPlugin(); });
         }
