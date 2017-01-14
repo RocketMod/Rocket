@@ -67,7 +67,8 @@ namespace Rocket.Core.Plugins
             libraries = GetAssembliesFromDirectory(Environment.LibrariesDirectory);
             foreach(KeyValuePair<string,string> pair in GetAssembliesFromDirectory(Environment.PluginsDirectory))
             {
-                libraries.Add(pair.Key,pair.Value);
+                if(!libraries.ContainsKey(pair.Key))
+                    libraries.Add(pair.Key,pair.Value);
             }
             pluginAssemblies = LoadAssembliesFromDirectory(Environment.PluginsDirectory);
             List<Type> pluginImplemenations = RocketHelper.GetTypesFromInterface(pluginAssemblies, "IRocketPlugin");
