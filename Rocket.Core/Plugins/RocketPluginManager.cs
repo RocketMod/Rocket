@@ -33,7 +33,7 @@ namespace Rocket.Core.Plugins
 
         public IRocketPlugin GetPlugin(string name)
         {
-            return plugins.Select(g => g.GetComponent<IRocketPlugin>()).Where(p => p != null && p.GetType().Assembly.GetName().Name == name).FirstOrDefault();
+            return plugins.Select(g => g.GetComponent<IRocketPlugin>()).Where(p => p != null && ((IRocketPlugin)p).Name == name).FirstOrDefault();
         }
 
         private void Awake() {
@@ -70,6 +70,7 @@ namespace Rocket.Core.Plugins
                 if(!libraries.ContainsKey(pair.Key))
                     libraries.Add(pair.Key,pair.Value);
             }
+
             pluginAssemblies = LoadAssembliesFromDirectory(Environment.PluginsDirectory);
             List<Type> pluginImplemenations = RocketHelper.GetTypesFromInterface(pluginAssemblies, "IRocketPlugin");
             foreach (Type pluginType in pluginImplemenations)
