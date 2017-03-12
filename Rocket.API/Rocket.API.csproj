@@ -51,14 +51,15 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net35-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization">
       <Private>False</Private>
     </Reference>
     <Reference Include="System.Xml" />
-    <Reference Include="log4net">
-      <HintPath>..\lib\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\Rocket.Core\lib\UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -107,6 +108,7 @@
     <Compile Include="Serialisation\RocketPermissionsGroup.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="packages.config" />
     <None Include="README" />
   </ItemGroup>
   <ItemGroup>
@@ -118,8 +120,7 @@
     </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetPath) $(SolutionDir)..\Rocket.Unturned\Rocket.Unturned\lib\
-if $(ConfigurationName) == Local (
+    <PostBuildEvent>if $(ConfigurationName) == Local (
 $(SolutionDir)dev\pdb2mdb.exe $(TargetPath)
 )</PostBuildEvent>
   </PropertyGroup>

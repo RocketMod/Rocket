@@ -26,11 +26,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.Sandboxed", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.Native", "Rocket.Plugins.Native\Rocket.Plugins.Native.csproj", "{6D02A4EC-CFDD-4F20-A76F-BF9ADD9586F0}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{E2720FC1-BB12-4026-8A81-5D89F05C7D19}"
-	ProjectSection(SolutionItems) = preProject
-		lib\log4net.dll = lib\log4net.dll
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Launcher", "Rocket.Launcher\Rocket.Launcher.csproj", "{986270D2-6F5F-48A7-972E-93E13ABC2907}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.IPC.Host", "Rocket.IPC.Host\Rocket.IPC.Host.csproj", "{8888CBB9-7175-4E25-BEB9-A2A7E095D278}"
