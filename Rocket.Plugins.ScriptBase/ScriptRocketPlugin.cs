@@ -7,7 +7,7 @@ namespace Rocket.Plugins.ScriptBase
     /// <p>The RocketPluginBase for a scripting implementation</p>
     /// <p>To be implemented by the script implementation.</p>
     /// </summary>
-    public abstract class ScriptRocketPlugin : RocketPluginBase
+    public class ScriptRocketPlugin : RocketPluginBase
     {
         public void Awake()
         {
@@ -16,14 +16,15 @@ namespace Rocket.Plugins.ScriptBase
             base.Initialize();
         }
 
-        public abstract ScriptRocketPluginManager ScriptPluginManager { get; }
+        public ScriptRocketPluginManager ScriptPluginManager => ScriptContext.ScriptEngine.PluginManager;
+        public IScriptContext ScriptContext { get; set; }
     }
 
     /// <summary>
     /// <p>The RocketPluginBase with configuration for a scripting implementation</p>
     /// <p>To be implemented by the script implementation.</p>
     /// </summary>
-    public abstract class ScriptRocketPlugin<RocketPluginConfiguration> : RocketPluginBase<RocketPluginConfiguration> where RocketPluginConfiguration : class, IRocketPluginConfiguration
+    public class ScriptRocketPlugin<RocketPluginConfiguration> : RocketPluginBase<RocketPluginConfiguration> where RocketPluginConfiguration : class, IRocketPluginConfiguration
     {
         public void Awake()
         {
@@ -32,6 +33,7 @@ namespace Rocket.Plugins.ScriptBase
             base.Initialize();
         }
 
-        public abstract ScriptRocketPluginManager ScriptPluginManager { get; }
+        public ScriptRocketPluginManager ScriptPluginManager => ScriptContext.ScriptEngine.PluginManager;
+        public IScriptContext ScriptContext { get; set; }
     }
 }

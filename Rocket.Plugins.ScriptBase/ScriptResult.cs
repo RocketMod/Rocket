@@ -7,15 +7,21 @@ namespace Rocket.Plugins.ScriptBase
     /// </summary>
     public class ScriptResult
     {
-        public ScriptResult(ScriptExecutionResult executionResult)
+        private ScriptExecutionResult fILE_NOT_FOUND;
+
+        public ScriptResult(ScriptExecutionResult fILE_NOT_FOUND)
         {
-            ExecutionResult = executionResult;
+            this.fILE_NOT_FOUND = fILE_NOT_FOUND;
+        }
+
+        public ScriptResult()
+        {
         }
 
         /// <summary>
         /// See <see cref="ScriptExecutionResult"/>.
         /// </summary>
-        public ScriptExecutionResult ExecutionResult { get; }
+        public ScriptExecutionResult ExecutionResult { get; set; }
 
         /// <summary>
         /// Return value of the script

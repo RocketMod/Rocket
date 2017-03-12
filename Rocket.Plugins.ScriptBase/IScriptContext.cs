@@ -9,10 +9,11 @@ namespace Rocket.Plugins.ScriptBase
     /// <typeparam name="T">The bindings type</typeparam>
     public class ScriptContext<T> : IScriptContext
     {
-        public ScriptContext(ScriptRocketPlugin plugin, ScriptEngine scriptEngine)
+        public ScriptContext(ScriptRocketPlugin plugin, ScriptEngine scriptEngine, T bindings)
         {
             Plugin = plugin;
             ScriptEngine = scriptEngine;
+            Bindings = bindings;
         }
 
         public ScriptRocketPlugin Plugin { get; }
@@ -20,7 +21,7 @@ namespace Rocket.Plugins.ScriptBase
         /// <summary>
         /// The generic bindings
         /// </summary>
-        public T Bindings { get; set; }
+        public T Bindings { get; }
         public object BindingsObj => Bindings;
     }
 
