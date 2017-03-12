@@ -7,11 +7,14 @@ namespace Rocket.Plugins.ScriptBase
     /// </summary>
     public class ScriptInitHelper
     {
-        public ScriptEngine Engine { get; } //todo: hide from scripts?
+        public IScriptContext Context;
 
-        public ScriptInitHelper(ScriptEngine engine)
+        public ScriptEngine Engine { get; }
+
+        public ScriptInitHelper(ScriptEngine engine, IScriptContext ctx)
         {
             Engine = engine;
+            Context = ctx;
         }
 
         public void RegisterCommand(IRocketCommand command)

@@ -42,12 +42,6 @@ namespace Rocket.Plugins.ScriptBase
         /// </summary>
         public string LibrariesDir => Path.Combine(BaseDir, "Libraries");
 
-
-        /// <summary>
-        /// Helper class for easy command registration
-        /// </summary>
-        public ScriptInitHelper ScriptInitHelper { get; private set; } 
-
         /// <summary>
         /// The associated plugin manager
         /// </summary>
@@ -55,7 +49,6 @@ namespace Rocket.Plugins.ScriptBase
 
         public void Load()
         {
-            ScriptInitHelper = new ScriptInitHelper(this);
             PluginManager = new ScriptRocketPluginManager(this);
 
             if (!Directory.Exists(PluginsDir))
@@ -160,6 +153,10 @@ namespace Rocket.Plugins.ScriptBase
         /// <returns>The result of the script execution.</returns>
         protected abstract ScriptResult ExecuteFile(string path, string entryPoint, ref IScriptContext context, ScriptPluginMeta meta, bool createPluginInstanceOnNull = false);
 
+        public ScriptInitHelper GetScriptIniter(IScriptContext ctx)
+        {
+            return new ScriptInitHelper(this, ctx);
+        }
 
         /// <summary>
         /// Executes the given script file

@@ -45,7 +45,7 @@ namespace Rocket.Plugins.NLua
             if(fn == null)
                 return new ScriptResult(ScriptExecutionResult.ENTRYPOINT_NOT_FOUND);
 
-            var ret = fn.Call(ScriptInitHelper);
+            var ret = fn.Call(GetScriptIniter(context));
             var res = new ScriptResult(ScriptExecutionResult.SUCCESS);
             res.HasReturn = true; // who needs this anyway?
             res.Return = ret;

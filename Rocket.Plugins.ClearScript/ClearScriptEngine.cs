@@ -26,7 +26,7 @@ namespace Rocket.Plugins.ClearScript
 
             engine.AllowReflection = false; //todo: make configurable
             engine.EnableAutoHostVariables = true;
-            var ret = engine.Invoke(entryPoint, ScriptInitHelper);
+            var ret = engine.Invoke(entryPoint, GetScriptIniter(context));
             var res = new ScriptResult(ScriptExecutionResult.SUCCESS);
             res.HasReturn = true; //unknown thanks to JavaScripts non existant type safety, yay!
             res.Return = ret;
