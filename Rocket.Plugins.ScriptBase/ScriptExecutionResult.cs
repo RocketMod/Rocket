@@ -21,6 +21,10 @@ namespace Rocket.Plugins.ScriptBase
         /// <summary>
         /// The script file was not found.
         /// </summary>
-        FILE_NOT_FOUND
+        FILE_NOT_FOUND,
+        /// <summary>
+        /// The entrypoint of the script was not found.
+        /// </summary>
+        ENTRYPOINT_NOT_FOUND
     }
 }

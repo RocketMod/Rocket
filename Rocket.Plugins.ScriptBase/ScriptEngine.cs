@@ -51,11 +51,13 @@ namespace Rocket.Plugins.ScriptBase
         /// <summary>
         /// The associated plugin manager
         /// </summary>
-        public abstract ScriptRocketPluginManager PluginManager { get; }
+        public ScriptRocketPluginManager PluginManager { get; private set; }
 
         public void Load()
         {
             ScriptInitHelper = new ScriptInitHelper(this);
+            PluginManager = new ScriptRocketPluginManager(this);
+
             if (!Directory.Exists(PluginsDir))
                 Directory.CreateDirectory(PluginsDir);
 
@@ -116,7 +118,16 @@ namespace Rocket.Plugins.ScriptBase
         /// </summary>
         /// <param name="path">The path of the plugin.</param>
         /// <returns></returns>
-        public abstract ScriptPluginMeta GetPluginMeta(string path);
+        public virtual ScriptPluginMeta GetPluginMeta(string path)
+        {
+            //todo get this from a meta file (e.g. PluginInfo.xml)
+            return new ScriptPluginMeta
+            {
+                Author = string.Empty,
+                Name = new DirectoryInfo(path).Name,
+                EntryPoint = "Load"
+            };
+        }
 
         /// <summary>
         /// Registers the API classes to the scripting engine in the given context.

@@ -44,14 +44,9 @@ namespace Rocket.Plugins.ScriptBase
                 case ScriptExecutionResult.SUCCESS:
                     _plugins.Add(context.Plugin);
                     break;
-                case ScriptExecutionResult.FILE_NOT_FOUND:
-                case ScriptExecutionResult.LOAD_FAILED:
-                case ScriptExecutionResult.FAILED_MISC:
-                case ScriptExecutionResult.FAILED_EXCEPTION:
-                    Logger.Error($"[${_engine.Name}Manager] Failed to load plugin: {plName} ({res.ExecutionResult.ToString()})", res.Exception);
-                    break;
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    Logger.Error($"[${_engine.Name}PluginManager] Failed to load script plugin: {plName} ({res.ExecutionResult})", res.Exception);
+                    break;
             }
 
             _plugins.Add(context.Plugin);

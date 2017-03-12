@@ -34,6 +34,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.ScriptBase",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.ClearScript", "Rocket.Plugins.ClearScript\Rocket.Plugins.ClearScript.csproj", "{F9952931-A2FA-4CC7-9F18-35E711421213}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.NLua", "Rocket.Plugins.NLua\Rocket.Plugins.NLua.csproj", "{544CA763-5455-453F-A015-12AC805F092A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -197,6 +199,24 @@ Global
 		{F9952931-A2FA-4CC7-9F18-35E711421213}.Release|x64.Build.0 = Release|Any CPU
 		{F9952931-A2FA-4CC7-9F18-35E711421213}.Release|x86.ActiveCfg = Release|Any CPU
 		{F9952931-A2FA-4CC7-9F18-35E711421213}.Release|x86.Build.0 = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Debug|x64.Build.0 = Debug|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Debug|x86.Build.0 = Debug|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Local|Any CPU.ActiveCfg = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Local|Any CPU.Build.0 = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Local|x64.ActiveCfg = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Local|x64.Build.0 = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Local|x86.ActiveCfg = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Local|x86.Build.0 = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Release|x64.ActiveCfg = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Release|x64.Build.0 = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Release|x86.ActiveCfg = Release|Any CPU
+		{544CA763-5455-453F-A015-12AC805F092A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

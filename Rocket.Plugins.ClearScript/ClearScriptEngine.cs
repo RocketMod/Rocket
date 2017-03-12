@@ -1,16 +1,10 @@
 ﻿using System;
-using System.IO;
 using Rocket.Plugins.ScriptBase;
 
 namespace Rocket.Plugins.ClearScript
 {
     public abstract class ClearScriptEngine : ScriptEngine
     {
-        protected ClearScriptEngine()
-        {
-            PluginManager = new ScriptRocketPluginManager(this);
-        }
-
         protected override ScriptResult ExecuteFile(string path, string entryPoint, ref IScriptContext context, ScriptPluginMeta meta,
             bool createPluginInstanceOnNull = false)
         {
@@ -29,7 +23,9 @@ namespace Rocket.Plugins.ClearScript
                 API.Logging.Logger.Warn("ClearScript ScriptEngine equals null, script: " + path);
                 return new ScriptResult(ScriptExecutionResult.FAILED_MISC);
             }
-            
+
+            engine.AllowReflection = false; //todo: make configurable
+            engine.EnableAutoHostVariables = true;
             var ret = engine.Invoke(entryPoint, ScriptInitHelper);
             var res = new ScriptResult(ScriptExecutionResult.SUCCESS);
             res.HasReturn = true; //unknown thanks to JavaScripts non existant type safety, yay!
@@ -44,17 +40,5 @@ namespace Rocket.Plugins.ClearScript
         }
 
         protected abstract Microsoft.ClearScript.ScriptEngine CreateNewEngine();
-
-        public override ScriptRocketPluginManager PluginManager { get; }
-        public override ScriptPluginMeta GetPluginMeta(string path)
-        {
-            //todo get this from a meta file (e.g. PluginInfo.xml)
-            return new ScriptPluginMeta
-            {
-                Author = string.Empty,
-                Name = new DirectoryInfo(path).Name,
-                EntryPoint = "Load"
-            };
-        }
     }
 }
