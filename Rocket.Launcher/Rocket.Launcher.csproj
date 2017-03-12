@@ -181,24 +181,18 @@
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
       <Project>{c362df2f-1336-4932-aadc-4f2074fedb64}</Project>
       <Name>Rocket.API</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
     <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj">
       <Project>{7A9D652F-DC18-45FD-8964-DBAAD6384C3D}</Project>
       <Name>Rocket.Core</Name>
-      <Private>False</Private>
+      <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Content Include="MetroFramework.txt" />
     <Content Include="Modules\Rocket.Unturned\System.Windows.Forms.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Modules\Rocket.Unturned\MetroFramework.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Modules\Rocket.Unturned\MetroFramework.Fonts.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -220,4 +214,7 @@
       </Properties>
     </MonoDevelop>
   </ProjectExtensions>
+  <PropertyGroup>
+    <PostBuildEvent>xcopy "*.dll" ".\Modules\Rocket.Unturned\*" /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
