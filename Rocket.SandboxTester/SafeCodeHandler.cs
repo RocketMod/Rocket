@@ -31,7 +31,8 @@ namespace Rocket.SandboxTester
             "System.Xml.Serialization.*",
             "System.Linq.*",
             "System.Globalization.*",
-            "System.Collections.*"
+            "System.Collections.*",
+            //"Steamworks.*" //might be a bad idea? Can be abused for achievements etc
         };
 
         private static readonly List<string> DisallowedNamespaces = new List<string>
@@ -157,10 +158,16 @@ namespace Rocket.SandboxTester
 
         public static bool IsAllowedType(Type type)
         {
+            //check for super class
+            if (type.BaseType != null && !IsAllowedType(type.BaseType))
+                return false; 
+
+            //generic types
             if (type.IsGenericType)
                 return type.DeclaringType == null || IsAllowedType(type.DeclaringType);
-            bool val = IsAllowedType(type.FullName ?? type.Name);
-            return val;
+
+            //check whitelisted namespace / name
+            return IsAllowedType(type.FullName ?? type.Name);
         }
 
         public static void AddWhitelist(Assembly asm)
@@ -178,6 +185,9 @@ namespace Rocket.SandboxTester
 
         private static void RemoveWhitelist(Assembly asm)
         {
+            if (!AllowedTypesFromAssembly.ContainsKey(asm))
+                return;
+
             var list = AllowedTypesFromAssembly[asm];
             foreach (Type t in list)
             {
@@ -235,7 +245,9 @@ namespace Rocket.SandboxTester
         {
             illegalInstruction = null;
             failReason = null;
-            AddWhitelist(baseAssembly);
+
+            AddWhitelist(baseAssembly); //temporary whitelist
+
             foreach (Type type in baseAssembly.GetTypes())
             {
                 if ((!type.IsSubclassOf(typeof(MonoBehaviour)) && type != typeof(MonoBehaviour) && !typeof(MonoBehaviour).IsAssignableFrom(type)) &&
@@ -253,7 +265,7 @@ namespace Rocket.SandboxTester
                     return false;
                 }
             }
-
+            
             return true;
         }
 
