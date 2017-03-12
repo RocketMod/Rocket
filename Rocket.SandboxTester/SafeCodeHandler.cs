@@ -103,8 +103,6 @@ namespace Rocket.SandboxTester
 
         private static readonly List<Type> DisallowedTypes = new List<Type>
         {
-            typeof(AssetBundle),
-            typeof(Physics2D),
             typeof(Network),
             typeof(Process),
             typeof(ProcessStartInfo),
@@ -113,7 +111,6 @@ namespace Rocket.SandboxTester
             typeof(Application),
             typeof(AsyncOperation),
             typeof(Thread),
-            typeof(Resolution),
             typeof(Resources),
             typeof(ScriptableObject),
             typeof(SystemInfo),
@@ -158,16 +155,20 @@ namespace Rocket.SandboxTester
 
         public static bool IsAllowedType(Type type)
         {
-            //check for super class
-            if (type.BaseType != null && !IsAllowedType(type.BaseType))
-                return false; 
-
             //generic types
             if (type.IsGenericType)
                 return type.DeclaringType == null || IsAllowedType(type.DeclaringType);
 
             //check whitelisted namespace / name
-            return IsAllowedType(type.FullName ?? type.Name);
+            var val = IsAllowedType(type.FullName ?? type.Name);
+            if (!val)
+                return false;
+
+            //check for super class
+            if (type.BaseType != null && !IsAllowedType(type.BaseType))
+                return false;
+
+            return true;
         }
 
         public static void AddWhitelist(Assembly asm)
