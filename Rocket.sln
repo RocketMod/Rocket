@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Launcher", "Rocket.L
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.IPC.Host", "Rocket.IPC.Host\Rocket.IPC.Host.csproj", "{8888CBB9-7175-4E25-BEB9-A2A7E095D278}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.ScriptBase", "Rocket.Plugins.ScriptBase\Rocket.Plugins.ScriptBase.csproj", "{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -157,6 +159,24 @@ Global
 		{8888CBB9-7175-4E25-BEB9-A2A7E095D278}.Release|x64.Build.0 = Release|Any CPU
 		{8888CBB9-7175-4E25-BEB9-A2A7E095D278}.Release|x86.ActiveCfg = Release|Any CPU
 		{8888CBB9-7175-4E25-BEB9-A2A7E095D278}.Release|x86.Build.0 = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Debug|x64.Build.0 = Debug|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Debug|x86.Build.0 = Debug|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Local|Any CPU.ActiveCfg = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Local|Any CPU.Build.0 = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Local|x64.ActiveCfg = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Local|x64.Build.0 = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Local|x86.ActiveCfg = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Local|x86.Build.0 = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Release|x64.ActiveCfg = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Release|x64.Build.0 = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Release|x86.ActiveCfg = Release|Any CPU
+		{B62C91D0-5D32-45FB-A0C5-E551C6C2379E}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
