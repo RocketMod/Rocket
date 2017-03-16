@@ -5,11 +5,11 @@
     <version>2.4.2.0</version>
     <authors>fr34kyn01535</authors>
     <owners>fr34kyn01535</owners>
-    <licenseUrl>https://github.com/RocketMod/Rocket.Unturned/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://github.com/RocketMod/Rocket/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://rocketmod.net/</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <description>Unity3D Game Server Mod</description>
-    <copyright>fr34kyn01535 © 2015</copyright>
+    <copyright>fr34kyn01535 © 2017</copyright>
     <tags>Rocket Mod Unity3D</tags>
   </metadata>
   <files>

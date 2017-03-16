@@ -46,6 +46,9 @@
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="MetroFramework, Version=1.2.0.3, Culture=neutral, PublicKeyToken=5f91a84759bf584a, processorArchitecture=MSIL">
       <HintPath>..\packages\MetroFramework.RunTime.1.2.0.3\lib\net40-Client\MetroFramework.dll</HintPath>
@@ -130,9 +133,6 @@
     <None Include="app.manifest">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Modules\Rocket.Unturned\Rocket.Unturned.module">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Rocket.API.Logging.LogMessage.datasource" />
     <None Include="Properties\DataSources\Rocket.API.RocketPlayer.datasource" />
@@ -197,21 +197,6 @@
   <ItemGroup />
   <ItemGroup>
     <Content Include="MetroFramework.txt" />
-    <Content Include="Modules\Rocket.Unturned\System.IdentityModel.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Modules\Rocket.Unturned\System.IdentityModel.Selectors.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Modules\Rocket.Unturned\System.Runtime.Serialization.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Modules\Rocket.Unturned\System.ServiceModel.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Modules\Rocket.Unturned\System.Windows.Forms.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
@@ -232,6 +217,8 @@
     </MonoDevelop>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy "*.dll" ".\Modules\Rocket.Unturned\*" /Y</PostBuildEvent>
+    <PostBuildEvent>del $(SolutionDir)..\Rocket.Unturned\lib\* /F /Q
+xcopy $(SolutionDir)lib\* $(SolutionDir)..\Rocket.Unturned\lib\ /Y /Q
+xcopy $(TargetDir)* $(SolutionDir)..\Rocket.Unturned\lib\ /Y /Q</PostBuildEvent>
   </PropertyGroup>
 </Project>

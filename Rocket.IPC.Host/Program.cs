@@ -17,7 +17,7 @@ namespace Rocket.IPC.Host
                     Logger.Info(Console.ReadLine());
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

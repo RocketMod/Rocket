@@ -20,7 +20,8 @@ using System.Reflection;
 using Logger = Rocket.API.Logging.Logger;
 using Rocket.Plugins.Native;
 using Rocket.Core.RCON;
-using Rocket.Unturned.Commands;
+using Rocket.Core.Commands;
+using Rocket.API.Serialisation;
 
 namespace Rocket.Core
 {
@@ -205,7 +206,7 @@ namespace Rocket.Core
                 API.Environment.LanguageCode = Settings.Instance.LanguageCode;
                 TranslationList defaultTranslations = new TranslationList();
                 defaultTranslations.AddRange(new RocketTranslations());
-                Translation = new XMLFileAsset<TranslationList>(String.Format(API.Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, defaultTranslations);
+                Translation = new XMLFileAsset<TranslationList>(String.Format(API.Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, defaultTranslations);
                 Translation.AddUnknownEntries(defaultTranslations);
 
                 Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();

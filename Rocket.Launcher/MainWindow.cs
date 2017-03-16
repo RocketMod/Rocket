@@ -57,7 +57,7 @@ namespace Rocket.Launcher
                     }
                 };
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }
@@ -95,7 +95,7 @@ namespace Rocket.Launcher
                 Text = "Rocket Launcher " + typeof(MainWindow).Assembly.GetName().Version;
 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
                 throw;

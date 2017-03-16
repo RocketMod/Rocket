@@ -1,9 +1,17 @@
-﻿using System;
+﻿using Rocket.API.Collections;
+using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Rocket.API.Serialisation
 {
+    public enum BuiltinProperties
+    {
+        COLOR = 0,
+        PREFIX = 1,
+        SUFFIX = 2
+    }
+
     [Serializable]
     public class RocketPermissionsGroup
     {
@@ -11,69 +19,44 @@ namespace Rocket.API.Serialisation
         {
         }
 
-        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<Permission> permissions, string color = null)
+        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<Permission> permissions, PropertyList properties)
         {
             Id = id;
             DisplayName = displayName;
             Members = members;
             Permissions = permissions;
             ParentGroup = parentGroup;
-            Color = color;
-            Prefix = "[";
-            Suffix = "]";
+            Properties = properties;
         }
 
         [XmlElement("Id")]
-        public string Id;
+        public string Id { get; set; } = "";
 
         [XmlElement("DisplayName")]
-        public string DisplayName;
+        public string DisplayName { get; set; } = "";
 
-        [XmlElement("Color")]
-        public string Color = "white";
-
-        [XmlElement("Prefix")]
-        public string Prefix = "";
-
-        [XmlElement("Suffix")]
-        public string Suffix = "";
-
+        [XmlArray("Properties")]
+        [XmlArrayItem("Property")]
+        public PropertyList Properties { get; set; } = new PropertyList()
+        {
+            { BuiltinProperties.COLOR , "#FFFFFF" },
+            { BuiltinProperties.PREFIX , "[" },
+            { BuiltinProperties.SUFFIX , "]" }
+        };
+        
         [XmlArray("Members")]
         [XmlArrayItem(ElementName = "Member")]
-        public List<string> Members;
-
-        [XmlArray("Commands")]
-        [XmlArrayItem(ElementName = "Command")]
-        public List<Permission> OldPermissions;
-
-        public bool ShouldSerializeOldPermissions()
-        {
-            return OldPermissions != null && OldPermissions.Count != 0;
-        }
+        public List<string> Members { get; set; } = new List<string>();
 
         [XmlArray("Permissions")]
         [XmlArrayItem(ElementName = "Permission")]
-        private List<Permission> permissions;
-
-        public List<Permission> Permissions
-        {
-            get
-            {
-                if (OldPermissions != null)
-                {
-                    if (permissions == null) permissions = new List<Permission>();
-                    permissions.AddRange(OldPermissions);
-                    OldPermissions = null;
-                }
-                return permissions;
-            }
-            set
-            {
-                permissions = value;
-            }
-        }
+        public List<Permission> Permissions { get; set; } = new List<Permission>();
 
         [XmlElement("ParentGroup")]
-        public string ParentGroup;
+        public string ParentGroup { get; set; } = "";
+
+        [XmlElement("Priority")]
+        public uint Priority { get; set; } = 0;
+
     }
 }

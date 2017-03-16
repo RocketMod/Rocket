@@ -76,7 +76,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="UnityEngine">
-      <HintPath>lib\UnityEngine.dll</HintPath>
+      <HintPath>..\lib\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -120,14 +120,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="lib\System.IdentityModel.dll" />
-    <Content Include="lib\System.IdentityModel.Selectors.dll" />
-    <Content Include="lib\System.Runtime.Serialization.dll" />
-    <Content Include="lib\System.ServiceModel.dll" />
-    <Content Include="lib\System.Xml.dll" />
-    <Content Include="lib\UnityEngine.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

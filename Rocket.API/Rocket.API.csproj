@@ -61,7 +61,7 @@
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\Rocket.Core\lib\UnityEngine.dll</HintPath>
+      <HintPath>..\lib\UnityEngine.dll</HintPath>
       <Private>False</Private>
     </Reference>
   </ItemGroup>
@@ -70,6 +70,7 @@
     <Compile Include="Assets\WebXMLFileAsset.cs" />
     <Compile Include="Assets\XMLFileAsset.cs" />
     <Compile Include="Chat\IChat.cs" />
+    <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />
     <Compile Include="Commands\RocketAttributeCommand.cs" />
     <Compile Include="Commands\RocketCommandAttribute.cs" />
@@ -100,7 +101,7 @@
     <Compile Include="Plugins\IRocketPlugin.cs" />
     <Compile Include="Permissions\IRocketPermissionsProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Collections\TranslationList.cs" />
+    <Compile Include="Serialisation\TranslationList.cs" />
     <Compile Include="Serialisation\IRocketPluginConfiguration.cs" />
     <Compile Include="Player\IRocketPlayer.cs" />
     <Compile Include="Serialisation\Command.cs" />

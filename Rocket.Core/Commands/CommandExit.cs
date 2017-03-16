@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Rocket.API.Commands;
 
-namespace Rocket.Unturned.Commands
+namespace Rocket.Core.Commands
 {
     public class CommandExit : IRocketCommand
     {

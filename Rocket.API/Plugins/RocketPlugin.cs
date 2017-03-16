@@ -11,6 +11,7 @@ using UnityEngine;
 using Logger = Rocket.API.Logging.Logger;
 using System.Reflection;
 using System.IO;
+using Rocket.API.Serialisation;
 
 namespace Rocket.API.Plugins
 {
@@ -98,7 +99,7 @@ namespace Rocket.API.Plugins
 
             if (DefaultTranslations != null | DefaultTranslations.Count() != 0)
             {
-                Translations = new XMLFileAsset<TranslationList>(Path.Combine(WorkingDirectory, String.Format(Environment.PluginTranslationFileTemplate, Name, Environment.LanguageCode)), new Type[] { typeof(TranslationList), typeof(TranslationListEntry) }, DefaultTranslations);
+                Translations = new XMLFileAsset<TranslationList>(Path.Combine(WorkingDirectory, String.Format(Environment.PluginTranslationFileTemplate, Name, Environment.LanguageCode)), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, DefaultTranslations);
                 Translations.AddUnknownEntries(DefaultTranslations);
             }
             if(loadPlugin)

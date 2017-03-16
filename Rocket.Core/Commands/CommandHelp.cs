@@ -8,7 +8,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 
-namespace Rocket.Unturned.Commands
+namespace Rocket.Core.Commands
 {
     public class CommandHelp : IRocketCommand
     {

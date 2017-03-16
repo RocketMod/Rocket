@@ -6,20 +6,17 @@ namespace Rocket.API.Serialisation
     [Serializable]
     public class Permission
     {
-        [XmlAttribute]
-        public uint Cooldown = 0;
 
         [XmlText]
-        public string Name = "";
+        public string Name { get; set; } = "";
 
         public Permission()
         {
         }
 
-        public Permission(string name, uint cooldown = 0)
+        public Permission(string name)
         {
             Name = name;
-            Cooldown = cooldown;
         }
 
         public override string ToString()

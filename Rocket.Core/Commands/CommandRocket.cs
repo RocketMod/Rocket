@@ -8,7 +8,7 @@ using Rocket.API.Commands;
 using Rocket.API.Plugins;
 using System.Collections.ObjectModel;
 
-namespace Rocket.Unturned.Commands
+namespace Rocket.Core.Commands
 {
     public class CommandRocket : IRocketCommand
     {

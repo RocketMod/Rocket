@@ -2,6 +2,7 @@
 using Rocket.API.Chat;
 using Rocket.API.Collections;
 using Rocket.API.Commands;
+using Rocket.API.Serialisation;
 using System.Collections.ObjectModel;
 
 namespace Rocket.API

@@ -9,7 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Rocket.Unturned.Commands
+namespace Rocket.Core.Commands
 {
     public class CommandP : IRocketCommand
     {
@@ -61,14 +61,14 @@ namespace Rocket.Unturned.Commands
             if (command.Length == 0 && !(caller is ConsolePlayer))
             {
                 R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Permissions.GetGroups(caller, true).Select(g => g.DisplayName).ToArray())));
-                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Permissions.GetPermissions(caller).Select(p => p.Name + (p.Cooldown != 0 ? "(" + p.Cooldown + ")" : "")).ToArray())));
+                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Permissions.GetPermissions(caller).Select(p => p.Name).ToArray())));
             }
             else if(command.Length == 1) {
 
                 IRocketPlayer player = command.GetRocketPlayerParameter(0);
                 if (player != null) {
                     R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Permissions.GetGroups(player, true).Select(g => g.DisplayName).ToArray())));
-                    R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Permissions.GetPermissions(player).Select(p => p.Name +(p.Cooldown != 0? "(" + p.Cooldown + ")" : "")).ToArray())));
+                    R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Permissions.GetPermissions(player).Select(p => p.Name).ToArray())));
                 }
                 else
                 {

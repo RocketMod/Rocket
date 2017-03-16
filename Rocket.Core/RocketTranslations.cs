@@ -1,4 +1,5 @@
 ﻿using Rocket.API.Collections;
+using Rocket.API.Serialisation;
 
 namespace Rocket.API
 {
