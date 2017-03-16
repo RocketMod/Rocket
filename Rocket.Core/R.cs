@@ -4,7 +4,6 @@ using Rocket.API.Collections;
 using Rocket.API.Commands;
 using Rocket.API.Exceptions;
 using Rocket.API.Extensions;
-using Rocket.API.Permissions;
 using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
 using Rocket.Core.Permissions;
@@ -22,6 +21,7 @@ using Rocket.Plugins.Native;
 using Rocket.Core.RCON;
 using Rocket.Core.Commands;
 using Rocket.API.Serialisation;
+using Rocket.API.Providers;
 
 namespace Rocket.Core
 {
@@ -209,7 +209,7 @@ namespace Rocket.Core
                 Translation = new XMLFileAsset<TranslationList>(String.Format(API.Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, defaultTranslations);
                 Translation.AddUnknownEntries(defaultTranslations);
 
-                Permissions = gameObject.TryAddComponent<RocketPermissionsManager>();
+                Permissions = gameObject.TryAddComponent<RocketPermissionsProvider>();
                 gameObject.TryAddComponent<TaskDispatcher>();
 
                 NativeRocketPluginManager nativeRocketPluginManager = gameObject.TryAddComponent<NativeRocketPluginManager>();

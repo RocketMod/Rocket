@@ -15,7 +15,7 @@ namespace Rocket.API
 
     public interface IRocketImplementation
     {
-        XMLFileAsset<TranslationList> Translation { get; }
+        //XMLFileAsset<TranslationList> Translation { get; }
         IChat Chat { get; }
         string InstanceName { get; }
         string Name { get; }

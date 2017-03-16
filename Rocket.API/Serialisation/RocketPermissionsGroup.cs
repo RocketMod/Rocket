@@ -19,7 +19,7 @@ namespace Rocket.API.Serialisation
         {
         }
 
-        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<Permission> permissions, PropertyList properties)
+        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<string> permissions, PropertyList properties)
         {
             Id = id;
             DisplayName = displayName;
@@ -30,7 +30,7 @@ namespace Rocket.API.Serialisation
         }
 
         [XmlElement("Id")]
-        public string Id { get; set; } = "";
+        public string Id { get; private set; } = "";
 
         [XmlElement("DisplayName")]
         public string DisplayName { get; set; } = "";
@@ -50,7 +50,7 @@ namespace Rocket.API.Serialisation
 
         [XmlArray("Permissions")]
         [XmlArrayItem(ElementName = "Permission")]
-        public List<Permission> Permissions { get; set; } = new List<Permission>();
+        public List<string> Permissions { get; set; } = new List<string>();
 
         [XmlElement("ParentGroup")]
         public string ParentGroup { get; set; } = "";

@@ -99,12 +99,11 @@
     <Compile Include="Exceptions\NoPermissionsForCommandException.cs" />
     <Compile Include="Player\RocketPlayer.cs" />
     <Compile Include="Plugins\IRocketPlugin.cs" />
-    <Compile Include="Permissions\IRocketPermissionsProvider.cs" />
+    <Compile Include="Providers\IRocketPermissionsProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialisation\TranslationList.cs" />
     <Compile Include="Serialisation\IRocketPluginConfiguration.cs" />
     <Compile Include="Player\IRocketPlayer.cs" />
-    <Compile Include="Serialisation\Command.cs" />
     <Compile Include="Serialisation\RocketPermissions.cs" />
     <Compile Include="Serialisation\RocketPermissionsGroup.cs" />
   </ItemGroup>

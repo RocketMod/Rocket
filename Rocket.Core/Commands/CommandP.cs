@@ -2,7 +2,7 @@
 using Rocket.API.Commands;
 using Rocket.API.Exceptions;
 using Rocket.API.Extensions;
-using Rocket.API.Permissions;
+using Rocket.API.Providers;
 using Rocket.Core;
 using Rocket.Core.Commands;
 using System;
@@ -60,15 +60,15 @@ namespace Rocket.Core.Commands
 
             if (command.Length == 0 && !(caller is ConsolePlayer))
             {
-                R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Permissions.GetGroups(caller, true).Select(g => g.DisplayName).ToArray())));
-                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Permissions.GetPermissions(caller).Select(p => p.Name).ToArray())));
+                R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Permissions.GetGroups(caller).Select(g => g.DisplayName).ToArray())));
+                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Permissions.GetPermissions(caller).ToArray())));
             }
             else if(command.Length == 1) {
 
                 IRocketPlayer player = command.GetRocketPlayerParameter(0);
                 if (player != null) {
-                    R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Permissions.GetGroups(player, true).Select(g => g.DisplayName).ToArray())));
-                    R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Permissions.GetPermissions(player).Select(p => p.Name).ToArray())));
+                    R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Permissions.GetGroups(player).Select(g => g.DisplayName).ToArray())));
+                    R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Permissions.GetPermissions(player).ToArray())));
                 }
                 else
                 {
@@ -88,45 +88,26 @@ namespace Rocket.Core.Commands
                 {
                     case "add":
                         if (caller.HasPermission("p.add")&& player != null && groupName != null) {
-                            switch (R.Permissions.AddPlayerToGroup(groupName, player))
+
+                            if (R.Permissions.AddPlayerToGroup(groupName, player))
                             {
-                                case RocketPermissionsProviderResult.Success:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_added", player.DisplayName, groupName));
-                                    return;
-                                case RocketPermissionsProviderResult.DuplicateEntry:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_duplicate_entry", player.DisplayName, groupName));
-                                    return;
-                                case RocketPermissionsProviderResult.GroupNotFound:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_group_not_found", player.DisplayName, groupName));
-                                    return;
-                                case RocketPermissionsProviderResult.PlayerNotFound:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_player_not_found", player.DisplayName, groupName));
-                                    return;
-                                default:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_unknown_error", player.DisplayName, groupName));
-                                    return;
+                                R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_removed", player.DisplayName, groupName));
+                            }
+                            else
+                            {
+                                R.Implementation.Chat.Say(caller, R.Translate("command_p_unknown_error", player.DisplayName, groupName));
                             }
                         }
                         return;
                     case "remove":
                         if (caller.HasPermission("p.remove") && player != null && groupName != null) {
-                            switch (R.Permissions.RemovePlayerFromGroup(groupName, player))
+                            if (R.Permissions.RemovePlayerFromGroup(groupName, player))
                             {
-                                case RocketPermissionsProviderResult.Success:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_removed", player.DisplayName, groupName));
-                                    return;
-                                case RocketPermissionsProviderResult.DuplicateEntry:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_duplicate_entry", player.DisplayName, groupName));
-                                    return;
-                                case RocketPermissionsProviderResult.GroupNotFound:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_group_not_found", player.DisplayName, groupName));
-                                    return;
-                                case RocketPermissionsProviderResult.PlayerNotFound:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_player_not_found", player.DisplayName, groupName));
-                                    return;
-                                default:
-                                    R.Implementation.Chat.Say(caller, R.Translate("command_p_unknown_error", player.DisplayName, groupName));
-                                    return;
+                                R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_removed", player.DisplayName, groupName));
+                            }
+                            else
+                            {
+                                R.Implementation.Chat.Say(caller, R.Translate("command_p_unknown_error", player.DisplayName, groupName));
                             }
                         }
                         return;

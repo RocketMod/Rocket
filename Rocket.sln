@@ -40,14 +40,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.SandboxTester", "Roc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{AFDBAC6E-A519-4F82-BF5F-BDA7A187FB8D}"
 	ProjectSection(SolutionItems) = preProject
+		..\..\..\..\..\..\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\Mono.Messaging.dll = ..\..\..\..\..\..\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\Mono.Messaging.dll
 		lib\System.Drawing.dll = lib\System.Drawing.dll
 		lib\System.IdentityModel.dll = lib\System.IdentityModel.dll
 		lib\System.IdentityModel.Selectors.dll = lib\System.IdentityModel.Selectors.dll
+		..\..\..\..\..\..\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.Messaging.dll = ..\..\..\..\..\..\Program Files\Unity\Editor\Data\Mono\lib\mono\2.0\System.Messaging.dll
 		lib\System.Runtime.Serialization.dll = lib\System.Runtime.Serialization.dll
 		lib\System.ServiceModel.dll = lib\System.ServiceModel.dll
 		lib\System.Web.dll = lib\System.Web.dll
 		lib\System.Web.Services.dll = lib\System.Web.Services.dll
 		lib\System.Windows.Forms.dll = lib\System.Windows.Forms.dll
+		..\Rocket.Unturned\lib\UnityEngine.dll = ..\Rocket.Unturned\lib\UnityEngine.dll
 	EndProjectSection
 EndProject
 Global

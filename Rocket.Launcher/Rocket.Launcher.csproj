@@ -219,6 +219,7 @@
   <PropertyGroup>
     <PostBuildEvent>del $(SolutionDir)..\Rocket.Unturned\lib\* /F /Q
 xcopy $(SolutionDir)lib\* $(SolutionDir)..\Rocket.Unturned\lib\ /Y /Q
-xcopy $(TargetDir)* $(SolutionDir)..\Rocket.Unturned\lib\ /Y /Q</PostBuildEvent>
+xcopy $(TargetDir)* $(SolutionDir)..\Rocket.Unturned\lib\ /Y /Q
+del $(SolutionDir)..\Rocket.Unturned\lib\UnityEngine.dll /F /Q</PostBuildEvent>
   </PropertyGroup>
 </Project>

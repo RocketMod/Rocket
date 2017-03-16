@@ -46,7 +46,8 @@ namespace Rocket.Core.RPC
                     R.Implementation.OnShutdown += () => { OnShutdown.Invoke(); };
                 }
 
-                Logger.OnLog += (LogMessage message) => { if (message.LogLevel != LogLevel.DEBUG) ; OnLog.Invoke(message); };
+                //TODO double log
+                Logger.OnLog += (LogMessage message) => { if (message.LogLevel != LogLevel.DEBUG) OnLog.Invoke(message); };
                 
                 Logger.Info("Starting IPC at " + endpoint);
             }
