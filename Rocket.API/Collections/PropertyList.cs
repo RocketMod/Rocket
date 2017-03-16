@@ -67,15 +67,19 @@ namespace Rocket.API.Collections
             properties.AddRange(collection);
         }
 
-        public string this[Enum key]
+        public string this[Object key]
         {
             get
             {
-                return properties.Where(k => k.Key == key.ToString()).Select(k => k.Value).FirstOrDefault();
+                if (key is Enum)
+                    return properties.Where(k => k.Key == ((Enum)key).ToString()).Select(k => k.Value).FirstOrDefault();
+                else throw new NotImplementedException();
             }
             set
             {
-                properties.ForEach(k => { if (k.Value == key.ToString()) k.Value = value; });
+                if (key is Enum)
+                    properties.ForEach(k => { if (k.Value == ((Enum)key).ToString()) k.Value = value; });
+                else throw new NotImplementedException();
             }
         }
 
