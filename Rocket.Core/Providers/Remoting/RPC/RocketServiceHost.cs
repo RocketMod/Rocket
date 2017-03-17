@@ -11,8 +11,8 @@ namespace Rocket.Core.RPC
         private ServiceHost serviceHost = null;
         private Uri endpoint;
 
-        public static LongPollingEvent<RocketPlayer> OnPlayerConnected = new LongPollingEvent<RocketPlayer>();
-        public static LongPollingEvent<RocketPlayer> OnPlayerDisconnected = new LongPollingEvent<RocketPlayer>();
+        public static LongPollingEvent<RocketPlayerBase> OnPlayerConnected = new LongPollingEvent<RocketPlayerBase>();
+        public static LongPollingEvent<RocketPlayerBase> OnPlayerDisconnected = new LongPollingEvent<RocketPlayerBase>();
         public static LongPollingEvent<LogMessage> OnLog = new LongPollingEvent<LogMessage>();
         public static LongPollingEvent OnShutdown = new LongPollingEvent();
 
@@ -41,8 +41,8 @@ namespace Rocket.Core.RPC
 
                 if (R.Implementation != null)
                 {
-                    R.Implementation.OnPlayerConnected += (IRocketPlayer player) => { OnPlayerConnected.Invoke((RocketPlayer)player); };
-                    R.Implementation.OnPlayerDisconnected += (IRocketPlayer player) => { OnPlayerDisconnected.Invoke((RocketPlayer)player); };
+                    R.Implementation.OnPlayerConnected += (IRocketPlayer player) => { OnPlayerConnected.Invoke((RocketPlayerBase)player); };
+                    R.Implementation.OnPlayerDisconnected += (IRocketPlayer player) => { OnPlayerDisconnected.Invoke((RocketPlayerBase)player); };
                     R.Implementation.OnShutdown += () => { OnShutdown.Invoke(); };
                 }
 

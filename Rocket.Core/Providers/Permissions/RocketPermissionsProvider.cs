@@ -1,16 +1,15 @@
 ﻿using Rocket.API;
 using Rocket.API.Assets;
-using Rocket.API.Commands;
 using Rocket.API.Providers;
 using Rocket.API.Serialisation;
+using Rocket.Core.Permissions;
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 using Logger = Rocket.API.Logging.Logger;
 
-namespace Rocket.Core.Permissions
+namespace Rocket.Core.Providers
 {
-    public sealed class RocketPermissionsProvider : MonoBehaviour, IRocketPermissionsProvider
+    public sealed class RocketPermissionsProvider : RocketProviderBase, IRocketPermissionsDataProvider
     {
         private RocketPermissionsHelper helper;
 

@@ -19,8 +19,8 @@ namespace Rocket.Launcher
         {
             this.service = service;
             InitializeComponent();
-            service.OnPlayerConnected += (RocketPlayer player) => { TellLog("New Player: " + player.DisplayName); };
-            service.OnPlayerDisconnected += (RocketPlayer player) => { TellLog("Leaving Player: " + player.DisplayName); };
+            service.OnPlayerConnected += (RocketPlayerBase player) => { TellLog("New Player: " + player.DisplayName); };
+            service.OnPlayerDisconnected += (RocketPlayerBase player) => { TellLog("Leaving Player: " + player.DisplayName); };
             service.OnShutdown += () => { TellLog("Shutdown"); };
             service.OnLog += (LogMessage message) => { TellLog(message.Message); };
         }

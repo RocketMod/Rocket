@@ -15,7 +15,7 @@ namespace Rocket.Core.Commands
                 ulong id = 0;
                 if (ulong.TryParse(array[index], out id) && id > 76561197960265728)
                 {
-                    return new RocketPlayer(id.ToString());
+                    return new RocketPlayerBase(id.ToString());
                 }
             }
             return R.Implementation.GetAllPlayers().Where(p => p.DisplayName.Contains(array[index].ToString())).FirstOrDefault();

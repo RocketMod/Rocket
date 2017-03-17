@@ -5,7 +5,7 @@ namespace Rocket.API
 {
     [Serializable]
     [DataContract]
-    public class RocketPlayer : IRocketPlayer
+    public class RocketPlayerBase : IRocketPlayer
     {
         [DataMember]
         public string Id { get; private set; }
@@ -16,7 +16,7 @@ namespace Rocket.API
         [DataMember]
         public bool IsAdmin { get; private set; }
 
-        public RocketPlayer(string Id, string DisplayName = null, bool IsAdmin = false)
+        public RocketPlayerBase(string Id, string DisplayName = null, bool IsAdmin = false)
         {
             this.Id = Id;
             if (DisplayName == null)

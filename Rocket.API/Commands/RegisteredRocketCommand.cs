@@ -14,7 +14,7 @@ namespace Rocket.API.Commands
     public class RegisteredRocketCommand : IRocketCommand
     {
 
-        public RegisteredRocketCommand(IRocketPluginManager manager, string name, IRocketCommand command)
+        public RegisteredRocketCommand(IRocketPluginProvider manager, string name, IRocketCommand command)
         {
             Manager = manager;
             Name = name.ToLower();
@@ -33,7 +33,7 @@ namespace Rocket.API.Commands
         public IRocketCommand Command;
 
         [XmlIgnore]
-        public IRocketPluginManager Manager { get; private set; }
+        public IRocketPluginProvider Manager { get; private set; }
 
         public void Execute(IRocketPlayer caller, string[] command)
         {

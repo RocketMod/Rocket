@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using Logger = Rocket.API.Logging.Logger;
 
-namespace Rocket.Core.Permissions
+namespace Rocket.Core.Providers
 {
-    public sealed class RocketWebPermissionsProvider : MonoBehaviour, IRocketPermissionsProvider
+    public sealed class RocketWebPermissionsProvider : MonoBehaviour, IRocketPermissionsDataProvider
     {
         private RocketPermissionsHelper helper;
 

@@ -50,7 +50,7 @@ namespace Rocket.Core.Commands
             ReadOnlyCollection<IRocketCommand> commands = R.GetAllCommands();
             if (command.Length == 0)
             {
-                foreach (IRocketPluginManager pluginManager in R.PluginManagers)
+                foreach (IRocketPluginProvider pluginManager in R.PluginManagers)
                 {
                     string name = pluginManager.GetType().Assembly.GetName().Name;
                     Console.ForegroundColor = ConsoleColor.Cyan;

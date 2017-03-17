@@ -9,7 +9,7 @@ namespace Rocket.Plugins.Native
         public void Awake()
         {
             Name = GetType().Name;
-            PluginManager = NativeRocketPluginManager.Instance;
+            PluginManager = NativeRocketPluginProvider.Instance;
             base.Initialize();
         }
     }
@@ -19,7 +19,7 @@ namespace Rocket.Plugins.Native
         public void Awake()
         {
             Name = GetType().Name;
-            PluginManager = NativeRocketPluginManager.Instance;
+            PluginManager = NativeRocketPluginProvider.Instance;
             base.Initialize();
         }
     }

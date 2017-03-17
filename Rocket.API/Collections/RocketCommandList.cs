@@ -18,14 +18,14 @@ namespace Rocket.API.Commands
         private List<RegisteredRocketCommand> commands = new List<RegisteredRocketCommand>();
         public ReadOnlyCollection<RegisteredRocketCommand> Commands { get; internal set; }
 
-        private IRocketPluginManager manager;
+        private IRocketPluginProvider manager;
 
         public RocketCommandList()
         {
             Commands = commands.AsReadOnly();
         }
 
-        public RocketCommandList(IRocketPluginManager manager){
+        public RocketCommandList(IRocketPluginProvider manager){
             this.manager = manager;
             Commands = commands.AsReadOnly();
         }

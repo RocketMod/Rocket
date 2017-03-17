@@ -22,75 +22,111 @@ using Rocket.Core.RCON;
 using Rocket.Core.Commands;
 using Rocket.API.Serialisation;
 using Rocket.API.Providers;
+using Rocket.Core.Providers;
 
 namespace Rocket.Core
 {
     public delegate void RockedCommandExecute(IRocketPlayer player, IRocketCommand command, ref bool cancel);
 
+    public class ProviderRegistration
+    {
+        public ProviderRegistration(Type type, Type baseClass, bool allowMultipleInstances)
+        {
+            Type = type;
+            BaseClass = baseClass;
+            AllowMultipleInstances = allowMultipleInstances;
+        }
+
+        public ProviderRegistration(ProviderRegistration registration,object implementation)
+        {
+            Type = registration.Type;
+            BaseClass = registration.BaseClass;
+            AllowMultipleInstances = registration.AllowMultipleInstances;
+            Implementation = implementation;
+        }
+        public Type Type { get; private set; }
+        public Type BaseClass { get; private set; }
+        public bool AllowMultipleInstances { get; private set; }
+        public object Implementation { get; set; } = null;
+    }
+
+
     public class R : MonoBehaviour
     {
-        #region Events
-            public static event RockedCommandExecute OnCommandExecute;
-        #endregion
-
-        #region Static Properties
-        internal static R instance;
-        public static IRocketImplementation Implementation { get; private set; }
-        public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-        public static IRocketPermissionsProvider Permissions { get; set; }
-        public static XMLFileAsset<RocketSettings> Settings { get; private set; }
-        public static XMLFileAsset<TranslationList> Translation { get; private set; }
-        public static List<IRocketPluginManager> PluginManagers { get; private set; } = new List<IRocketPluginManager>();
-        #endregion
-
-        #region Static Methods
-        public static string Translate(string translationKey, params object[] placeholder)
+        private static readonly List<ProviderRegistration> availableProviderTypes = new List<ProviderRegistration>()
         {
-            return Translation.Instance.Translate(translationKey, placeholder);
-        }
+            new ProviderRegistration(typeof(IRocketImplementationProvider),null,false),
+            new ProviderRegistration(typeof(IRocketCommandProvider),null,true),
+            new ProviderRegistration(typeof(IRocketPluginProvider),typeof(RocketProviderBase),true),
+            new ProviderRegistration(typeof(IRocketRemotingProvider),typeof(RocketProviderBase),true),
+
+            new ProviderRegistration(typeof(IRocketPermissionsDataProvider),typeof(RocketDataProviderBase),false),
+            new ProviderRegistration(typeof(IRocketTranslationDataProvider),typeof(RocketDataProviderBase),false),
+            new ProviderRegistration(typeof(IRocketConfigurationDataProvider),typeof(RocketDataProviderBase),false),
+            new ProviderRegistration(typeof(IRocketPlayerDataProvider),typeof(RocketDataProviderBase),false)
+        };
+
         
-        public static ReadOnlyCollection<IRocketPlugin> GetAllPlugins()
-        {
-            List<IRocketPlugin> plugins = new List<IRocketPlugin>();
-            foreach (IRocketPluginManager m in PluginManagers)
-            {
-                plugins.AddRange(m.GetPlugins());
-            }
-            return plugins.AsReadOnly();
-        }
 
-        public static ReadOnlyCollection<IRocketCommand> GetAllCommands()
+        private static List<ProviderRegistration> providers  = new List<ProviderRegistration>();
+
+        internal static void RegisterProvider<T>(object provider)
         {
-            List<IRocketCommand> commands = new List<IRocketCommand>();
-            foreach (IRocketPluginManager m in PluginManagers)
+            Logger.Info("Registering " +provider.ToString());
+            ProviderRegistration currentProviderType = null;
+            Type[] currentProviderTypes = provider.GetType().GetInterfaces();
+            foreach (ProviderRegistration registration in availableProviderTypes)
             {
-                foreach(IRocketCommand c in m.Commands.Commands)
+                if (currentProviderTypes.Contains(registration.Type))
                 {
-                    commands.Add(c);
+                    currentProviderType = registration;
+                    break;
                 }
             }
-            return commands.AsReadOnly();
-        }
+            if (currentProviderType == null) throw new Exception("Provider has no known interface");
 
-        public static IRocketCommand GetCommand(string name)
-        {
-            IRocketCommand commands = null;
-            foreach (IRocketPluginManager m in PluginManagers)
+            if(currentProviderType.BaseClass != null)
+                if (!(provider.GetType().IsAssignableFrom(currentProviderType.BaseClass))) throw new Exception("Provider does not implement valid base class");
+
+            if (!currentProviderType.AllowMultipleInstances)
             {
-                commands = m.Commands.GetCommand(name);
+                providers.RemoveAll(p => p.Type == currentProviderType.Type);
             }
-            return commands;
+            providers.Add(new ProviderRegistration(currentProviderType,provider));
         }
 
+        public static T GetProvider<T>() 
+        {
+            return GetProviders<T>().FirstOrDefault();
+        }
+
+        public static List<T> GetProviders<T>()
+        {
+            return providers.Where(provider => provider.Type == typeof(T) && provider.Implementation is T).Select(provider => (T)provider.Implementation).ToList();
+        }
+
+        internal static R instance;
+        public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+     
+     
         public static void Reload()
         {
             try
             {
-                Settings.Load();
-                Translation.Load();
-                Permissions.Reload();
-                PluginManagers.ForEach(p => p.Reload());
-                Implementation.Reload();
+                foreach (ProviderRegistration provider in providers)
+                {
+                    if (provider.Implementation.GetType().IsAssignableFrom(typeof(RocketProviderBase)))
+                    {
+                        ((RocketProviderBase)provider.Implementation).Unload();
+                    }
+                }
+                foreach (ProviderRegistration provider in providers)
+                {
+                    if (provider.Implementation.GetType().IsAssignableFrom(typeof(RocketProviderBase)))
+                    {
+                        ((RocketProviderBase)provider.Implementation).Load();
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -119,7 +155,7 @@ namespace Rocket.Core
 
                 Logger.Debug("NAME:"+name);
 
-                foreach (IRocketPluginManager p in PluginManagers)
+                foreach (IRocketPluginProvider p in PluginManagers)
                 {
                     IRocketCommand c = p.Commands.GetCommand(name);
                     if (c != null) commands.Add(c);
@@ -178,16 +214,14 @@ namespace Rocket.Core
             }
             return false;
         }
-        #endregion
-
+      
         private void Awake()
         {
             instance = this;
-            Implementation = (IRocketImplementation)GetComponent(typeof(IRocketImplementation));
             API.Environment.Initialize();
             Logger.Initialize(API.Environment.LogConfigurationFile);
             Logger.Info("####################################################################################");
-            Logger.Info("Starting RocketMod " + R.Version + " for " + R.Implementation?.Name + " on instance " + R.Implementation?.InstanceName);
+            Logger.Info("Starting RocketMod " + R.Version + ";
             Logger.Info("####################################################################################");
 
 
@@ -212,7 +246,7 @@ namespace Rocket.Core
                 Permissions = gameObject.TryAddComponent<RocketPermissionsProvider>();
                 gameObject.TryAddComponent<TaskDispatcher>();
 
-                NativeRocketPluginManager nativeRocketPluginManager = gameObject.TryAddComponent<NativeRocketPluginManager>();
+                NativeRocketPluginProvider nativeRocketPluginManager = gameObject.TryAddComponent<NativeRocketPluginProvider>();
                 nativeRocketPluginManager.AddCommands(new List<IRocketCommand>()
                 {
                     new CommandExit(),
@@ -251,5 +285,6 @@ namespace Rocket.Core
                 Logger.Fatal(ex);
             }
         }
+
     }
 }

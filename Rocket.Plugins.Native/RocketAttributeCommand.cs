@@ -9,9 +9,9 @@ namespace Rocket.API.Commands
 {
     public class RocketAttributeCommand : IRocketCommand
     {
-        public IRocketPluginManager Manager { get; private set; }
+        public IRocketPluginProvider Manager { get; private set; }
 
-        public RocketAttributeCommand(IRocketPluginManager manager,string name, string help, string syntax, AllowedCaller allowedCaller, List<string> permissions, List<string> aliases, MethodInfo method)
+        public RocketAttributeCommand(IRocketPluginProvider manager,string name, string help, string syntax, AllowedCaller allowedCaller, List<string> permissions, List<string> aliases, MethodInfo method)
         {
             Manager = manager;
             Name = name;

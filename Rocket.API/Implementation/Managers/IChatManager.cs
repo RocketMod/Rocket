@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-namespace Rocket.API.Chat
+namespace Rocket.API.Implementation.Managers
 {
     public delegate void PlayerChatted(IRocketPlayer player, ref Color color, string message,ref bool cancel);
-    public interface IChat
+    public interface IChatManager
     {
         event PlayerChatted OnPlayerChatted;
         void Say(IRocketPlayer player, string message, Color? color = null);
