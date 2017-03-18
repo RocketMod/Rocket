@@ -33,18 +33,17 @@ namespace Rocket.Core
         private static readonly List<ProviderRegistration> availableProviderTypes = new List<ProviderRegistration>()
         {
             new ProviderRegistration(typeof(IRocketImplementationProvider),false),
+            new ProviderRegistration(typeof(IRocketLoggingProvider),true),
             new ProviderRegistration(typeof(IRocketCommandProvider),true),
             new ProviderRegistration(typeof(IRocketPluginProvider),true),
             new ProviderRegistration(typeof(IRocketRemotingProvider),true),
 
-            new ProviderRegistration(typeof(IRocketPermissionsDataProvider),false),
+            new ProviderRegistration(typeof(IRocketPermissionsDataProvider),true),
             new ProviderRegistration(typeof(IRocketTranslationDataProvider),false),
             new ProviderRegistration(typeof(IRocketConfigurationDataProvider),false),
             new ProviderRegistration(typeof(IRocketPlayerDataProvider),false)
         };
 
-
-        private static GameObject rocketGameObject = new GameObject("Rocket");
         private static List<ProviderRegistration> providers  = new List<ProviderRegistration>();
 
         private static ProviderRegistration getProviderInterface(Type provider)
@@ -82,9 +81,9 @@ namespace Rocket.Core
 
             if (!currentProviderType.AllowMultipleInstances)
             {
-                providers.Where(p => p.Type == currentProviderType.Type).All(p => { p.Enabled = false; p.Implementation.enabled = false; return true; });
+                providers.Where(p => p.Type == currentProviderType.Type).All(p => { p.Enabled = false; p.Implementation.Unload(); return true; });
             }
-            ProviderRegistration result = new ProviderRegistration(currentProviderType, (RocketProviderBase)rocketGameObject.AddComponent(provider));
+            ProviderRegistration result = new ProviderRegistration(currentProviderType, (RocketProviderBase)Activator.CreateInstance(provider));
             providers.Add(result);
             return result.Implementation;
         }
@@ -250,10 +249,10 @@ namespace Rocket.Core
             Logger.Info("####################################################################################");
 
             #if DEBUG
-                gameObject.TryAddComponent<Debugger>();
-            #else
-                Initialize<T>();
-            #endif
+                new Debugger();
+#else
+                initialize<T>();
+#endif
         }
 
         private static void initialize<T>() where T : IRocketImplementationProvider
@@ -262,7 +261,7 @@ namespace Rocket.Core
             {
 
                 IRocketImplementationProvider implementation = (IRocketImplementationProvider)registerProvider(typeof(T));
-                foreach (Type t in implementation.GetProviders()) registerProvider(t);
+                foreach (Type t in implementation.Providers) registerProvider(t);
 
                 registerProvider<RocketBuiltinCommandProvider>();
                 registerProvider<RocketBuiltinPermissionsProvider>();

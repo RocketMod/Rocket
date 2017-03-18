@@ -23,7 +23,7 @@ namespace Rocket.API.Providers
         }
 
         public static class IRocketPermissionsDataProviderExtensions
-    {
+        {
 
             public static bool HasPermission(this IRocketPermissionsDataProvider rocketPermissionProvider, IRocketPlayer player, string permission)
             {
@@ -56,6 +56,8 @@ namespace Rocket.API.Providers
                         permissions.Remove(permission);
                     }
                 }
+
+               
 
                 foreach(string permission in requestedPermissions)
                 {
