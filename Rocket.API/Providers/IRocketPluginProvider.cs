@@ -1,7 +1,4 @@
-﻿using Rocket.API.Commands;
-using System.Collections.Generic;
-using Rocket.API.Assets;
-using Rocket.API.Collections;
+﻿using System.Collections.Generic;
 using Rocket.API.Plugins;
 
 namespace Rocket.API.Providers
@@ -11,7 +8,8 @@ namespace Rocket.API.Providers
         IRocketCommandProvider CommandProvider { get; }
         List<IRocketPlugin> GetPlugins();
         IRocketPlugin GetPlugin(string name);
-        void Load();
-        void Unload();
+        string GetPluginDirectory(string name);
+        bool Load();
+        bool Unload();
     }
 }

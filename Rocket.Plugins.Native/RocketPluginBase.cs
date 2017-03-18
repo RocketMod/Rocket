@@ -1,20 +1,20 @@
-﻿using Rocket.API;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using Rocket.API;
 using Rocket.API.Assets;
 using Rocket.API.Collections;
-using Rocket.API.Extensions;
 using Rocket.API.Plugins;
-using Rocket.Core.Extensions;
-using Rocket.API.Logging;
-using System;
-using System.Linq;
-using UnityEngine;
-using Logger = Rocket.API.Logging.Logger;
-using System.Reflection;
-using System.IO;
-using Rocket.API.Serialisation;
 using Rocket.API.Providers;
+using Rocket.API.Serialisation;
+using Rocket.Core.Extensions;
+using UnityEngine;
+using Environment = Rocket.API.Environment;
+using Logger = Rocket.API.Logging.Logger;
+using Object = UnityEngine.Object;
 
-namespace Rocket.API.Plugins
+namespace Rocket.Plugins.Native
 {
     public class RocketPluginBase<T> : RocketPluginBase, IRocketPlugin<T> where T : class, IRocketPluginConfiguration
     {
@@ -215,6 +215,11 @@ namespace Rocket.API.Plugins
 
         protected virtual void Unload()
         {
+        }
+
+        public void DestroyPlugin()
+        {
+            Destroy(this);
         }
     }
 }

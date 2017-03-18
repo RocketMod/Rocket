@@ -1,7 +1,7 @@
-﻿using Rocket.API;
-using System;
+﻿using System;
+using Rocket.API.Commands;
 
-namespace Rocket.API.Commands
+namespace Rocket.Plugins.Native
 {
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class RocketCommandPermissionAttribute : System.Attribute

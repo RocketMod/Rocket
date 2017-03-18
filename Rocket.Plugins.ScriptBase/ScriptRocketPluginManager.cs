@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Rocket.API.Collections;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;

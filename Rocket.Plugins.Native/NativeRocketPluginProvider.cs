@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
+using Rocket.API.Collections;
 using Rocket.API.Commands;
 using Logger = Rocket.API.Logging.Logger;
 using Rocket.API.Extensions;
@@ -17,21 +17,17 @@ namespace Rocket.Plugins.Native
     {
         public static NativeRocketPluginProvider Instance { get; private set; }
         private static List<Assembly> pluginAssemblies;
-        private static List<NativeRocketPlugin> plugins = new List<NativeRocketPlugin>();
+        private static List<IRocketPlugin> plugins = new List<IRocketPlugin>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
-
-        public InitialiseDelegate Initialise { get; set; }
-
-        public RocketCommandList Commands { get; private set; }
 
         public List<IRocketPlugin> GetPlugins()
         {
-            return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null).Select(p => (IRocketPlugin)p).ToList();
+            return plugins.ToList(); //send a copy of the list, we dont want someone to mess up with plugin list directly
         }
 
         public IRocketPlugin GetPlugin(string name)
         {
-            return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null && p.GetType().Assembly.GetName().Name == name).FirstOrDefault();
+            return plugins.FirstOrDefault(p => p != null && p.GetType().Assembly.GetName().Name == name);
         }
 
         public string GetPluginDirectory(string name)
@@ -45,6 +41,7 @@ namespace Rocket.Plugins.Native
         public void Load(string pluginDirectory, string languageCode, string librariesDirectory)
         {
             PluginsDirectory = pluginDirectory;
+            CommandProvider = new NativeRocketCommandProvider(this);
             this.librariesDirectory = librariesDirectory;
             this.languageCode = languageCode;
             loadPlugins();
@@ -55,12 +52,13 @@ namespace Rocket.Plugins.Native
             throw new NotImplementedException();
         }
 
+        public IRocketCommandProvider CommandProvider { get; private set; }
         private void Awake()
         {
             try
             {
                 Instance = this;
-                Commands = new RocketCommandList(this);
+                CommandProvider = gameObject.TryAddComponent<NativeRocketCommandProvider>();
                 AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
                 {
                     string file;
@@ -141,8 +139,9 @@ namespace Rocket.Plugins.Native
 
                 foreach (Type pluginType in pluginImplemenations)
                 {
-                    gameObject.TryAddComponent(pluginType);
-                    Commands.AddRange(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
+                    var pl = (IRocketPlugin) gameObject.TryAddComponent(pluginType);
+                    plugins.Add(pl);
+                    CommandProvider.AddCommands(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
                 }
             }
         }
@@ -151,14 +150,15 @@ namespace Rocket.Plugins.Native
         {
             for (int i = plugins.Count; i > 0; i--)
             {
-                Destroy(plugins[i - 1]);
+                plugins[i - 1].DestroyPlugin();
             }
             plugins.Clear();
         }
 
-        public void Unload()
+        public bool Unload()
         {
             unloadPlugins();
+            return true;
         }
 
         public void Reload()
@@ -181,11 +181,6 @@ namespace Rocket.Plugins.Native
                 catch { }
             }
             return l;
-        }
-
-        public void AddCommands(IEnumerable<IRocketCommand> commands)
-        {
-            Commands.AddRange(commands.AsEnumerable());
         }
 
         private static List<Assembly> LoadAssembliesFromDirectory(string directory, string extension = "*.dll")
