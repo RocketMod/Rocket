@@ -8,13 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using Rocket.API.Providers;
 
 namespace Rocket.API.Commands
 {
     [Serializable]
     public class RegisteredRocketCommand : IRocketCommand
     {
-
         public RegisteredRocketCommand(IRocketPluginProvider manager, string name, IRocketCommand command)
         {
             Manager = manager;

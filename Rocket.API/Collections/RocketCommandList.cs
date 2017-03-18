@@ -1,16 +1,17 @@
-﻿using Rocket.API.Assets;
-using Rocket.API.Exceptions;
-using Rocket.API.Logging;
-using Rocket.API.Plugins;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Rocket.API.Assets;
+using Rocket.API.Commands;
+using Rocket.API.Exceptions;
+using Rocket.API.Logging;
+using Rocket.API.Plugins;
+using Rocket.API.Providers;
 
-namespace Rocket.API.Commands
+namespace Rocket.API.Collections
 {
     [Serializable]
     public class RocketCommandList : IEnumerable<RegisteredRocketCommand>, IDefaultable
@@ -40,7 +41,7 @@ namespace Rocket.API.Commands
 
         public RegisteredRocketCommand GetCommand(string name)
         {
-            return commands.Where(c => c.Name.ToLower() == name.ToLower() && c.Enabled).FirstOrDefault();
+            return commands.FirstOrDefault(c => c.Name.ToLower() == name.ToLower() && c.Enabled);
         }
 
         public IEnumerator<RegisteredRocketCommand> GetEnumerator()
@@ -177,7 +178,7 @@ namespace Rocket.API.Commands
 
             foreach (RegisteredRocketCommand command in Commands.ToList())
             {
-                RegisteredRocketCommand entry = a.Instance.Where(c => c.Identifier == command.Identifier && c.Enabled).FirstOrDefault();
+                RegisteredRocketCommand entry = a.Instance.FirstOrDefault(c => c.Identifier == command.Identifier && c.Enabled);
                 if (entry != null)
                 {
                     command.Name = entry.Name;

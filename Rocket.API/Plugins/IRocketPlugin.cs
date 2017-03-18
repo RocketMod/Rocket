@@ -32,5 +32,6 @@ namespace Rocket.API.Plugins
 
         event RocketPluginLoading OnPluginLoading;
         event RocketPluginLoaded OnPluginLoaded;
+        void DestroyPlugin();
     }
 }

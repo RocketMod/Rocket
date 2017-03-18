@@ -1,11 +1,11 @@
-﻿using Rocket.API.Plugins;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using Rocket.API;
+using Rocket.API.Commands;
+using Rocket.API.Plugins;
+using Rocket.API.Providers;
 
-namespace Rocket.API.Commands
+namespace Rocket.Plugins.Native
 {
     public class RocketAttributeCommand : IRocketCommand
     {
