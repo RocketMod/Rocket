@@ -7,8 +7,8 @@ using System.Linq;
 
 namespace Rocket.API.Providers
     {
-        public interface IRocketPermissionsDataProvider
-        {
+        public interface IRocketPermissionsDataProvider : IRocketDataProviderBase
+    {
             List<RocketPermissionsGroup> GetGroups(IRocketPlayer player);
 
             List<string> GetPermissions(IRocketPlayer player);
@@ -20,12 +20,10 @@ namespace Rocket.API.Providers
             bool SaveGroup(RocketPermissionsGroup group);
 
             bool DeleteGroup(RocketPermissionsGroup group);
-
-            void Reload();
         }
 
         public static class IRocketPermissionsDataProviderExtensions
-        {
+    {
 
             public static bool HasPermission(this IRocketPermissionsDataProvider rocketPermissionProvider, IRocketPlayer player, string permission)
             {

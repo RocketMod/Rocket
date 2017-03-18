@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace Rocket.API
+namespace Rocket.Core.Utils.Web
 {
     public class RocketWebClient : WebClient
     {

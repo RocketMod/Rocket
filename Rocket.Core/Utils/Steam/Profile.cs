@@ -5,7 +5,7 @@ using System.Net;
 using System.Xml;
 using Logger = Rocket.API.Logging.Logger;
 
-namespace Rocket.Core.Steam
+namespace Rocket.Core.Utils.Steam
 {
     public class Profile
     {

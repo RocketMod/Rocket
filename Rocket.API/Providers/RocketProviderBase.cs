@@ -1,16 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using UnityEngine;
 
 namespace Rocket.API.Providers
 {
-    public class RocketProviderBase : MonoBehaviour
+    public abstract class RocketProviderBase : MonoBehaviour, IRocketProviderBase
     {
-        public virtual bool Unload()
-        {
-            return false;
-        }
-        public virtual bool Load()
-        {
-            return false;
-        }
+        public abstract void Load();
+
+        public abstract void Unload();
     }
 }

@@ -5,7 +5,7 @@ using System.Threading;
 using UnityEngine;
 using Logger = Rocket.API.Logging.Logger;
 
-namespace Rocket.Core.Tasks
+namespace Rocket.Core.Utils.Tasks
 {
     public class TaskDispatcher : MonoBehaviour
     {
