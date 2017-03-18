@@ -64,6 +64,13 @@ namespace Rocket.Core
             return currentProviderType;
         }
 
+        public static IRocketTranslationDataProvider Translations
+        {
+            get
+            {
+                return (IRocketTranslationDataProvider)GetProvider(typeof(IRocketTranslationDataProvider));
+            }
+        }
         private static T registerProvider<T>() where T : RocketProviderBase
         {
             return (T)registerProvider(typeof(T));

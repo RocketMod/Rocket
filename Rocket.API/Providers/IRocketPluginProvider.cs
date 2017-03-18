@@ -9,7 +9,6 @@ namespace Rocket.API.Providers
 {
     public interface IRocketPluginProvider : IRocketProviderBase
     {
-        IRocketCommandProvider CommandProvider { get; }
         List<IRocketPlugin> GetPlugins();
         IRocketPlugin GetPlugin(string name);
         List<Type> GetProviders();
