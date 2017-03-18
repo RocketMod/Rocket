@@ -2,7 +2,7 @@
 
 namespace Rocket.API.Providers
 {
-    public interface IRocketCommandProvider
+    public interface IRocketCommandProvider : IRocketProviderBase
     {
         RocketCommandList Commands { get; }
     }

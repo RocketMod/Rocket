@@ -1,4 +1,7 @@
 ﻿using Rocket.API.Implementation.Managers;
+using Rocket.API.Serialisation;
+using System;
+using System.Collections.Generic;
 
 namespace Rocket.API.Providers
 {
@@ -6,17 +9,20 @@ namespace Rocket.API.Providers
     public delegate void ImplementationShutdown();
     public delegate void ImplementationReload();
 
-    public interface IRocketImplementationProvider
+    public interface IRocketImplementationProvider : IRocketProviderBase
     {
         string InstanceName { get; }
         string Name { get; }
         IChatManager Chat { get; }
         IPlayerManager Players { get; }
-        IRocketCommandProvider CommandProvider { get; }
 
         event ImplementationInitialized OnInitialized;
         event ImplementationShutdown OnShutdown;
         event ImplementationReload OnReload;
+
+        List<Type> Providers { get; }
+
+        TranslationList DefaultTranslation { get; }
 
         void Shutdown();
         void Reload();

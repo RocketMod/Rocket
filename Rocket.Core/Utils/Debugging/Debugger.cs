@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 
 
-namespace Rocket.Core
+namespace Rocket.Core.Utils.Debugging
 {
     public class Debugger : MonoBehaviour
     {

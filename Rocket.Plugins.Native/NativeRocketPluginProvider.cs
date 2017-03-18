@@ -13,6 +13,10 @@ using Rocket.API.Providers;
 
 namespace Rocket.Plugins.Native
 {
+    public static readonly string PluginDirectory = "Plugins/{0}/";
+    public static readonly string PluginTranslationFileTemplate = "{0}.{1}.translation.xml";
+    public static readonly string PluginConfigurationFileTemplate = "{0}.configuration.xml";
+
     public sealed class NativeRocketPluginProvider : RocketProviderBase, IRocketPluginProvider
     {
         public static NativeRocketPluginProvider Instance { get; private set; }
@@ -49,34 +53,8 @@ namespace Rocket.Plugins.Native
             this.languageCode = languageCode;
             loadPlugins();
         }
-
-        public void Load(string pluginDirectory, string languageCode)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void Awake()
-        {
-            try
-            {
-                Instance = this;
-                Commands = new RocketCommandList(this);
-                AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
-                {
-                    string file;
-                    if (libraries.TryGetValue(args.Name, out file))
-                    {
-                        return Assembly.Load(File.ReadAllBytes(file));
-                    }
-                    return null;
-                };
-
-            }
-            catch (Exception ex)
-            {
-                Logger.Fatal(ex);
-            }
-        }
+        
+        
 
         public List<IRocketCommand> GetCommandTypesFromAssembly(Assembly assembly, Type plugin)
         {
@@ -155,12 +133,7 @@ namespace Rocket.Plugins.Native
             }
             plugins.Clear();
         }
-
-        public void Unload()
-        {
-            unloadPlugins();
-        }
-
+        
         public void Reload()
         {
             unloadPlugins();
@@ -214,6 +187,34 @@ namespace Rocket.Plugins.Native
                 }
             }
             return assemblies;
+        }
+
+        public override void Load()
+        {
+            try
+            {
+                Instance = this;
+                Commands = new RocketCommandList(this);
+                AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
+                {
+                    string file;
+                    if (libraries.TryGetValue(args.Name, out file))
+                    {
+                        return Assembly.Load(File.ReadAllBytes(file));
+                    }
+                    return null;
+                };
+
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex);
+            }
+        }
+
+        public override void Unload()
+        {
+            unloadPlugins();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core.Steam
+﻿namespace Rocket.Core.Utils.Steam
 {
     public static class Steam
     {

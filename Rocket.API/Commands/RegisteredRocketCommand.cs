@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Extensions;
 using Rocket.API.Plugins;
+using Rocket.API.Providers;
 using Rocket.Collections;
 using Rocket.Core.Extensions;
 using System;
@@ -33,7 +34,7 @@ namespace Rocket.API.Commands
         public IRocketCommand Command;
 
         [XmlIgnore]
-        public IRocketPluginProvider Manager { get; private set; }
+        public IRocketPluginProvider Provider { get; private set; }
 
         public void Execute(IRocketPlayer caller, string[] command)
         {

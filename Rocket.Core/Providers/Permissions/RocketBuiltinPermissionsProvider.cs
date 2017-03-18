@@ -9,22 +9,10 @@ using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.Core.Providers
 {
-    public sealed class RocketPermissionsProvider : RocketProviderBase, IRocketPermissionsDataProvider
+    public sealed class RocketBuiltinPermissionsProvider : IRocketPermissionsDataProvider, RocketProviderBase
     {
         private RocketPermissionsHelper helper;
-
-        private void Start()
-        {
-            try
-            {
-                helper = new RocketPermissionsHelper(new XMLFileAsset<RocketPermissions>(API.Environment.PermissionFile));
-            }
-            catch (Exception ex)
-            {
-                Logger.Fatal(ex);
-            }
-        }
-
+        
         public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player)
         {
             return helper.GetGroups(player);
@@ -58,6 +46,28 @@ namespace Rocket.Core.Providers
         public void Reload()
         {
             helper.permissions.Load();
+        }
+
+        public void Save()
+        {
+            helper.permissions.Save();
+        }
+
+        public void Unload()
+        {
+            helper.permissions.Unload();
+        }
+
+        public void Load()
+        {
+            try
+            {
+                helper = new RocketPermissionsHelper(new XMLFileAsset<RocketPermissions>(API.Environment.PermissionFile));
+            }
+            catch (Exception ex)
+            {
+                Logger.Fatal(ex);
+            }
         }
     }
 }

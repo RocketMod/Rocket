@@ -1,7 +1,13 @@
-﻿namespace Rocket.Core
+﻿using Rocket.API;
+using Rocket.API.Commands;
+using Rocket.API.Providers;
+
+namespace Rocket.Core
 {
-    public interface IRocketRemotingProvider
+    public delegate void RockedCommandExecute(IRocketPlayer player, IRocketCommand command, ref bool cancel);
+
+    public interface IRocketRemotingProvider : IRocketProviderBase
     {
-        public void Execute(string command);
+        RockedCommandExecute OnExecute();
     }
 }
