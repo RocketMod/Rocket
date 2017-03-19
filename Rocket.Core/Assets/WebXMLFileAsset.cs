@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Rocket.API.Assets;
+using Rocket.Core.Utils.Web;
+using System;
 using System.IO;
 using System.Xml.Serialization;
 
-namespace Rocket.API.Assets
+namespace Rocket.Core.Assets
 {
     public class WebXMLFileAsset<T> : Asset<T> where T : class
     {

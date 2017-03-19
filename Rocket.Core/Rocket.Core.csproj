@@ -81,6 +81,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Asset.cs" />
+    <Compile Include="Assets\WebXMLFileAsset.cs" />
+    <Compile Include="Assets\XMLFileAsset.cs" />
     <Compile Include="Commands\CommandExit.cs" />
     <Compile Include="Commands\CommandExtensions.cs" />
     <Compile Include="Commands\CommandHelp.cs" />

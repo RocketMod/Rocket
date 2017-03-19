@@ -10,21 +10,21 @@ using Rocket.API.Commands;
 using Logger = Rocket.API.Logging.Logger;
 using Rocket.API.Extensions;
 using Rocket.API.Providers;
+using Rocket.API.Collections;
 
 namespace Rocket.Plugins.Native
 {
-    public static readonly string PluginDirectory = "Plugins/{0}/";
-    public static readonly string PluginTranslationFileTemplate = "{0}.{1}.translation.xml";
-    public static readonly string PluginConfigurationFileTemplate = "{0}.configuration.xml";
-
     public sealed class NativeRocketPluginProvider : RocketProviderBase, IRocketPluginProvider
     {
+        public static readonly string PluginDirectory = "Plugins/{0}/";
+        public static readonly string PluginTranslationFileTemplate = "{0}.{1}.translation.xml";
+        public static readonly string PluginConfigurationFileTemplate = "{0}.configuration.xml";
         public static NativeRocketPluginProvider Instance { get; private set; }
         private static List<Assembly> pluginAssemblies;
         private static List<NativeRocketPlugin> plugins = new List<NativeRocketPlugin>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
 
-        public InitialiseDelegate Initialise { get; set; }
+       
 
         public RocketCommandList Commands { get; private set; }
 
@@ -119,7 +119,7 @@ namespace Rocket.Plugins.Native
 
                 foreach (Type pluginType in pluginImplemenations)
                 {
-                    gameObject.TryAddComponent(pluginType);
+                    //gameObject.TryAddComponent(pluginType);
                     Commands.AddRange(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
                 }
             }
@@ -129,7 +129,7 @@ namespace Rocket.Plugins.Native
         {
             for (int i = plugins.Count; i > 0; i--)
             {
-                Destroy(plugins[i - 1]);
+                //Destroy(plugins[i - 1]);
             }
             plugins.Clear();
         }
@@ -215,6 +215,11 @@ namespace Rocket.Plugins.Native
         public override void Unload()
         {
             unloadPlugins();
+        }
+
+        public List<Type> GetProviders()
+        {
+            throw new NotImplementedException();
         }
     }
 }

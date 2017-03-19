@@ -152,47 +152,6 @@ namespace Rocket.API.Collections
             return false;
         }
 
-        public void Persist()
-        {
-            string persistenseFile = String.Format(API.Environment.CommandsFile, manager.GetType().Name);
-            XMLFileAsset<RocketCommandList> a = new XMLFileAsset<RocketCommandList>(persistenseFile,null,this);
-            
-
-            foreach (RegisteredRocketCommand command in a.Instance.ToList())
-            {
-                command.Name = command.Name.ToLower();
-            }
-
-            foreach(RegisteredRocketCommand command in a.Instance)
-            {
-                foreach (RegisteredRocketCommand rcommand in a.Instance.Where(c => c.Identifier == command.Identifier && c.Enabled).Skip(1).ToList())
-                {
-                    rcommand.Enabled = false;
-                }
-                foreach (RegisteredRocketCommand rcommand in a.Instance.Commands.Where(c => c.Name == command.Name && c.Enabled).Skip(1).ToList())
-                {
-                    rcommand.Enabled = false;
-                }
-            }
-
-
-            foreach (RegisteredRocketCommand command in Commands.ToList())
-            {
-                RegisteredRocketCommand entry = a.Instance.FirstOrDefault(c => c.Identifier == command.Identifier && c.Enabled);
-                if (entry != null)
-                {
-                    command.Name = entry.Name;
-                    command.Help = entry.Help;
-                    command.Syntax = entry.Syntax;
-                }
-                else
-                {
-                    a.Instance.commands.Add(command);
-                }
-            }
-            a.Save();
-        }
-
         public void LoadDefaults()
         {
             Commands = new ReadOnlyCollection<RegisteredRocketCommand>(new List<RegisteredRocketCommand>());
