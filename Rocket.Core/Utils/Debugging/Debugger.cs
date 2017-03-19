@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Rocket.Core.Utils.Debugging
 {
-    public class Debugger : MonoBehaviour
+    public class Debugger
     {
         public static IDictionary<IntPtr, string> GetOpenWindows()
         {

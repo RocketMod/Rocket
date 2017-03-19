@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Rocket.API.Providers
 {
-    public abstract class RocketProviderBase : MonoBehaviour, IRocketProviderBase
+    public abstract class RocketProviderBase : IRocketProviderBase
     {
         public abstract void Load();
 

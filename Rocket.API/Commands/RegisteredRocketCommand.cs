@@ -1,23 +1,16 @@
-﻿using Rocket.API.Extensions;
-using Rocket.API.Plugins;
-using Rocket.API.Providers;
-using Rocket.Collections;
-using Rocket.Core.Extensions;
+﻿using Rocket.API.Providers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Xml.Serialization;
-using Rocket.API.Providers;
 
 namespace Rocket.API.Commands
 {
     [Serializable]
     public class RegisteredRocketCommand : IRocketCommand
     {
-        public RegisteredRocketCommand(IRocketPluginProvider manager, string name, IRocketCommand command)
+        public RegisteredRocketCommand(IRocketPluginProvider provider, string name, IRocketCommand command)
         {
-            Manager = manager;
+            Provider = provider;
             Name = name.ToLower();
             Command = command;
 

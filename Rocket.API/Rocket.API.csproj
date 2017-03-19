@@ -66,9 +66,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Asset.cs" />
-    <Compile Include="Assets\WebXMLFileAsset.cs" />
-    <Compile Include="Assets\XMLFileAsset.cs" />
     <Compile Include="Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />

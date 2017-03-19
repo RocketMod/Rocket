@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rocket.API.Collections;
 using Rocket.API.Commands;
@@ -17,6 +18,16 @@ namespace Rocket.Plugins.Native
         public void AddCommands(IEnumerable<IRocketCommand> commands)
         {
             Commands.AddRange(commands.AsEnumerable());
+        }
+
+        public void Load()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Unload()
+        {
+            throw new NotImplementedException();
         }
     }
 }
