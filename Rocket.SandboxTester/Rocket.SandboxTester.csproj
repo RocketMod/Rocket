@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rocket.SandboxTester</RootNamespace>
     <AssemblyName>Rocket.SandboxTester</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
@@ -38,9 +38,7 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
       <HintPath>..\Rocket.Core\lib\UnityEngine.dll</HintPath>
@@ -55,20 +53,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
-      <Project>{c362df2f-1336-4932-aadc-4f2074fedb64}</Project>
-      <Name>Rocket.API</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj">
-      <Project>{7a9d652f-dc18-45fd-8964-dbaad6384c3d}</Project>
-      <Name>Rocket.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rocket.Plugins.ScriptBase\Rocket.Plugins.ScriptBase.csproj">
-      <Project>{b62c91d0-5d32-45fb-a0c5-e551c6c2379e}</Project>
-      <Name>Rocket.Plugins.ScriptBase</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

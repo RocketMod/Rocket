@@ -6,6 +6,7 @@ using System.Reflection.Emit;
 
 namespace Rocket.SandboxTester
 {
+    //todo: use mono cecil instead
     public class Disassembler
     {
         private BinaryReader _stream;

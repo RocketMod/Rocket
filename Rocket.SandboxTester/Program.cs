@@ -20,7 +20,7 @@ namespace Rocket.SandboxTester
                 goto start;
             }
 
-            var asm = Assembly.LoadFrom(Path.GetFullPath(name));
+            var asm = Assembly.LoadFile(Path.GetFullPath(name));
             string illegalInstruction;
             string failReason;
             var res = SafeCodeHandler.IsSafeAssembly(asm, out illegalInstruction, out failReason);

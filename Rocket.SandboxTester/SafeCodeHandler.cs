@@ -32,6 +32,8 @@ namespace Rocket.SandboxTester
             "System.Linq.*",
             "System.Globalization.*",
             "System.Collections.*",
+            "SDG.*" //todo: block in future. SDG is too unsafe
+
             //"Steamworks.*" //might be a bad idea? Can be abused for achievements etc
         };
 
@@ -43,8 +45,7 @@ namespace Rocket.SandboxTester
             "UnityEngine.iOS.*",
             "UnityEngine.Purchasing.*",
             "UnityEngine.Network.*",
-            "UnityEngine.SceneManagment.*",
-            "SDG.*"
+            "UnityEngine.SceneManagment.*"
         };
 
         private static readonly List<Type> AllowedTypes = new List<Type>
@@ -98,7 +99,11 @@ namespace Rocket.SandboxTester
             typeof(StringBuilder),
             typeof(IComparable<>),
             typeof(Type),
-            typeof(IDisposable)
+            typeof(IDisposable),
+            typeof(Delegate),
+            typeof(ValueType),
+            typeof(MulticastDelegate),
+            typeof(Interlocked)
         };
 
         private static readonly List<Type> DisallowedTypes = new List<Type>
@@ -149,15 +154,26 @@ namespace Rocket.SandboxTester
             {
                 return AllowedMethods[type].Contains(method);
             }
-            return IsAllowedType(type);
+
+            bool f;
+            return IsAllowedType(type, out f);
         }
 
 
-        public static bool IsAllowedType(Type type)
+        public static bool IsAllowedType(Type type, out bool failedOnBaseType)
         {
+            failedOnBaseType = false;
+            if (type == null)
+                return true;
+
+            if (type.Name.Contains("PlayerLeave"))
+            {
+                Console.WriteLine();
+            }
+
             //generic types
             if (type.IsGenericType)
-                return type.DeclaringType == null || IsAllowedType(type.DeclaringType);
+                return IsAllowedType(type.DeclaringType, out failedOnBaseType);
 
             //check whitelisted namespace / name
             var val = IsAllowedType(type.FullName ?? type.Name);
@@ -165,8 +181,11 @@ namespace Rocket.SandboxTester
                 return false;
 
             //check for super class
-            if (type.BaseType != null && !IsAllowedType(type.BaseType))
+            if (type.BaseType != null && !IsAllowedType(type.BaseType, out failedOnBaseType))
+            {
+                failedOnBaseType = true;
                 return false;
+            }
 
             return true;
         }
@@ -247,37 +266,52 @@ namespace Rocket.SandboxTester
             illegalInstruction = null;
             failReason = null;
 
-            AddWhitelist(baseAssembly); //temporary whitelist
+            AddWhitelist(baseAssembly); //temporary whitelist, will be removed on fail
 
-            foreach (Type type in baseAssembly.GetTypes())
+            //try
             {
-                if ((!type.IsSubclassOf(typeof(MonoBehaviour)) && type != typeof(MonoBehaviour) && !typeof(MonoBehaviour).IsAssignableFrom(type)) &&
-                    (type.IsSubclassOf(typeof(Behaviour)) || type == typeof(Behaviour) || typeof(Behaviour).IsAssignableFrom(type)))
+                foreach (Type type in baseAssembly.GetTypes())
                 {
-                    RemoveWhitelist(baseAssembly);
-                    illegalInstruction = type.FullName;
-                    failReason = "Extending Unitys Behaviour. This is not allowed.";
-                    return false;
-                }
+                    if ((!type.IsSubclassOf(typeof(MonoBehaviour)) && type != typeof(MonoBehaviour) &&
+                         !typeof(MonoBehaviour).IsAssignableFrom(type)) &&
+                        (type.IsSubclassOf(typeof(Behaviour)) || type == typeof(Behaviour) ||
+                         typeof(Behaviour).IsAssignableFrom(type)))
+                    {
+                        RemoveWhitelist(baseAssembly);
+                        illegalInstruction = type.FullName;
+                        failReason = "Extending Unitys Behaviour. This is not allowed.";
+                        return false;
+                    }
 
-                if (!CheckType(baseAssembly, type, ref illegalInstruction, ref failReason))
-                {
-                    RemoveWhitelist(baseAssembly);
-                    return false;
+                    if (!CheckType(baseAssembly, type, ref illegalInstruction, ref failReason))
+                    {
+                        RemoveWhitelist(baseAssembly);
+                        return false;
+                    }
                 }
             }
-            
+            //catch (Exception e)
+            {
+                //remove assembly before throwing exception
+               // RemoveWhitelist(baseAssembly);
+              //  throw e;
+            }
+
             return true;
         }
 
         private static bool CheckType(Assembly asm, Type type, ref string illegalInstruction, ref string failReason)
         {
-            if (type == null) return true;
-            if (IsDelegate(type)) return true;
-            if (!IsAllowedType(type))
+            if (type == null)
+                return true;
+
+            if (IsDelegate(type))
+                return true;
+            bool failedOnBase;
+            if (!IsAllowedType(type, out failedOnBase))
             {
                 illegalInstruction = type.FullName;
-                failReason = "Type restricted: " + type.FullName;
+                failReason = "Type restricted: " + type.FullName + ", failde on base type: " + failedOnBase;
                 return false;
             }
 
@@ -339,10 +373,11 @@ namespace Rocket.SandboxTester
 
                     if (m != null)
                     {
-                        if (m.DeclaringType != null && type != m.DeclaringType && !IsAllowedType(m.DeclaringType))
+                        bool failedOnBase;
+                        if (m.DeclaringType != null && type != m.DeclaringType && m.DeclaringType != null && !IsAllowedType(m.DeclaringType, out failedOnBase))
                         {
                             illegalInstruction = type.FullName + "." + method.Name;
-                            failReason = "Type restricted: " + (m.DeclaringType.FullName ?? m.DeclaringType.Name);
+                            failReason = "Type restricted: " + (m.DeclaringType.FullName ?? m.DeclaringType.Name) + ", failed on base type: " + failedOnBase;
                             return false;
                         }
                         if (!CheckMethod(asm, type, m, ref illegalInstruction, ref failReason, false))
@@ -355,9 +390,10 @@ namespace Rocket.SandboxTester
 
                     if (t != null && t != type)
                     {
-                        if (!IsAllowedType(t))
+                        bool failedOnBase;
+                        if (!IsAllowedType(t, out failedOnBase))
                         {
-                            illegalInstruction = type.FullName + "." + method.Name;
+                            illegalInstruction = type.FullName + "." + method.Name + ", failed on base type: " + failedOnBase; 
                             failReason = "Type restricted: " + (t.FullName ?? t.Name);
                             return false;
                         }
