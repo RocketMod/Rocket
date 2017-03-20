@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using Rocket.Sandbox;
 
 namespace Rocket.SandboxTester
 {
@@ -21,7 +22,7 @@ namespace Rocket.SandboxTester
             }
 
             var asm = Assembly.LoadFile(Path.GetFullPath(name));
-            var res = SafeCodeHandler.IsSafeAssembly(asm);
+            var res = new SandboxCodeChecker().IsSafeAssembly(asm);
             if (res.Passed)
             {
                 WriteLine("All checks passed. File is safe.", ConsoleColor.DarkGreen);

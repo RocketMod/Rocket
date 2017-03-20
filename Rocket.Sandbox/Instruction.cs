@@ -1,6 +1,6 @@
 ﻿using System.Reflection.Emit;
 
-namespace Rocket.SandboxTester
+namespace Rocket.Sandbox
 {
     public class Instruction
     {

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26228.9
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Core", "Rocket.Core\Rocket.Core.csproj", "{7A9D652F-DC18-45FD-8964-DBAAD6384C3D}"
 EndProject
@@ -36,7 +36,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.ClearScript"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Plugins.NLua", "Rocket.Plugins.NLua\Rocket.Plugins.NLua.csproj", "{544CA763-5455-453F-A015-12AC805F092A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.SandboxTester", "Rocket.SandboxTester\Rocket.SandboxTester.csproj", "{5D5645F1-4631-4407-9D46-622783F27FDC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Sandbox.Tester", "Rocket.Sandbox.Tester\Rocket.Sandbox.Tester.csproj", "{5D5645F1-4631-4407-9D46-622783F27FDC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{AFDBAC6E-A519-4F82-BF5F-BDA7A187FB8D}"
 	ProjectSection(SolutionItems) = preProject
@@ -52,6 +52,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "lib", "lib", "{AFDBAC6E-A51
 		lib\System.Windows.Forms.dll = lib\System.Windows.Forms.dll
 		..\Rocket.Unturned\lib\UnityEngine.dll = ..\Rocket.Unturned\lib\UnityEngine.dll
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Sandbox", "Rocket.Sandbox\Rocket.Sandbox.csproj", "{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -252,6 +254,24 @@ Global
 		{5D5645F1-4631-4407-9D46-622783F27FDC}.Release|x64.Build.0 = Release|Any CPU
 		{5D5645F1-4631-4407-9D46-622783F27FDC}.Release|x86.ActiveCfg = Release|Any CPU
 		{5D5645F1-4631-4407-9D46-622783F27FDC}.Release|x86.Build.0 = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Debug|x64.Build.0 = Debug|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Debug|x86.Build.0 = Debug|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Local|Any CPU.ActiveCfg = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Local|Any CPU.Build.0 = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Local|x64.ActiveCfg = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Local|x64.Build.0 = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Local|x86.ActiveCfg = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Local|x86.Build.0 = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Release|x64.ActiveCfg = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Release|x64.Build.0 = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Release|x86.ActiveCfg = Release|Any CPU
+		{E3495FE5-BA36-4CAF-89B8-920CC2CAF014}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

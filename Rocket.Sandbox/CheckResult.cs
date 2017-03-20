@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 
-namespace Rocket.SandboxTester
+namespace Rocket.Sandbox
 {
     public class CheckResult
     {
@@ -41,7 +41,7 @@ namespace Rocket.SandboxTester
                 .Where(f => (attributes & f) == 0)
                 .ToList();
 
-            InstructionName = "[" + string.Join(", ", flags) + "]";
+            InstructionName = "[" + string.Join(", ", flags.Cast<string>().ToArray()) + "]";
             InstructionObject = flags;
             InstructionType = InstructionType.METHOD_ATTRIBUTE;
             BlockReason = reason;

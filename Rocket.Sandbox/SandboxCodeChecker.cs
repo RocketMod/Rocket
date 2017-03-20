@@ -13,7 +13,7 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 using ThreadPool = System.Threading.ThreadPool;
 
-namespace Rocket.SandboxTester
+namespace Rocket.Sandbox
 {
     //When I wrote this, only God and I understood what I was doing
     //Now, God only knows   
@@ -21,13 +21,13 @@ namespace Rocket.SandboxTester
 
     //Todo: Check libraries & external references (for now this will fail on *any* external library which is not whitelisted already), 
     //^ A reference from a plugin to another should work
-    public static class SafeCodeHandler
+    public class SandboxCodeChecker
     {
-        public static bool CheckBaseClass = true;
+        public bool CheckBaseClass = true;
 
-        private static readonly Dictionary<Assembly, List<Type>> AllowedTypesFromAssembly = new Dictionary<Assembly, List<Type>>();
-        private static readonly Disassembler Disassembler = new Disassembler();
-        private static readonly List<string> AllowedNamespaces = new List<string>
+        private readonly Dictionary<Assembly, List<Type>> AllowedTypesFromAssembly = new Dictionary<Assembly, List<Type>>();
+        private readonly Disassembler Disassembler = new Disassembler();
+        private readonly List<string> AllowedNamespaces = new List<string>
         {
             "Rocket.API.*",
             "Rocket.Core.*",
@@ -44,7 +44,7 @@ namespace Rocket.SandboxTester
             //"Steamworks.*" //might be a bad idea? Can be abused for achievements etc
         };
 
-        private static readonly List<string> DisallowedNamespaces = new List<string>
+        private readonly List<string> DisallowedNamespaces = new List<string>
         {
             "UnityEditor.*",
             "UnityEngine.Windows.*",
@@ -55,7 +55,7 @@ namespace Rocket.SandboxTester
             "UnityEngine.SceneManagment.*"
         };
 
-        private static readonly List<Type> AllowedTypes = new List<Type>
+        private readonly List<Type> AllowedTypes = new List<Type>
         {
             typeof(object),
             typeof(void),
@@ -113,7 +113,7 @@ namespace Rocket.SandboxTester
             typeof(Interlocked)
         };
 
-        private static readonly List<Type> DisallowedTypes = new List<Type>
+        private readonly List<Type> DisallowedTypes = new List<Type>
         {
             typeof(Network),
             typeof(Process),
@@ -139,19 +139,19 @@ namespace Rocket.SandboxTester
             typeof(Resources)
         };
 
-        private static readonly Dictionary<Type, List<string>> DisallowedMethods = new Dictionary<Type, List<string>>
+        private readonly Dictionary<Type, List<string>> DisallowedMethods = new Dictionary<Type, List<string>>
         {
             {typeof(Object), new List<string> { "Destroy", "DestroyImmediate", "DestroyObject", "DontDestroyOnLoad" }},
             {typeof(Behaviour), new List<string> {"set_enabled" }}, //dont allow disabling critical components like PluginManager
             {typeof(GameObject), new List<string> { "set_active, SetActive" }}
         };
 
-        private static readonly Dictionary<Type, List<string>> AllowedMethods = new Dictionary<Type, List<string>>
+        private readonly Dictionary<Type, List<string>> AllowedMethods = new Dictionary<Type, List<string>>
         {
             //used for allowing single methods on blacklisted types
         };
 
-        public static CheckResult IsSafeAssembly(Assembly asm)
+        public CheckResult IsSafeAssembly(Assembly asm)
         {
             CheckResult result = new CheckResult();
             PreWhitelistCheck(asm, ref result);
@@ -196,7 +196,7 @@ namespace Rocket.SandboxTester
             return result;
         }
 
-        private static void PreWhitelistCheck(Assembly asm, ref CheckResult result)
+        private void PreWhitelistCheck(Assembly asm, ref CheckResult result)
         {
             //Check if a type name is already whitelisted, which is not allowed
             foreach (Type type in asm.GetTypes())
@@ -210,7 +210,7 @@ namespace Rocket.SandboxTester
             }
         }
 
-        public static bool IsAllowedType(Type type, ref CheckResult result)
+        public bool IsAllowedType(Type type, ref CheckResult result)
         {
             ValidateResult(ref result);
 
@@ -241,7 +241,7 @@ namespace Rocket.SandboxTester
             return true;
         }
 
-        public static bool IsAllowedType(Assembly asm, Type type, ref CheckResult result)
+        public bool IsAllowedType(Assembly asm, Type type, ref CheckResult result)
         {
             ValidateResult(ref result);
 
@@ -284,7 +284,7 @@ namespace Rocket.SandboxTester
             return true;
         }
 
-        public static bool IsAllowedMethod(Assembly asm, Type type, MethodInfo method, ref CheckResult result, bool recur = true)
+        public bool IsAllowedMethod(Assembly asm, Type type, MethodInfo method, ref CheckResult result, bool recur = true)
         {
             ValidateResult(ref result);
 
@@ -361,7 +361,7 @@ namespace Rocket.SandboxTester
             return true;
         }
 
-        public static bool CheckMethodAttributes(MethodAttributes attributes, ref CheckResult result)
+        public bool CheckMethodAttributes(MethodAttributes attributes, ref CheckResult result)
         {
             ValidateResult(ref result);
 
@@ -374,7 +374,7 @@ namespace Rocket.SandboxTester
             return val == 0;
         }
 
-        public static void AddWhitelist(Assembly asm)
+        public void AddWhitelist(Assembly asm)
         {
             var list = new List<Type>();
             AllowedTypesFromAssembly[asm] = list;
@@ -387,7 +387,7 @@ namespace Rocket.SandboxTester
             }
         }
 
-        public static void RemoveWhitelist(Assembly asm)
+        public void RemoveWhitelist(Assembly asm)
         {
             if (!AllowedTypesFromAssembly.ContainsKey(asm))
                 return;
@@ -400,7 +400,7 @@ namespace Rocket.SandboxTester
             AllowedTypesFromAssembly.Remove(asm);
         }
 
-        private static bool CheckGenericType(Assembly asm, Type type, MethodInfo method, ref CheckResult result)
+        private bool CheckGenericType(Assembly asm, Type type, MethodInfo method, ref CheckResult result)
         {
             ValidateResult(ref result);
 
@@ -422,7 +422,7 @@ namespace Rocket.SandboxTester
         }
 
         //http://stackoverflow.com/a/5819935 
-        private static bool IsDelegate(Type checkType)
+        private bool IsDelegate(Type checkType)
         {
             var delegateType = typeof(Delegate);
             return delegateType.IsAssignableFrom(checkType.BaseType)
@@ -430,7 +430,7 @@ namespace Rocket.SandboxTester
                 || checkType == delegateType.BaseType;
         }
 
-        private static bool CheckWhitelistByName(string fullName)
+        private bool CheckWhitelistByName(string fullName)
         {
             bool allowedTypeContains = AllowedTypes.Any(t => t.FullName.Equals(fullName));
 
@@ -454,7 +454,7 @@ namespace Rocket.SandboxTester
             return false;
         }
 
-        private static bool IsInNamespaceList(string fullName, List<string> namespaces)
+        private bool IsInNamespaceList(string fullName, List<string> namespaces)
         {
             string typeNamespace = fullName;
 
@@ -474,7 +474,7 @@ namespace Rocket.SandboxTester
             return isInList;
         }
 
-        private static bool CheckWhitelistedMethodByName(Type type, string method)
+        private bool CheckWhitelistedMethodByName(Type type, string method)
         {
 
             if (DisallowedMethods.ContainsKey(type) && DisallowedMethods[type].Contains(method))
@@ -490,7 +490,7 @@ namespace Rocket.SandboxTester
             //return IsAllowedType(type, ref result);
         }
 
-        private static void ValidateResult(ref CheckResult result)
+        private void ValidateResult(ref CheckResult result)
         {
             if (result == null)
                 result = new CheckResult();
