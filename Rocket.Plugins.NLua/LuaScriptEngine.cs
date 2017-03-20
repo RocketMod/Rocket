@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using NLua;
 using Rocket.Plugins.ScriptBase;
 
@@ -22,10 +21,20 @@ namespace Rocket.Plugins.NLua
                 state.LoadCLRPackage();
                 var ctx = new LuaContext();
                 ctx.State = state;
-                var pl = new ScriptRocketPlugin();
+
+                ScriptRocketPlugin pl = null;
+                if (createPluginInstanceOnNull)
+                {
+                    pl = new ScriptRocketPlugin();
+                    pl.PluginMeta = meta;
+                }
+
                 context = new ScriptContext<LuaContext>(pl, this, ctx);
-                pl.ScriptContext = context;
-                RegisterTypes(context);
+
+                if(pl != null)
+                    pl.ScriptContext = context;
+
+                RegisterContext(context);
             }
 
             if (luaContext?.State == null)

@@ -12,10 +12,17 @@ namespace Rocket.Plugins.ClearScript
             if (context == null)
             {
                 engine = CreateNewEngine();
-                var pl = new ScriptRocketPlugin();
+                ScriptRocketPlugin pl = null;
+                if (createPluginInstanceOnNull)
+                {
+                    pl = new ScriptRocketPlugin();
+                    pl.PluginMeta = meta;
+                }
+
                 context = new ScriptContext<Microsoft.ClearScript.ScriptEngine>(pl, this, engine);
-                pl.ScriptContext = context;
-                RegisterTypes(context);
+                if(pl != null)
+                    pl.ScriptContext = context;
+                RegisterContext(context);
             }
 
             if (engine == null)

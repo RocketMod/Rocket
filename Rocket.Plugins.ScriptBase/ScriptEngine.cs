@@ -13,6 +13,11 @@ namespace Rocket.Plugins.ScriptBase
     public abstract class ScriptEngine
     {
         /// <summary>
+        /// List of all scripting contexts
+        /// </summary>
+        public List<IScriptContext> Contexts { get; protected set; } = new List<IScriptContext>();
+
+        /// <summary>
         /// Full name of the scripting language (e.g. "JavaScript")
         /// </summary>
         public abstract string Name { get; }
@@ -123,11 +128,12 @@ namespace Rocket.Plugins.ScriptBase
         }
 
         /// <summary>
-        /// Registers the API classes to the scripting engine in the given context.
+        /// Registers the context to the scripting engine.
         /// </summary>
         /// <param name="context">The script context.</param>
-        public void RegisterTypes(IScriptContext context)
+        public void RegisterContext(IScriptContext context)
         {
+            Contexts.Add(context);
             var engine = context.ScriptEngine;
             engine.RegisterType("R", typeof(R), context);
             engine.RegisterType("Logger", typeof(Logger), context);

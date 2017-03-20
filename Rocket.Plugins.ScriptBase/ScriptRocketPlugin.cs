@@ -12,13 +12,14 @@ namespace Rocket.Plugins.ScriptBase
     {
         public void Awake()
         {
-            Name = GetType().Name;
+            Name = PluginMeta.Name;
             PluginManager = ScriptPluginManager;
             base.Initialize();
         }
 
         public ScriptRocketPluginManager ScriptPluginManager => ScriptContext.ScriptEngine.PluginManager;
         public IScriptContext ScriptContext { get; set; }
+        public ScriptPluginMeta PluginMeta { get; set; }
     }
 
     /// <summary>
@@ -29,12 +30,13 @@ namespace Rocket.Plugins.ScriptBase
     {
         public void Awake()
         {
-            Name = GetType().Name;
+            Name = PluginMeta.Name;
             PluginManager = ScriptPluginManager;
             base.Initialize();
         }
 
         public ScriptRocketPluginManager ScriptPluginManager => ScriptContext.ScriptEngine.PluginManager;
         public IScriptContext ScriptContext { get; set; }
+        public ScriptPluginMeta PluginMeta { get; set; }
     }
 }
