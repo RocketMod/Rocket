@@ -17,6 +17,10 @@ namespace Rocket.SandboxTester
 {
     //When I wrote this, only God and I understood what I was doing
     //Now, God only knows   
+
+
+    //Todo: Check libraries & external references (for now this will fail on *any* external library which is not whitelisted already), 
+    //^ A reference from a plugin to another should work
     public static class SafeCodeHandler
     {
         public static bool CheckBaseClass = true;
@@ -147,15 +151,19 @@ namespace Rocket.SandboxTester
             //used for allowing single methods on blacklisted types
         };
 
-        public static CheckResult IsSafeAssembly(Assembly baseAssembly)
+        public static CheckResult IsSafeAssembly(Assembly asm)
         {
-            AddWhitelist(baseAssembly); //temporary whitelist, will be removed on fail
             CheckResult result = new CheckResult();
+            PreWhitelistCheck(asm, ref result);
+            if (!result.Passed)
+                return result;
+
+            AddWhitelist(asm); //temporary whitelist, will be removed on fail
 #if !DEBUG
             try
             {
 #endif
-                foreach (Type type in baseAssembly.GetTypes())
+                foreach (Type type in asm.GetTypes())
                 {
                     /*
                     if ((!type.IsSubclassOf(typeof(MonoBehaviour)) && type != typeof(MonoBehaviour) &&
@@ -163,16 +171,16 @@ namespace Rocket.SandboxTester
                         (type.IsSubclassOf(typeof(Behaviour)) || type == typeof(Behaviour) ||
                          typeof(Behaviour).IsAssignableFrom(type)))
                     {
-                        RemoveWhitelist(baseAssembly);
+                        RemoveWhitelist(asm);
                         illegalInstruction = type.FullName;
                         failReason = "Extending Unitys Behaviour. This is not allowed.";
                         return false;
                     }
                     */
 
-                    if (!IsAllowedType(baseAssembly, type, ref result))
+                    if (!IsAllowedType(asm, type, ref result))
                     {
-                        RemoveWhitelist(baseAssembly);
+                        RemoveWhitelist(asm);
                         return result;
                     }
                 }
@@ -181,11 +189,25 @@ namespace Rocket.SandboxTester
             catch (Exception e)
             {
                 //remove assembly before throwing exception
-                RemoveWhitelist(baseAssembly);
+                RemoveWhitelist(asm);
                 throw e;
             }
 #endif
             return result;
+        }
+
+        private static void PreWhitelistCheck(Assembly asm, ref CheckResult result)
+        {
+            //Check if a type name is already whitelisted, which is not allowed
+            foreach (Type type in asm.GetTypes())
+            {
+                if (CheckWhitelistByName(string.IsNullOrEmpty(type.FullName) ? type.Name : type.FullName))
+                {
+                    result.IllegalInstruction = new ReadableInstruction(type, false, BlockReason.ILLEGAL_NAME);
+                    result.Position = new ReadableInstruction(asm);
+                    return;
+                } 
+            }
         }
 
         public static bool IsAllowedType(Type type, ref CheckResult result)
@@ -203,18 +225,16 @@ namespace Rocket.SandboxTester
                 return IsAllowedType(type.DeclaringType, ref result);
 
             //check whitelisted namespace / name
-            var val = CheckWhitelistByName(type.FullName ?? type.Name);
+            var val = CheckWhitelistByName(string.IsNullOrEmpty(type.FullName) ? type.Name : type.FullName);
             if (!val)
             {
                 result.IllegalInstruction = new ReadableInstruction(type);
-                result.Position = new ReadableInstruction(type);
                 return false;
             }
             //check for super class
             if (CheckBaseClass && type.BaseType != null  && type.BaseType.Assembly != type.Assembly /* do not check if in the same assembly, as it will be checked anyway */ && !IsAllowedType(type.BaseType, ref result))
             {
-                result.IllegalInstruction = new ReadableInstruction(type.BaseType);
-                result.Position = new ReadableInstruction(type);
+                result.IllegalInstruction = new ReadableInstruction(type, true);
                 return false;
             }
 
@@ -233,7 +253,8 @@ namespace Rocket.SandboxTester
 
             if (!IsAllowedType(type, ref result))
             {
-                result.Position = new ReadableInstruction(type);
+                if(result.Position == null)
+                    result.Position = new ReadableInstruction(asm);
                 return false;
             }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
 
 namespace Rocket.SandboxTester
 {
@@ -28,9 +27,9 @@ namespace Rocket.SandboxTester
             AppendInstructionType();
         }
 
-        public ReadableInstruction(Type type, BlockReason reason = BlockReason.RESTRICTED)
+        public ReadableInstruction(Type type, bool failedOnBase = false, BlockReason reason = BlockReason.RESTRICTED)
         {
-            InstructionName = string.IsNullOrEmpty(type.FullName) ? type.Name : type.FullName;
+            InstructionName = string.IsNullOrEmpty(type.FullName) ? type.Name : type.FullName + (failedOnBase ? " on " + type.BaseType.FullName : "");
             InstructionObject = type;
             InstructionType = InstructionType.TYPE;
             BlockReason = reason;
@@ -54,6 +53,15 @@ namespace Rocket.SandboxTester
             InstructionName = (method.DeclaringType == null ? "" : method.DeclaringType.FullName + ".") + method.Name + " (on operand: " + ins.OpCode + " @@ 0x" + ins.Offset.ToString("X") + ")";
             InstructionObject = new MethodInstruction(method, ins);
             InstructionType = InstructionType.OPERAND;
+            BlockReason = reason;
+            AppendInstructionType();
+        }
+
+        public ReadableInstruction(Assembly asm, BlockReason reason = BlockReason.RESTRICTED)
+        {
+            InstructionName = asm.FullName;
+            InstructionObject = asm;
+            InstructionType = InstructionType.ASSEMBLY;
             BlockReason = reason;
             AppendInstructionType();
         }
@@ -101,7 +109,8 @@ namespace Rocket.SandboxTester
 
     public enum BlockReason
     {
-        RESTRICTED
+        RESTRICTED,
+        ILLEGAL_NAME
     }
 
     public enum InstructionType
@@ -109,6 +118,7 @@ namespace Rocket.SandboxTester
         TYPE,
         METHOD,
         OPERAND,
-        METHOD_ATTRIBUTE
+        METHOD_ATTRIBUTE,
+        ASSEMBLY
     }
 }
