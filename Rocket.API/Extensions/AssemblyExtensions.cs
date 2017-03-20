@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace Rocket.Core.Extensions
+namespace Rocket.API.Extensions
 {
 
     public static class AssemblyExtensions

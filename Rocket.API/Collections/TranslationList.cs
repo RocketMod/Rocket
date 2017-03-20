@@ -1,12 +1,9 @@
-﻿using Rocket.API.Assets;
-using Rocket.API.Collections;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Xml.Serialization;
+using Rocket.API.Assets;
+using Rocket.API.Serialisation;
 
-namespace Rocket.API.Serialisation
+namespace Rocket.API.Collections
 {
     public static class TranslationListExtension
     {

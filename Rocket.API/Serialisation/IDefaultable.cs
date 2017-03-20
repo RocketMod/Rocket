@@ -1,4 +1,4 @@
-﻿namespace Rocket.API
+﻿namespace Rocket.API.Serialisation
 {
     public interface IDefaultable
     {

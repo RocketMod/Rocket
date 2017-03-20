@@ -1,12 +1,12 @@
-﻿using Rocket.API;
-using Rocket.API.Assets;
-using Rocket.API.Commands;
-using Rocket.API.Serialisation;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rocket.API;
+using Rocket.API.Player;
+using Rocket.API.Serialisation;
+using Rocket.Core.Assets;
 
-namespace Rocket.Core.Permissions
+namespace Rocket.Core.Providers.Permissions
 {
     internal class RocketPermissionsHelper
     {

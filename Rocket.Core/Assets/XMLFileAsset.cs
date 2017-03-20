@@ -3,6 +3,7 @@ using Rocket.API.Assets;
 using System;
 using System.IO;
 using System.Xml.Serialization;
+using Rocket.API.Serialisation;
 
 namespace Rocket.Core.Assets
 {

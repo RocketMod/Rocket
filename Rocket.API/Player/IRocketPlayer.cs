@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rocket.API
+namespace Rocket.API.Player
 {
     public interface IRocketPlayer : IComparable
     {

@@ -1,10 +1,11 @@
-﻿using Rocket.API;
-using Rocket.API.Logging;
-using System;
+﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using Rocket.API;
+using Rocket.API.Logging;
+using Rocket.API.Player;
 using Logger = Rocket.API.Logging.Logger;
-namespace Rocket.Core.RPC
+namespace Rocket.Core.Providers.Remoting.RPC
 {
     public class RocketServiceHost
     {

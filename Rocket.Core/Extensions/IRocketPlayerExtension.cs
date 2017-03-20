@@ -1,10 +1,9 @@
-﻿using Rocket.API.Commands;
-using Rocket.API.Providers;
-using Rocket.API.Serialisation;
-using Rocket.Core;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Rocket.API;
+using Rocket.API.Commands;
+using Rocket.API.Player;
 
-namespace Rocket.API
+namespace Rocket.Core.Extensions
 {
     public static class IRocketPlayerExtension
     {

@@ -8,8 +8,10 @@ using Rocket.API.Assets;
 using Rocket.API.Commands;
 using Rocket.API.Exceptions;
 using Rocket.API.Logging;
+using Rocket.API.Player;
 using Rocket.API.Plugins;
 using Rocket.API.Providers;
+using Rocket.API.Serialisation;
 
 namespace Rocket.API.Collections
 {

@@ -7,6 +7,8 @@ using Rocket.Core;
 using Rocket.API.Commands;
 using Rocket.API.Plugins;
 using System.Collections.ObjectModel;
+using Rocket.API.Player;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Commands
 {

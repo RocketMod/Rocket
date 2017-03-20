@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Rocket.API.Player;
+
 namespace Rocket.Launcher.IPC {
     
     
@@ -34,16 +36,16 @@ namespace Rocket.Launcher.IPC {
         System.Threading.Tasks.Task DisconnectAsync(bool shutdown);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerConnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerConnectedResponse")]
-        Rocket.API.RocketPlayerBase OnPlayerConnected();
+        RocketPlayerBase OnPlayerConnected();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerConnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerConnectedResponse")]
-        System.Threading.Tasks.Task<Rocket.API.RocketPlayerBase> OnPlayerConnectedAsync();
+        System.Threading.Tasks.Task<RocketPlayerBase> OnPlayerConnectedAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerDisconnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerDisconnectedResponse")]
-        Rocket.API.RocketPlayerBase OnPlayerDisconnected();
+        RocketPlayerBase OnPlayerDisconnected();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnPlayerDisconnected", ReplyAction="http://tempuri.org/IRocketService/OnPlayerDisconnectedResponse")]
-        System.Threading.Tasks.Task<Rocket.API.RocketPlayerBase> OnPlayerDisconnectedAsync();
+        System.Threading.Tasks.Task<RocketPlayerBase> OnPlayerDisconnectedAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnShutdown", ReplyAction="http://tempuri.org/IRocketService/OnShutdownResponse")]
         bool OnShutdown();
@@ -109,19 +111,19 @@ namespace Rocket.Launcher.IPC {
             return base.Channel.DisconnectAsync(shutdown);
         }
         
-        public Rocket.API.RocketPlayerBase OnPlayerConnected() {
+        public RocketPlayerBase OnPlayerConnected() {
             return base.Channel.OnPlayerConnected();
         }
         
-        public System.Threading.Tasks.Task<Rocket.API.RocketPlayerBase> OnPlayerConnectedAsync() {
+        public System.Threading.Tasks.Task<RocketPlayerBase> OnPlayerConnectedAsync() {
             return base.Channel.OnPlayerConnectedAsync();
         }
         
-        public Rocket.API.RocketPlayerBase OnPlayerDisconnected() {
+        public RocketPlayerBase OnPlayerDisconnected() {
             return base.Channel.OnPlayerDisconnected();
         }
         
-        public System.Threading.Tasks.Task<Rocket.API.RocketPlayerBase> OnPlayerDisconnectedAsync() {
+        public System.Threading.Tasks.Task<RocketPlayerBase> OnPlayerDisconnectedAsync() {
             return base.Channel.OnPlayerDisconnectedAsync();
         }
         

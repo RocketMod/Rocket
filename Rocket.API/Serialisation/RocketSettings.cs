@@ -1,7 +1,6 @@
-﻿using Rocket.API;
-using System.Xml.Serialization;
+﻿using System.Xml.Serialization;
 
-namespace Rocket.Core
+namespace Rocket.API.Serialisation
 {
     public sealed class RocketSettings : IDefaultable
     {

@@ -2,6 +2,7 @@
 using Rocket.API.Serialisation;
 using System;
 using System.Collections.Generic;
+using Rocket.API.Collections;
 
 namespace Rocket.API.Providers
 {

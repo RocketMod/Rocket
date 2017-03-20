@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rocket.Core.Extensions
+namespace Rocket.API.Extensions
 {
     public static class MulticastDelegateExtension
     {

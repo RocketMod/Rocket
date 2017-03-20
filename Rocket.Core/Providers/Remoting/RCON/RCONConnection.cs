@@ -1,7 +1,7 @@
-﻿using System.Net.Sockets;
-using System.Linq;
+﻿using System.Linq;
+using System.Net.Sockets;
 
-namespace Rocket.Core.RCON
+namespace Rocket.Core.Providers.Remoting.RCON
 {
     public class RCONConnection
     {

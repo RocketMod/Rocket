@@ -1,7 +1,7 @@
 ﻿using Rocket.API;
-using Logger = Rocket.API.Logging.Logger;
+using Rocket.API.Player;
 
-namespace Rocket.Core.RPC
+namespace Rocket.Core.Providers.Remoting.RPC
 {
     public class RocketService : IRocketService
     {

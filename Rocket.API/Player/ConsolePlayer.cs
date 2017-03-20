@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rocket.API
+﻿namespace Rocket.API.Player
 {
     public class ConsolePlayer : IRocketPlayer
     {

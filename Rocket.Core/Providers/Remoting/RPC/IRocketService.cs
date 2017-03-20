@@ -1,6 +1,6 @@
 ﻿using System.ServiceModel;
 
-namespace Rocket.Core.RPC
+namespace Rocket.Core.Providers.Remoting.RPC
 {
     [ServiceContract]
     public interface IRocketService

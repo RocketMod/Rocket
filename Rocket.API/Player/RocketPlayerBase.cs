@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Rocket.API
+namespace Rocket.API.Player
 {
     [Serializable]
     [DataContract]

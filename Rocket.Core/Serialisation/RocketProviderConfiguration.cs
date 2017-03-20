@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core
+﻿namespace Rocket.Core.Serialisation
 {
     public class RocketProviderConfiguration
     {

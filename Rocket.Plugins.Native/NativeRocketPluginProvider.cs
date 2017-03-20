@@ -1,5 +1,4 @@
 ﻿using Rocket.API.Plugins;
-using Rocket.Core.Extensions;
 using System;
 using System.Collections.Generic;
 using System.IO;

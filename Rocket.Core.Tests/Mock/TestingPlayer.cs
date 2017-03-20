@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Rocket.API;
+using Rocket.API.Player;
 
-namespace Rocket.Core.Tests
+namespace Rocket.Core.Tests.Mock
 {
     public class TestingPlayer : IRocketPlayer
     {

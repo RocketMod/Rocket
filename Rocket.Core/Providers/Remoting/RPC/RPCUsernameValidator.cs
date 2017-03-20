@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IdentityModel.Selectors;
-using System.Linq;
 using System.ServiceModel;
-using System.Text;
 
-namespace Rocket.Core.RPC
+namespace Rocket.Core.Providers.Remoting.RPC
 {
     public class RPCUserNameValidator : UserNamePasswordValidator
     {

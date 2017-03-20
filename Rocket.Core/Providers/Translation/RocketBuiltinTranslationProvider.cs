@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using Rocket.API.Plugins;
 using Rocket.API.Assets;
+using Rocket.API.Collections;
 using Rocket.API.Serialisation;
+using Rocket.Core.Assets;
 
 namespace Rocket.Core.Providers.Translation
 {

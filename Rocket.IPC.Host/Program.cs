@@ -1,6 +1,6 @@
 ﻿using Logger = Rocket.API.Logging.Logger;
-using Rocket.Core.RPC;
 using System;
+using Rocket.Core.Providers.Remoting.RPC;
 
 namespace Rocket.IPC.Host
 {

@@ -1,11 +1,7 @@
-﻿using Rocket.API.Commands;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Collections;
 
-namespace Rocket.Collections
+namespace Rocket.API.Collections
 {
     public delegate void CooldownExpired();
     public interface ICooldownItem

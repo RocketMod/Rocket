@@ -3,7 +3,7 @@ using System.Collections;
 using System.Reflection;
 using UnityEngine;
 
-namespace Rocket.Core.Extensions
+namespace Rocket.API.Extensions
 {
     public static class MonoBehaviourExtension
     {

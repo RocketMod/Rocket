@@ -8,6 +8,8 @@ using Rocket.Core.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rocket.API.Player;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Commands
 {
