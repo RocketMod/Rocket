@@ -45,6 +45,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckResult.cs" />
     <Compile Include="Disassembler.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="Program.cs" />
@@ -52,7 +53,9 @@
     <Compile Include="SafeCodeHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

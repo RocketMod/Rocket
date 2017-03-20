@@ -21,18 +21,19 @@ namespace Rocket.SandboxTester
             }
 
             var asm = Assembly.LoadFile(Path.GetFullPath(name));
-            string illegalInstruction;
-            string failReason;
-            var res = SafeCodeHandler.IsSafeAssembly(asm, out illegalInstruction, out failReason);
-            if (res)
+            var res = SafeCodeHandler.IsSafeAssembly(asm);
+            if (res.Passed)
             {
                 WriteLine("All checks passed. File is safe.", ConsoleColor.DarkGreen);
                 goto start;
             }
 
+            var blockedIns = res.IllegalInstruction;
+            var pos = res.Position;
+
             WriteLine("Check not passed!", ConsoleColor.Red);
-            WriteLine("> Failed on: " + illegalInstruction);
-            WriteLine("> Reason: " + failReason);
+            WriteLine("> Failed on: " + pos.InstructionName);
+            WriteLine("> Reason: " + blockedIns.BlockReason + " on " + blockedIns.InstructionName);
             goto start;
         }
 

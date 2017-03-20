@@ -19,6 +19,8 @@ namespace Rocket.SandboxTester
     //Now, God only knows   
     public static class SafeCodeHandler
     {
+        public static bool CheckBaseClass = true;
+
         private static readonly Dictionary<Assembly, List<Type>> AllowedTypesFromAssembly = new Dictionary<Assembly, List<Type>>();
         private static readonly Disassembler Disassembler = new Disassembler();
         private static readonly List<string> AllowedNamespaces = new List<string>
@@ -32,6 +34,7 @@ namespace Rocket.SandboxTester
             "System.Linq.*",
             "System.Globalization.*",
             "System.Collections.*",
+            "System.Threading.*",
             "SDG.*" //todo: block in future. SDG is too unsafe
 
             //"Steamworks.*" //might be a bad idea? Can be abused for achievements etc
@@ -141,53 +144,213 @@ namespace Rocket.SandboxTester
 
         private static readonly Dictionary<Type, List<string>> AllowedMethods = new Dictionary<Type, List<string>>
         {
-
+            //used for allowing single methods on blacklisted types
         };
 
-        public static bool IsAllowedMethod(Type type, string method)
+        public static CheckResult IsSafeAssembly(Assembly baseAssembly)
         {
-            if (DisallowedMethods.ContainsKey(type) && DisallowedMethods[type].Contains(method))
+            AddWhitelist(baseAssembly); //temporary whitelist, will be removed on fail
+            CheckResult result = new CheckResult();
+#if !DEBUG
+            try
             {
-                return false;
-            }
-            if (AllowedMethods.ContainsKey(type))
-            {
-                return AllowedMethods[type].Contains(method);
-            }
+#endif
+                foreach (Type type in baseAssembly.GetTypes())
+                {
+                    /*
+                    if ((!type.IsSubclassOf(typeof(MonoBehaviour)) && type != typeof(MonoBehaviour) &&
+                         !typeof(MonoBehaviour).IsAssignableFrom(type)) &&
+                        (type.IsSubclassOf(typeof(Behaviour)) || type == typeof(Behaviour) ||
+                         typeof(Behaviour).IsAssignableFrom(type)))
+                    {
+                        RemoveWhitelist(baseAssembly);
+                        illegalInstruction = type.FullName;
+                        failReason = "Extending Unitys Behaviour. This is not allowed.";
+                        return false;
+                    }
+                    */
 
-            bool f;
-            return IsAllowedType(type, out f);
+                    if (!IsAllowedType(baseAssembly, type, ref result))
+                    {
+                        RemoveWhitelist(baseAssembly);
+                        return result;
+                    }
+                }
+#if !DEBUG
+            }
+            catch (Exception e)
+            {
+                //remove assembly before throwing exception
+                RemoveWhitelist(baseAssembly);
+                throw e;
+            }
+#endif
+            return result;
         }
 
-
-        public static bool IsAllowedType(Type type, out bool failedOnBaseType)
+        public static bool IsAllowedType(Type type, ref CheckResult result)
         {
-            failedOnBaseType = false;
+            ValidateResult(ref result);
+
             if (type == null)
                 return true;
 
-            if (type.Name.Contains("PlayerLeave"))
-            {
-                Console.WriteLine();
-            }
+            if (type.IsGenericParameter)
+                return true;
 
             //generic types
             if (type.IsGenericType)
-                return IsAllowedType(type.DeclaringType, out failedOnBaseType);
+                return IsAllowedType(type.DeclaringType, ref result);
 
             //check whitelisted namespace / name
-            var val = IsAllowedType(type.FullName ?? type.Name);
+            var val = CheckWhitelistByName(type.FullName ?? type.Name);
             if (!val)
-                return false;
-
-            //check for super class
-            if (type.BaseType != null && !IsAllowedType(type.BaseType, out failedOnBaseType))
             {
-                failedOnBaseType = true;
+                result.IllegalInstruction = new ReadableInstruction(type);
+                result.Position = new ReadableInstruction(type);
+                return false;
+            }
+            //check for super class
+            if (CheckBaseClass && type.BaseType != null  && type.BaseType.Assembly != type.Assembly /* do not check if in the same assembly, as it will be checked anyway */ && !IsAllowedType(type.BaseType, ref result))
+            {
+                result.IllegalInstruction = new ReadableInstruction(type.BaseType);
+                result.Position = new ReadableInstruction(type);
                 return false;
             }
 
             return true;
+        }
+
+        public static bool IsAllowedType(Assembly asm, Type type, ref CheckResult result)
+        {
+            ValidateResult(ref result);
+
+            if (type == null)
+                return true;
+
+            if (IsDelegate(type))
+                return true;
+
+            if (!IsAllowedType(type, ref result))
+            {
+                result.Position = new ReadableInstruction(type);
+                return false;
+            }
+
+            foreach (MethodInfo method in type.GetMethods())
+            {
+                if (!IsAllowedMethod(asm, type, method, ref result))
+                {
+                    result.Position = new ReadableInstruction(type);
+                    return false;
+                }
+            }
+
+            foreach (PropertyInfo def in type.GetProperties())
+            {
+                if (def.GetGetMethod() != null && !IsAllowedMethod(asm, type, def.GetGetMethod(), ref result))
+                {
+                    result.Position = new ReadableInstruction(def.GetGetMethod());
+                    return false;
+                }
+                if (def.GetSetMethod() != null && !IsAllowedMethod(asm, type, def.GetSetMethod(), ref result))
+                {
+                    result.Position = new ReadableInstruction(def.GetSetMethod());
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool IsAllowedMethod(Assembly asm, Type type, MethodInfo method, ref CheckResult result, bool recur = true)
+        {
+            ValidateResult(ref result);
+
+            if (method.DeclaringType != type)
+                return true; // this method is from super class
+
+            if (type != null && !IsAllowedType(type, ref result))
+            {
+                result.Position = new ReadableInstruction(method);
+                return false;
+            }
+
+            if (!CheckWhitelistedMethodByName(type, method.Name))
+            {
+                result.Position = new ReadableInstruction(method);
+                result.IllegalInstruction = new ReadableInstruction(method);
+                return false;
+            }
+
+            if (!CheckMethodAttributes(method.Attributes, ref result))
+            {
+                result.Position = new ReadableInstruction(method);
+                return false;
+            }
+
+            if (type != null && !type.IsGenericTypeDefinition && type.IsGenericType &&
+                CheckGenericType(asm, type.GetGenericTypeDefinition(), method, ref result))
+            {
+                result.Position = new ReadableInstruction(method);
+                return false;
+            }
+
+            foreach (Instruction ins in Disassembler.ReadInstructions(method))
+            {
+                if (recur)
+                {
+                    Type t = ins.Operand as Type;
+                    MethodInfo m = ins.Operand as MethodInfo;
+
+                    if (m == method) continue;
+
+                    if (m != null)
+                    {
+                        if (m.DeclaringType != null && type != m.DeclaringType && m.DeclaringType != null && !IsAllowedType(m.DeclaringType, ref result))
+                        {
+                            result.Position = new ReadableInstruction(method);
+                            return false;
+                        }
+                        if (!IsAllowedMethod(asm, type, m, ref result, false))
+                        {
+                            result.Position = new ReadableInstruction(method);
+                            return false;
+                        }
+                    }
+
+                    if (t != null && t != type)
+                    {
+                        if (!IsAllowedType(t, ref result))
+                        {
+                            result.Position = new ReadableInstruction(method);
+                            return false;
+                        }
+                    }
+
+                }
+                if (ins.OpCode == OpCodes.Calli) //can call unmanaged code
+                {
+                    result.Position = new ReadableInstruction(method);
+                    result.IllegalInstruction = new ReadableInstruction(method, ins);
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        public static bool CheckMethodAttributes(MethodAttributes attributes, ref CheckResult result)
+        {
+            ValidateResult(ref result);
+
+            var val = (attributes & (MethodAttributes.PinvokeImpl | MethodAttributes.UnmanagedExport));
+            if (val != 0)
+            {
+                result.IllegalInstruction = new ReadableInstruction(attributes);    
+            }
+
+            return val == 0;
         }
 
         public static void AddWhitelist(Assembly asm)
@@ -203,7 +366,7 @@ namespace Rocket.SandboxTester
             }
         }
 
-        private static void RemoveWhitelist(Assembly asm)
+        public static void RemoveWhitelist(Assembly asm)
         {
             if (!AllowedTypesFromAssembly.ContainsKey(asm))
                 return;
@@ -216,8 +379,37 @@ namespace Rocket.SandboxTester
             AllowedTypesFromAssembly.Remove(asm);
         }
 
+        private static bool CheckGenericType(Assembly asm, Type type, MethodInfo method, ref CheckResult result)
+        {
+            ValidateResult(ref result);
 
-        public static bool IsAllowedType(string fullName)
+            if (!IsAllowedMethod(asm, type, method, ref result))
+                return false;
+
+            if (method?.DeclaringType == null)
+                return true;
+
+            foreach (var gType in method.DeclaringType.GetGenericArguments())
+            {
+                if (!IsAllowedType(asm, gType, ref result))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        //http://stackoverflow.com/a/5819935 
+        private static bool IsDelegate(Type checkType)
+        {
+            var delegateType = typeof(Delegate);
+            return delegateType.IsAssignableFrom(checkType.BaseType)
+                || checkType == delegateType
+                || checkType == delegateType.BaseType;
+        }
+
+        private static bool CheckWhitelistByName(string fullName)
         {
             bool allowedTypeContains = AllowedTypes.Any(t => t.FullName.Equals(fullName));
 
@@ -261,175 +453,26 @@ namespace Rocket.SandboxTester
             return isInList;
         }
 
-        public static bool IsSafeAssembly(Assembly baseAssembly, out string illegalInstruction, out string failReason)
+        private static bool CheckWhitelistedMethodByName(Type type, string method)
         {
-            illegalInstruction = null;
-            failReason = null;
 
-            AddWhitelist(baseAssembly); //temporary whitelist, will be removed on fail
-
-            //try
+            if (DisallowedMethods.ContainsKey(type) && DisallowedMethods[type].Contains(method))
             {
-                foreach (Type type in baseAssembly.GetTypes())
-                {
-                    if ((!type.IsSubclassOf(typeof(MonoBehaviour)) && type != typeof(MonoBehaviour) &&
-                         !typeof(MonoBehaviour).IsAssignableFrom(type)) &&
-                        (type.IsSubclassOf(typeof(Behaviour)) || type == typeof(Behaviour) ||
-                         typeof(Behaviour).IsAssignableFrom(type)))
-                    {
-                        RemoveWhitelist(baseAssembly);
-                        illegalInstruction = type.FullName;
-                        failReason = "Extending Unitys Behaviour. This is not allowed.";
-                        return false;
-                    }
-
-                    if (!CheckType(baseAssembly, type, ref illegalInstruction, ref failReason))
-                    {
-                        RemoveWhitelist(baseAssembly);
-                        return false;
-                    }
-                }
-            }
-            //catch (Exception e)
-            {
-                //remove assembly before throwing exception
-               // RemoveWhitelist(baseAssembly);
-              //  throw e;
-            }
-
-            return true;
-        }
-
-        private static bool CheckType(Assembly asm, Type type, ref string illegalInstruction, ref string failReason)
-        {
-            if (type == null)
-                return true;
-
-            if (IsDelegate(type))
-                return true;
-            bool failedOnBase;
-            if (!IsAllowedType(type, out failedOnBase))
-            {
-                illegalInstruction = type.FullName;
-                failReason = "Type restricted: " + type.FullName + ", failde on base type: " + failedOnBase;
                 return false;
             }
-
-            foreach (MethodInfo method in type.GetMethods())
+            if (AllowedMethods.ContainsKey(type))
             {
-                if (!CheckMethod(asm, type, method, ref illegalInstruction, ref failReason))
-                {
-                    return false;
-                }
-            }
-
-            foreach (PropertyInfo def in type.GetProperties())
-            {
-                if (def.GetGetMethod() != null && !CheckMethod(asm, type, def.GetGetMethod(), ref illegalInstruction, ref failReason))
-                {
-                    return false;
-                }
-                if (def.GetSetMethod() != null && !CheckMethod(asm, type, def.GetSetMethod(), ref illegalInstruction, ref failReason))
-                {
-                    return false;
-                }
+                return AllowedMethods[type].Contains(method);
             }
 
             return true;
+            //return IsAllowedType(type, ref result);
         }
 
-
-        //http://stackoverflow.com/a/5819935 
-        private static bool IsDelegate(Type checkType)
+        private static void ValidateResult(ref CheckResult result)
         {
-            var delegateType = typeof(Delegate);
-            return delegateType.IsAssignableFrom(checkType.BaseType)
-                || checkType == delegateType
-                || checkType == delegateType.BaseType;
-        }
-
-        private static bool CheckMethod(Assembly asm, Type type, MethodInfo method, ref string illegalInstruction, ref string failReason, bool recur = true)
-        {
-            if (method.DeclaringType != type)
-                return true; // this method is from super class
-
-            if (!IsAllowedMethod(type, method.Name))
-            {
-                failReason = "Method or property restricted" + type.FullName + "." + method.Name;
-                return false;
-            }
-
-            if (!CheckMethodAttributes(method.Attributes)) return false;
-            if (!type.IsGenericTypeDefinition && type.IsGenericType && CheckGenericType(asm, type.GetGenericTypeDefinition(), method, ref illegalInstruction, ref failReason)) return false;
-
-            foreach (Instruction ins in Disassembler.ReadInstructions(method))
-            {
-                if (recur)
-                {
-                    Type t = ins.Operand as Type;
-                    MethodInfo m = ins.Operand as MethodInfo;
-
-                    if (m == method) continue;
-
-                    if (m != null)
-                    {
-                        bool failedOnBase;
-                        if (m.DeclaringType != null && type != m.DeclaringType && m.DeclaringType != null && !IsAllowedType(m.DeclaringType, out failedOnBase))
-                        {
-                            illegalInstruction = type.FullName + "." + method.Name;
-                            failReason = "Type restricted: " + (m.DeclaringType.FullName ?? m.DeclaringType.Name) + ", failed on base type: " + failedOnBase;
-                            return false;
-                        }
-                        if (!CheckMethod(asm, type, m, ref illegalInstruction, ref failReason, false))
-                        {
-                            illegalInstruction = type.FullName + "." + method.Name;
-                            failReason = "Method or property restricted: " + m.DeclaringType + "." + m.Name;
-                            return false;
-                        }
-                    }
-
-                    if (t != null && t != type)
-                    {
-                        bool failedOnBase;
-                        if (!IsAllowedType(t, out failedOnBase))
-                        {
-                            illegalInstruction = type.FullName + "." + method.Name + ", failed on base type: " + failedOnBase; 
-                            failReason = "Type restricted: " + (t.FullName ?? t.Name);
-                            return false;
-                        }
-                    }
-
-                }
-                if (ins.OpCode == OpCodes.Calli) //can call unmanaged code
-                {
-                    failReason = "Operand not allowed: " + OpCodes.Calli;
-                    illegalInstruction = type.FullName + "." + method.Name;
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private static bool CheckGenericType(Assembly asm, Type type, MethodInfo method, ref string illegalInstruction, ref string failedAt)
-        {
-            if (!CheckMethod(asm, type, method, ref illegalInstruction, ref failedAt)) return false;
-            if (method?.DeclaringType == null) return true;
-            foreach (var gType in method.DeclaringType.GetGenericArguments())
-            {
-                if (!CheckType(asm, gType, ref illegalInstruction, ref failedAt))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        public static bool CheckMethodAttributes(MethodAttributes attributes)
-        {
-            var val = (attributes & (MethodAttributes.PinvokeImpl | MethodAttributes.UnmanagedExport));
-            return val == 0;
+            if (result == null)
+                result = new CheckResult();
         }
     }
 }
