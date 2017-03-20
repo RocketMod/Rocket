@@ -85,7 +85,6 @@ namespace Rocket.Sandbox
             typeof(BinaryWriter),
             typeof(BinaryReader),
             typeof(Directory),
-            typeof(File),
             typeof(Path),
             typeof(FileSystemInfo),
             typeof(NullReferenceException),
@@ -333,8 +332,9 @@ namespace Rocket.Sandbox
                             result.Position = new ReadableInstruction(method);
                             return false;
                         }
-                        if (!IsAllowedMethod(asm, type, m, ref result, false))
+                        if (!CheckWhitelistedMethodByName(m.DeclaringType, m.Name))
                         {
+                            result.IllegalInstruction = new ReadableInstruction(m);
                             result.Position = new ReadableInstruction(method);
                             return false;
                         }
