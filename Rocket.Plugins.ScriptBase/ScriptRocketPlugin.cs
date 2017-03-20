@@ -1,6 +1,7 @@
 ﻿using Rocket.API;
 using Rocket.API.Plugins;
 using Rocket.API.Serialisation;
+using Rocket.Plugins.Native;
 
 namespace Rocket.Plugins.ScriptBase
 {
@@ -13,11 +14,11 @@ namespace Rocket.Plugins.ScriptBase
         public void Awake()
         {
             Name = PluginMeta.Name;
-            PluginManager = ScriptPluginManager;
+            PluginManager = ScriptPluginProvider;
             base.Initialize();
         }
 
-        public ScriptRocketPluginManager ScriptPluginManager => ScriptContext.ScriptEngine.PluginManager;
+        public ScriptRocketPluginProvider ScriptPluginProvider => ScriptContext.ScriptEngine.PluginProvider;
         public IScriptContext ScriptContext { get; set; }
         public ScriptPluginMeta PluginMeta { get; set; }
     }
@@ -31,11 +32,11 @@ namespace Rocket.Plugins.ScriptBase
         public void Awake()
         {
             Name = PluginMeta.Name;
-            PluginManager = ScriptPluginManager;
+            PluginManager = ScriptPluginProvider;
             base.Initialize();
         }
 
-        public ScriptRocketPluginManager ScriptPluginManager => ScriptContext.ScriptEngine.PluginManager;
+        public ScriptRocketPluginProvider ScriptPluginProvider => ScriptContext.ScriptEngine.PluginProvider;
         public IScriptContext ScriptContext { get; set; }
         public ScriptPluginMeta PluginMeta { get; set; }
     }

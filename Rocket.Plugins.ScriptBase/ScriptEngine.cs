@@ -50,11 +50,11 @@ namespace Rocket.Plugins.ScriptBase
         /// <summary>
         /// The associated plugin manager
         /// </summary>
-        public ScriptRocketPluginManager PluginManager { get; private set; }
+        public ScriptRocketPluginProvider PluginProvider { get; private set; }
 
         public void Load()
         {
-            PluginManager = new ScriptRocketPluginManager(this);
+            PluginProvider = new ScriptRocketPluginProvider(this);
 
             if (!Directory.Exists(PluginsDir))
                 Directory.CreateDirectory(PluginsDir);
@@ -62,7 +62,7 @@ namespace Rocket.Plugins.ScriptBase
             if (!Directory.Exists(LibrariesDir))
                 Directory.CreateDirectory(LibrariesDir);
 
-            R.PluginManagers.Add(PluginManager);
+            R.PluginManagers.Add(PluginProvider);
 
             OnLoad();
         }
