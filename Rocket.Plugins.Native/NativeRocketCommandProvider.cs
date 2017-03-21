@@ -20,7 +20,7 @@ namespace Rocket.Plugins.Native
             Commands.AddRange(commands.AsEnumerable());
         }
 
-        public void Load()
+        public void Load(bool isReload = false)
         {
             throw new NotImplementedException();
         }

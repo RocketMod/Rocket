@@ -7,23 +7,25 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Reflection;
+using Rocket.API.Event;
+using Rocket.API.Event.Command;
+using Rocket.API.Extensions;
 using Rocket.API.Player;
 using Logger = Rocket.API.Logging.Logger;
 using Rocket.Plugins.Native;
 using Rocket.Core.Commands;
 using Rocket.API.Serialisation;
 using Rocket.API.Providers;
+using Rocket.API.Utils;
 using Rocket.Core.Assets;
 using Rocket.Core.Providers.Logging;
 using Rocket.Core.Providers.Permissions;
 using Rocket.Core.Providers.Remoting.RCON;
 using Rocket.Core.Providers.Remoting.RPC;
 using Rocket.Core.Utils.Debugging;
-using Rocket.Core.Utils.Tasks;
 
 namespace Rocket.Core
 {
-
     public static class R
     {
         private static readonly List<IProviderRegistration> availableProviderTypes = new List<IProviderRegistration>
@@ -75,6 +77,9 @@ namespace Rocket.Core
                 return tmp;
             }
         }
+        
+        private static readonly GameObject gameObject = new GameObject("Rocket");
+
         private static T registerProvider<T>() where T : RocketProviderBase
         {
             return (T)registerProvider(typeof(T));
@@ -99,6 +104,18 @@ namespace Rocket.Core
         public static T GetProvider<T>() where T: IRocketProviderBase
         {
             return (T) GetProvider(typeof(T));
+        }
+
+        public static bool RunOnProvider<T>(Action<T> action)
+        {
+            var providers = GetProviders<T>();
+            if (providers.Count == 0)
+                return false;
+
+            foreach(var provider in providers)
+                action.Invoke(provider);
+
+            return true;
         }
 
         public static IRocketProviderBase GetProvider(Type providerType) 
@@ -219,49 +236,37 @@ namespace Rocket.Core
 
                 //TODO: Figure a way to prioritise commands
 
-                if (commands.Count > 0)
-                {
-                    IRocketCommand command = commands[0];
-
-                    bool cancelCommand = false;
-                    if (OnCommandExecute != null)
-                    {
-                        foreach (var handler in OnCommandExecute.GetInvocationList().Cast<RockedCommandExecute>())
-                        {
-                            try
-                            {
-                                handler(caller, command, ref cancelCommand);
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.Error(ex);
-                            }
-                        }
-                    }
-                    if (!cancelCommand)
-                    {
-                        try
-                        {
-                            command.Execute(caller, parameters);
-                            Logger.Debug("EXECUTED");
-                            return true;
-                        }
-                        catch (NoPermissionsForCommandException ex)
-                        {
-                            Logger.Warn(ex);
-                        }
-                        catch (WrongUsageOfCommandException)
-                        {
-                            //
-                        }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
-                    }
-                }else
+                if (commands.Count <= 0)
                 {
                     Logger.Info("Command not found");
+                    return false;
+                }
+
+                IRocketCommand command = commands[0];
+
+                PreCommandExecuteEvent @event = new PreCommandExecuteEvent(caller, command, parameters);
+                EventManager.Instance.CallEvent(@event);
+
+                if (!@event.IsCancelled)
+                {
+                    try
+                    {
+                        command.Execute(caller, parameters);
+                        Logger.Debug("EXECUTED");
+                        return true;
+                    }
+                    catch (NoPermissionsForCommandException ex)
+                    {
+                        Logger.Warn(ex);
+                    }
+                    catch (WrongUsageOfCommandException)
+                    {
+                        //
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
                 }
             }
             catch (Exception ex)
@@ -290,36 +295,33 @@ namespace Rocket.Core
             {
 
                 IRocketImplementationProvider implementation = (IRocketImplementationProvider)registerProvider(typeof(T));
-                foreach (Type t in implementation.Providers) registerProvider(t);
-
-                registerProvider<RocketBuiltinCommandProvider>();
-                registerProvider<RocketBuiltinPermissionsProvider>();
-
-
-
-                NativeRocketPluginProvider nativePlugins = registerProvider<NativeRocketPluginProvider>();
-
-
-
-                Settings = new XMLFileAsset<RocketSettings>(API.Environment.SettingsFile);
-                API.Environment.LanguageCode = Settings.Instance.LanguageCode;
-                TranslationList defaultTranslations = new TranslationList();
-                defaultTranslations.AddRange(new RocketTranslations());
-                Translation = new XMLFileAsset<TranslationList>(String.Format(API.Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, defaultTranslations);
-                Translation.AddUnknownEntries(defaultTranslations);
+                foreach (Type t in implementation.Providers)
+                    registerProvider(t);
 
                 gameObject.TryAddComponent<TaskDispatcher>();
 
-                NativeRocketPluginProvider nativeRocketPluginManager = gameObject.TryAddComponent<NativeRocketPluginProvider>();
-                nativeRocketPluginManager.AddCommands(new List<IRocketCommand>()
+                registerProvider<RocketBuiltinCommandProvider>();
+                registerProvider<RocketBuiltinPermissionsProvider>();
+                
+                NativeRocketPluginProvider nativePlugins = registerProvider<NativeRocketPluginProvider>();
+                nativePlugins.AddCommands(new List<IRocketCommand>
                 {
+                    //todo
                 });
-                nativeRocketPluginManager.AddCommands(Implementation.GetAllCommands());
-                nativeRocketPluginManager.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
-                nativeRocketPluginManager.CommandProvider.Persist();
 
+                nativePlugins.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
 
-                PluginProviders.Add(nativeRocketPluginManager);
+                Settings = new XMLFileAsset<RocketSettings>(API.Environment.SettingsFile);
+                TranslationList defaultTranslations = new TranslationList();
+                //defaultTranslations.AddRange(new RocketTranslations());
+
+                RunOnProvider<IRocketTranslationDataProvider>(provider =>
+                {
+                    provider.RegisterDefaultTranslations(defaultTranslations);
+                });
+
+           
+                //nativeRocketPluginManager.CommandProvider.Persist();
 
                 try
                 {
@@ -331,7 +333,7 @@ namespace Rocket.Core
                 }
                 catch (Exception e)
                 {
-                    Logger.Error("Uh ohh..", e);
+                    Logger.Error("Failed to start RPC / RCON", e);
                 }
 
                 Implementation.OnInitialized += () =>

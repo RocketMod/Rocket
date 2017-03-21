@@ -113,7 +113,6 @@
     </Compile>
     <Compile Include="Utils\Steam\Profile.cs" />
     <Compile Include="Utils\Steam\Steam.cs" />
-    <Compile Include="Utils\Tasks\TaskDispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
@@ -135,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Providers\ConfigurationData\" />
+    <Folder Include="Utils\Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

@@ -1,4 +1,6 @@
-﻿using Rocket.API.Plugins;
+﻿using System.Collections.Generic;
+using Rocket.API.Collections;
+using Rocket.API.Plugins;
 
 namespace Rocket.API.Providers
 {
@@ -6,5 +8,8 @@ namespace Rocket.API.Providers
     {
         void Translate(string key, string language);
         void Translate(IRocketPlugin plugin,string key, string language);
+
+        void RegisterDefaultTranslations(IRocketPlugin plugin, TranslationList defaultTranslations);
+        void RegisterDefaultTranslations(TranslationList defaultTranslations);
     }
 }

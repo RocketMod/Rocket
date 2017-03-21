@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Rocket.API.Assets;
 using Rocket.API.Commands;
+using Rocket.API.Event;
+using Rocket.API.Event.Command;
 using Rocket.API.Exceptions;
 using Rocket.API.Logging;
 using Rocket.API.Player;
@@ -34,7 +35,6 @@ namespace Rocket.API.Collections
         }
 
         public delegate void ExecuteCommand(IRocketPlayer player, IRocketCommand command, ref bool cancel);
-        public event ExecuteCommand OnExecuteCommand;
 
         public RegisteredRocketCommand GetCommand(IRocketPlugin plugin)
         {
@@ -108,39 +108,25 @@ namespace Rocket.API.Collections
                     }
                     try
                     {
-                        bool cancelCommand = false;
-                        if (OnExecuteCommand != null)
+                        ExecuteCommandEvent @event = new ExecuteCommandEvent(player, rocketCommand, parameters);
+                        EventManager.Instance.CallEvent(@event);
+
+                        if (@event.IsCancelled)
                         {
-                            foreach (var handler in OnExecuteCommand.GetInvocationList().Cast<ExecuteCommand>())
-                            {
-                                try
-                                {
-                                    handler(player, rocketCommand, ref cancelCommand);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.Error(ex);
-                                }
-                            }
+                            return false;
                         }
-                        if (!cancelCommand)
+
+                        try
                         {
-                            try
-                            {
-                                rocketCommand.Execute(player, parameters);
-                            }
-                            catch (NoPermissionsForCommandException ex)
-                            {
-                                Logger.Warn(ex.Message);
-                            }
-                            catch (WrongUsageOfCommandException ex)
-                            {
-                                Logger.Info(ex.Message);
-                            }
-                            catch (Exception)
-                            {
-                                throw;
-                            }
+                            rocketCommand.Execute(player, parameters);
+                        }
+                        catch (NoPermissionsForCommandException ex)
+                        {
+                            Logger.Warn(ex.Message);
+                        }
+                        catch (WrongUsageOfCommandException ex)
+                        {
+                            Logger.Info(ex.Message);
                         }
                     }
                     catch (Exception ex)

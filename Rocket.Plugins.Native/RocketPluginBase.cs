@@ -5,6 +5,8 @@ using System.Reflection;
 using Rocket.API;
 using Rocket.API.Assets;
 using Rocket.API.Collections;
+using Rocket.API.Event;
+using Rocket.API.Event.Plugin;
 using Rocket.API.Extensions;
 using Rocket.API.Plugins;
 using Rocket.API.Providers;
@@ -23,7 +25,7 @@ namespace Rocket.Plugins.Native
         {
             base.Initialize(false);
 
-            string configurationFile = Path.Combine(WorkingDirectory,string.Format(API.Environment.PluginConfigurationFileTemplate, Name));
+            string configurationFile = Path.Combine(WorkingDirectory, string.Format(API.Environment.PluginConfigurationFileTemplate, Name));
             string url = null;
             if (File.Exists(configurationFile))
                 url = File.ReadAllLines(configurationFile).First().Trim();
@@ -31,7 +33,7 @@ namespace Rocket.Plugins.Native
             Uri uri;
             if (url != null && Uri.TryCreate(url, UriKind.Absolute, out uri))
             {
-                Configuration = new WebXMLFileAsset<T>(uri, null, (IAsset<T> config)=> { LoadPlugin(); });
+                Configuration = new WebXMLFileAsset<T>(uri, null, (IAsset<T> config) => { LoadPlugin(); });
             }
             else
             {
@@ -45,25 +47,13 @@ namespace Rocket.Plugins.Native
             Configuration.Load();
         }
     }
-    
+
     public class RocketPluginBase : MonoBehaviour, IRocketPlugin
     {
         public string WorkingDirectory { get; internal set; }
 
-        public event RocketPluginUnloading OnPluginUnloading;
-        public event RocketPluginUnloaded OnPluginUnloaded;
-
-        public event RocketPluginLoading OnPluginLoading;
-        public event RocketPluginLoaded OnPluginLoaded;
-
-        public static event RocketPluginUnloading OnPluginsUnloading;
-        public static event RocketPluginUnloaded OnPluginsUnloaded;
-
-        public static event RocketPluginLoading OnPluginsLoading;
-        public static event RocketPluginLoaded OnPluginsLoaded;
-
         public IRocketPluginProvider PluginManager { get; protected set; }
-        public IAsset<TranslationList> Translations { get ; private set; }
+        public IAsset<TranslationList> Translations { get; private set; }
         public PluginState State { get; private set; } = PluginState.Unloaded;
         public string Name { get; protected set; }
 
@@ -95,15 +85,15 @@ namespace Rocket.Plugins.Native
         public virtual void Initialize(bool loadPlugin = true)
         {
             WorkingDirectory = PluginManager.GetPluginDirectory(Name);
-            if (!System.IO.Directory.Exists(WorkingDirectory))
-                System.IO.Directory.CreateDirectory(WorkingDirectory);
+            if (!Directory.Exists(WorkingDirectory))
+                Directory.CreateDirectory(WorkingDirectory);
 
             if (DefaultTranslations != null | DefaultTranslations.Count() != 0)
             {
                 Translations = new XMLFileAsset<TranslationList>(Path.Combine(WorkingDirectory, String.Format(Environment.PluginTranslationFileTemplate, Name, Environment.LanguageCode)), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, DefaultTranslations);
                 Translations.AddUnknownEntries(DefaultTranslations);
             }
-            if(loadPlugin)
+            if (loadPlugin)
                 LoadPlugin();
         }
 
@@ -129,7 +119,7 @@ namespace Rocket.Plugins.Native
             }
             catch (Exception ex)
             {
-                Logger.Fatal("Failed to load " + Name+ ", unloading now...", ex);
+                Logger.Fatal("Failed to load " + Name + ", unloading now...", ex);
                 try
                 {
                     UnloadPlugin(PluginState.Failure);
@@ -137,45 +127,16 @@ namespace Rocket.Plugins.Native
                 }
                 catch (Exception ex1)
                 {
-                    Logger.Fatal("Failed to unload " + Name ,ex1);
+                    Logger.Fatal("Failed to unload " + Name, ex1);
                 }
             }
 
-            bool doCancelLoading = false;
-            bool cancelLoading = false;
-            if (OnPluginLoading != null)
-            {
-                foreach (var handler in OnPluginLoading.GetInvocationList().Cast<RocketPluginLoading>())
-                {
-                    try
-                    {
-                        handler(this, ref cancelLoading);
-                        if (cancelLoading) doCancelLoading = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Fatal(ex);
-                    }
-                }
-            }
 
-            if (OnPluginsLoading != null)
-            {
-                foreach (var handler in OnPluginsLoading.GetInvocationList().Cast<RocketPluginLoading>())
-                {
-                    try
-                    {
-                        handler(this, ref cancelLoading);
-                        if (cancelLoading) doCancelLoading = true;
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Fatal(ex);
-                    }
-                }
-            }
 
-            if (doCancelLoading)
+            PluginLoadingEvent loadingEvent = new PluginLoadingEvent(this);
+            EventManager.Instance.CallEvent(loadingEvent);
+
+            if (loadingEvent.IsCancelled)
             {
                 try
                 {
@@ -189,19 +150,21 @@ namespace Rocket.Plugins.Native
             }
 
             State = PluginState.Loaded;
-            OnPluginLoaded.TryInvoke(this);
-            OnPluginsLoaded.TryInvoke(this);
+
+            PluginLoadedEvent loadedEvent = new PluginLoadedEvent(this);
+            EventManager.Instance.CallEvent(loadedEvent);
         }
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            Logger.Info("\n[unloading] " + Name);
-            OnPluginUnloading.TryInvoke(this);
-            OnPluginsUnloading.TryInvoke(this);
+            Logger.Info("\n[Unloading] " + Name);
+            PluginUnloadingEvent unloadingEvent = new PluginUnloadingEvent(this);
+            EventManager.Instance.CallEvent(unloadingEvent);
             Unload();
             State = state;
-            OnPluginUnloaded.TryInvoke(this);
-            OnPluginsUnloaded.TryInvoke(this);
+
+            PluginUnloadedEvent unloadedEvent = new PluginUnloadedEvent(this);
+            EventManager.Instance.CallEvent(unloadedEvent);
         }
 
         private void OnDisable()

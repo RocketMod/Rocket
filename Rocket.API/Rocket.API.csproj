@@ -66,6 +66,23 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Event\Implementation\ImplementationInitializedEvent.cs" />
+    <Compile Include="Event\Implementation\ImplementationReloadEvent.cs" />
+    <Compile Include="Event\Implementation\ImplementationShutdownEvent.cs" />
+    <Compile Include="Event\Player\PlayerChatEvent.cs" />
+    <Compile Include="Event\Command\ExecuteCommandEvent.cs" />
+    <Compile Include="Event\Command\PreCommandExecuteEvent.cs" />
+    <Compile Include="Event\Event.cs" />
+    <Compile Include="Event\EventHandler.cs" />
+    <Compile Include="Event\EventManager.cs" />
+    <Compile Include="Event\EventPriority.cs" />
+    <Compile Include="Event\ICancellableEvent.cs" />
+    <Compile Include="Event\IListener.cs" />
+    <Compile Include="Event\Implementation\ImplementationEvent.cs" />
+    <Compile Include="Event\Player\PlayerConnectedEvent.cs" />
+    <Compile Include="Event\Player\PlayerDisconnectedEvent.cs" />
+    <Compile Include="Event\Player\PlayerEvent.cs" />
+    <Compile Include="Event\Plugin\PluginEvent.cs" />
     <Compile Include="Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />
@@ -81,6 +98,10 @@
     <Compile Include="Implementation\Managers\IPlayerManager.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Logging\LogMessage.cs" />
+    <Compile Include="Event\Plugin\PluginLoadedEvent.cs" />
+    <Compile Include="Event\Plugin\PluginLoadingEvent.cs" />
+    <Compile Include="Event\Plugin\PluginUnloadedEvent.cs" />
+    <Compile Include="Event\Plugin\PluginUnloadingEvent.cs" />
     <Compile Include="Providers\IRocketConfigurationDataProvider.cs" />
     <Compile Include="Providers\IRocketPlayerDataProvider.cs" />
     <Compile Include="Providers\IRocketImplementationProvider.cs" />
@@ -108,6 +129,7 @@
     <Compile Include="Player\IRocketPlayer.cs" />
     <Compile Include="Serialisation\RocketPermissions.cs" />
     <Compile Include="Serialisation\RocketPermissionsGroup.cs" />
+    <Compile Include="Utils\TaskDispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -34,7 +34,7 @@ namespace Rocket.Plugins.Native
 
         public IRocketPlugin GetPlugin(string name)
         {
-            return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null && p.GetType().Assembly.GetName().Name == name).FirstOrDefault();
+            return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).FirstOrDefault(p => p != null && p.GetType().Assembly.GetName().Name == name);
         }
 
         public string GetPluginDirectory(string name)
@@ -52,8 +52,6 @@ namespace Rocket.Plugins.Native
             this.languageCode = languageCode;
             loadPlugins();
         }
-        
-        
 
         public List<IRocketCommand> GetCommandTypesFromAssembly(Assembly assembly, Type plugin)
         {
@@ -188,7 +186,7 @@ namespace Rocket.Plugins.Native
             return assemblies;
         }
 
-        public override void Load()
+        public override void Load(bool isReload = false)
         {
             try
             {
