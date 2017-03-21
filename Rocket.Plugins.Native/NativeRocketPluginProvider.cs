@@ -25,7 +25,7 @@ namespace Rocket.Plugins.Native
 
        
 
-        public RocketCommandList Commands { get; private set; }
+        public RocketCommandList CommandProvider { get; private set; }
 
         public List<IRocketPlugin> GetPlugins()
         {
@@ -119,7 +119,7 @@ namespace Rocket.Plugins.Native
                 foreach (Type pluginType in pluginImplemenations)
                 {
                     //gameObject.TryAddComponent(pluginType);
-                    Commands.AddRange(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
+                    CommandProvider.AddRange(GetCommandTypesFromAssembly(pluginAssembly, pluginType));
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace Rocket.Plugins.Native
 
         public void AddCommands(IEnumerable<IRocketCommand> commands)
         {
-            Commands.AddRange(commands.AsEnumerable());
+            CommandProvider.AddRange(commands.AsEnumerable());
         }
 
         private static List<Assembly> LoadAssembliesFromDirectory(string directory, string extension = "*.dll")
@@ -193,7 +193,7 @@ namespace Rocket.Plugins.Native
             try
             {
                 Instance = this;
-                Commands = new RocketCommandList(this);
+                CommandProvider = new RocketCommandList(this);
                 AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
                 {
                     string file;

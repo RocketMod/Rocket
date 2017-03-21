@@ -6,7 +6,6 @@ using Rocket.API.Exceptions;
 using Rocket.API.Extensions;
 using Rocket.API.Plugins;
 using Rocket.Core.Extensions;
-using Rocket.Core.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +19,14 @@ using Rocket.Plugins.Native;
 using Rocket.Core.Commands;
 using Rocket.API.Serialisation;
 using Rocket.API.Providers;
+using Rocket.Core.Assets;
 using Rocket.Core.Providers;
 using Rocket.Core.Providers.Logging;
 using Rocket.Core.Providers.Permissions;
 using Rocket.Core.Providers.Remoting.RCON;
 using Rocket.Core.Providers.Remoting.RPC;
 using Rocket.Core.Utils.Debugging;
+using Rocket.Core.Utils.Tasks;
 
 namespace Rocket.Core
 {
@@ -46,12 +47,12 @@ namespace Rocket.Core
             new ProviderRegistration(typeof(IRocketPlayerDataProvider),false)
         };
 
-        private static List<ProviderRegistration> providers  = new List<ProviderRegistration>();
+        private static readonly List<ProviderRegistration> providers = new List<ProviderRegistration>();
 
         private static ProviderRegistration getProviderInterface(Type provider)
         {
             ProviderRegistration currentProviderType = null;
-            Type[] currentProviderTypes = provider.GetType().GetInterfaces();
+            Type[] currentProviderTypes = provider.GetInterfaces();
             foreach (ProviderRegistration registration in availableProviderTypes)
             {
                 if (currentProviderTypes.Contains(registration.Type))
@@ -61,15 +62,24 @@ namespace Rocket.Core
                 }
             }
             if (currentProviderType == null) throw new ArgumentException("Provider has no known interface");
-            if (!(provider.GetType().IsAssignableFrom(typeof(RocketProviderBase)))) throw new ArgumentException("Provider does not implement RocketProviderBase");
+            if (!(provider.IsAssignableFrom(typeof(RocketProviderBase)))) throw new ArgumentException("Provider does not implement RocketProviderBase");
             return currentProviderType;
         }
 
-        public static IRocketTranslationDataProvider Translations
+        public static IRocketTranslationDataProvider Translations => GetProvider<IRocketTranslationDataProvider>();
+        public static List<IRocketPluginProvider> PluginProviders => GetProviders<IRocketPluginProvider>();
+        public static IRocketImplementationProvider Implementation => GetProvider<IRocketImplementationProvider>();
+        public static IRocketPermissionsDataProvider Permissions => GetProvider<IRocketPermissionsDataProvider>();
+
+        public static List<IRocketCommand> Commands
         {
             get
             {
-                return (IRocketTranslationDataProvider)GetProvider(typeof(IRocketTranslationDataProvider));
+                var tmp = new List<IRocketCommand>();
+                foreach(var pp in PluginProviders)
+                    tmp.AddRange(pp.CommandProvider.Commands.ToArray());
+
+                return tmp;
             }
         }
         private static T registerProvider<T>() where T : RocketProviderBase
@@ -79,6 +89,7 @@ namespace Rocket.Core
 
         private static RocketProviderBase registerProvider(Type provider) 
         {
+            if(!provider.IsInterface) throw new Exception("The given type is not an interface");
             ProviderRegistration currentProviderType = getProviderInterface(provider);
 
             if (!currentProviderType.AllowMultipleInstances)
@@ -90,53 +101,74 @@ namespace Rocket.Core
             return result.Implementation;
         }
 
-        public static RocketProviderBase GetProvider(Type providerType) 
+        public static T GetProvider<T>() where T: IRocketProviderBase
         {
+            return (T) GetProvider(typeof(T));
+        }
+
+        public static IRocketProviderBase GetProvider(Type providerType) 
+        {
+            var providerRegistration = availableProviderTypes.FirstOrDefault(t => t.Type == providerType);
+            if (providerRegistration == null) throw new ArgumentException("The given type is not a known provider interface");
+            if (providerRegistration.AllowMultipleInstances)
+            {
+                //use proxies to handle multiple providers
+                return getProxyForProvider(providerRegistration);
+            }
+
             return GetProviders(providerType).FirstOrDefault();
+        }
+
+        public static List<T> GetProviders<T>()
+        {
+            return GetProviders(typeof(T)).Cast<T>().ToList();
         }
 
         public static List<RocketProviderBase> GetProviders(Type providerType)
         {
             if(!providerType.IsInterface) throw new ArgumentException("The given type is no interface");
-            if(availableProviderTypes.Where(t => t.Type == providerType).FirstOrDefault() == null) throw new ArgumentException("The given type is not a known provider interface");
+            if (availableProviderTypes.FirstOrDefault(t => t.Type == providerType) == null) throw new ArgumentException("The given type is not a known provider interface");
             return providers.Where(p => p.Type == providerType && p.Enabled).Select(p => p.Implementation).ToList();
+        }
+
+        private static Dictionary<ProviderRegistration, RocketProviderBase> cachedProxies = new Dictionary<ProviderRegistration, RocketProviderBase>();
+        private static RocketProviderBase getProxyForProvider(ProviderRegistration providerRegistration)
+        {
+            if (cachedProxies.ContainsKey(providerRegistration))
+                return cachedProxies[providerRegistration];
+            
+            throw new NotImplementedException();
         }
 
         public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        public static TranslationList DefaultTranslation
+        public static TranslationList DefaultTranslation => new TranslationList
         {
-            get
-            {
-                return new TranslationList()
-                {
-                    { "rocket_join_public","{0} connected to the server" },
-                    { "rocket_leave_public","{0} disconnected from the server"},
-                    { "command_no_permission","You do not have permissions to execute this command."},
-                    { "command_rocket_plugins_loaded","Loaded: {0}"},
-                    { "command_rocket_plugins_unloaded","Unloaded: {0}"},
-                    { "command_rocket_plugins_failure","Failure: {0}"},
-                    { "command_rocket_plugins_cancelled","Cancelled: {0}"},
-                    { "command_rocket_reload_plugin","Reloading {0}"},
-                    { "command_rocket_not_loaded","The plugin {0} is not loaded"},
-                    { "command_rocket_unload_plugin","Unloading {0}"},
-                    { "command_rocket_load_plugin","Loading {0}"},
-                    { "command_rocket_already_loaded","The plugin {0} is already loaded"},
-                    { "command_rocket_reload","Reloading Rocket"},
-                    { "command_p_group_not_found","Group not found"},
-                    { "command_p_group_player_added","{0} was added to the group {1}"},
-                    { "command_p_group_player_removed","{0} was removed from from the group {1}"},
-                    { "command_p_unknown_error","Unknown error"},
-                    { "command_p_player_not_found","{0} was not found"},
-                    { "command_p_group_not_found","{1} was not found"},
-                    { "command_p_duplicate_entry","{0} is already in the group {1}"},
-                    { "command_p_permissions_reload","Permissions reloaded"},
-                    { "invalid_character_name","invalid character name"},
-                    { "command_not_found","Command not found."},
-                    { "command_cooldown","You have to wait {0} seconds before you can use this command again."}
-                };
-            }
-        }
+            { "rocket_join_public","{0} connected to the server" },
+            { "rocket_leave_public","{0} disconnected from the server"},
+            { "command_no_permission","You do not have permissions to execute this command."},
+            { "command_rocket_plugins_loaded","Loaded: {0}"},
+            { "command_rocket_plugins_unloaded","Unloaded: {0}"},
+            { "command_rocket_plugins_failure","Failure: {0}"},
+            { "command_rocket_plugins_cancelled","Cancelled: {0}"},
+            { "command_rocket_reload_plugin","Reloading {0}"},
+            { "command_rocket_not_loaded","The plugin {0} is not loaded"},
+            { "command_rocket_unload_plugin","Unloading {0}"},
+            { "command_rocket_load_plugin","Loading {0}"},
+            { "command_rocket_already_loaded","The plugin {0} is already loaded"},
+            { "command_rocket_reload","Reloading Rocket"},
+            { "command_p_group_not_found","Group not found"},
+            { "command_p_group_player_added","{0} was added to the group {1}"},
+            { "command_p_group_player_removed","{0} was removed from from the group {1}"},
+            { "command_p_unknown_error","Unknown error"},
+            { "command_p_player_not_found","{0} was not found"},
+            { "command_p_group_not_found","{1} was not found"},
+            { "command_p_duplicate_entry","{0} is already in the group {1}"},
+            { "command_p_permissions_reload","Permissions reloaded"},
+            { "invalid_character_name","invalid character name"},
+            { "command_not_found","Command not found."},
+            { "command_cooldown","You have to wait {0} seconds before you can use this command again."}
+        };
 
         public static void Reload()
         {
@@ -184,9 +216,9 @@ namespace Rocket.Core
 
                 Logger.Debug("NAME:"+name);
 
-                foreach (IRocketPluginProvider p in PluginManagers)
+                foreach (IRocketPluginProvider p in PluginProviders)
                 {
-                    IRocketCommand c = p.Commands.GetCommand(name);
+                    IRocketCommand c = p.CommandProvider.GetCommand(name);
                     if (c != null) commands.Add(c);
                 }
 
@@ -281,7 +313,6 @@ namespace Rocket.Core
                 Translation = new XMLFileAsset<TranslationList>(String.Format(API.Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, defaultTranslations);
                 Translation.AddUnknownEntries(defaultTranslations);
 
-                Permissions = gameObject.TryAddComponent<RocketBuiltinPermissionsProvider>();
                 gameObject.TryAddComponent<TaskDispatcher>();
 
                 NativeRocketPluginProvider nativeRocketPluginManager = gameObject.TryAddComponent<NativeRocketPluginProvider>();
@@ -290,10 +321,10 @@ namespace Rocket.Core
                 });
                 nativeRocketPluginManager.AddCommands(Implementation.GetAllCommands());
                 nativeRocketPluginManager.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
-                nativeRocketPluginManager.Commands.Persist();
+                nativeRocketPluginManager.CommandProvider.Persist();
 
 
-                PluginManagers.Add(nativeRocketPluginManager);
+                PluginProviders.Add(nativeRocketPluginManager);
 
                 try
                 {
@@ -305,7 +336,7 @@ namespace Rocket.Core
                 }
                 catch (Exception e)
                 {
-                    Logger.Error("Uh ohh.."+e);
+                    Logger.Error("Uh ohh..", e);
                 }
 
                 Implementation.OnInitialized += () =>

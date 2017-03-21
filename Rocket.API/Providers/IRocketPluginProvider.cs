@@ -12,5 +12,6 @@ namespace Rocket.API.Providers
         List<IRocketPlugin> GetPlugins();
         IRocketPlugin GetPlugin(string name);
         List<Type> GetProviders();
+        RocketCommandList CommandProvider { get; }
     }
 }

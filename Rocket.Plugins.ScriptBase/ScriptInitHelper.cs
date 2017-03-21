@@ -20,13 +20,13 @@ namespace Rocket.Plugins.ScriptBase
         public void RegisterCommand(IRocketCommand command)
         {
             //todo
-            //Engine.PluginProvider.Commands.Add(command);
+            //Engine.PluginProvider.CommandProvider.Add(command);
         }
 
         public void RegisterCommand(RegisteredRocketCommand callback)
         {
             //todo
-            //Engine.PluginProvider.Commands.Add(callback);
+            //Engine.PluginProvider.CommandProvider.Add(callback);
         }
     }
 }

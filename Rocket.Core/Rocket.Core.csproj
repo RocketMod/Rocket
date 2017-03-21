@@ -50,6 +50,9 @@
     <ApplicationManifest>Rocket.Core.nuspec</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.0.0\lib\net35\Castle.Core.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.IdentityModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -124,6 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Providers\Remoting\RPC\LongPollingEvent.cs" />
+    <None Include="packages.config" />
     <None Include="Rocket.Core.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
