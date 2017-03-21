@@ -55,87 +55,88 @@ namespace Rocket.Sandbox
             "UnityEngine.SceneManagment.*"
         };
 
-        private readonly List<Type> AllowedTypes = new List<Type>
+        private readonly List<string> AllowedTypes = new List<string>
         {
-            typeof(object),
-            typeof(void),
-            typeof(string),
-            typeof(Math),
-            typeof(Enum),
-            typeof(short),
-            typeof(int),
-            typeof(long),
-            typeof(uint),
-            typeof(ulong),
-            typeof(double),
-            typeof(float),
-            typeof(bool),
-            typeof(char),
-            typeof(byte),
-            typeof(sbyte),
-            typeof(decimal),
-            typeof(DateTime),
-            typeof(TimeSpan),
-            typeof(Array),
-            typeof(MemberInfo),
-            typeof(RuntimeHelpers),
-            typeof(UnityEngine.Debug),
-            typeof(TextWriter),
-            typeof(TextReader),
-            typeof(BinaryWriter),
-            typeof(BinaryReader),
-            typeof(Directory),
-            typeof(Path),
-            typeof(FileSystemInfo),
-            typeof(NullReferenceException),
-            typeof(ArgumentException),
-            typeof(ArgumentNullException),
-            typeof(FormatException),
-            typeof(Exception),
-            typeof(DivideByZeroException),
-            typeof(InvalidCastException),
-            typeof(FileNotFoundException),
-            typeof(System.Random),
-            typeof(Convert),
-            typeof(Path),
-            typeof(Convert),
-            typeof(Nullable<>),
-            typeof(StringComparer),
-            typeof(StringComparison),
-            typeof(StringBuilder),
-            typeof(IComparable<>),
-            typeof(Type),
-            typeof(IDisposable),
-            typeof(Delegate),
-            typeof(ValueType),
-            typeof(MulticastDelegate),
-            typeof(Interlocked)
+            typeof(object).FullName,
+            typeof(void).FullName,
+            typeof(string).FullName,
+            typeof(Math).FullName,
+            typeof(Enum).FullName,
+            typeof(short).FullName,
+            typeof(int).FullName,
+            typeof(long).FullName,
+            typeof(uint).FullName,
+            typeof(ulong).FullName,
+            typeof(double).FullName,
+            typeof(float).FullName,
+            typeof(bool).FullName,
+            typeof(char).FullName,
+            typeof(byte).FullName,
+            typeof(sbyte).FullName,
+            typeof(decimal).FullName,
+            typeof(DateTime).FullName,
+            typeof(TimeSpan).FullName,
+            typeof(Array).FullName,
+            typeof(MemberInfo).FullName,
+            typeof(RuntimeHelpers).FullName,
+            typeof(UnityEngine.Debug).FullName,
+            typeof(TextWriter).FullName,
+            typeof(TextReader).FullName,
+            typeof(BinaryWriter).FullName,
+            typeof(BinaryReader).FullName,
+            typeof(Directory).FullName,
+            typeof(Path).FullName,
+            typeof(FileSystemInfo).FullName,
+            typeof(NullReferenceException).FullName,
+            typeof(ArgumentException).FullName,
+            typeof(ArgumentNullException).FullName,
+            typeof(FormatException).FullName,
+            typeof(Exception).FullName,
+            typeof(DivideByZeroException).FullName,
+            typeof(InvalidCastException).FullName,
+            typeof(FileNotFoundException).FullName,
+            typeof(System.Random).FullName,
+            typeof(Convert).FullName,
+            typeof(Path).FullName,
+            typeof(Convert).FullName,
+            typeof(Nullable<>).FullName,
+            typeof(StringComparer).FullName,
+            typeof(StringComparison).FullName,
+            typeof(StringBuilder).FullName,
+            typeof(IComparable<>).FullName,
+            typeof(Type).FullName,
+            typeof(IDisposable).FullName,
+            typeof(Delegate).FullName,
+            typeof(ValueType).FullName,
+            typeof(MulticastDelegate).FullName,
+            typeof(Interlocked).FullName,
+            "Steamworks.CSteamID"
         };
 
-        private readonly List<Type> DisallowedTypes = new List<Type>
+        private readonly List<string> DisallowedTypes = new List<string>
         {
-            typeof(Network),
-            typeof(Process),
-            typeof(ProcessStartInfo),
-            typeof(DllImportAttribute),
-            typeof(Activator),
-            typeof(Application),
-            typeof(AsyncOperation),
-            typeof(Thread),
-            typeof(Resources),
-            typeof(ScriptableObject),
-            typeof(SystemInfo),
-            typeof(WebCamDevice),
-            typeof(AddComponentMenu),
-            typeof(ContextMenu),
-            typeof(ExecuteInEditMode),
-            typeof(RPC),
-            typeof(Timer),
-            typeof(System.Timers.Timer),
-            typeof(AsyncOperation),
-            typeof(System.ComponentModel.AsyncOperation),
-            typeof(ThreadPool),
-            typeof(Resources)
+            typeof(Network).FullName,
+            typeof(Process).FullName,
+            typeof(ProcessStartInfo).FullName,
+            typeof(DllImportAttribute).FullName,
+            typeof(Activator).FullName,
+            typeof(Application).FullName,
+            typeof(AsyncOperation).FullName,
+            typeof(Thread).FullName,
+            typeof(Resources).FullName,
+            typeof(ScriptableObject).FullName,
+            typeof(SystemInfo).FullName,
+            typeof(WebCamDevice).FullName,
+            typeof(AddComponentMenu).FullName,
+            typeof(ContextMenu).FullName,
+            typeof(ExecuteInEditMode).FullName,
+            typeof(RPC).FullName,
+            typeof(Timer).FullName,
+            typeof(System.Timers.Timer).FullName,
+            typeof(AsyncOperation).FullName,
+            typeof(System.ComponentModel.AsyncOperation).FullName,
+            typeof(ThreadPool).FullName,
+            typeof(Resources).FullName
         };
 
         private readonly Dictionary<Type, List<string>> DisallowedMethods = new Dictionary<Type, List<string>>
@@ -162,27 +163,28 @@ namespace Rocket.Sandbox
             try
             {
 #endif
-                foreach (Type type in asm.GetTypes())
+            var types = asm.GetTypes();
+            foreach (Type type in types)
+            {
+                /*
+                if ((!type.IsSubclassOf(typeof(MonoBehaviour)) && type != typeof(MonoBehaviour) &&
+                     !typeof(MonoBehaviour).IsAssignableFrom(type)) &&
+                    (type.IsSubclassOf(typeof(Behaviour)) || type == typeof(Behaviour) ||
+                     typeof(Behaviour).IsAssignableFrom(type)))
                 {
-                    /*
-                    if ((!type.IsSubclassOf(typeof(MonoBehaviour)) && type != typeof(MonoBehaviour) &&
-                         !typeof(MonoBehaviour).IsAssignableFrom(type)) &&
-                        (type.IsSubclassOf(typeof(Behaviour)) || type == typeof(Behaviour) ||
-                         typeof(Behaviour).IsAssignableFrom(type)))
-                    {
-                        RemoveWhitelist(asm);
-                        illegalInstruction = type.FullName;
-                        failReason = "Extending Unitys Behaviour. This is not allowed.";
-                        return false;
-                    }
-                    */
-
-                    if (!IsAllowedType(asm, type, ref result))
-                    {
-                        RemoveWhitelist(asm);
-                        return result;
-                    }
+                    RemoveWhitelist(asm);
+                    illegalInstruction = type.FullName;
+                    failReason = "Extending Unitys Behaviour. This is not allowed.";
+                    return false;
                 }
+                */
+
+                if (!IsAllowedType(asm, type, ref result))
+                {
+                    RemoveWhitelist(asm);
+                    return result;
+                }
+            }
 #if !DEBUG
             }
             catch (Exception e)
@@ -205,7 +207,7 @@ namespace Rocket.Sandbox
                     result.IllegalInstruction = new ReadableInstruction(type, false, BlockReason.ILLEGAL_NAME);
                     result.Position = new ReadableInstruction(asm);
                     return;
-                } 
+                }
             }
         }
 
@@ -231,7 +233,7 @@ namespace Rocket.Sandbox
                 return false;
             }
             //check for super class
-            if (CheckBaseClass && type.BaseType != null  && type.BaseType.Assembly != type.Assembly /* do not check if in the same assembly, as it will be checked anyway */ && !IsAllowedType(type.BaseType, ref result))
+            if (CheckBaseClass && type.BaseType != null && type.BaseType.Assembly != type.Assembly /* do not check if in the same assembly, as it will be checked anyway */ && !IsAllowedType(type.BaseType, ref result))
             {
                 result.IllegalInstruction = new ReadableInstruction(type, true);
                 return false;
@@ -240,62 +242,100 @@ namespace Rocket.Sandbox
             return true;
         }
 
-        public bool IsAllowedType(Assembly asm, Type type, ref CheckResult result)
+        public bool IsAllowedType(Assembly asm, Type type, ref CheckResult result, bool deepCheck = true)
         {
             ValidateResult(ref result);
 
             if (type == null)
                 return true;
 
+#if DEBUG
+            if (asm.Equals(type.Assembly))
+                Console.WriteLine("Processing " + new ReadableInstruction(type).InstructionName);
+#endif
+
             if (IsDelegate(type))
                 return true;
 
             if (!IsAllowedType(type, ref result))
             {
-                if(result.Position == null)
+                if (result.Position == null)
                     result.Position = new ReadableInstruction(asm);
                 return false;
             }
 
-            foreach (MethodInfo method in type.GetMethods())
+            if (!deepCheck)
+                return true;
+
+            foreach (MethodInfo method in type.GetMethods(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
             {
                 if (!IsAllowedMethod(asm, type, method, ref result))
                 {
+                    result.Position = new ReadableInstruction(method);
+                    return false;
+                }
+            }
+
+            foreach (PropertyInfo def in type.GetProperties(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic))
+            {
+                var getMethod = def.GetGetMethod() ?? def.GetGetMethod(true);
+                if (getMethod != null && !IsAllowedMethod(asm, type, getMethod, ref result))
+                {
+                    result.IllegalInstruction = new ReadableInstruction(def, getMethod);
+                    result.Position = new ReadableInstruction(type);
+                    return false;
+                }
+
+                var setMethod = def.GetSetMethod() ?? def.GetSetMethod(true);
+                if (setMethod != null && !IsAllowedMethod(asm, type, setMethod, ref result))
+                {
+                    result.IllegalInstruction = new ReadableInstruction(def, setMethod);
                     result.Position = new ReadableInstruction(type);
                     return false;
                 }
             }
 
-            foreach (PropertyInfo def in type.GetProperties())
+            foreach (
+                ConstructorInfo inf in
+                type.GetConstructors(BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public |
+                                     BindingFlags.NonPublic))
             {
-                if (def.GetGetMethod() != null && !IsAllowedMethod(asm, type, def.GetGetMethod(), ref result))
+                if (!IsAllowedMethod(asm, type, inf, ref result))
                 {
-                    result.Position = new ReadableInstruction(def.GetGetMethod());
+                    result.Position = new ReadableInstruction(inf);
                     return false;
                 }
-                if (def.GetSetMethod() != null && !IsAllowedMethod(asm, type, def.GetSetMethod(), ref result))
-                {
-                    result.Position = new ReadableInstruction(def.GetSetMethod());
-                    return false;
-                }
+            }
+
+            if (type.TypeInitializer != null && !IsAllowedMethod(asm, type, type.TypeInitializer, ref result))
+            {
+                result.Position = new ReadableInstruction(type.TypeInitializer);
+                return false;
             }
 
             return true;
         }
 
-        public bool IsAllowedMethod(Assembly asm, Type type, MethodInfo method, ref CheckResult result, bool recur = true)
+        public bool IsAllowedMethod(Assembly asm, Type type, MethodBase method, ref CheckResult result, bool deepCheck = true)
         {
             ValidateResult(ref result);
 
-            if (method.DeclaringType != type)
+#if DEBUG
+            Console.WriteLine("Processing " + new ReadableInstruction(method).InstructionName);
+#endif
+
+            if (!method.IsVirtual && method.DeclaringType != type)
                 return true; // this method is from super class
 
+            // check if type of method is allowed
             if (type != null && !IsAllowedType(type, ref result))
             {
                 result.Position = new ReadableInstruction(method);
+                result.IllegalInstruction = new ReadableInstruction(type);
                 return false;
             }
 
+            // check if method is blacklisted
             if (!CheckWhitelistedMethodByName(type, method.Name))
             {
                 result.Position = new ReadableInstruction(method);
@@ -303,54 +343,63 @@ namespace Rocket.Sandbox
                 return false;
             }
 
+            // check attributes (DllImport etc)
             if (!CheckMethodAttributes(method.Attributes, ref result))
             {
+                result.IllegalInstruction = new ReadableInstruction(method.Attributes);
                 result.Position = new ReadableInstruction(method);
                 return false;
             }
 
-            if (type != null && !type.IsGenericTypeDefinition && type.IsGenericType &&
-                CheckGenericType(asm, type.GetGenericTypeDefinition(), method, ref result))
+            // check generic parameters
+            if (method is MethodInfo && type != null && !type.IsGenericTypeDefinition && type.IsGenericType &&
+                CheckGenericType(asm, type.GetGenericTypeDefinition(), (MethodInfo)method, ref result, asm.Equals(method.DeclaringType?.Assembly)))
             {
+                result.IllegalInstruction = new ReadableInstruction(type.GetGenericTypeDefinition());
                 result.Position = new ReadableInstruction(method);
                 return false;
             }
 
-            foreach (Instruction ins in Disassembler.ReadInstructions(method))
+            if (!deepCheck)
+                return true;
+
+            var instructions = Disassembler.ReadInstructions(method);
+            foreach (Instruction ins in instructions)
             {
-                if (recur)
+                Type t = ins.Operand as Type;
+                MethodInfo m = ins.Operand as MethodInfo;
+
+                if (m == method)
+                    continue;
+
+                if (m != null) // check referenced  methods
                 {
-                    Type t = ins.Operand as Type;
-                    MethodInfo m = ins.Operand as MethodInfo;
-
-                    if (m == method) continue;
-
-                    if (m != null)
+                    if (m.DeclaringType != null && type != m.DeclaringType && m.DeclaringType != null &&
+                        !IsAllowedType(m.DeclaringType, ref result))
                     {
-                        if (m.DeclaringType != null && type != m.DeclaringType && m.DeclaringType != null && !IsAllowedType(m.DeclaringType, ref result))
-                        {
-                            result.Position = new ReadableInstruction(method);
-                            return false;
-                        }
-                        if (!CheckWhitelistedMethodByName(m.DeclaringType, m.Name))
-                        {
-                            result.IllegalInstruction = new ReadableInstruction(m);
-                            result.Position = new ReadableInstruction(method);
-                            return false;
-                        }
+                        result.Position = new ReadableInstruction(method);
+                        result.IllegalInstruction = new ReadableInstruction(m.DeclaringType);
+                        return false;
                     }
-
-                    if (t != null && t != type)
+                    if (!CheckWhitelistedMethodByName(m.DeclaringType, m.Name))
                     {
-                        if (!IsAllowedType(t, ref result))
-                        {
-                            result.Position = new ReadableInstruction(method);
-                            return false;
-                        }
+                        result.Position = new ReadableInstruction(method);
+                        result.IllegalInstruction = new ReadableInstruction(m);
+                        return false;
                     }
-
                 }
-                if (ins.OpCode == OpCodes.Calli) //can call unmanaged code
+
+                if (t != null && t != type) // check referenced types in method
+                {
+                    if (!IsAllowedType(t, ref result))
+                    {
+                        result.Position = new ReadableInstruction(method);
+                        result.IllegalInstruction = new ReadableInstruction(t);
+                        return false;
+                    }
+                }
+
+                if (ins.OpCode == OpCodes.Calli) // calli allows calls to unmanaged code
                 {
                     result.Position = new ReadableInstruction(method);
                     result.IllegalInstruction = new ReadableInstruction(method, ins);
@@ -368,7 +417,7 @@ namespace Rocket.Sandbox
             var val = (attributes & (MethodAttributes.PinvokeImpl | MethodAttributes.UnmanagedExport));
             if (val != 0)
             {
-                result.IllegalInstruction = new ReadableInstruction(attributes);    
+                result.IllegalInstruction = new ReadableInstruction(attributes);
             }
 
             return val == 0;
@@ -382,7 +431,7 @@ namespace Rocket.Sandbox
                 .Where(type => !IsInNamespaceList(type.Namespace ?? type.Name, DisallowedNamespaces)
                             && !IsInNamespaceList(type.Namespace ?? type.Name, AllowedNamespaces)))
             {
-                AllowedTypes.Add(type);
+                AllowedTypes.Add(string.IsNullOrEmpty(type.FullName) ? type.Name : type.FullName);
                 list.Add(type);
             }
         }
@@ -395,24 +444,21 @@ namespace Rocket.Sandbox
             var list = AllowedTypesFromAssembly[asm];
             foreach (Type t in list)
             {
-                AllowedTypes.Remove(t);
+                AllowedTypes.Remove(string.IsNullOrEmpty(t.FullName) ? t.Name : t.FullName);
             }
             AllowedTypesFromAssembly.Remove(asm);
         }
 
-        private bool CheckGenericType(Assembly asm, Type type, MethodInfo method, ref CheckResult result)
+        private bool CheckGenericType(Assembly asm, Type type, MethodInfo method, ref CheckResult result, bool checkMethods = true)
         {
             ValidateResult(ref result);
-
-            if (!IsAllowedMethod(asm, type, method, ref result))
-                return false;
 
             if (method?.DeclaringType == null)
                 return true;
 
             foreach (var gType in method.DeclaringType.GetGenericArguments())
             {
-                if (!IsAllowedType(asm, gType, ref result))
+                if (!IsAllowedType(asm, gType, ref result, checkMethods))
                 {
                     return false;
                 }
@@ -432,9 +478,9 @@ namespace Rocket.Sandbox
 
         private bool CheckWhitelistByName(string fullName)
         {
-            bool allowedTypeContains = AllowedTypes.Any(t => t.FullName.Equals(fullName));
+            bool allowedTypeContains = AllowedTypes.Any(t => t.Equals(fullName));
 
-            bool disallowedTypeContains = DisallowedTypes.Any(t => t.FullName.Equals(fullName));
+            bool disallowedTypeContains = DisallowedTypes.Any(t => t.Equals(fullName));
             if (allowedTypeContains &&
                     !disallowedTypeContains)
             {

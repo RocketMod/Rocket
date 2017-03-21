@@ -21,8 +21,15 @@ namespace Rocket.Sandbox
         public ReadableInstruction(MethodBase method, BlockReason reason = BlockReason.RESTRICTED)
         {
             InstructionName = (method.DeclaringType == null ? "" : method.DeclaringType.FullName + ".") + method.Name;
-            InstructionObject = method;
+
+            if (method is MethodInfo)
+                InstructionName = ((MethodInfo)method).ReturnType.Name + " " + InstructionName;
+
             InstructionType = InstructionType.METHOD;
+            if (method is ConstructorInfo)
+                InstructionType = InstructionType.CONSTRUCTOR;
+
+            InstructionObject = method;
             BlockReason = reason;
             AppendInstructionType();
         }
@@ -33,6 +40,7 @@ namespace Rocket.Sandbox
             InstructionObject = type;
             InstructionType = InstructionType.TYPE;
             BlockReason = reason;
+            AppendInstructionType();
         }
 
         public ReadableInstruction(MethodAttributes attributes, BlockReason reason = BlockReason.RESTRICTED)
@@ -66,6 +74,15 @@ namespace Rocket.Sandbox
             AppendInstructionType();
         }
 
+        public ReadableInstruction(PropertyInfo def, MethodInfo method, BlockReason reason = BlockReason.RESTRICTED) : this(method, reason)
+        {
+            InstructionName = (method.DeclaringType == null ? "" : method.DeclaringType.FullName + ".") + method.Name;
+            InstructionObject = new PropertyInstruction {Property = def, Method = method};
+            BlockReason = reason;
+            InstructionType = InstructionType.PROPERTY;
+            AppendInstructionType();
+        }
+
         public override bool Equals(object o)
         {
             if (!(o is ReadableInstruction))
@@ -95,6 +112,12 @@ namespace Rocket.Sandbox
         }
     }
 
+    public class PropertyInstruction
+    {
+        public PropertyInfo Property { get; set; }
+        public MethodInfo Method { get; set; }
+    }
+
     public class MethodInstruction
     {
         public MethodBase Method { get; }
@@ -119,6 +142,8 @@ namespace Rocket.Sandbox
         METHOD,
         OPERAND,
         METHOD_ATTRIBUTE,
-        ASSEMBLY
+        ASSEMBLY,
+        CONSTRUCTOR,
+        PROPERTY
     }
 }
