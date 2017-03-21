@@ -5,6 +5,6 @@ namespace Rocket.API.Providers
     public interface IRocketProviderBase
     {
         void Unload();
-        void Load();
+        void Load(bool isReload = false);
     }
 }

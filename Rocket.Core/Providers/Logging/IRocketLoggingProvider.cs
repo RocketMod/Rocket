@@ -1,6 +1,8 @@
-﻿namespace Rocket.Core.Providers.Logging
+﻿using Rocket.API.Providers;
+
+namespace Rocket.Core.Providers.Logging
 {
-    internal interface IRocketLoggingProvider
+    internal interface IRocketLoggingProvider : IRocketProviderBase
     {
     }
 }
