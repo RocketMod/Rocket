@@ -90,7 +90,7 @@ namespace Rocket.Core
                 providers.Where(p => p.Type == currentProviderType.Type).All(p => { p.Enabled = false; p.Implementation.Unload(); return true; });
             }
 
-            Type t = typeof(ProviderRegistration<>).MakeGenericType(provider);
+            Type t = typeof(ProviderRegistration<>).MakeGenericType(currentProviderType.GetType().GetGenericArguments()[0]);
             IProviderRegistration result = (IProviderRegistration) Activator.CreateInstance(t, currentProviderType, (RocketProviderBase) Activator.CreateInstance(provider));
             providers.Add(result);
             return result.Implementation;

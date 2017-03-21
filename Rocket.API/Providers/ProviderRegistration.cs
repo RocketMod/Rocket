@@ -6,7 +6,6 @@ namespace Rocket.API.Providers
     
     public class ProviderRegistration<T> : IProviderRegistration<T> where T: IRocketProviderBase
     {
-        RocketProviderBase
         public ProviderRegistration(ProviderRegistration<T> registration, T implementation)
         {
             Type = registration.Type;
