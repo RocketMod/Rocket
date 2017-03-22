@@ -2,7 +2,7 @@
 using Rocket.API.Collections;
 using Rocket.API.Plugins;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Translations
 {
     public interface IRocketTranslationDataProvider : IRocketDataProviderBase
     {

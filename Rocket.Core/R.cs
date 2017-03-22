@@ -23,6 +23,13 @@ using Rocket.Core.Providers.Permissions;
 using Rocket.Core.Providers.Remoting.RCON;
 using Rocket.Core.Providers.Remoting.RPC;
 using Rocket.Core.Utils.Debugging;
+using Rocket.API.Providers.Implementation;
+using Rocket.API.Providers.Commands;
+using Rocket.API.Providers.Remoting;
+using Rocket.API.Providers.Permissions;
+using Rocket.API.Providers.Translations;
+using Rocket.API.Providers.Configuration;
+using Rocket.API.Providers.Player;
 
 namespace Rocket.Core
 {
@@ -40,6 +47,13 @@ namespace Rocket.Core
             new ProviderRegistration<IRocketTranslationDataProvider>(false),
             new ProviderRegistration<IRocketConfigurationDataProvider>(false),
             new ProviderRegistration<IRocketPlayerDataProvider>(false)
+        };
+
+        private static readonly List<Type> BuiltinProviders = new List<Type>()
+        {
+            typeof(RocketBuiltinCommandProvider),
+            typeof(RocketBuiltinPermissionsProvider),
+            typeof(Log4NetLoggingProvider)
         };
 
         private static readonly List<IProviderRegistration> providers = new List<IProviderRegistration>();
@@ -61,23 +75,20 @@ namespace Rocket.Core
             return currentProviderType;
         }
 
-        public static IRocketTranslationDataProvider Translations => GetProvider<IRocketTranslationDataProvider>();
-        public static List<IRocketPluginProvider> PluginProviders => GetProviders<IRocketPluginProvider>();
+
+
         public static IRocketImplementationProvider Implementation => GetProvider<IRocketImplementationProvider>();
+        public static IRocketTranslationDataProvider Translations => GetProvider<IRocketTranslationDataProvider>();
+        public static RocketLoggingProviderProxy Logger { get; set; } = new RocketLoggingProviderProxy();
+
+        /* TODO */
+        public static RocketPluginProviderProxy PluginProviders { get; set; } = new RocketPluginProviderProxy();
         public static IRocketPermissionsDataProvider Permissions => GetProvider<IRocketPermissionsDataProvider>();
+      
 
-        public static List<IRocketCommand> Commands
-        {
-            get
-            {
-                var tmp = new List<IRocketCommand>();
-                foreach(var pp in PluginProviders)
-                    tmp.AddRange(pp.CommandProvider.Commands.ToArray());
 
-                return tmp;
-            }
-        }
-        
+
+
         private static readonly GameObject gameObject = new GameObject("Rocket");
 
         private static T registerProvider<T>() where T : RocketProviderBase
@@ -203,13 +214,13 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logger.Fatal(ex);
+                R.Logger.Fatal(ex);
             }
         }
 
         public static bool Execute(IRocketPlayer caller, string commandString)
         {
-            Logger.Debug("EXECUTE:"+commandString);
+            R.Logger.Debug("EXECUTE:"+commandString);
             string name = "";
             string[] parameters = new string[0];
             try
@@ -226,7 +237,7 @@ namespace Rocket.Core
 
                 List<IRocketCommand> commands = new List<IRocketCommand>();
 
-                Logger.Debug("NAME:"+name);
+                R.Logger.Debug("NAME:"+name);
 
                 foreach (IRocketPluginProvider p in PluginProviders)
                 {
@@ -238,7 +249,7 @@ namespace Rocket.Core
 
                 if (commands.Count <= 0)
                 {
-                    Logger.Info("Command not found");
+                    R.Logger.Info("Command not found");
                     return false;
                 }
 
@@ -252,12 +263,12 @@ namespace Rocket.Core
                     try
                     {
                         command.Execute(caller, parameters);
-                        Logger.Debug("EXECUTED");
+                        R.Logger.Debug("EXECUTED");
                         return true;
                     }
                     catch (NoPermissionsForCommandException ex)
                     {
-                        Logger.Warn(ex);
+                        R.Logger.Warn(ex);
                     }
                     catch (WrongUsageOfCommandException)
                     {
@@ -271,16 +282,16 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logger.Error("An error occured while executing " + name + " [" + String.Join(", ", parameters) + "]", ex);
+                R.Logger.Error("An error occured while executing " + name + " [" + String.Join(", ", parameters) + "]", ex);
             }
             return false;
         }
 
         static void Bootstrap<T>() where T : IRocketImplementationProvider
         {
-            Logger.Info("####################################################################################");
-            Logger.Info("Starting RocketMod " + R.Version);
-            Logger.Info("####################################################################################");
+            R.Logger.Info("####################################################################################");
+            R.Logger.Info("Starting RocketMod " + R.Version);
+            R.Logger.Info("####################################################################################");
 
             #if DEBUG
                 new Debugger();
@@ -303,48 +314,48 @@ namespace Rocket.Core
                 registerProvider<RocketBuiltinCommandProvider>();
                 registerProvider<RocketBuiltinPermissionsProvider>();
                 
-                NativeRocketPluginProvider nativePlugins = registerProvider<NativeRocketPluginProvider>();
-                nativePlugins.AddCommands(new List<IRocketCommand>
-                {
-                    //todo
-                });
+                //NativeRocketPluginProvider nativePlugins = registerProvider<NativeRocketPluginProvider>();
+                //nativePlugins.AddCommands(new List<IRocketCommand>
+                //{
+                //    //todo
+                //});
 
-                nativePlugins.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
+                //nativePlugins.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
 
-                Settings = new XMLFileAsset<RocketSettings>(API.Environment.SettingsFile);
-                TranslationList defaultTranslations = new TranslationList();
-                //defaultTranslations.AddRange(new RocketTranslations());
+                //Settings = new XMLFileAsset<RocketSettings>(API.Environment.SettingsFile);
+                //TranslationList defaultTranslations = new TranslationList();
+                ////defaultTranslations.AddRange(new RocketTranslations());
 
-                RunOnProvider<IRocketTranslationDataProvider>(provider =>
-                {
-                    provider.RegisterDefaultTranslations(defaultTranslations);
-                });
+                //RunOnProvider<IRocketTranslationDataProvider>(provider =>
+                //{
+                //    provider.RegisterDefaultTranslations(defaultTranslations);
+                //});
 
            
-                //nativeRocketPluginManager.CommandProvider.Persist();
+                ////nativeRocketPluginManager.CommandProvider.Persist();
 
-                try
-                {
-                    if (Settings.Instance.RPC.Enabled)
-                        new RocketServiceHost(Settings.Instance.RPC.Port);
-                    if (Settings.Instance.RCON.Enabled)
-                        gameObject.TryAddComponent<RCONServer>();
+                //try
+                //{
+                //    if (Settings.Instance.RPC.Enabled)
+                //        new RocketServiceHost(Settings.Instance.RPC.Port);
+                //    if (Settings.Instance.RCON.Enabled)
+                //        gameObject.TryAddComponent<RCONServer>();
 
-                }
-                catch (Exception e)
-                {
-                    Logger.Error("Failed to start RPC / RCON", e);
-                }
+                //}
+                //catch (Exception e)
+                //{
+                //    R.Logger.Error("Failed to start RPC / RCON", e);
+                //}
 
-                Implementation.OnInitialized += () =>
-                {
-                    if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
-                    Application.targetFrameRate = Settings.Instance.MaxFrames;
-                };
+                //Implementation.OnInitialized += () =>
+                //{
+                //    if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
+                //    Application.targetFrameRate = Settings.Instance.MaxFrames;
+                //};
             }
             catch (Exception ex)
             {
-                Logger.Fatal(ex);
+                R.Logger.Fatal(ex);
             }
         }
 

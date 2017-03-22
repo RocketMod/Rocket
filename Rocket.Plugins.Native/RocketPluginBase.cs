@@ -110,7 +110,7 @@ namespace Rocket.Plugins.Native
 
         public virtual void LoadPlugin()
         {
-            Logger.Info("\n[loading] " + name);
+            R.Logger.Info("\n[loading] " + name);
             Translations.Load();
 
             try
@@ -119,7 +119,7 @@ namespace Rocket.Plugins.Native
             }
             catch (Exception ex)
             {
-                Logger.Fatal("Failed to load " + Name + ", unloading now...", ex);
+                R.Logger.Fatal("Failed to load " + Name + ", unloading now...", ex);
                 try
                 {
                     UnloadPlugin(PluginState.Failure);
@@ -127,7 +127,7 @@ namespace Rocket.Plugins.Native
                 }
                 catch (Exception ex1)
                 {
-                    Logger.Fatal("Failed to unload " + Name, ex1);
+                    R.Logger.Fatal("Failed to unload " + Name, ex1);
                 }
             }
 
@@ -145,7 +145,7 @@ namespace Rocket.Plugins.Native
                 }
                 catch (Exception ex1)
                 {
-                    Logger.Fatal("Failed to unload " + Name, ex1);
+                    R.Logger.Fatal("Failed to unload " + Name, ex1);
                 }
             }
 
@@ -157,7 +157,7 @@ namespace Rocket.Plugins.Native
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            Logger.Info("\n[Unloading] " + Name);
+            R.Logger.Info("\n[Unloading] " + Name);
             PluginUnloadingEvent unloadingEvent = new PluginUnloadingEvent(this);
             EventManager.Instance.CallEvent(unloadingEvent);
             Unload();

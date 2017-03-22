@@ -2,7 +2,7 @@
 using Rocket.API.Collections;
 using Rocket.API.Commands;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Commands
 {
     public interface IRocketCommandProvider : IRocketProviderBase
     {

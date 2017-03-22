@@ -1,6 +1,6 @@
 ﻿using Rocket.API.Plugins;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Configuration
 {
     public interface IRocketConfigurationDataProvider : IRocketDataProviderBase
     {

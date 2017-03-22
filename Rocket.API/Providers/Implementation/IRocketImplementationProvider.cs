@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Rocket.API.Collections;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Implementation
 {
     public interface IRocketImplementationProvider : IRocketProviderBase
     {

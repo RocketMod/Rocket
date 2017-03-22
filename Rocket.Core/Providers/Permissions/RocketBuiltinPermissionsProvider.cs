@@ -65,7 +65,7 @@ namespace Rocket.Core.Providers.Permissions
             }
             catch (Exception ex)
             {
-                Logger.Fatal(ex);
+                R.Logger.Fatal(ex);
             }
         }
     }

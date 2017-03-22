@@ -66,12 +66,10 @@ namespace Rocket.API.Collections
             string name = manager.GetType().Assembly.GetName().Name;
             string identifier = name+"."+command.GetType().Assembly.GetName().Name+"."+command.Name;
             commands.Add(new RegisteredRocketCommand(manager, command.Name, command));
-            Logger.Info("[registered] /" + command.Name + " (" + identifier + ")");
 
             foreach (string alias in command.Aliases)
             {
                 commands.Add(new RegisteredRocketCommand(manager, alias, command));
-                Logger.Info("[registered alias] /" + alias + " (" +identifier + ")");
             }
         }
 
@@ -98,12 +96,10 @@ namespace Rocket.API.Collections
                 {
                     if (rocketCommand.AllowedCaller == AllowedCaller.Player && player is ConsolePlayer)
                     {
-                        Logger.Warn("This command can't be called from console");
                         return false;
                     }
                     if (rocketCommand.AllowedCaller == AllowedCaller.Console && !(player is ConsolePlayer))
                     {
-                        Logger.Warn("This command can only be called from console");
                         return false;
                     }
                     try
@@ -122,16 +118,16 @@ namespace Rocket.API.Collections
                         }
                         catch (NoPermissionsForCommandException ex)
                         {
-                            Logger.Warn(ex.Message);
+                            R.Logger.Warn(ex.Message);
                         }
                         catch (WrongUsageOfCommandException ex)
                         {
-                            Logger.Info(ex.Message);
+                            R.Logger.Info(ex.Message);
                         }
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]", ex);
+                        R.Logger.Error("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]", ex);
                     }
                     return true;
                 }

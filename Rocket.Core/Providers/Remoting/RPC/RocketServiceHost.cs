@@ -48,13 +48,13 @@ namespace Rocket.Core.Providers.Remoting.RPC
                 }
 
                 //TODO double log
-                Logger.OnLog += (LogMessage message) => { if (message.LogLevel != LogLevel.DEBUG) OnLog.Invoke(message); };
+                R.Logger.OnLog += (LogMessage message) => { if (message.LogLevel != LogLevel.DEBUG) OnLog.Invoke(message); };
                 
-                Logger.Info("Starting IPC at " + endpoint);
+                R.Logger.Info("Starting IPC at " + endpoint);
             }
             catch (Exception e)
             {
-                Logger.Error("Failed to start IPC at " + endpoint, e);
+                R.Logger.Error("Failed to start IPC at " + endpoint, e);
             }
         }
 

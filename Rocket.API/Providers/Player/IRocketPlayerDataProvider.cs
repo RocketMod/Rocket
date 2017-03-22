@@ -1,6 +1,6 @@
 ﻿using Rocket.API.Player;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Player
 {
     public interface IRocketPlayerDataProvider : IRocketProviderBase
     {

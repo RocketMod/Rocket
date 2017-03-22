@@ -51,10 +51,6 @@
     </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\log4net.2.0.8\lib\net35-full\log4net.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Runtime.Serialization">
       <Private>False</Private>
@@ -83,7 +79,7 @@
     <Compile Include="Event\Player\PlayerDisconnectedEvent.cs" />
     <Compile Include="Event\Player\PlayerEvent.cs" />
     <Compile Include="Event\Plugin\PluginEvent.cs" />
-    <Compile Include="Implementation\Managers\IChatManager.cs" />
+    <Compile Include="Providers\Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />
     <Compile Include="Collections\RocketCommandList.cs" />
@@ -95,33 +91,31 @@
     <Compile Include="Extensions\MulticastDelegateExtensions.cs" />
     <Compile Include="Extensions\RocketCommandExtensions.cs" />
     <Compile Include="Collections\CooldownList.cs" />
-    <Compile Include="Implementation\Managers\IPlayerManager.cs" />
-    <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Logging\LogMessage.cs" />
+    <Compile Include="Providers\Implementation\Managers\IPlayerManager.cs" />
     <Compile Include="Event\Plugin\PluginLoadedEvent.cs" />
     <Compile Include="Event\Plugin\PluginLoadingEvent.cs" />
     <Compile Include="Event\Plugin\PluginUnloadedEvent.cs" />
     <Compile Include="Event\Plugin\PluginUnloadingEvent.cs" />
-    <Compile Include="Providers\IRocketConfigurationDataProvider.cs" />
-    <Compile Include="Providers\IRocketPlayerDataProvider.cs" />
-    <Compile Include="Providers\IRocketImplementationProvider.cs" />
-    <Compile Include="Providers\IRocketCommandProvider.cs" />
-    <Compile Include="Providers\IRocketPluginProvider.cs" />
-    <Compile Include="Providers\IRocketRemotingProvider.cs" />
-    <Compile Include="Providers\IRocketTranslationDataProvider.cs" />
+    <Compile Include="Providers\Configuration\IRocketConfigurationDataProvider.cs" />
+    <Compile Include="Providers\Logging\IRocketLoggingProvider.cs" />
+    <Compile Include="Providers\Player\IRocketPlayerDataProvider.cs" />
+    <Compile Include="Providers\Implementation\IRocketImplementationProvider.cs" />
+    <Compile Include="Providers\Commands\IRocketCommandProvider.cs" />
+    <Compile Include="Providers\Plugins\IRocketPluginProvider.cs" />
+    <Compile Include="Providers\Remoting\IRocketRemotingProvider.cs" />
+    <Compile Include="Providers\Translations\IRocketTranslationDataProvider.cs" />
     <Compile Include="Providers\IRocketDataProviderBase.cs" />
     <Compile Include="Providers\IRocketProviderBase.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Providers\RocketProviderBase.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
-    <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
     <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="Exceptions\WrongUsageOfCommandException.cs" />
     <Compile Include="Exceptions\NoPermissionsForCommandException.cs" />
     <Compile Include="Player\RocketPlayerBase.cs" />
-    <Compile Include="Plugins\IRocketPlugin.cs" />
-    <Compile Include="Providers\IRocketPermissionsDataProvider.cs" />
+    <Compile Include="Providers\Plugins\IRocketPlugin.cs" />
+    <Compile Include="Providers\Permissions\IRocketPermissionsDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Serialisation\IRocketPluginConfiguration.cs" />
     <Compile Include="Serialisation\RocketSettings.cs" />
@@ -132,7 +126,6 @@
     <Compile Include="Utils\TaskDispatcher.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
     <None Include="README" />
   </ItemGroup>
   <ItemGroup>

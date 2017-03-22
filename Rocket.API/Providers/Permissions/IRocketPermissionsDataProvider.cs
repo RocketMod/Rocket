@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Rocket.API.Player;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Permissions
     {
         public interface IRocketPermissionsDataProvider : IRocketDataProviderBase
     {
