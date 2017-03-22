@@ -2,6 +2,7 @@
 
 namespace Rocket.API.Providers.Configuration
 {
+    [RocketProvider]
     public interface IRocketConfigurationDataProvider : IRocketDataProviderBase
     {
         TConfiguration GetPluginConfiguration<TConfiguration>(IRocketPlugin plugin) where TConfiguration : class;

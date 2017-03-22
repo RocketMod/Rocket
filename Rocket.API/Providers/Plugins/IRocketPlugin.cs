@@ -1,4 +1,5 @@
-﻿using Rocket.API.Collections;
+﻿using Rocket.API.Assets;
+using Rocket.API.Collections;
 
 namespace Rocket.API.Providers.Plugins
 {

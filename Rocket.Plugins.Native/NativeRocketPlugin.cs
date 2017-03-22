@@ -1,6 +1,4 @@
-﻿using Rocket.API;
-using Rocket.API.Serialisation;
-using Logger = Rocket.API.Logging.Logger;
+﻿using Rocket.API.Serialisation;
 
 namespace Rocket.Plugins.Native
 {

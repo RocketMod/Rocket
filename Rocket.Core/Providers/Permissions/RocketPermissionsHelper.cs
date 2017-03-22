@@ -25,7 +25,7 @@ namespace Rocket.Core.Providers.Permissions
         public List<string> GetParentGroups(string parentGroup, string currentGroup)
         {
             List<string> allgroups = new List<string>();
-            RocketPermissionsGroup group = permissions.Instance.Groups.Where(gr => (String.Compare(gr.Id, parentGroup, true) == 0)).FirstOrDefault();
+            RocketPermissionsGroup group = permissions.Instance.Groups.FirstOrDefault(gr => (String.Compare(gr.Id, parentGroup, true) == 0));
             if (group != null && (String.Compare(currentGroup, group.Id, true) != 0))
             {
                 allgroups.Add(group.Id);
@@ -36,7 +36,7 @@ namespace Rocket.Core.Providers.Permissions
 
         internal RocketPermissionsGroup GetGroup(string groupId)
         {
-            return permissions.Instance.Groups.Where(g => g.Id.ToLower() == groupId.ToLower()).FirstOrDefault();
+            return permissions.Instance.Groups.FirstOrDefault(g => g.Id.ToLower() == groupId.ToLower());
         }
 
         internal bool RemovePlayerFromGroup(string groupId, IRocketPlayer player)
@@ -44,7 +44,7 @@ namespace Rocket.Core.Providers.Permissions
             RocketPermissionsGroup g = GetGroup(groupId);
             if (g == null) return false;
 
-            if (g.Members.Where(m => m == player.Id).FirstOrDefault() == null) return false;
+            if (g.Members.FirstOrDefault(m => m == player.Id) == null) return false;
 
             g.Members.Remove(player.Id);
             SaveGroup(g);
@@ -56,7 +56,7 @@ namespace Rocket.Core.Providers.Permissions
             RocketPermissionsGroup g = GetGroup(groupId);
             if (g == null) return false;
 
-            if (g.Members.Where(m => m == player.Id).FirstOrDefault() == null)
+            if (g.Members.FirstOrDefault(m => m == player.Id) == null)
             {
                 g.Members.Add(player.Id);
                 SaveGroup(g);
@@ -93,7 +93,7 @@ namespace Rocket.Core.Providers.Permissions
         {
             List<RocketPermissionsGroup> groups = permissions.Instance.Groups.Where(g => g.Members.Contains(player.Id)).ToList(); // Get my Groups
 
-            RocketPermissionsGroup defaultGroup = permissions.Instance.Groups.Where(g => (String.Compare(g.Id, permissions.Instance.DefaultGroup, true) == 0)).FirstOrDefault();
+            RocketPermissionsGroup defaultGroup = permissions.Instance.Groups.FirstOrDefault(g => (String.Compare(g.Id, permissions.Instance.DefaultGroup, true) == 0));
             if (defaultGroup != null) groups.Add(defaultGroup);
 
             List<RocketPermissionsGroup> parentGroups = new List<RocketPermissionsGroup>();

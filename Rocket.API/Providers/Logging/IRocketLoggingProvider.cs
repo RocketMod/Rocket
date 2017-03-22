@@ -2,6 +2,7 @@
 
 namespace Rocket.API.Providers.Logging
 {
+    [RocketProvider]
     public interface IRocketLoggingProvider : IRocketProviderBase
     {
         void Debug(object message, Exception exception = null);

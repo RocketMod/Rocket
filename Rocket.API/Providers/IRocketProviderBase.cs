@@ -1,28 +1,24 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 
 namespace Rocket.API.Providers
 {
-    public class RocketProviderProxyAttribute
+    public class RocketProviderProxyAttribute : Attribute
     {
-        internal RocketProviderProxyAttribute(Type provider)
+        public Type Provider { get; private set; }
+        internal RocketProviderProxyAttribute(Type provider = null)
         {
-
+            if (provider == null) {
+                Provider = GetType().GetInterfaces().FirstOrDefault();
+            }
+            else {
+                Provider = provider;
+            }
         }
     }
 
-    public class RocketProviderTypeAttribute
-    {
-
-    }
-
-    public class RocketProviderAttribute
-    {
-        internal RocketProviderAttribute(Type provider)
-        {
-
-        }
-    }
+    public class RocketProviderAttribute : Attribute { }
 
     public interface IRocketProviderBase
     {

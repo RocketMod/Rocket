@@ -4,6 +4,7 @@ using System.ComponentModel;
 using UnityEngine;
 using System.Reflection;
 using Rocket.API.Extensions;
+using Rocket.API.Providers;
 using Rocket.API.Providers.Configuration;
 using Rocket.API.Utils;
 using Rocket.API.Providers.Implementation;
@@ -60,70 +61,34 @@ namespace Rocket.Core
 
         public static void Reload()
         {
-            try {
-                Providers.Reload();
+            try
+            {
+                Providers.Unload();
+                Providers.Load();
             }
             catch (Exception ex)
             {
-                R.Logger.Fatal(ex);
+                Logger.Fatal(ex);
             }
         }
 
         private static GameObject gameObject = new GameObject("Rocket");
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void Bootstrap<T>() where T : IRocketImplementationProvider
+        public static void Bootstrap<T>() where T : RocketProviderBase, IRocketImplementationProvider
         {
-            R.Logger.Info("####################################################################################");
-            R.Logger.Info("Starting RocketMod " + R.Version);
-            R.Logger.Info("####################################################################################");
+            Logger.Info("####################################################################################");
+            Logger.Info("Starting RocketMod " + R.Version);
+            Logger.Info("####################################################################################");
 
-            try
-            {
+            try {
+                Providers.registerProvider<T>();
                 gameObject.TryAddComponent<TaskDispatcher>();
-
-                //NativeRocketPluginProvider nativePlugins = registerProvider<NativeRocketPluginProvider>();
-                //nativePlugins.AddCommands(new List<IRocketCommand>
-                //{
-                //    //todo
-                //});
-
-                //nativePlugins.Load(API.Environment.PluginsDirectory, Settings.Instance.LanguageCode, API.Environment.LibrariesDirectory);
-
-                //Settings = new XMLFileAsset<RocketSettings>(API.Environment.SettingsFile);
-                //TranslationList defaultTranslations = new TranslationList();
-                ////defaultTranslations.AddRange(new RocketTranslations());
-
-                //RunOnProvider<IRocketTranslationDataProvider>(provider =>
-                //{
-                //    provider.RegisterDefaultTranslations(defaultTranslations);
-                //});
-
-           
-                ////nativeRocketPluginManager.CommandProvider.Persist();
-
-                //try
-                //{
-                //    if (Settings.Instance.RPC.Enabled)
-                //        new RocketServiceHost(Settings.Instance.RPC.Port);
-                //    if (Settings.Instance.RCON.Enabled)
-                //        gameObject.TryAddComponent<RCONServer>();
-
-                //}
-                //catch (Exception e)
-                //{
-                //    R.Logger.Error("Failed to start RPC / RCON", e);
-                //}
-
-                //Implementation.OnInitialized += () =>
-                //{
-                //    if (Settings.Instance.MaxFrames < 10 && Settings.Instance.MaxFrames != -1) Settings.Instance.MaxFrames = 10;
-                //    Application.targetFrameRate = Settings.Instance.MaxFrames;
-                //};
+                Providers.Load();
             }
             catch (Exception ex)
             {
-                R.Logger.Fatal(ex);
+                Logger.Fatal(ex);
             }
         }
 

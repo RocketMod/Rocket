@@ -7,15 +7,27 @@ using Rocket.API.Collections;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
 using Rocket.Core.Assets;
+using Rocket.API.Providers.Translations;
 
 namespace Rocket.Core.Providers.Translation
 {
     public class RocketBuiltinTranslationProvider : RocketProviderBase, IRocketTranslationDataProvider
     {
-        Translation = new XMLFileAsset<TranslationList>(String.Format(Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry)
+        public override void Load(bool isReload = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        //  Translation = new XMLFileAsset<TranslationList>(String.Format(Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry)
 
 
-        public override void Load()
+
+        public void RegisterDefaultTranslations(IRocketPlugin plugin, TranslationList defaultTranslations)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RegisterDefaultTranslations(TranslationList defaultTranslations)
         {
             throw new NotImplementedException();
         }

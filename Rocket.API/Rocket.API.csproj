@@ -62,6 +62,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Asset.cs" />
+    <Compile Include="Assets\IAsset.cs" />
+    <Compile Include="Assets\XMLFileAsset.cs" />
     <Compile Include="Event\Implementation\ImplementationInitializedEvent.cs" />
     <Compile Include="Event\Implementation\ImplementationReloadEvent.cs" />
     <Compile Include="Event\Implementation\ImplementationShutdownEvent.cs" />

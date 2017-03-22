@@ -79,10 +79,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Asset.cs" />
-    <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Assets\WebXMLFileAsset.cs" />
-    <Compile Include="Assets\XMLFileAsset.cs" />
     <Compile Include="Commands\CommandExit.cs" />
     <Compile Include="Commands\CommandExtensions.cs" />
     <Compile Include="Commands\CommandHelp.cs" />
@@ -95,6 +92,7 @@
     <Compile Include="Providers\Logging\Logger.cs" />
     <Compile Include="Providers\Logging\LogMessage.cs" />
     <Compile Include="Providers\Logging\RocketPermissionsProviderProxy.cs" />
+    <Compile Include="Providers\Permissions\RocketPermissionDataProviderProxy.cs" />
     <Compile Include="Providers\Permissions\RocketPermissionsDataProviderProxy.cs" />
     <Compile Include="Providers\Translation\RocketBuiltinTranslationProvider.cs" />
     <Compile Include="Providers\Plugin\RocketPluginProviderProxy.cs" />
