@@ -1,8 +1,6 @@
-﻿using Rocket.API.Assets;
-using Rocket.API.Collections;
-using Rocket.API.Serialisation;
+﻿using Rocket.API.Collections;
 
-namespace Rocket.API.Plugins
+namespace Rocket.API.Providers.Plugins
 {
     public enum PluginState { Loaded, Unloaded, Failure, Cancelled };
 

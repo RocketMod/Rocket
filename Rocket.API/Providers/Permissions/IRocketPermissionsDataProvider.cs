@@ -1,5 +1,4 @@
 ﻿using Rocket.API.Commands;
-using Rocket.API.Plugins;
 using Rocket.API.Serialisation;
 using System;
 using System.Collections.Generic;

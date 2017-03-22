@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Rocket.API.Player;
+﻿using Rocket.API.Player;
 using UnityEngine;
 
-namespace Rocket.API.Implementation.Managers
+namespace Rocket.API.Providers.Implementation.Managers
 {
     public interface IChatManager
     {

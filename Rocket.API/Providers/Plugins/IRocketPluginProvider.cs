@@ -1,11 +1,8 @@
-﻿using Rocket.API.Commands;
+﻿using System;
 using System.Collections.Generic;
-using Rocket.API.Assets;
 using Rocket.API.Collections;
-using Rocket.API.Plugins;
-using System;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Plugins
 {
     public interface IRocketPluginProvider : IRocketProviderBase
     {

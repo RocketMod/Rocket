@@ -1,6 +1,4 @@
-﻿using Rocket.API.Assets;
-
-namespace Rocket.Core.Assets
+﻿namespace Rocket.Core.Assets
 {
     public class Asset<T> : IAsset<T> where T : class
     {

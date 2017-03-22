@@ -1,7 +1,7 @@
-﻿using Rocket.API.Implementation.Managers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Rocket.API.Collections;
+using Rocket.API.Providers.Implementation.Managers;
 
 namespace Rocket.API.Providers.Implementation
 {

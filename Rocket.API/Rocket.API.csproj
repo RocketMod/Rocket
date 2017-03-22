@@ -82,7 +82,6 @@
     <Compile Include="Providers\Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />
-    <Compile Include="Collections\RocketCommandList.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\AssemblyListExtensions.cs" />

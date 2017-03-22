@@ -1,4 +1,4 @@
-﻿using Rocket.API.Plugins;
+﻿using Rocket.API.Providers.Plugins;
 
 namespace Rocket.API.Providers.Configuration
 {

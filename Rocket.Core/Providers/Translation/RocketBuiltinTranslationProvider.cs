@@ -3,9 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Rocket.API.Plugins;
-using Rocket.API.Assets;
 using Rocket.API.Collections;
+using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
 using Rocket.Core.Assets;
 

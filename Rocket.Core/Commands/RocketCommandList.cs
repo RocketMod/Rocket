@@ -8,10 +8,10 @@ using Rocket.API.Commands;
 using Rocket.API.Event;
 using Rocket.API.Event.Command;
 using Rocket.API.Exceptions;
-using Rocket.API.Logging;
+
 using Rocket.API.Player;
-using Rocket.API.Plugins;
 using Rocket.API.Providers;
+using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
 
 namespace Rocket.API.Collections
@@ -66,12 +66,10 @@ namespace Rocket.API.Collections
             string name = manager.GetType().Assembly.GetName().Name;
             string identifier = name+"."+command.GetType().Assembly.GetName().Name+"."+command.Name;
             commands.Add(new RegisteredRocketCommand(manager, command.Name, command));
-            R.Logger.Info("[registered] /" + command.Name + " (" + identifier + ")");
 
             foreach (string alias in command.Aliases)
             {
                 commands.Add(new RegisteredRocketCommand(manager, alias, command));
-                R.Logger.Info("[registered alias] /" + alias + " (" +identifier + ")");
             }
         }
 
@@ -98,12 +96,10 @@ namespace Rocket.API.Collections
                 {
                     if (rocketCommand.AllowedCaller == AllowedCaller.Player && player is ConsolePlayer)
                     {
-                        R.Logger.Warn("This command can't be called from console");
                         return false;
                     }
                     if (rocketCommand.AllowedCaller == AllowedCaller.Console && !(player is ConsolePlayer))
                     {
-                        R.Logger.Warn("This command can only be called from console");
                         return false;
                     }
                     try

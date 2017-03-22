@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Windows.Forms;
 using System.ServiceModel;
-using Rocket.Launcher.IPC;
 using System.Threading;
 using Rocket.API.Logging;
 using Rocket.API;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rocket.API.Player;
+using Rocket.Launcher.Service_References.IPC;
 
 namespace Rocket.Launcher
 {

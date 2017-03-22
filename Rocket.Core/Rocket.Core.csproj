@@ -59,11 +59,6 @@
       <HintPath>lib\System.IdentityModel.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.IdentityModel.Selectors, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\System.IdentityModel.Selectors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\System.Runtime.Serialization.dll</HintPath>
@@ -124,10 +119,6 @@
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
       <Project>{C362DF2F-1336-4932-AADC-4F2074FEDB64}</Project>
       <Name>Rocket.API</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rocket.Plugins.Native\Rocket.Plugins.Native.csproj">
-      <Project>{6d02a4ec-cfdd-4f20-a76f-bf9add9586f0}</Project>
-      <Name>Rocket.Plugins.Native</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

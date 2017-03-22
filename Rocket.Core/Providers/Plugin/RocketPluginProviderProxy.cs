@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core
+﻿namespace Rocket.Core.Providers.Plugin
 {
     public class RocketPluginProviderProxy
     {

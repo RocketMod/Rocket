@@ -1,7 +1,6 @@
-﻿using Rocket.API.Providers;
-using System;
+﻿using System;
 
-namespace Rocket.Core.Providers.Logging
+namespace Rocket.API.Providers.Logging
 {
     public interface IRocketLoggingProvider : IRocketProviderBase
     {

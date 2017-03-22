@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +11,6 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Configuration;
 using System.IO;
-using Rocket.API.Assets;
 using Rocket.API.Serialisation;
 using Rocket.Core;
 using Rocket.Core.Assets;

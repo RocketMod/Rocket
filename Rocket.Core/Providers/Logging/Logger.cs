@@ -3,6 +3,7 @@ using log4net;
 using log4net.Config;
 using System.Diagnostics;
 using System.IO;
+using Rocket.API.Providers.Logging;
 
 namespace Rocket.Core.Providers.Logging
 {

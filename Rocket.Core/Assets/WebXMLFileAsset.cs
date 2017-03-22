@@ -1,5 +1,4 @@
-﻿using Rocket.API.Assets;
-using Rocket.Core.Utils.Web;
+﻿using Rocket.Core.Utils.Web;
 using System;
 using System.IO;
 using System.Xml.Serialization;

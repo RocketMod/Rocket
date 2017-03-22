@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Collections;
-using Rocket.API.Plugins;
+using Rocket.API.Providers.Plugins;
 
 namespace Rocket.API.Providers.Translations
 {
