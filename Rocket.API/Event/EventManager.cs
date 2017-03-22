@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Rocket.API.Collections;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
 
@@ -15,7 +16,7 @@ namespace Rocket.API.Event
         private readonly Dictionary<IListener, List<MethodInfo>> _listenerMethods = new Dictionary<IListener, List<MethodInfo>>();
         private readonly Dictionary<IRocketPlugin, List<IListener>> _listeners = new Dictionary<IRocketPlugin, List<IListener>>();
         public static EventManager Instance => _instance ?? (_instance = new EventManager());
-
+        private readonly DummyPlugin dummyPlugin = new DummyPlugin();
         /// <summary>
         /// Register a listener for events
         /// </summary>
@@ -29,6 +30,9 @@ namespace Rocket.API.Event
 
         internal void RegisterEventsInternal(IListener listener, IRocketPlugin plugin)
         {
+            if (plugin == null) //Event listened by Rocket
+                plugin = dummyPlugin;
+
             if (!_listeners.ContainsKey(plugin))
             {
                 _listeners.Add(plugin, new List<IListener>());
@@ -116,7 +120,7 @@ namespace Rocket.API.Event
 
             foreach (MethodInfo info in from info in methods let handler = info.GetCustomAttributes(false).OfType<EventHandler>().FirstOrDefault() where handler != null where !(@event is ICancellableEvent) || !((ICancellableEvent)@event).IsCancelled || handler.IgnoreCancelled select info)
             {
-                object instance = null;
+                IListener instance = null;
                 try
                 {
                     foreach (var c in _listenerMethods.Keys.Where(c => _listenerMethods.ContainsKey(c) && _listenerMethods[c].Contains(info)))
@@ -130,6 +134,11 @@ namespace Rocket.API.Event
                     return;
                 }
 
+                var pl = _listeners.FirstOrDefault(c => c.Value.Contains(instance));
+                if (pl.Key == null || !pl.Key.Enabled)
+                {
+                    continue;
+                }
 
                 Action action = delegate
                 {
@@ -165,6 +174,39 @@ namespace Rocket.API.Event
         internal void Shutdown()
         {
             _instance = null;
+        }
+
+        private class DummyPlugin : IRocketPlugin
+        {
+            public string Name { get{throw new NotImplementedException(); } }
+            public PluginState State { get { throw new NotImplementedException(); } }
+            public TranslationList DefaultTranslations { get { throw new NotImplementedException(); } }
+            public string WorkingDirectory { get{ throw new NotImplementedException(); } }
+            public void LoadPlugin()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void UnloadPlugin(PluginState state = PluginState.Unloaded)
+            {
+                throw new NotImplementedException();
+            }
+
+            public void ReloadPlugin()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void DestroyPlugin()
+            {
+                throw new NotImplementedException();
+            }
+
+            public bool Enabled
+            {
+                get { return true; }
+                set { } 
+            }
         }
     }
 
