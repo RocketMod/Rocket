@@ -5,6 +5,7 @@ using Rocket.API;
 using Rocket.API.Player;
 using Rocket.API.Serialisation;
 using Rocket.Core.Assets;
+using Rocket.API.Assets;
 
 namespace Rocket.Core.Providers.Permissions
 {

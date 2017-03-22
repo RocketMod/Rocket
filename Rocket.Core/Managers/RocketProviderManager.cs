@@ -12,32 +12,32 @@ namespace Rocket.Core.Managers
     public class RocketProviderManager
     {
         private readonly List<Type> providerTypes = new List<Type>();
-        private Dictionary<Type, RocketProviderBase> providerProxies = new Dictionary<Type, RocketProviderBase>();
+        private Dictionary<Type, IRocketProviderBase> providerProxies = new Dictionary<Type, IRocketProviderBase>();
 
         private readonly List<ProviderRegistration> providers = new List<ProviderRegistration>();
 
         internal RocketProviderManager() {
 
             foreach (Type type in typeof(Rocket.API.Environment).Assembly.GetTypes()) {
-                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsInterface && type.IsAssignableFrom(typeof(RocketProviderBase))) {
+                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsInterface && type.IsAssignableFrom(typeof(IRocketProviderBase))) {
                     providerTypes.Add(type);
                 }
             }
 
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
             {
-                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsAssignableFrom(typeof(RocketProviderBase))) {
+                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsAssignableFrom(typeof(IRocketProviderBase))) {
                     registerProvider(type);
                 }
                 RocketProviderProxyAttribute proxyAttribute =  type.GetCustomAttributes(typeof(RocketProviderProxyAttribute), true).Cast<RocketProviderProxyAttribute>().FirstOrDefault();
-                if (proxyAttribute != null && type.IsAssignableFrom(typeof(RocketProviderBase)))
+                if (proxyAttribute != null && type.IsAssignableFrom(typeof(IRocketProviderBase)))
                 {
-                    providerProxies.Add(proxyAttribute.Provider, (RocketProviderBase)Activator.CreateInstance(type));
+                    providerProxies.Add(proxyAttribute.Provider, (IRocketProviderBase)Activator.CreateInstance(type));
                 }
             }
         }
 
-        internal T registerProvider<T>() where T : RocketProviderBase
+        internal T registerProvider<T>() where T : IRocketProviderBase
         {
             return (T)registerProvider(typeof(T));
         }
@@ -54,7 +54,7 @@ namespace Rocket.Core.Managers
                 providers.Where(p => p.ProviderType == providerType).All(p => { p.Enabled = false; p.Implementation.Unload(); return true; });
             }
 
-            ProviderRegistration result = new ProviderRegistration((RocketProviderBase)Activator.CreateInstance(provider),providerType);
+            ProviderRegistration result = new ProviderRegistration((IRocketProviderBase)Activator.CreateInstance(provider),providerType);
             providers.Add(result);
             return result.Implementation;
         }

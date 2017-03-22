@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Rocket.API.Collections;
 using Rocket.API.Commands;
 
@@ -8,10 +9,8 @@ namespace Rocket.API.Providers.Plugins
     [RocketProvider]
     public interface IRocketPluginProvider : IRocketProviderBase
     {
-        List<IRocketPlugin> GetPlugins();
+        ReadOnlyCollection<IRocketPlugin> GetPlugins();
         IRocketPlugin GetPlugin(string name);
-        List<Type> GetProviders();
-        List<IRocketCommand> CommandProvider { get; }
-        string GetPluginDirectory(string name);
+        ReadOnlyCollection<Type> Providers { get; }
     }
 }

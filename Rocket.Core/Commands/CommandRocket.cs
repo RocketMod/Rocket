@@ -61,7 +61,7 @@ namespace Rocket.Core.Commands
                 switch (command[0].ToLower()) {
                     case "plugins":
                         if (caller != null && !caller.HasPermission("rocket.plugins")) return;
-                        ReadOnlyCollection<IRocketPlugin> plugins = R.GetAllPlugins();
+                        ReadOnlyCollection<IRocketPlugin> plugins = R.Plugins.GetPlugins();
                         R.Implementation.Chat.Say(caller, R.Translate("command_rocket_plugins_loaded", String.Join(", ", plugins.Where(p => p.State == PluginState.Loaded).Select(p => p.GetType().Assembly.GetName().Name).ToArray())));
                         R.Implementation.Chat.Say(caller, R.Translate("command_rocket_plugins_unloaded", String.Join(", ", plugins.Where(p => p.State == PluginState.Unloaded).Select(p => p.GetType().Assembly.GetName().Name).ToArray())));
                         R.Implementation.Chat.Say(caller, R.Translate("command_rocket_plugins_failure", String.Join(", ", plugins.Where(p => p.State == PluginState.Failure).Select(p => p.GetType().Assembly.GetName().Name).ToArray())));

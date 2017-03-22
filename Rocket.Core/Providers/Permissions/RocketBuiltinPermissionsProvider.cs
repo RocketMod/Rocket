@@ -5,21 +5,22 @@ using Rocket.API.Serialisation;
 using Rocket.Core.Assets;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rocket.Core.Providers.Permissions
 {
-    public sealed class RocketBuiltinPermissionsProvider : RocketProviderBase,IRocketPermissionsDataProvider
+    public sealed class RocketBuiltinPermissionsProvider : IRocketPermissionsDataProvider
     {
         private RocketPermissionsHelper helper;
         
-        public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player)
+        public ReadOnlyCollection<RocketPermissionsGroup> GetGroups(IRocketPlayer player)
         {
-            return helper.GetGroups(player);
+            return helper.GetGroups(player).AsReadOnly();
         }
 
-        public List<string> GetPermissions(IRocketPlayer player)
+        public ReadOnlyCollection<string> GetPermissions(IRocketPlayer player)
         {
-            return helper.GetPermissions(player);
+            return helper.GetPermissions(player).AsReadOnly();
         }
 
         public RocketPermissionsGroup GetGroup(string groupId)
@@ -52,16 +53,16 @@ namespace Rocket.Core.Providers.Permissions
             helper.permissions.Save();
         }
 
-        public override void Unload()
+        public void Unload()
         {
             helper.permissions.Unload();
         }
 
-        public void Load()
+        public void Load(bool reloading)
         {
             try
             {
-                helper = new RocketPermissionsHelper(new XMLFileAsset<RocketPermissions>(API.Environment.PermissionFile));
+               // helper = new RocketPermissionsHelper(new XMLFileAsset<RocketPermissions>(API.Environment.PermissionFile));
             }
             catch (Exception ex)
             {

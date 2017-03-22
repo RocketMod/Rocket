@@ -21,7 +21,7 @@ namespace Rocket.Core
     {
         public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        public static TranslationList DefaultTranslation => new TranslationList
+        private static TranslationList defaultTranslation => new TranslationList
         {
             { "rocket_join_public","{0} connected to the server" },
             { "rocket_leave_public","{0} disconnected from the server"},
@@ -75,14 +75,22 @@ namespace Rocket.Core
         private static GameObject gameObject = new GameObject("Rocket");
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void Bootstrap<T>() where T : RocketProviderBase, IRocketImplementationProvider
+        public static void Bootstrap<T>() where T : IRocketImplementationProvider, IRocketProviderBase
         {
             Logger.Info("####################################################################################");
             Logger.Info("Starting RocketMod " + R.Version);
             Logger.Info("####################################################################################");
 
             try {
-                Providers.registerProvider<T>();
+                IRocketImplementationProvider implementation = Providers.registerProvider<T>();
+
+                //Todo: Get all providers
+
+                //Todo: Enable / Disable the right providers
+
+                Providers.GetProvider<IRocketTranslationDataProvider>().RegisterDefaultTranslations(defaultTranslation);
+                Providers.GetProvider<IRocketTranslationDataProvider>().RegisterDefaultTranslations(implementation.DefaultTranslation);
+              
                 gameObject.TryAddComponent<TaskDispatcher>();
                 Providers.Load();
             }
@@ -90,6 +98,10 @@ namespace Rocket.Core
             {
                 Logger.Fatal(ex);
             }
+        }
+
+        public static string Translate(string key, string language = "en-US", params object[] paramObjects) {
+            return String.Format(Translations.Translate(key,language),paramObjects);
         }
 
     }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Description;
-using Rocket.API;
-using Rocket.API.Logging;
 using Rocket.API.Player;
-using Logger = Rocket.API.Logging.Logger;
+using Rocket.Core.Providers.Logging;
+
 namespace Rocket.Core.Providers.Remoting.RPC
 {
     public class RocketServiceHost
@@ -40,15 +39,15 @@ namespace Rocket.Core.Providers.Remoting.RPC
 #endif
                 serviceHost.Open();
 
-                if (R.Implementation != null)
-                {
-                    R.Implementation.OnPlayerConnected += (IRocketPlayer player) => { OnPlayerConnected.Invoke((RocketPlayerBase)player); };
-                    R.Implementation.OnPlayerDisconnected += (IRocketPlayer player) => { OnPlayerDisconnected.Invoke((RocketPlayerBase)player); };
-                    R.Implementation.OnShutdown += () => { OnShutdown.Invoke(); };
-                }
+                //if (R.Implementation != null)
+                //{
+                //    R.Implementation.OnPlayerConnected += (IRocketPlayer player) => { OnPlayerConnected.Invoke((RocketPlayerBase)player); };
+                //    R.Implementation.OnPlayerDisconnected += (IRocketPlayer player) => { OnPlayerDisconnected.Invoke((RocketPlayerBase)player); };
+                //    R.Implementation.OnShutdown += () => { OnShutdown.Invoke(); };
+                //}
 
-                //TODO double log
-                R.Logger.OnLog += (LogMessage message) => { if (message.LogLevel != LogLevel.DEBUG) OnLog.Invoke(message); };
+                ////TODO double log
+                //R.Logger.OnLog += (LogMessage message) => { if (message.LogLevel != LogLevel.DEBUG) OnLog.Invoke(message); };
                 
                 R.Logger.Info("Starting IPC at " + endpoint);
             }

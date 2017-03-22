@@ -87,7 +87,6 @@
     <Compile Include="Commands\CommandRocket.cs" />
     <Compile Include="Commands\RocketBuiltinCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandList.cs" />
-    <Compile Include="Extensions\IRocketPlayerExtension.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />
     <Compile Include="Providers\Logging\Logger.cs" />
     <Compile Include="Providers\Logging\LogMessage.cs" />

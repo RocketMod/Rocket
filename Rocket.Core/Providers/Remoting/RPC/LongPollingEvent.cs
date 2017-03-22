@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
-using Logger = Rocket.API.Logging.Logger;
 
 namespace Rocket.Core.Providers.Remoting.RPC
 {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Rocket.API.Commands;
 
 namespace Rocket.API.Providers.Commands
@@ -6,7 +7,6 @@ namespace Rocket.API.Providers.Commands
     [RocketProvider]
     public interface IRocketCommandProvider : IRocketProviderBase
     {
-        List<IRocketCommand> Commands { get; }
-        void AddCommands(IEnumerable<IRocketCommand> commands);
+        ReadOnlyCollection<IRocketCommand> Commands { get; }
     }
 }

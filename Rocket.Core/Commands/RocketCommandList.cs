@@ -13,6 +13,7 @@ using Rocket.API.Player;
 using Rocket.API.Providers;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
+using Rocket.Core;
 
 namespace Rocket.API.Collections
 {

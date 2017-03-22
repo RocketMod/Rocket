@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using Rocket.API.Player;
+using Rocket.API.Providers.Plugins;
 
 namespace Rocket.Core.Commands
 {
@@ -47,7 +48,7 @@ namespace Rocket.Core.Commands
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            ReadOnlyCollection<IRocketCommand> commands = R.GetAllCommands();
+            ReadOnlyCollection<IRocketCommand> commands = R.co();
             if (command.Length == 0)
             {
                 foreach (IRocketPluginProvider pluginManager in R.PluginProviders)
