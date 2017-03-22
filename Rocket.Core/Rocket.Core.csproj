@@ -50,18 +50,13 @@
     <ApplicationManifest>Rocket.Core.nuspec</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
-      <HintPath>..\packages\Castle.Core.4.0.0\lib\net35\Castle.Core.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net35-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.IdentityModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\System.IdentityModel.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.IdentityModel.Selectors, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>lib\System.IdentityModel.Selectors.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Runtime.Serialization, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -84,20 +79,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Asset.cs" />
     <Compile Include="Assets\WebXMLFileAsset.cs" />
-    <Compile Include="Assets\XMLFileAsset.cs" />
     <Compile Include="Commands\CommandExit.cs" />
     <Compile Include="Commands\CommandExtensions.cs" />
     <Compile Include="Commands\CommandHelp.cs" />
     <Compile Include="Commands\CommandP.cs" />
     <Compile Include="Commands\CommandRocket.cs" />
     <Compile Include="Commands\RocketBuiltinCommandProvider.cs" />
+    <Compile Include="Commands\RocketCommandList.cs" />
     <Compile Include="Extensions\IRocketPlayerExtension.cs" />
-    <Compile Include="Providers\Logging\IRocketLoggingProvider.cs" />
+    <Compile Include="Managers\RocketProviderManager.cs" />
+    <Compile Include="Providers\Logging\Logger.cs" />
+    <Compile Include="Providers\Logging\LogMessage.cs" />
+    <Compile Include="Providers\Logging\RocketPermissionsProviderProxy.cs" />
+    <Compile Include="Providers\Permissions\RocketPermissionDataProviderProxy.cs" />
+    <Compile Include="Providers\Permissions\RocketPermissionsDataProviderProxy.cs" />
     <Compile Include="Providers\Translation\RocketBuiltinTranslationProvider.cs" />
+    <Compile Include="Providers\Plugin\RocketPluginProviderProxy.cs" />
     <Compile Include="Serialisation\RocketProviderConfiguration.cs" />
-    <Compile Include="Utils\Debugging\Debugger.cs" />
     <Compile Include="Providers\Remoting\RPC\RocketService.cs" />
     <Compile Include="Providers\Remoting\RPC\IRocketService.cs" />
     <Compile Include="Providers\Remoting\RPC\RocketServiceHost.cs" />
@@ -119,10 +118,6 @@
       <Project>{C362DF2F-1336-4932-AADC-4F2074FEDB64}</Project>
       <Name>Rocket.API</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rocket.Plugins.Native\Rocket.Plugins.Native.csproj">
-      <Project>{6d02a4ec-cfdd-4f20-a76f-bf9add9586f0}</Project>
-      <Name>Rocket.Plugins.Native</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Providers\Remoting\RPC\LongPollingEvent.cs" />
@@ -133,7 +128,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Providers\ConfigurationData\" />
+    <Folder Include="Providers\Configuration\" />
+    <Folder Include="Utils\Debugging\" />
     <Folder Include="Utils\Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

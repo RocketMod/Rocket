@@ -18,7 +18,6 @@ namespace Rocket.API.Utils
         {
             if (Instance != null)
             {
-                Logging.Logger.Warn("There can only be one instance of TaskDispatcher");
                 Destroy(this);
                 return;
             }
@@ -99,7 +98,6 @@ namespace Rocket.API.Utils
             }
             catch (Exception ex)
             {
-                Logging.Logger.Error("Error while running action", ex);
             }
             finally
             {

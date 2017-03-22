@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using Rocket.API.Collections;
 using Rocket.API.Commands;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Commands
 {
+    [RocketProvider]
     public interface IRocketCommandProvider : IRocketProviderBase
     {
-        RocketCommandList Commands { get; }
+        List<IRocketCommand> Commands { get; }
         void AddCommands(IEnumerable<IRocketCommand> commands);
     }
 }

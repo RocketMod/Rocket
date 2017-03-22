@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
-using Rocket.API.Collections;
-using Rocket.API.Logging;
-using Rocket.API.Plugins;
+using Rocket.API.Providers.Plugins;
 
 namespace Rocket.API.Event
 {
@@ -102,8 +100,6 @@ namespace Rocket.API.Event
         /// <param name="event">The event to fire</param>
         public void CallEvent(Event @event)
         {
-            Logger.Debug("Firing event: " + @event.Name);
-
             Type t = @event.GetType();
             List<MethodInfo> methods;
 
@@ -130,7 +126,6 @@ namespace Rocket.API.Event
                 }
                 catch (KeyNotFoundException e)
                 {
-                    Logger.Error("This shouldn't happen // could not find instance for event method: " + info.Name);
                     return;
                 }
 

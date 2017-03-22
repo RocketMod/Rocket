@@ -1,11 +1,9 @@
-﻿using Rocket.API;
-using Rocket.API.Assets;
-using System;
+﻿using System;
 using System.IO;
 using System.Xml.Serialization;
 using Rocket.API.Serialisation;
 
-namespace Rocket.Core.Assets
+namespace Rocket.API.Assets
 {
     public class XMLFileAsset<T> : Asset<T> where T : class, IDefaultable
     {

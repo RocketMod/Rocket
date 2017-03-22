@@ -4,6 +4,7 @@ using System.Linq;
 using Rocket.API.Collections;
 using Rocket.API.Commands;
 using Rocket.API.Providers;
+using Rocket.API.Providers.Plugins;
 
 namespace Rocket.Plugins.Native
 {
@@ -11,10 +12,10 @@ namespace Rocket.Plugins.Native
     {
         public NativeRocketCommandProvider(IRocketPluginProvider manager)
         {
-            Commands = new RocketCommandList(manager);
+            Commands = new List<IRocketCommand>();
         }
 
-        public RocketCommandList Commands { get; }
+        public List<IRocketCommand> Commands { get; }
         public void AddCommands(IEnumerable<IRocketCommand> commands)
         {
             Commands.AddRange(commands.AsEnumerable());

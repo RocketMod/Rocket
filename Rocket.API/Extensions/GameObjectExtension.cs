@@ -1,5 +1,4 @@
-﻿using Rocket.API.Plugins;
-using System;
+﻿using System;
 
 namespace Rocket.API.Extensions
 {

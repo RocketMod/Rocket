@@ -135,7 +135,7 @@ namespace Rocket.Core.Utils.Steam
             }
             catch (Exception ex)
             {
-                Logger.Error("Error reading Steam Profile, Field: " + field, ex);
+                R.Logger.Error("Error reading Steam Profile, Field: " + field, ex);
             }
         }
     }

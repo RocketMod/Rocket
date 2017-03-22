@@ -26,7 +26,7 @@ namespace Rocket.Core.Providers.Remoting.RCON
             listener = new TcpListener(IPAddress.Any, R.Settings.Instance.RCON.Port);
             listener.Start();
 
-            // Logger.Log("Waiting for new connection...");
+            // R.Logger.Log("Waiting for new connection...");
 
             waitingThread = new Thread(() =>
             {
@@ -82,13 +82,13 @@ namespace Rocket.Core.Providers.Remoting.RCON
                             {
                                 newclient.Authenticated = true;
                                 //newclient.Send("Success: You have logged in!\r\n");
-                                //Logger.Log("Client has logged in!");
+                                //R.Logger.Log("Client has logged in!");
                                 continue;
                             }
                             else
                             {
                                 newclient.Send("Error: Invalid password!\r\n");
-                                Logger.Error("Client has failed to log in.");
+                                R.Logger.Error("Client has failed to log in.");
                                 break;
                             }
                         }
@@ -105,7 +105,7 @@ namespace Rocket.Core.Providers.Remoting.RCON
                         continue;
                     }
                     if (command != "ia")
-                        Logger.Info("Client has executed command \"" + command + "\"");
+                        R.Logger.Info("Client has executed command \"" + command + "\"");
 
                     lock (commands)
                     {
@@ -118,13 +118,13 @@ namespace Rocket.Core.Providers.Remoting.RCON
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
                 Thread.Sleep(1500);
-                Logger.Info("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
+                R.Logger.Info("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
                 newclient.Close();
 
             }
             catch (Exception ex)
             {
-                Logger.Error(ex);
+                R.Logger.Error(ex);
             }
         }
 

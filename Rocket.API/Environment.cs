@@ -1,4 +1,4 @@
-﻿using Rocket.API.Logging;
+﻿
 using System;
 using System.IO;
 
@@ -8,7 +8,6 @@ namespace Rocket.API
     {
         static Environment()
         {
-            if (!Directory.Exists(LogsDirectory)) Directory.CreateDirectory(LogsDirectory);
             WorkingDirectory = Directory.GetCurrentDirectory();
             if (System.Environment.OSVersion.Platform == PlatformID.Unix || System.Environment.OSVersion.Platform == PlatformID.MacOSX)
             {
@@ -18,13 +17,11 @@ namespace Rocket.API
             {
                 OperationSystem = OperationSystems.Windows;
             }
-            Logger.Initialize("Rocket.log");
         }
 
         public enum OperationSystems { Windows, Unix };
         public static OperationSystems OperationSystem = OperationSystems.Unix;
 
         public static readonly string WorkingDirectory;
-        public static readonly string LogsDirectory = "Logs";
     }
 }

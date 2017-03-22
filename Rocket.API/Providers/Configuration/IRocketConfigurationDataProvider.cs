@@ -1,7 +1,8 @@
-﻿using Rocket.API.Plugins;
+﻿using Rocket.API.Providers.Plugins;
 
-namespace Rocket.API.Providers
+namespace Rocket.API.Providers.Configuration
 {
+    [RocketProvider]
     public interface IRocketConfigurationDataProvider : IRocketDataProviderBase
     {
         TConfiguration GetPluginConfiguration<TConfiguration>(IRocketPlugin plugin) where TConfiguration : class;

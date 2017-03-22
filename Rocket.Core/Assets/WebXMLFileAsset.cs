@@ -1,8 +1,8 @@
-﻿using Rocket.API.Assets;
-using Rocket.Core.Utils.Web;
-using System;
+﻿using System;
 using System.IO;
 using System.Xml.Serialization;
+using Rocket.API.Assets;
+using Rocket.Core.Utils.Web;
 
 namespace Rocket.Core.Assets
 {

@@ -10,7 +10,7 @@
 
 using Rocket.API.Player;
 
-namespace Rocket.Launcher.IPC {
+namespace Rocket.Launcher.Service_References.IPC {
     
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -61,12 +61,12 @@ namespace Rocket.Launcher.IPC {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IRocketServiceChannel : Rocket.Launcher.IPC.IRocketService, System.ServiceModel.IClientChannel {
+    public interface IRocketServiceChannel : IRocketService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class RocketServiceClient : System.ServiceModel.ClientBase<Rocket.Launcher.IPC.IRocketService>, Rocket.Launcher.IPC.IRocketService {
+    public partial class RocketServiceClient : System.ServiceModel.ClientBase<IRocketService>, IRocketService {
         
         public RocketServiceClient() {
         }
