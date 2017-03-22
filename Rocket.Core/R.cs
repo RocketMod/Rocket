@@ -1,169 +1,23 @@
 ﻿using Rocket.API.Collections;
-using Rocket.API.Commands;
-using Rocket.API.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+using System.ComponentModel;
 using UnityEngine;
 using System.Reflection;
-using Rocket.API.Event;
-using Rocket.API.Event.Command;
 using Rocket.API.Extensions;
-using Rocket.API.Player;
-using Rocket.Core.Commands;
-using Rocket.API.Serialisation;
-using Rocket.API.Providers;
-using Rocket.API.Utils;
-using Rocket.Core.Assets;
-using Rocket.Core.Providers.Logging;
-using Rocket.Core.Providers.Permissions;
-using Rocket.Core.Providers.Remoting.RCON;
-using Rocket.Core.Providers.Remoting.RPC;
-using Rocket.Core.Utils.Debugging;
-using Rocket.API.Providers.Implementation;
-using Rocket.API.Providers.Commands;
-using Rocket.API.Providers.Remoting;
-using Rocket.API.Providers.Permissions;
-using Rocket.API.Providers.Translations;
 using Rocket.API.Providers.Configuration;
+using Rocket.API.Utils;
+using Rocket.API.Providers.Implementation;
 using Rocket.API.Providers.Logging;
-using Rocket.API.Providers.Player;
+using Rocket.API.Providers.Permissions;
 using Rocket.API.Providers.Plugins;
-using Rocket.Core.Providers.Plugin;
+using Rocket.API.Providers.Remoting;
+using Rocket.API.Providers.Translations;
+using Rocket.Core.Managers;
 
 namespace Rocket.Core
 {
     public static class R
     {
-        private static readonly List<IProviderRegistration> availableProviderTypes = new List<IProviderRegistration>
-        {
-            new ProviderRegistration<IRocketImplementationProvider>(false),
-            new ProviderRegistration<IRocketLoggingProvider>(true),
-            new ProviderRegistration<IRocketCommandProvider>(true),
-            new ProviderRegistration<IRocketPluginProvider>(true),
-            new ProviderRegistration<IRocketRemotingProvider>(true),
-
-            new ProviderRegistration<IRocketPermissionsDataProvider>(true),
-            new ProviderRegistration<IRocketTranslationDataProvider>(false),
-            new ProviderRegistration<IRocketConfigurationDataProvider>(false),
-            new ProviderRegistration<IRocketPlayerDataProvider>(false)
-        };
-
-        private static readonly List<Type> BuiltinProviders = new List<Type>()
-        {
-            typeof(RocketBuiltinCommandProvider),
-            typeof(RocketBuiltinPermissionsProvider),
-            typeof(Log4NetLoggingProvider)
-        };
-
-        private static readonly List<IProviderRegistration> providers = new List<IProviderRegistration>();
-
-        private static IProviderRegistration getProviderInterface(Type provider)
-        {
-            IProviderRegistration currentProviderType = null;
-            Type[] currentProviderTypes = provider.GetInterfaces();
-            foreach (IProviderRegistration registration in availableProviderTypes)
-            {
-                if (currentProviderTypes.Contains(registration.Type))
-                {
-                    currentProviderType = registration;
-                    break;
-                }
-            }
-            if (currentProviderType == null) throw new ArgumentException("Provider has no known interface");
-            if (!(provider.IsAssignableFrom(typeof(RocketProviderBase)))) throw new ArgumentException("Provider does not implement RocketProviderBase");
-            return currentProviderType;
-        }
-
-
-
-        public static IRocketImplementationProvider Implementation => GetProvider<IRocketImplementationProvider>();
-        public static IRocketTranslationDataProvider Translations => GetProvider<IRocketTranslationDataProvider>();
-        public static RocketLoggingProviderProxy Logger { get; set; } = new RocketLoggingProviderProxy();
-
-        /* TODO */
-        public static RocketPluginProviderProxy PluginProviders { get; set; } = new RocketPluginProviderProxy();
-        public static IRocketPermissionsDataProvider Permissions => GetProvider<IRocketPermissionsDataProvider>();
-      
-
-
-
-
-        private static readonly GameObject gameObject = new GameObject("Rocket");
-
-        private static T registerProvider<T>() where T : RocketProviderBase
-        {
-            return (T)registerProvider(typeof(T));
-        }
-
-        private static IRocketProviderBase registerProvider(Type provider) 
-        {
-            if(!provider.IsInterface) throw new Exception("The given type is not an interface");
-            IProviderRegistration currentProviderType = getProviderInterface(provider);
-
-            if (!currentProviderType.AllowMultipleInstances)
-            {
-                providers.Where(p => p.Type == currentProviderType.Type).All(p => { p.Enabled = false; p.Implementation.Unload(); return true; });
-            }
-
-            Type t = typeof(ProviderRegistration<>).MakeGenericType(currentProviderType.GetType().GetGenericArguments()[0]);
-            IProviderRegistration result = (IProviderRegistration) Activator.CreateInstance(t, currentProviderType, (RocketProviderBase) Activator.CreateInstance(provider));
-            providers.Add(result);
-            return result.Implementation;
-        }
-
-        public static T GetProvider<T>() where T: IRocketProviderBase
-        {
-            return (T) GetProvider(typeof(T));
-        }
-
-        public static bool RunOnProvider<T>(Action<T> action)
-        {
-            var providers = GetProviders<T>();
-            if (providers.Count == 0)
-                return false;
-
-            foreach(var provider in providers)
-                action.Invoke(provider);
-
-            return true;
-        }
-
-        public static IRocketProviderBase GetProvider(Type providerType) 
-        {
-            var providerRegistration = availableProviderTypes.FirstOrDefault(t => t.Type == providerType);
-            if (providerRegistration == null) throw new ArgumentException("The given type is not a known provider interface");
-            if (providerRegistration.AllowMultipleInstances)
-            {
-                //use proxies to handle multiple providers
-                return getProxyForProvider(providerRegistration);
-            }
-
-            return GetProviders(providerType).FirstOrDefault();
-        }
-
-        public static List<T> GetProviders<T>()
-        {
-            return GetProviders(typeof(T)).Cast<T>().ToList();
-        }
-
-        public static List<IRocketProviderBase> GetProviders(Type providerType)
-        {
-            if(!providerType.IsInterface) throw new ArgumentException("The given type is no interface");
-            if (availableProviderTypes.FirstOrDefault(t => t.Type == providerType) == null) throw new ArgumentException("The given type is not a known provider interface");
-            return providers.Where(p => p.Type == providerType && p.Enabled).Select(p => p.Implementation).ToList();
-        }
-
-        private static Dictionary<IProviderRegistration, RocketProviderBase> cachedProxies = new Dictionary<IProviderRegistration, RocketProviderBase>();
-        private static RocketProviderBase getProxyForProvider(IProviderRegistration providerRegistration)
-        {
-            if (cachedProxies.ContainsKey(providerRegistration))
-                return cachedProxies[providerRegistration];
-            
-            throw new NotImplementedException();
-        }
-
         public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
         public static TranslationList DefaultTranslation => new TranslationList
@@ -194,24 +48,20 @@ namespace Rocket.Core
             { "command_cooldown","You have to wait {0} seconds before you can use this command again."}
         };
 
+        public static RocketProviderManager Providers { get; } = new RocketProviderManager();
+
+        public static IRocketImplementationProvider Implementation => Providers.GetProvider<IRocketImplementationProvider>();
+        public static IRocketTranslationDataProvider Translations => Providers.GetProvider<IRocketTranslationDataProvider>();
+        public static IRocketPermissionsDataProvider Permissions => Providers.GetProvider<IRocketPermissionsDataProvider>();
+        public static IRocketLoggingProvider Logger => Providers.GetProvider<IRocketLoggingProvider>();
+        public static IRocketPluginProvider Plugins => Providers.GetProvider<IRocketPluginProvider>();
+        public static IRocketConfigurationDataProvider Configuration => Providers.GetProvider<IRocketConfigurationDataProvider>();
+        public static IRocketRemotingProvider Remoting => Providers.GetProvider<IRocketRemotingProvider>();
+
         public static void Reload()
         {
-            try
-            {
-                foreach (IProviderRegistration provider in providers)
-                {
-                    if (provider.Implementation.GetType().IsAssignableFrom(typeof(IRocketProviderBase)))
-                    {
-                        provider.Implementation.Unload();
-                    }
-                }
-                foreach (IProviderRegistration provider in providers)
-                {
-                    if (provider.Implementation.GetType().IsAssignableFrom(typeof(IRocketProviderBase)))
-                    {
-                        provider.Implementation.Load(true);
-                    }
-                }
+            try {
+                Providers.Reload();
             }
             catch (Exception ex)
             {
@@ -219,102 +69,19 @@ namespace Rocket.Core
             }
         }
 
-        public static bool Execute(IRocketPlayer caller, string commandString)
-        {
-            R.Logger.Debug("EXECUTE:"+commandString);
-            string name = "";
-            string[] parameters = new string[0];
-            try
-            {
-                commandString = commandString.TrimStart('/');
-                string[] commandParts = Regex.Matches(commandString, @"[\""](.+?)[\""]|([^ ]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture).Cast<Match>().Select(m => m.Value.Trim('"').Trim()).ToArray();
+        private static GameObject gameObject = new GameObject("Rocket");
 
-                if (commandParts.Length != 0)
-                {
-                    name = commandParts[0];
-                    parameters = commandParts.Skip(1).ToArray();
-                }
-                if (caller == null) caller = new ConsolePlayer();
-
-                List<IRocketCommand> commands = new List<IRocketCommand>();
-
-                R.Logger.Debug("NAME:"+name);
-
-                foreach (IRocketPluginProvider p in PluginProviders)
-                {
-                    IRocketCommand c = p.CommandProvider.GetCommand(name);
-                    if (c != null) commands.Add(c);
-                }
-
-                //TODO: Figure a way to prioritise commands
-
-                if (commands.Count <= 0)
-                {
-                    R.Logger.Info("Command not found");
-                    return false;
-                }
-
-                IRocketCommand command = commands[0];
-
-                PreCommandExecuteEvent @event = new PreCommandExecuteEvent(caller, command, parameters);
-                EventManager.Instance.CallEvent(@event);
-
-                if (!@event.IsCancelled)
-                {
-                    try
-                    {
-                        command.Execute(caller, parameters);
-                        R.Logger.Debug("EXECUTED");
-                        return true;
-                    }
-                    catch (NoPermissionsForCommandException ex)
-                    {
-                        R.Logger.Warn(ex);
-                    }
-                    catch (WrongUsageOfCommandException)
-                    {
-                        //
-                    }
-                    catch (Exception)
-                    {
-                        throw;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                R.Logger.Error("An error occured while executing " + name + " [" + String.Join(", ", parameters) + "]", ex);
-            }
-            return false;
-        }
-
-        static void Bootstrap<T>() where T : IRocketImplementationProvider
+        [EditorBrowsable(EditorBrowsableState.Never)]
+        public static void Bootstrap<T>() where T : IRocketImplementationProvider
         {
             R.Logger.Info("####################################################################################");
             R.Logger.Info("Starting RocketMod " + R.Version);
             R.Logger.Info("####################################################################################");
 
-            #if DEBUG
-                new Debugger();
-#else
-                initialize<T>();
-#endif
-        }
-
-        private static void initialize<T>() where T : IRocketImplementationProvider
-        {
             try
             {
-
-                IRocketImplementationProvider implementation = (IRocketImplementationProvider)registerProvider(typeof(T));
-                foreach (Type t in implementation.Providers)
-                    registerProvider(t);
-
                 gameObject.TryAddComponent<TaskDispatcher>();
 
-                registerProvider<RocketBuiltinCommandProvider>();
-                registerProvider<RocketBuiltinPermissionsProvider>();
-                
                 //NativeRocketPluginProvider nativePlugins = registerProvider<NativeRocketPluginProvider>();
                 //nativePlugins.AddCommands(new List<IRocketCommand>
                 //{

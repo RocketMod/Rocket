@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Rocket.API.Providers.Logging;
+﻿using Rocket.API.Providers.Logging;
+using System;
 
 namespace Rocket.Core.Providers.Logging
 {
-    public class RocketLoggingProviderProxy
+    public class RocketLoggingProviderProxy : IRocketLoggingProvider
     {
         public delegate void Log(LogMessage message);
         public event Log OnLog;
@@ -47,6 +44,14 @@ namespace Rocket.Core.Providers.Logging
             Invoke((IRocketLoggingProvider provider) => { provider.Debug(message, exception); });
         }
 
+        public void Unload()
+        {
+            Invoke((IRocketLoggingProvider provider) => { provider.Unload(); });
+        }
 
+        public void Load(bool isReload = false)
+        {
+            Invoke((IRocketLoggingProvider provider) => { provider.Load(isReload); });
+        }
     }
 }

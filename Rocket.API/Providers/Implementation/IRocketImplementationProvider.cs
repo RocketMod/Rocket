@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using Rocket.API.Collections;
+﻿using Rocket.API.Collections;
 using Rocket.API.Providers.Implementation.Managers;
+using System;
+using System.Collections.Generic;
 
 namespace Rocket.API.Providers.Implementation
 {
+    [RocketProvider]
     public interface IRocketImplementationProvider : IRocketProviderBase
     {
         string InstanceName { get; }

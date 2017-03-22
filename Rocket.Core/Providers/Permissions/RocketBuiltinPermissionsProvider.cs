@@ -2,6 +2,7 @@
 using Rocket.API.Providers;
 using Rocket.API.Providers.Permissions;
 using Rocket.API.Serialisation;
+using Rocket.Core.Assets;
 using System;
 using System.Collections.Generic;
 
@@ -51,7 +52,7 @@ namespace Rocket.Core.Providers.Permissions
             helper.permissions.Save();
         }
 
-        public void Unload()
+        public override void Unload()
         {
             helper.permissions.Unload();
         }

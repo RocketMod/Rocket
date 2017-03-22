@@ -91,6 +91,7 @@
     <Compile Include="Commands\RocketBuiltinCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandList.cs" />
     <Compile Include="Extensions\IRocketPlayerExtension.cs" />
+    <Compile Include="Managers\RocketProviderManager.cs" />
     <Compile Include="Providers\Logging\Logger.cs" />
     <Compile Include="Providers\Logging\LogMessage.cs" />
     <Compile Include="Providers\Logging\RocketPermissionsProviderProxy.cs" />
@@ -98,7 +99,6 @@
     <Compile Include="Providers\Translation\RocketBuiltinTranslationProvider.cs" />
     <Compile Include="Providers\Plugin\RocketPluginProviderProxy.cs" />
     <Compile Include="Serialisation\RocketProviderConfiguration.cs" />
-    <Compile Include="Utils\Debugging\Debugger.cs" />
     <Compile Include="Providers\Remoting\RPC\RocketService.cs" />
     <Compile Include="Providers\Remoting\RPC\IRocketService.cs" />
     <Compile Include="Providers\Remoting\RPC\RocketServiceHost.cs" />
@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Providers\Configuration\" />
+    <Folder Include="Utils\Debugging\" />
     <Folder Include="Utils\Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
