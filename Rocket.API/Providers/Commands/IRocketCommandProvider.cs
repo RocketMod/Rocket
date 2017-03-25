@@ -7,6 +7,7 @@ namespace Rocket.API.Providers.Commands
     [RocketProvider]
     public interface IRocketCommandProvider : IRocketProviderBase
     {
+
         ReadOnlyCollection<IRocketCommand> Commands { get; }
     }
 }

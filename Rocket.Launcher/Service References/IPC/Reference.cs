@@ -54,10 +54,10 @@ namespace Rocket.Launcher.Service_References.IPC {
         System.Threading.Tasks.Task<bool> OnShutdownAsync();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnLog", ReplyAction="http://tempuri.org/IRocketService/OnLogResponse")]
-        System.Collections.Generic.Queue<Rocket.API.Logging.LogMessage> OnLog();
+        System.Collections.Generic.Queue<Rocket.Core.Providers.Logging.LogMessage> OnLog();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IRocketService/OnLog", ReplyAction="http://tempuri.org/IRocketService/OnLogResponse")]
-        System.Threading.Tasks.Task<System.Collections.Generic.Queue<Rocket.API.Logging.LogMessage>> OnLogAsync();
+        System.Threading.Tasks.Task<System.Collections.Generic.Queue<Rocket.Core.Providers.Logging.LogMessage>> OnLogAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -135,11 +135,11 @@ namespace Rocket.Launcher.Service_References.IPC {
             return base.Channel.OnShutdownAsync();
         }
         
-        public System.Collections.Generic.Queue<Rocket.API.Logging.LogMessage> OnLog() {
+        public System.Collections.Generic.Queue<Rocket.Core.Providers.Logging.LogMessage> OnLog() {
             return base.Channel.OnLog();
         }
         
-        public System.Threading.Tasks.Task<System.Collections.Generic.Queue<Rocket.API.Logging.LogMessage>> OnLogAsync() {
+        public System.Threading.Tasks.Task<System.Collections.Generic.Queue<Rocket.Core.Providers.Logging.LogMessage>> OnLogAsync() {
             return base.Channel.OnLogAsync();
         }
     }

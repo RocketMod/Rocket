@@ -65,7 +65,11 @@ namespace Rocket.Core.Providers
             TypeName = type.FullName;
         }
 
-        public bool Restore() {
+        public override string ToString() {
+            return AssemblyName + "," + Type;
+        }
+
+        public bool Resolve() {
             try
             {
                 Assembly a = Assembly.Load(AssemblyName);

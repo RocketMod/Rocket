@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 using Rocket.API.Player;
+using Rocket.Core.Providers.Logging;
 
 namespace Rocket.Launcher
 {

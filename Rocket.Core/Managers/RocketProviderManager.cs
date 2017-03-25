@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Xml.Serialization;
 using Rocket.API.Assets;
 using Rocket.API.Providers;
+using Rocket.API.Providers.Plugins;
 using Rocket.Core.Providers;
 using UnityEngine;
 
@@ -55,20 +56,19 @@ namespace Rocket.Core.Managers
             return result;
         }
 
-        public T GetProvider<T>() where T : IRocketProviderBase
+        public T GetProviderProxy<T>() where T : IRocketProviderBase
         {
-            return (T)GetProvider(typeof(T));
+            return (T)GetProviderProxy(typeof(T));
         }
 
-        public IRocketProviderBase GetProvider(Type providerType)
+        public IRocketProviderBase GetProviderProxy(Type providerProxy)
         {
-            if (!providerType.IsInterface) throw new ArgumentException("The given type is no interface");
-            if (providerTypes.Contains(providerType)) throw new ArgumentException("The given type is not a known provider interface");
-            if (providerProxies.ContainsKey(providerType.FullName))
+            Type providerType = providerProxy.DeclaringType.GetInterfaces().FirstOrDefault();
+             if (providerType != null && providerProxies.ContainsKey(providerType.FullName))
             {
                 return providerProxies[providerType.FullName];
             }
-            return GetProviders(providerType).FirstOrDefault();
+            return null;
         }
 
         public List<T> GetProviders<T>()
@@ -106,6 +106,22 @@ namespace Rocket.Core.Managers
                 using (StreamReader reader = new StreamReader(providerFileName))
                 {
                     persistantProviderRegistrations = (List<ProviderRegistration>)serializer.Deserialize(reader);
+                }
+            }
+
+            foreach (ProviderRegistration provider in persistantProviderRegistrations) {
+                if (provider.Provider.Resolve()) {
+                    R.Logger.Info("Resolving " + provider.ProviderType + " " + provider.Provider);
+                }
+                else
+                {
+                    R.Logger.Error("Failed to resolve "+ provider.ProviderType+" " + provider.Provider);
+                }
+                if (provider.Enabled && provider.ProviderType == typeof(IRocketPluginProvider).FullName) {
+                    provider.Load();
+                    foreach (Type newProviderType in ((IRocketPluginProvider) provider.Implementation).LoadProviders()) {
+                        registerProvider(newProviderType);
+                    }
                 }
             }
 

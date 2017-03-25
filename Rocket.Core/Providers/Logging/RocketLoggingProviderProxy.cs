@@ -1,8 +1,10 @@
 ﻿using Rocket.API.Providers.Logging;
 using System;
+using Rocket.API.Providers;
 
 namespace Rocket.Core.Providers.Logging
 {
+    [RocketProviderProxy]
     public class RocketLoggingProviderProxy : IRocketLoggingProvider
     {
         public delegate void Log(LogMessage message);
