@@ -105,7 +105,6 @@
     <Compile Include="Providers\Translations\IRocketTranslationDataProvider.cs" />
     <Compile Include="Providers\IRocketDataProviderBase.cs" />
     <Compile Include="Providers\IRocketProviderBase.cs" />
-    <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
     <Compile Include="Player\ConsolePlayer.cs" />

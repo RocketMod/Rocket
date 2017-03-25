@@ -15,9 +15,9 @@ namespace Rocket.Core.Commands
                 return new List<IRocketCommand>
                 {
                     new CommandExit(),
-                    new CommandHelp(),
-                    new CommandP(),
-                    new CommandRocket()
+                    //new CommandHelp(),
+                    //new CommandP(),
+                    //new CommandRocket()
                 }.AsReadOnly();
             }
         }

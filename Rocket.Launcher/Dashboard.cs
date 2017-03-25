@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Rocket.API;
-using Rocket.API.Logging;
 using Rocket.API.Player;
 
 namespace Rocket.Launcher

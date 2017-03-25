@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace Rocket.Core.Providers.Remoting.RCON
 {
-    public class RCONServer : MonoBehaviour
+    public class RocketBuiltinRCONRemotingProvider : MonoBehaviour
     {
         private static List<RCONConnection> clients = new List<RCONConnection>();
         private TcpListener listener;

@@ -10,7 +10,7 @@ namespace Rocket.Core.Providers.Logging
 
         public void Invoke(Action<IRocketLoggingProvider> action)
         {
-            foreach (var provider in R.GetProviders<IRocketLoggingProvider>())
+            foreach (var provider in R.Providers.GetProviders<IRocketLoggingProvider>())
                 action.Invoke(provider);
         }
 
