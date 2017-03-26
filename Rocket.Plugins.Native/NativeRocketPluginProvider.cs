@@ -5,7 +5,6 @@ using System.Linq;
 using System.Reflection;
 using UnityEngine;
 using Rocket.API.Commands;
-using Logger = Rocket.API.Logging.Logger;
 using Rocket.API.Extensions;
 using Rocket.API.Providers;
 using Rocket.API.Collections;
@@ -25,7 +24,7 @@ namespace Rocket.Plugins.Native
 
        
 
-        public RocketCommandList CommandProvider { get; private set; }
+        public List<IRocketCommand> CommandProvider { get; private set; }
 
         public List<IRocketPlugin> GetPlugins()
         {
@@ -191,7 +190,7 @@ namespace Rocket.Plugins.Native
             try
             {
                 Instance = this;
-                CommandProvider = new RocketCommandList(this);
+                CommandProvider = new List<IRocketCommand>();
                 AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
                 {
                     string file;

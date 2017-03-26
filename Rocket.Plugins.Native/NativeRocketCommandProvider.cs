@@ -4,6 +4,7 @@ using System.Linq;
 using Rocket.API.Collections;
 using Rocket.API.Commands;
 using Rocket.API.Providers;
+using Rocket.API.Providers.Commands;
 using Rocket.API.Providers.Plugins;
 
 namespace Rocket.Plugins.Native

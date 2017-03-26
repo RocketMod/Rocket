@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Rocket.API.Collections;
 using Rocket.API.Providers.Plugins;
 
 namespace Rocket.API.Event

@@ -5,6 +5,7 @@ using Rocket.API.Serialisation;
 using Rocket.Core.Assets;
 using System;
 using System.Collections.Generic;
+using Rocket.API.Assets;
 
 namespace Rocket.Core.Providers.Permissions
 {
@@ -57,7 +58,7 @@ namespace Rocket.Core.Providers.Permissions
             helper.permissions.Unload();
         }
 
-        public void Load()
+        public override void Load(bool isReload = false)
         {
             try
             {

@@ -8,8 +8,6 @@ using System.Threading;
 using Rocket.API;
 using Rocket.API.Player;
 using UnityEngine;
-using Logger =  Rocket.API.Logging.Logger;
-
 namespace Rocket.Core.Providers.Remoting.RCON
 {
     public class RCONServer : MonoBehaviour

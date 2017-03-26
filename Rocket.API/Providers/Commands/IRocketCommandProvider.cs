@@ -7,6 +7,5 @@ namespace Rocket.API.Providers.Commands
     public interface IRocketCommandProvider : IRocketProviderBase
     {
         List<IRocketCommand> Commands { get; }
-        void AddCommands(IEnumerable<IRocketCommand> commands);
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rocket.API;
+using Rocket.API.Assets;
 using Rocket.API.Player;
 using Rocket.API.Serialisation;
 using Rocket.Core.Assets;

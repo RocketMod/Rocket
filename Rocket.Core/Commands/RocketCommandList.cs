@@ -8,13 +8,11 @@ using Rocket.API.Commands;
 using Rocket.API.Event;
 using Rocket.API.Event.Command;
 using Rocket.API.Exceptions;
-
 using Rocket.API.Player;
-using Rocket.API.Providers;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
 
-namespace Rocket.API.Collections
+namespace Rocket.Core.Commands
 {
     [Serializable]
     public class RocketCommandList : IEnumerable<RegisteredRocketCommand>, IDefaultable

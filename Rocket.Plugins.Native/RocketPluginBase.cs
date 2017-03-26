@@ -13,7 +13,6 @@ using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
 using UnityEngine;
 using Environment = Rocket.API.Environment;
-using Logger = Rocket.API.Logging.Logger;
 using Object = UnityEngine.Object;
 
 namespace Rocket.Plugins.Native
@@ -184,5 +183,7 @@ namespace Rocket.Plugins.Native
         {
             Destroy(this);
         }
+
+        public bool Enabled { get; set; }
     }
 }

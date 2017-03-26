@@ -90,7 +90,6 @@
     <Compile Include="Extensions\IRocketPlayerExtension.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />
     <Compile Include="Providers\Logging\Logger.cs" />
-    <Compile Include="Providers\Logging\LogMessage.cs" />
     <Compile Include="Providers\Logging\RocketPermissionsProviderProxy.cs" />
     <Compile Include="Providers\Permissions\RocketPermissionDataProviderProxy.cs" />
     <Compile Include="Providers\Permissions\RocketPermissionsDataProviderProxy.cs" />

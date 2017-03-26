@@ -91,6 +91,5 @@ namespace Rocket.Core
                 Logger.Fatal(ex);
             }
         }
-
     }
 }
