@@ -7,6 +7,19 @@ using Rocket.API.Providers.Plugins;
 
 namespace Rocket.API.Commands
 {
+    //public static IRocketPlayer GetRocketPlayerParameter(this string[] array, int index)
+    //{
+    //    if (array.Length > index)
+    //    {
+    //        ulong id = 0;
+    //        if (ulong.TryParse(array[index], out id) && id > 76561197960265728)
+    //        {
+    //            return new RocketPlayerBase(id.ToString());
+    //        }
+    //    }
+    //    return R.Implementation.Players.Players.Where(p => p.DisplayName.Contains(array[index].ToString())).FirstOrDefault();
+    //}
+
     [Serializable]
     public class RegisteredRocketCommand : IRocketCommand
     {

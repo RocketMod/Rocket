@@ -1,62 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Remoting.Proxies;
-using System.Text;
+using System.Xml.Serialization;
+using Rocket.API.Assets;
 using Rocket.API.Providers;
-using Rocket.API.Providers.Implementation;
+using Rocket.Core.Providers;
+using UnityEngine;
 
 namespace Rocket.Core.Managers
 {
     public class RocketProviderManager
     {
+        internal static GameObject providersGameObject = new GameObject("Rocket Providers");
         private readonly List<Type> providerTypes = new List<Type>();
-        private Dictionary<Type, RocketProviderBase> providerProxies = new Dictionary<Type, RocketProviderBase>();
-
+        private Dictionary<string, IRocketProviderBase> providerProxies = new Dictionary<string, IRocketProviderBase>();
         private readonly List<ProviderRegistration> providers = new List<ProviderRegistration>();
 
         internal RocketProviderManager() {
 
             foreach (Type type in typeof(Rocket.API.Environment).Assembly.GetTypes()) {
-                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsInterface && type.IsAssignableFrom(typeof(RocketProviderBase))) {
+                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsInterface && type.IsAssignableFrom(typeof(IRocketProviderBase))) {
                     providerTypes.Add(type);
                 }
             }
 
             foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
             {
-                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsAssignableFrom(typeof(RocketProviderBase))) {
+                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsAssignableFrom(typeof(IRocketProviderBase))) {
                     registerProvider(type);
                 }
                 RocketProviderProxyAttribute proxyAttribute =  type.GetCustomAttributes(typeof(RocketProviderProxyAttribute), true).Cast<RocketProviderProxyAttribute>().FirstOrDefault();
-                if (proxyAttribute != null && type.IsAssignableFrom(typeof(RocketProviderBase)))
+                if (proxyAttribute != null && type.IsAssignableFrom(typeof(IRocketProviderBase)))
                 {
-                    providerProxies.Add(proxyAttribute.Provider, (RocketProviderBase)Activator.CreateInstance(type));
+                    providerProxies.Add(proxyAttribute.Provider.FullName, (IRocketProviderBase)Activator.CreateInstance(type));
                 }
             }
         }
 
-        internal T registerProvider<T>() where T : RocketProviderBase
+        internal ProviderRegistration registerProvider<T>() where T : IRocketProviderBase
         {
-            return (T)registerProvider(typeof(T));
+            return registerProvider(typeof(T));
         }
 
-        internal IRocketProviderBase registerProvider(Type provider)
+        internal ProviderRegistration registerProvider(Type provider)
         {
             Type providerType = provider.DeclaringType.GetInterfaces().FirstOrDefault();
             if (providerType == null) throw new ArgumentException("The given type is no interface");
             if (providerTypes.Contains(providerType)) throw new ArgumentException("The given type is not a known provider interface");
-
-            //Check if there is a proxy for this provider interface, if not - don't allow multiple enabled providers of this kind
-            if (!providerProxies.ContainsKey(providerType))
-            {
-                providers.Where(p => p.ProviderType == providerType).All(p => { p.Enabled = false; p.Implementation.Unload(); return true; });
-            }
-
-            ProviderRegistration result = new ProviderRegistration((RocketProviderBase)Activator.CreateInstance(provider),providerType);
+            
+            ProviderRegistration result = new ProviderRegistration(providerType.FullName,provider);
             providers.Add(result);
-            return result.Implementation;
+            return result;
         }
 
         public T GetProvider<T>() where T : IRocketProviderBase
@@ -68,9 +64,9 @@ namespace Rocket.Core.Managers
         {
             if (!providerType.IsInterface) throw new ArgumentException("The given type is no interface");
             if (providerTypes.Contains(providerType)) throw new ArgumentException("The given type is not a known provider interface");
-            if (providerProxies.ContainsKey(providerType))
+            if (providerProxies.ContainsKey(providerType.FullName))
             {
-                return providerProxies[providerType];
+                return providerProxies[providerType.FullName];
             }
             return GetProviders(providerType).FirstOrDefault();
         }
@@ -84,7 +80,7 @@ namespace Rocket.Core.Managers
         {
             if (!providerType.IsInterface) throw new ArgumentException("The given type is no interface");
             if (providerTypes.Contains(providerType)) throw new ArgumentException("The given type is not a known provider interface");
-            return providers.Where(p => p.ProviderType == providerType && p.Enabled).Select(p => p.Implementation).ToList();
+            return providers.Where(p => p.ProviderType == providerType.FullName && p.Enabled).Select(p => p.Implementation).ToList();
         }
 
         internal void Unload()
@@ -95,12 +91,41 @@ namespace Rocket.Core.Managers
             });
         }
 
+
+
         internal void Load()
         {
-            providers.Where(p => p.Enabled).All(p => {
-                p.Implementation.Load();
-                return true;
-            });
+            //All providers must be loaded at this point;
+            string providerFileName = "Providers.config.xml";
+
+            List <ProviderRegistration> persistantProviderRegistrations = new List<ProviderRegistration>();
+            XmlSerializer serializer = new XmlSerializer(typeof(List<ProviderRegistration>));
+
+            if (File.Exists(providerFileName))
+            {
+                using (StreamReader reader = new StreamReader(providerFileName))
+                {
+                    persistantProviderRegistrations = (List<ProviderRegistration>)serializer.Deserialize(reader);
+                }
+            }
+
+            foreach (ProviderRegistration provider in providers)
+            {
+                if (persistantProviderRegistrations.FirstOrDefault(p => p.Equals(provider) && !p.Enabled) == null) {
+                    if (providerProxies.ContainsKey(provider.ProviderType)) {
+                        provider.Load();
+                    }
+                    else {
+                        if (providers.FirstOrDefault(p => p.Enabled && p.ProviderType == provider.ProviderType) == null) {
+                            provider.Load();
+                        }
+                    }
+                }
+            }
+            using (StreamWriter writer = new StreamWriter(providerFileName))
+            {
+                serializer.Serialize(writer,providers);
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ using Rocket.API.Commands;
 using Rocket.API.Providers;
 using Rocket.API.Providers.Commands;
 using Rocket.API.Providers.Plugins;
+using Rocket.API.Providers.Commands;
 
 namespace Rocket.Plugins.Native
 {
@@ -24,12 +25,12 @@ namespace Rocket.Plugins.Native
 
         public void Load(bool isReload = false)
         {
-            throw new NotImplementedException();
+
         }
 
         public void Unload()
         {
-            throw new NotImplementedException();
+
         }
     }
 }

@@ -2,6 +2,7 @@
 using Rocket.API.Providers.Implementation.Managers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Rocket.API.Providers.Implementation
 {
@@ -12,11 +13,8 @@ namespace Rocket.API.Providers.Implementation
         string Name { get; }
         IChatManager Chat { get; }
         IPlayerManager Players { get; }
-
-        List<Type> Providers { get; }
-
+        ReadOnlyCollection<Type> Providers { get; }
         TranslationList DefaultTranslation { get; }
-
         void Shutdown();
         void Reload();
     }

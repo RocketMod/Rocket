@@ -8,9 +8,11 @@ using System.Threading;
 using Rocket.API;
 using Rocket.API.Player;
 using UnityEngine;
+using Logger =  Rocket.API.Logging.Logger;
+
 namespace Rocket.Core.Providers.Remoting.RCON
 {
-    public class RCONServer : MonoBehaviour
+    public class RocketBuiltinRCONRemotingProvider : MonoBehaviour
     {
         private static List<RCONConnection> clients = new List<RCONConnection>();
         private TcpListener listener;
@@ -21,7 +23,7 @@ namespace Rocket.Core.Providers.Remoting.RCON
 
         public void Awake()
         {
-            listener = new TcpListener(IPAddress.Any, R.Settings.Instance.RCON.Port);
+           // listener = new TcpListener(IPAddress.Any, 27015);
             listener.Start();
 
             // R.Logger.Log("Waiting for new connection...");
@@ -76,19 +78,19 @@ namespace Rocket.Core.Providers.Remoting.RCON
                         else
                         {
 
-                            if (command.Split(' ')[1] == R.Settings.Instance.RCON.Password)
-                            {
-                                newclient.Authenticated = true;
-                                //newclient.Send("Success: You have logged in!\r\n");
-                                //R.Logger.Log("Client has logged in!");
-                                continue;
-                            }
-                            else
-                            {
-                                newclient.Send("Error: Invalid password!\r\n");
-                                R.Logger.Error("Client has failed to log in.");
-                                break;
-                            }
+                            //if (command.Split(' ')[1] == R.Settings.Instance.RCON.Password)
+                            //{
+                            //    newclient.Authenticated = true;
+                            //    //newclient.Send("Success: You have logged in!\r\n");
+                            //    //R.Logger.Log("Client has logged in!");
+                            //    continue;
+                            //}
+                            //else
+                            //{
+                            //    newclient.Send("Error: Invalid password!\r\n");
+                            //    R.Logger.Error("Client has failed to log in.");
+                            //    break;
+                            //}
                         }
                     }
 
@@ -130,8 +132,8 @@ namespace Rocket.Core.Providers.Remoting.RCON
         {
             lock (commands)
             {
-                while (commands.Count != 0)
-                    R.Execute(new ConsolePlayer(), commands.Dequeue());
+              //  while (commands.Count != 0)
+                   // R.Execute(new ConsolePlayer(), commands.Dequeue());
             }
         }
 

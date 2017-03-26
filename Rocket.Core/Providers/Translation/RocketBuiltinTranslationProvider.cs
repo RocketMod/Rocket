@@ -11,9 +11,9 @@ using Rocket.API.Providers.Translations;
 
 namespace Rocket.Core.Providers.Translation
 {
-    public class RocketBuiltinTranslationProvider : RocketProviderBase, IRocketTranslationDataProvider
+    public class RocketBuiltinTranslationProvider : IRocketTranslationDataProvider
     {
-        public override void Load(bool isReload = false)
+        public void Load(bool isReload = false)
         {
             throw new NotImplementedException();
         }
@@ -37,17 +37,17 @@ namespace Rocket.Core.Providers.Translation
             throw new NotImplementedException();
         }
 
-        public void Translate(string key, string language)
+        public string Translate(string key, string language)
         {
             throw new NotImplementedException();
         }
 
-        public void Translate(IRocketPlugin plugin, string key, string language)
+        public string Translate(IRocketPlugin plugin, string key, string language)
         {
             throw new NotImplementedException();
         }
 
-        public override void Unload()
+        public void Unload()
         {
             throw new NotImplementedException();
         }

@@ -8,6 +8,7 @@ using Rocket.API.Commands;
 using Rocket.API.Extensions;
 using Rocket.API.Providers;
 using Rocket.API.Collections;
+using Rocket.API.Providers.Commands;
 using Rocket.API.Providers.Plugins;
 
 namespace Rocket.Plugins.Native
@@ -22,9 +23,8 @@ namespace Rocket.Plugins.Native
         private static List<NativeRocketPlugin> plugins = new List<NativeRocketPlugin>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
 
+        private IRocketCommandProvider 
        
-
-        public List<IRocketCommand> CommandProvider { get; private set; }
 
         public List<IRocketPlugin> GetPlugins()
         {
@@ -42,13 +42,14 @@ namespace Rocket.Plugins.Native
         }
 
         public string PluginsDirectory { get; private set; }
+
+        public List<Type> Providers => throw new NotImplementedException();
+
         string librariesDirectory;
-        string languageCode = "en";
         public void Load(string pluginDirectory, string languageCode, string librariesDirectory)
         {
             PluginsDirectory = pluginDirectory;
             this.librariesDirectory = librariesDirectory;
-            this.languageCode = languageCode;
             loadPlugins();
         }
 
@@ -190,7 +191,7 @@ namespace Rocket.Plugins.Native
             try
             {
                 Instance = this;
-                CommandProvider = new List<IRocketCommand>();
+                CommandProvider = new RocketCommandList(this);
                 AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
                 {
                     string file;
@@ -211,11 +212,6 @@ namespace Rocket.Plugins.Native
         public override void Unload()
         {
             unloadPlugins();
-        }
-
-        public List<Type> GetProviders()
-        {
-            throw new NotImplementedException();
         }
     }
 }

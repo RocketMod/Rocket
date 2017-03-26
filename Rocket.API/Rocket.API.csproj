@@ -86,12 +86,9 @@
     <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />
     <Compile Include="Environment.cs" />
-    <Compile Include="Extensions\AssemblyExtensions.cs" />
-    <Compile Include="Extensions\AssemblyListExtensions.cs" />
     <Compile Include="Extensions\GameObjectExtension.cs" />
     <Compile Include="Extensions\MonoBehaviourExtensions.cs" />
     <Compile Include="Extensions\MulticastDelegateExtensions.cs" />
-    <Compile Include="Extensions\RocketCommandExtensions.cs" />
     <Compile Include="Collections\CooldownList.cs" />
     <Compile Include="Providers\Implementation\Managers\IPlayerManager.cs" />
     <Compile Include="Event\Plugin\PluginLoadedEvent.cs" />
@@ -109,8 +106,6 @@
     <Compile Include="Providers\Translations\IRocketTranslationDataProvider.cs" />
     <Compile Include="Providers\IRocketDataProviderBase.cs" />
     <Compile Include="Providers\IRocketProviderBase.cs" />
-    <Compile Include="Providers\ProviderRegistration.cs" />
-    <Compile Include="Providers\RocketProviderBase.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
     <Compile Include="Player\ConsolePlayer.cs" />

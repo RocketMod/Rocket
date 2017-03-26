@@ -12,7 +12,7 @@ namespace Rocket.Core.Providers.Remoting.RPC
 
         public void Execute(string command)
         {
-            R.Execute(new ConsolePlayer(), command);
+          //  R.Execute(new ConsolePlayer(), command);
         }
 
         public bool Test()

@@ -21,16 +21,16 @@ namespace Rocket.Core.Providers.Remoting.RCON
             if (Interactive)
             {
                 if (nonewline == true)
-                    RCONServer.Send(Client, command);
+                    RocketBuiltinRCONRemotingProvider.Send(Client, command);
                 else
-                    RCONServer.Send(Client, command + (!command.Contains('\n') ? "\r\n" : ""));
+                    RocketBuiltinRCONRemotingProvider.Send(Client, command + (!command.Contains('\n') ? "\r\n" : ""));
                 return;
             }
         }
 
         public string Read()
         {
-            return RCONServer.Read(Client);
+            return RocketBuiltinRCONRemotingProvider.Read(Client);
         }
 
         public void Close()

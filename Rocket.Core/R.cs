@@ -13,7 +13,10 @@ using Rocket.API.Providers.Permissions;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Providers.Remoting;
 using Rocket.API.Providers.Translations;
+using Rocket.Core.Commands;
 using Rocket.Core.Managers;
+using Rocket.Core.Providers.Permissions;
+using Rocket.Core.Providers.Translation;
 
 namespace Rocket.Core
 {
@@ -21,7 +24,7 @@ namespace Rocket.Core
     {
         public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
-        public static TranslationList DefaultTranslation => new TranslationList
+        private static TranslationList defaultTranslation => new TranslationList
         {
             { "rocket_join_public","{0} connected to the server" },
             { "rocket_leave_public","{0} disconnected from the server"},
@@ -72,17 +75,27 @@ namespace Rocket.Core
             }
         }
 
-        private static GameObject gameObject = new GameObject("Rocket");
+        internal static GameObject gameObject = new GameObject("Rocket");
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void Bootstrap<T>() where T : RocketProviderBase, IRocketImplementationProvider
+        public static void Bootstrap<T>() where T : IRocketImplementationProvider, IRocketProviderBase
         {
             Logger.Info("####################################################################################");
             Logger.Info("Starting RocketMod " + R.Version);
             Logger.Info("####################################################################################");
 
-            try {
+            try
+            {
                 Providers.registerProvider<T>();
+                Providers.registerProvider<RocketBuiltinCommandProvider>();
+                Providers.registerProvider<RocketBuiltinTranslationProvider>();
+                Providers.registerProvider<RocketBuiltinPermissionsProvider>();
+
+                Providers.Load();
+
+                Providers.GetProvider<IRocketTranslationDataProvider>().RegisterDefaultTranslations(defaultTranslation);
+                Providers.GetProvider<IRocketTranslationDataProvider>().RegisterDefaultTranslations(Implementation.DefaultTranslation);
+
                 gameObject.TryAddComponent<TaskDispatcher>();
                 Providers.Load();
             }

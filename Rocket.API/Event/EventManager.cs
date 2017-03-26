@@ -176,7 +176,7 @@ namespace Rocket.API.Event
         {
             public string Name { get{throw new NotImplementedException(); } }
             public PluginState State { get { throw new NotImplementedException(); } }
-            public TranslationList DefaultTranslations { get { throw new NotImplementedException(); } }
+            public TranslationList DefaultTranslations => new TranslationList();
             public string WorkingDirectory { get{ throw new NotImplementedException(); } }
             public void LoadPlugin()
             {
@@ -203,6 +203,7 @@ namespace Rocket.API.Event
                 get { return true; }
                 set { } 
             }
+
         }
     }
 
