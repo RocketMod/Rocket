@@ -81,6 +81,7 @@
     <Compile Include="Event\Player\PlayerConnectedEvent.cs" />
     <Compile Include="Event\Player\PlayerDisconnectedEvent.cs" />
     <Compile Include="Event\Player\PlayerEvent.cs" />
+    <Compile Include="Event\Player\PrePlayerConnectedEvent.cs" />
     <Compile Include="Event\Plugin\PluginEvent.cs" />
     <Compile Include="Providers\Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />

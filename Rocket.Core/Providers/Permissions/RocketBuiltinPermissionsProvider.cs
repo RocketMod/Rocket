@@ -81,5 +81,22 @@ namespace Rocket.Core.Providers.Permissions
                 GetPermissions(player)
                     .Any(c => c.Equals(permission, StringComparison.OrdinalIgnoreCase) && !c.StartsWith("!"));
         }
+
+        public ReadOnlyCollection<RocketPermissionsGroup> GetGroups(string id)
+        {
+            return helper.GetGroups(id).AsReadOnly();
+        }
+
+        public ReadOnlyCollection<string> GetPermissions(string id)
+        {
+            return helper.GetPermissions(id).AsReadOnly();
+        }
+
+        public bool HasPermission(string id, string permission)
+        {
+            return
+                GetPermissions(id)
+                    .Any(c => c.Equals(permission, StringComparison.OrdinalIgnoreCase) && !c.StartsWith("!"));
+        }
     }
 }

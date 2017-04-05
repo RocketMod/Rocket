@@ -93,7 +93,12 @@ namespace Rocket.Core.Providers.Permissions
 
         public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player)
         {
-            List<RocketPermissionsGroup> groups = permissions.Instance.Groups.Where(g => g.Members.Contains(player.Id)).ToList(); // Get my Groups
+            return GetGroups(player.Id);
+        }
+
+        public List<RocketPermissionsGroup> GetGroups(string id)
+        {
+            List<RocketPermissionsGroup> groups = permissions.Instance.Groups.Where(g => g.Members.Contains(id)).ToList(); // Get my Groups
 
             RocketPermissionsGroup defaultGroup = permissions.Instance.Groups.FirstOrDefault(g => (String.Compare(g.Id, permissions.Instance.DefaultGroup, true) == 0));
             if (defaultGroup != null) groups.Add(defaultGroup);
@@ -110,9 +115,14 @@ namespace Rocket.Core.Providers.Permissions
 
         public List<string> GetPermissions(IRocketPlayer player)
         {
+            return GetPermissions(player.Id);
+        }
+
+        public List<string> GetPermissions(string id)
+        {
             List<string> p = new List<string>();
 
-            List<RocketPermissionsGroup> myGroups = GetGroups(player);
+            List<RocketPermissionsGroup> myGroups = GetGroups(id);
 
             foreach (RocketPermissionsGroup g in myGroups)
             {

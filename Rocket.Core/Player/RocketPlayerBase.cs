@@ -37,17 +37,17 @@ namespace Rocket.Core.Player
             return Id.CompareTo(((IRocketPlayer)obj).Id);
         }
 
-        public void Kick(string message)
+        public virtual void Kick(string message)
         {
             //
         }
 
-        public void Ban(string message, uint duration)
+        public virtual void Ban(string message, uint duration)
         {
             //
         }
 
-        public bool HasPermission(string permission)
+        public virtual bool HasPermission(string permission)
         {
             return R.Providers.GetProvider<IRocketPermissionsDataProvider>().HasPermission(this, permission);
         }

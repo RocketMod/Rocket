@@ -10,3 +10,4 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyVersion("5.0.0.0")]
 [assembly: InternalsVisibleTo("Rocket.IPC.Host")]
 [assembly: InternalsVisibleTo("Rocket.Core")]
+[assembly: InternalsVisibleTo("Rocket.Unturned")]
