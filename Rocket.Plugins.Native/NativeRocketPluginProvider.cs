@@ -57,7 +57,7 @@ namespace Rocket.Plugins.Native
         public List<IRocketCommand> GetCommandTypesFromAssembly(Assembly assembly, Type plugin)
         {
             List<IRocketCommand> commands = new List<IRocketCommand>();
-            List<Type> commandTypes = assembly.GetTypesFromInterface("IRocketCommand");
+            List<Type> commandTypes = GetTypesFromInterface(assembly, "IRocketCommand");
             foreach (Type commandType in commandTypes)
             {
                 if (commandType.GetConstructor(Type.EmptyTypes) != null)
@@ -113,7 +113,7 @@ namespace Rocket.Plugins.Native
 
             foreach (Assembly pluginAssembly in pluginAssemblies)
             {
-                List<Type> pluginImplemenations = pluginAssembly.GetTypesFromInterface("IRocketPlugin");
+                List<Type> pluginImplemenations = GetTypesFromInterface(pluginAssembly, "IRocketPlugin");
 
                 foreach (Type pluginType in pluginImplemenations)
                 {
@@ -170,7 +170,7 @@ namespace Rocket.Plugins.Native
                 {
                     Assembly assembly = Assembly.Load(File.ReadAllBytes(library.FullName));
 
-                    if (assembly.GetTypesFromInterface("IRocketPlugin").Count == 1)
+                    if (GetTypesFromInterface(assembly, "IRocketPlugin").Count == 1)
                     {
                         assemblies.Add(assembly);
                     }
@@ -208,6 +208,28 @@ namespace Rocket.Plugins.Native
             {
                 R.Logger.Fatal(ex);
             }
+        }
+
+        public static List<Type> GetTypesFromInterface(Assembly assembly, string interfaceName)
+        {
+            List<Type> allTypes = new List<Type>();
+            Type[] types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types = e.Types;
+            }
+            foreach (Type type in types.Where(t => t != null))
+            {
+                if (type.GetInterface(interfaceName) != null)
+                {
+                    allTypes.Add(type);
+                }
+            }
+            return allTypes;
         }
 
         public RocketCommandList CommandProvider { get; set; }

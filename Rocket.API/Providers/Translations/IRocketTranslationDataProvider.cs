@@ -11,5 +11,6 @@ namespace Rocket.API.Providers.Translations
 
         void RegisterDefaultTranslations(IRocketPlugin plugin, TranslationList defaultTranslations);
         void RegisterDefaultTranslations(TranslationList defaultTranslations);
+        string GetCurrentLanguage();
     }
 }

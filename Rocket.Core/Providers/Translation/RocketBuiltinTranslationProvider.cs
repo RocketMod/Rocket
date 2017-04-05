@@ -47,5 +47,10 @@ namespace Rocket.Core.Providers.Translation
         {
             throw new NotImplementedException();
         }
+
+        public string GetCurrentLanguage()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -7,6 +7,7 @@ using Rocket.API.Collections;
 using Rocket.API.Event;
 using Rocket.API.Event.Plugin;
 using Rocket.API.Providers.Plugins;
+using Rocket.API.Providers.Translations;
 using Rocket.API.Serialisation;
 using Rocket.Core;
 using Rocket.Core.Assets;
@@ -18,11 +19,11 @@ namespace Rocket.Plugins.Native
     public class RocketPluginBase<T> : RocketPluginBase, IRocketPlugin<T> where T : class, IRocketPluginConfiguration
     {
         public IAsset<T> Configuration { get; private set; }
-        public void Initialize()
+        public void Initialize(string workingDirectory)
         {
-            base.Initialize(false);
+            base.Initialize(workingDirectory, false);
 
-            string configurationFile = Path.Combine(WorkingDirectory, string.Format(API.Environment.PluginConfigurationFileTemplate, Name));
+            string configurationFile = Path.Combine(WorkingDirectory, string.Format(NativeRocketPluginProvider.PluginConfigurationFileTemplate, Name));
             string url = null;
             if (File.Exists(configurationFile))
                 url = File.ReadAllLines(configurationFile).First().Trim();
@@ -73,15 +74,16 @@ namespace Rocket.Plugins.Native
 
         public virtual TranslationList DefaultTranslations => new TranslationList();
 
-        public virtual void Initialize(bool loadPlugin = true)
+        public virtual void Initialize(string workingDirectory, bool loadPlugin = true)
         {
-            WorkingDirectory = PluginManager.GetPluginDirectory(Name);
+            WorkingDirectory = workingDirectory;
             if (!Directory.Exists(WorkingDirectory))
                 Directory.CreateDirectory(WorkingDirectory);
 
             if (DefaultTranslations != null && DefaultTranslations.Count() != 0)
             {
-                Translations = new XMLFileAsset<TranslationList>(Path.Combine(WorkingDirectory, String.Format(NativeRocketPluginProvider.PluginTranslationFileTemplate, Name, Environment.LanguageCode)), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, DefaultTranslations);
+                var language = R.Providers.GetProvider<IRocketTranslationDataProvider>().GetCurrentLanguage();
+                Translations = new XMLFileAsset<TranslationList>(Path.Combine(WorkingDirectory, String.Format(NativeRocketPluginProvider.PluginTranslationFileTemplate, Name, language)), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, DefaultTranslations);
                 Translations.AddUnknownEntries(DefaultTranslations);
             }
 

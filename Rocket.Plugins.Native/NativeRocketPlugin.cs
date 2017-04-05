@@ -1,4 +1,5 @@
-﻿using Rocket.API.Serialisation;
+﻿using System.IO;
+using Rocket.API.Serialisation;
 
 namespace Rocket.Plugins.Native
 {
@@ -8,7 +9,7 @@ namespace Rocket.Plugins.Native
         {
             Name = GetType().Name;
             PluginManager = NativeRocketPluginProvider.Instance;
-            base.Initialize();
+            base.Initialize(Path.Combine(WorkingDirectory, Name));
         }
     }
 
@@ -18,7 +19,7 @@ namespace Rocket.Plugins.Native
         {
             Name = GetType().Name;
             PluginManager = NativeRocketPluginProvider.Instance;
-            base.Initialize();
+            base.Initialize(Path.Combine(WorkingDirectory, Name));
         }
     }
 }
