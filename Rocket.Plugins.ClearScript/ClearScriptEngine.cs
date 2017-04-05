@@ -1,4 +1,5 @@
 ﻿using System;
+using Rocket.Core;
 using Rocket.Plugins.ScriptBase;
 
 namespace Rocket.Plugins.ClearScript
@@ -27,7 +28,7 @@ namespace Rocket.Plugins.ClearScript
 
             if (engine == null)
             {
-                API.Logging.Logger.Warn("ClearScript ScriptEngine equals null, script: " + path);
+                R.Logger.Warn("ClearScript ScriptEngine equals null, script: " + path);
                 return new ScriptResult(ScriptExecutionResult.FAILED_MISC);
             }
 

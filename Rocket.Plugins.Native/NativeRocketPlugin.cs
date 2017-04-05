@@ -13,7 +13,7 @@ namespace Rocket.Plugins.Native
         }
     }
 
-    public class NativeRocketPlugin<RocketPluginConfiguration> : RocketPluginBase<RocketPluginConfiguration> where RocketPluginConfiguration : class, IRocketPluginConfiguration
+    public class NativeRocketPlugin<TRocketPluginConfiguration> : RocketPluginBase<TRocketPluginConfiguration> where TRocketPluginConfiguration : class, IRocketPluginConfiguration
     {
         public void Awake()
         {

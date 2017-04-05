@@ -127,5 +127,10 @@ namespace Rocket.Core.Managers
                 serializer.Serialize(writer,providers);
             }
         }
+
+        public void RegisterProvider(IRocketProviderBase pluginProvider)
+        {
+            //??
+        }
     }
 }

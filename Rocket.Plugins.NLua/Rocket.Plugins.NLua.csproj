@@ -47,7 +47,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
     <Reference Include="UnityEngine">
-      <HintPath>..\Rocket.Core\lib\UnityEngine.dll</HintPath>
+      <HintPath>..\lib\UnityEngine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +62,10 @@
     <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj">
       <Project>{7a9d652f-dc18-45fd-8964-dbaad6384c3d}</Project>
       <Name>Rocket.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rocket.Plugins.Native\Rocket.Plugins.Native.csproj">
+      <Project>{6d02a4ec-cfdd-4f20-a76f-bf9add9586f0}</Project>
+      <Name>Rocket.Plugins.Native</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rocket.Plugins.ScriptBase\Rocket.Plugins.ScriptBase.csproj">
       <Project>{b62c91d0-5d32-45fb-a0c5-e551c6c2379e}</Project>

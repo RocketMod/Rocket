@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using Rocket.API.Player;
-using Rocket.Core.Player;
 
 namespace Rocket.Launcher
 {
@@ -12,10 +10,10 @@ namespace Rocket.Launcher
         {
             this.service = service;
             InitializeComponent();
-            service.OnPlayerConnected += (RocketPlayerBase player) => { TellLog("New Player: " + player.DisplayName); };
-            service.OnPlayerDisconnected += (RocketPlayerBase player) => { TellLog("Leaving Player: " + player.DisplayName); };
+            service.OnPlayerConnected += player => { TellLog("New Player: " + player.DisplayName); };
+            service.OnPlayerDisconnected += player => { TellLog("Leaving Player: " + player.DisplayName); };
             service.OnShutdown += () => { TellLog("Shutdown"); };
-            service.OnLog += (LogMessage message) => { TellLog(message.Message); };
+            service.OnLog += message => { TellLog(message.Message); };
         }
 
         public Dashboard()

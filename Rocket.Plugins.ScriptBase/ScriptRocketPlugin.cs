@@ -1,5 +1,4 @@
 ﻿using Rocket.API;
-using Rocket.API.Plugins;
 using Rocket.API.Serialisation;
 using Rocket.Plugins.Native;
 
@@ -15,7 +14,7 @@ namespace Rocket.Plugins.ScriptBase
         {
             Name = PluginMeta.Name;
             PluginManager = ScriptPluginProvider;
-            base.Initialize();
+            base.Initialize(WorkingDirectory);
         }
 
         public ScriptRocketPluginProvider ScriptPluginProvider => ScriptContext.ScriptEngine.PluginProvider;
@@ -27,13 +26,13 @@ namespace Rocket.Plugins.ScriptBase
     /// <p>The RocketPluginBase with configuration for a scripting implementation</p>
     /// <p>To be implemented by the script implementation.</p>
     /// </summary>
-    public class ScriptRocketPlugin<RocketPluginConfiguration> : RocketPluginBase<RocketPluginConfiguration> where RocketPluginConfiguration : class, IRocketPluginConfiguration
+    public class ScriptRocketPlugin<TRocketPluginConfiguration> : RocketPluginBase<TRocketPluginConfiguration> where TRocketPluginConfiguration : class, IRocketPluginConfiguration
     {
         public void Awake()
         {
             Name = PluginMeta.Name;
             PluginManager = ScriptPluginProvider;
-            base.Initialize();
+            base.Initialize(WorkingDirectory);
         }
 
         public ScriptRocketPluginProvider ScriptPluginProvider => ScriptContext.ScriptEngine.PluginProvider;

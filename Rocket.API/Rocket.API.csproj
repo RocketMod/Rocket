@@ -98,6 +98,7 @@
     <Compile Include="Providers\Configuration\IRocketConfigurationDataProvider.cs" />
     <Compile Include="Providers\Logging\IRocketLoggingProvider.cs" />
     <Compile Include="Providers\Logging\LogMessage.cs" />
+    <Compile Include="Providers\NoProviderAutoRegistrationAttribute.cs" />
     <Compile Include="Providers\Player\IRocketPlayerDataProvider.cs" />
     <Compile Include="Providers\Implementation\IRocketImplementationProvider.cs" />
     <Compile Include="Providers\Commands\IRocketCommandProvider.cs" />

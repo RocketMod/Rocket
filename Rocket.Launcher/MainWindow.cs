@@ -69,6 +69,8 @@ namespace Rocket.Launcher
             {
                 if (File.Exists(Program.Executable))
                 {
+                    throw new NotImplementedException();
+                    /*
                     Mode = Mode.SingleInstance;
                     if (!Directory.Exists(Program.ServerPath)) Directory.CreateDirectory(Program.ServerPath);
                     settings = new XMLFileAsset<RocketSettings>(Path.Combine(Program.ServerPath, "Rocket.config.xml"));
@@ -89,6 +91,7 @@ namespace Rocket.Launcher
                     Width -= panel2.Width;
                     panel1.Left-= panel2.Width;
                     panel1.Width += panel2.Width;
+                    */
                 }
 
 
