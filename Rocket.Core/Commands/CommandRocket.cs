@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Linq;
-using Rocket.API;
-using Rocket.Core;
 using Rocket.API.Commands;
-using System.Collections.ObjectModel;
 using Rocket.API.Player;
 using Rocket.API.Providers.Plugins;
-using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Commands
 {

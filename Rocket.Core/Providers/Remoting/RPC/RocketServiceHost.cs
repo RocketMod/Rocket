@@ -7,6 +7,7 @@ using Rocket.API.Event.Implementation;
 using Rocket.API.Event.Player;
 using Rocket.API.Player;
 using Rocket.API.Providers.Logging;
+using Rocket.Core.Player;
 using Rocket.Core.Providers.Logging;
 
 namespace Rocket.Core.Providers.Remoting.RPC

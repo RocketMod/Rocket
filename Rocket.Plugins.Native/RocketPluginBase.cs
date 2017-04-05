@@ -2,18 +2,16 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using Rocket.API;
 using Rocket.API.Assets;
 using Rocket.API.Collections;
 using Rocket.API.Event;
 using Rocket.API.Event.Plugin;
-using Rocket.API.Extensions;
-using Rocket.API.Providers;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
+using Rocket.Core;
+using Rocket.Core.Assets;
 using UnityEngine;
 using Environment = Rocket.API.Environment;
-using Object = UnityEngine.Object;
 
 namespace Rocket.Plugins.Native
 {
@@ -71,15 +69,9 @@ namespace Rocket.Plugins.Native
                 a(p);
         }
 
-        public Assembly Assembly { get { return GetType().Assembly; } }
+        public Assembly Assembly => GetType().Assembly;
 
-        public virtual TranslationList DefaultTranslations
-        {
-            get
-            {
-                return new TranslationList();
-            }
-        }
+        public virtual TranslationList DefaultTranslations => new TranslationList();
 
         public virtual void Initialize(bool loadPlugin = true)
         {
@@ -87,11 +79,12 @@ namespace Rocket.Plugins.Native
             if (!Directory.Exists(WorkingDirectory))
                 Directory.CreateDirectory(WorkingDirectory);
 
-            if (DefaultTranslations != null | DefaultTranslations.Count() != 0)
+            if (DefaultTranslations != null && DefaultTranslations.Count() != 0)
             {
-                Translations = new XMLFileAsset<TranslationList>(Path.Combine(WorkingDirectory, String.Format(Environment.PluginTranslationFileTemplate, Name, Environment.LanguageCode)), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, DefaultTranslations);
+                Translations = new XMLFileAsset<TranslationList>(Path.Combine(WorkingDirectory, String.Format(NativeRocketPluginProvider.PluginTranslationFileTemplate, Name, Environment.LanguageCode)), new Type[] { typeof(TranslationList), typeof(PropertyListEntry) }, DefaultTranslations);
                 Translations.AddUnknownEntries(DefaultTranslations);
             }
+
             if (loadPlugin)
                 LoadPlugin();
         }

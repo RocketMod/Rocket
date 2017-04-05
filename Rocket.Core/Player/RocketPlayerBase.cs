@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Rocket.API.Player;
+using Rocket.API.Providers.Permissions;
 
-namespace Rocket.API.Player
+namespace Rocket.Core.Player
 {
     [Serializable]
     [DataContract]
@@ -43,6 +45,11 @@ namespace Rocket.API.Player
         public void Ban(string message, uint duration)
         {
             //
+        }
+
+        public bool HasPermission(string permission)
+        {
+            return R.Providers.GetProvider<IRocketPermissionsDataProvider>().HasPermission(this, permission);
         }
     }
 }

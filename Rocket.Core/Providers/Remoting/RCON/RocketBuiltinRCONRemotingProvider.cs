@@ -8,13 +8,11 @@ using System.Threading;
 using Rocket.API;
 using Rocket.API.Player;
 using UnityEngine;
-using Logger =  Rocket.API.Logging.Logger;
-
 namespace Rocket.Core.Providers.Remoting.RCON
 {
-    public class RocketBuiltinRCONRemotingProvider : MonoBehaviour
+    public class RocketBuiltinRconRemotingProvider : MonoBehaviour
     {
-        private static List<RCONConnection> clients = new List<RCONConnection>();
+        private static List<RconConnection> clients = new List<RconConnection>();
         private TcpListener listener;
         private bool exiting = false;
         private Thread waitingThread;
@@ -32,7 +30,7 @@ namespace Rocket.Core.Providers.Remoting.RCON
             {
                 while (!exiting)
                 {
-                    RCONConnection newclient = new RCONConnection(listener.AcceptTcpClient());
+                    RconConnection newclient = new RconConnection(listener.AcceptTcpClient());
                     clients.Add(newclient);
                     newclient.Send("RocketRcon v" + Assembly.GetExecutingAssembly().GetName().Version + "\r\n");
                     ThreadPool.QueueUserWorkItem(handleConnection, newclient);
@@ -45,7 +43,7 @@ namespace Rocket.Core.Providers.Remoting.RCON
         {
             try
             {
-                RCONConnection newclient = (RCONConnection)obj;
+                RconConnection newclient = (RconConnection)obj;
                 string command = "";
                 while (newclient.Client.Client.Connected)
                 {
@@ -139,7 +137,7 @@ namespace Rocket.Core.Providers.Remoting.RCON
 
         public static void Broadcast(string message)
         {
-            foreach (RCONConnection client in clients)
+            foreach (RconConnection client in clients)
             {
                 if (client.Authenticated)
                     client.Send(message);
@@ -150,7 +148,7 @@ namespace Rocket.Core.Providers.Remoting.RCON
         {
             exiting = true;
             // Force all connected RCON clients to disconnect from the server on shutdown. The server will get stuck in the shutdown process until all clients disconnect.
-            foreach (RCONConnection client in clients)
+            foreach (RconConnection client in clients)
             {
                 client.Close();
             }

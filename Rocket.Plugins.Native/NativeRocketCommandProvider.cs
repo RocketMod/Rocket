@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using Rocket.API.Collections;
 using Rocket.API.Commands;
-using Rocket.API.Providers;
 using Rocket.API.Providers.Commands;
 using Rocket.API.Providers.Plugins;
-using Rocket.API.Providers.Commands;
 
 namespace Rocket.Plugins.Native
 {
@@ -14,13 +11,14 @@ namespace Rocket.Plugins.Native
     {
         public NativeRocketCommandProvider(IRocketPluginProvider manager)
         {
-            Commands = new List<IRocketCommand>();
+            InternalCommands = new List<IRocketCommand>();
         }
 
-        public List<IRocketCommand> Commands { get; }
+        protected List<IRocketCommand> InternalCommands { get; set; }
+        public ReadOnlyCollection<IRocketCommand> Commands => InternalCommands.AsReadOnly();
         public void AddCommands(IEnumerable<IRocketCommand> commands)
         {
-            Commands.AddRange(commands.AsEnumerable());
+            InternalCommands.AddRange(commands.AsEnumerable());
         }
 
         public void Load(bool isReload = false)

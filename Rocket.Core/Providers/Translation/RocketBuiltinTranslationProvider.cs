@@ -13,21 +13,12 @@ namespace Rocket.Core.Providers.Translation
 {
     public class RocketBuiltinTranslationProvider : IRocketTranslationDataProvider
     {
+        public void Unload()
+        {
+            throw new NotImplementedException();
+        }
+
         public void Load(bool isReload = false)
-        {
-            throw new NotImplementedException();
-        }
-
-        //  Translation = new XMLFileAsset<TranslationList>(String.Format(Environment.TranslationFile, Settings.Instance.LanguageCode), new Type[] { typeof(TranslationList), typeof(TranslationListEntry)
-
-
-
-        public void RegisterDefaultTranslations(IRocketPlugin plugin, TranslationList defaultTranslations)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RegisterDefaultTranslations(TranslationList defaultTranslations)
         {
             throw new NotImplementedException();
         }
@@ -37,17 +28,22 @@ namespace Rocket.Core.Providers.Translation
             throw new NotImplementedException();
         }
 
-        public string Translate(string key, string language)
+        public string Translate(string key, string language, params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public string Translate(IRocketPlugin plugin, string key, string language)
+        public string Translate(IRocketPlugin plugin, string key, string language, params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Unload()
+        public void RegisterDefaultTranslations(IRocketPlugin plugin, TranslationList defaultTranslations)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RegisterDefaultTranslations(TranslationList defaultTranslations)
         {
             throw new NotImplementedException();
         }

@@ -108,10 +108,8 @@
     <Compile Include="Providers\IRocketProviderBase.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
-    <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="Exceptions\WrongUsageOfCommandException.cs" />
     <Compile Include="Exceptions\NoPermissionsForCommandException.cs" />
-    <Compile Include="Player\RocketPlayerBase.cs" />
     <Compile Include="Providers\Plugins\IRocketPlugin.cs" />
     <Compile Include="Providers\Permissions\IRocketPermissionsDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

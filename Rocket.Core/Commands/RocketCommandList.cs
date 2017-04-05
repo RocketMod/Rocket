@@ -11,7 +11,7 @@ using Rocket.API.Exceptions;
 using Rocket.API.Player;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
-using Rocket.Core;
+using Rocket.Core.Player;
 
 namespace Rocket.Core.Commands
 {

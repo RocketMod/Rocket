@@ -9,5 +9,6 @@ namespace Rocket.API.Player
         bool IsAdmin { get; }
         void Kick(string message);
         void Ban(string message, uint duration = 0);
+        bool HasPermission(string permission);
     }
 }

@@ -22,5 +22,7 @@ namespace Rocket.API.Providers.Permissions
             bool SaveGroup(RocketPermissionsGroup group);
 
             bool DeleteGroup(RocketPermissionsGroup group);
+
+            bool HasPermission(IRocketPlayer player, string permission);
         }
     }

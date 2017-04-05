@@ -11,6 +11,7 @@ using System.Reflection;
 using System.Diagnostics;
 using System.Configuration;
 using System.IO;
+using Rocket.API.Assets;
 using Rocket.API.Serialisation;
 using Rocket.Core;
 using Rocket.Core.Assets;
