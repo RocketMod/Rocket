@@ -122,10 +122,5 @@ namespace Rocket.Core
                 Logger.Fatal(ex);
             }
         }
-
-        public static string Translate(string key, string language = "en-US", params object[] paramObjects) {
-            return String.Format(Translations.Translate(key,language),paramObjects);
-        }
-
     }
 }

@@ -1,5 +1,3 @@
-using Rocket.API.Plugins;
-
 namespace Rocket.Plugins.ScriptBase
 {
     /// <summary>

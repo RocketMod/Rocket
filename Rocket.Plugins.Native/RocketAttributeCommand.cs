@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Player;
-using Rocket.API.Providers;
 using Rocket.API.Providers.Plugins;
 
 namespace Rocket.Plugins.Native

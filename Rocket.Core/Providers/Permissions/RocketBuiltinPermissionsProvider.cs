@@ -5,7 +5,9 @@ using Rocket.API.Serialisation;
 using Rocket.Core.Assets;
 using System;
 using System.Collections.Generic;
+using Rocket.API.Assets;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace Rocket.Core.Providers.Permissions
 {
@@ -62,12 +64,39 @@ namespace Rocket.Core.Providers.Permissions
         {
             try
             {
-               // helper = new RocketPermissionsHelper(new XMLFileAsset<RocketPermissions>(API.Environment.PermissionFile));
+                helper = new RocketPermissionsHelper(new XMLFileAsset<RocketPermissions>(PermissionFile));
             }
             catch (Exception ex)
             {
                 R.Logger.Fatal(ex);
             }
+        }
+
+        public string PermissionFile => "Permissions.config.xml";
+
+        public bool HasPermission(IRocketPlayer player, string permission)
+        {
+            //todo ??
+            return
+                GetPermissions(player)
+                    .Any(c => c.Equals(permission, StringComparison.OrdinalIgnoreCase) && !c.StartsWith("!"));
+        }
+
+        public ReadOnlyCollection<RocketPermissionsGroup> GetGroups(string id)
+        {
+            return helper.GetGroups(id).AsReadOnly();
+        }
+
+        public ReadOnlyCollection<string> GetPermissions(string id)
+        {
+            return helper.GetPermissions(id).AsReadOnly();
+        }
+
+        public bool HasPermission(string id, string permission)
+        {
+            return
+                GetPermissions(id)
+                    .Any(c => c.Equals(permission, StringComparison.OrdinalIgnoreCase) && !c.StartsWith("!"));
         }
     }
 }

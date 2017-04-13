@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Runtime.Serialization;
+using Rocket.API.Player;
+using Rocket.API.Providers.Permissions;
 
-namespace Rocket.API.Player
+namespace Rocket.Core.Player
 {
     [Serializable]
     [DataContract]
@@ -35,14 +37,19 @@ namespace Rocket.API.Player
             return Id.CompareTo(((IRocketPlayer)obj).Id);
         }
 
-        public void Kick(string message)
+        public virtual void Kick(string message)
         {
             //
         }
 
-        public void Ban(string message, uint duration)
+        public virtual void Ban(string message, uint duration)
         {
             //
+        }
+
+        public virtual bool HasPermission(string permission)
+        {
+            return R.Providers.GetProvider<IRocketPermissionsDataProvider>().HasPermission(this, permission);
         }
     }
 }

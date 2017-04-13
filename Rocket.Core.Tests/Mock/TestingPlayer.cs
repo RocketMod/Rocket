@@ -5,47 +5,21 @@ namespace Rocket.Core.Tests.Mock
 {
     public class TestingPlayer : IRocketPlayer
     {
-        public string DisplayName
-        {
-            get
-            {
-                return "TestingPlayer";
-            }
-        }
+        public string DisplayName => "TestingPlayer";
+
         public TestingPlayer(string id= "1", bool admin= false)
         {
             IsAdmin = admin;
             Id = id;
         }
 
-        private bool isAdmin;
-        public bool IsAdmin
-        {
-            get
-            {
-                return isAdmin;
-            }
-            set { isAdmin = value; }
-        }
+        public bool IsAdmin { get; set; }
 
-        private string id;
-
-        public string Id
-        {
-            get
-            {
-                return id;
-            }
-
-            set
-            {
-                id = value;
-            }
-        }
+        public string Id { get; set; }
 
         public int CompareTo(object obj)
         {
-            return Id.CompareTo(((IRocketPlayer)obj).Id);
+            return String.Compare(Id, ((IRocketPlayer)obj).Id, StringComparison.Ordinal);
         }
 
         public void Kick(string message)
@@ -54,6 +28,11 @@ namespace Rocket.Core.Tests.Mock
         }
 
         public void Ban(string message, uint duration = 0)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool HasPermission(string permission)
         {
             throw new NotImplementedException();
         }

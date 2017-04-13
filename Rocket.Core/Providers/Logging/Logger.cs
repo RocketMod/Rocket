@@ -58,40 +58,47 @@ namespace Rocket.Core.Providers.Logging
             return LogManager.GetLogger(method.DeclaringType);
         }
 
-        public bool IsDebugEnabled { get { return GetLogger().IsDebugEnabled; } }
-        public bool IsInfoEnabled { get { return GetLogger().IsInfoEnabled; } }
-        public bool IsWarnEnabled { get { return GetLogger().IsWarnEnabled; } }
-        public bool IsErrorEnabled { get { return GetLogger().IsErrorEnabled; } }
-        public bool IsFatalEnabled { get { return GetLogger().IsFatalEnabled; } }
+        public bool IsDebugEnabled => GetLogger().IsDebugEnabled;
+        public bool IsInfoEnabled => GetLogger().IsInfoEnabled;
+        public bool IsWarnEnabled => GetLogger().IsWarnEnabled;
+        public bool IsErrorEnabled => GetLogger().IsErrorEnabled;
+        public bool IsFatalEnabled => GetLogger().IsFatalEnabled;
 
         public void Debug(object message, Exception exception = null)
         {
             GetLogger().Debug(message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.DEBUG, message));
         }
 
         public void Info(object message, Exception exception = null)
         {
             GetLogger().Info(message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.INFO, message));
         }
 
         public void Warn(object message, Exception exception = null)
         {
             GetLogger().Warn(message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.WARN, message));
         }
 
         public void Error(object message, Exception exception = null)
         {
             GetLogger().Error(message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.ERROR, message));
         }
         
         public void Fatal(object message, Exception exception = null)
         {
             GetLogger().Fatal(message, exception);
+            OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message));
         }
 
         public void Unload()
         {
 
         }
+
+        public event Action<LogMessage> OnLog;
     }
 }

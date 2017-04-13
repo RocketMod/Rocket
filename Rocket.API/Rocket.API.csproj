@@ -81,6 +81,7 @@
     <Compile Include="Event\Player\PlayerConnectedEvent.cs" />
     <Compile Include="Event\Player\PlayerDisconnectedEvent.cs" />
     <Compile Include="Event\Player\PlayerEvent.cs" />
+    <Compile Include="Event\Player\PrePlayerConnectedEvent.cs" />
     <Compile Include="Event\Plugin\PluginEvent.cs" />
     <Compile Include="Providers\Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />
@@ -97,6 +98,8 @@
     <Compile Include="Event\Plugin\PluginUnloadingEvent.cs" />
     <Compile Include="Providers\Configuration\IRocketConfigurationDataProvider.cs" />
     <Compile Include="Providers\Logging\IRocketLoggingProvider.cs" />
+    <Compile Include="Providers\Logging\LogMessage.cs" />
+    <Compile Include="Providers\NoProviderAutoRegistrationAttribute.cs" />
     <Compile Include="Providers\Player\IRocketPlayerDataProvider.cs" />
     <Compile Include="Providers\Implementation\IRocketImplementationProvider.cs" />
     <Compile Include="Providers\Commands\IRocketCommandProvider.cs" />
@@ -107,10 +110,8 @@
     <Compile Include="Providers\IRocketProviderBase.cs" />
     <Compile Include="Serialisation\IDefaultable.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
-    <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="Exceptions\WrongUsageOfCommandException.cs" />
     <Compile Include="Exceptions\NoPermissionsForCommandException.cs" />
-    <Compile Include="Player\RocketPlayerBase.cs" />
     <Compile Include="Providers\Plugins\IRocketPlugin.cs" />
     <Compile Include="Providers\Permissions\IRocketPermissionsDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

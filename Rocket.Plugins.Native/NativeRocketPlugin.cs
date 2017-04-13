@@ -1,4 +1,5 @@
-﻿using Rocket.API.Serialisation;
+﻿using System.IO;
+using Rocket.API.Serialisation;
 
 namespace Rocket.Plugins.Native
 {
@@ -8,17 +9,17 @@ namespace Rocket.Plugins.Native
         {
             Name = GetType().Name;
             PluginManager = NativeRocketPluginProvider.Instance;
-            base.Initialize();
+            base.Initialize(Path.Combine(WorkingDirectory, Name));
         }
     }
 
-    public class NativeRocketPlugin<RocketPluginConfiguration> : RocketPluginBase<RocketPluginConfiguration> where RocketPluginConfiguration : class, IRocketPluginConfiguration
+    public class NativeRocketPlugin<TRocketPluginConfiguration> : RocketPluginBase<TRocketPluginConfiguration> where TRocketPluginConfiguration : class, IRocketPluginConfiguration
     {
         public void Awake()
         {
             Name = GetType().Name;
             PluginManager = NativeRocketPluginProvider.Instance;
-            base.Initialize();
+            base.Initialize(Path.Combine(WorkingDirectory, Name));
         }
     }
 }

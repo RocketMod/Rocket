@@ -1,19 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 using Rocket.API.Commands;
-using Rocket.API.Extensions;
-using Rocket.API.Providers;
-using Rocket.API.Collections;
-using Rocket.API.Providers.Commands;
 using Rocket.API.Providers.Plugins;
+using Rocket.Core;
+using Rocket.Core.Commands;
 
 namespace Rocket.Plugins.Native
 {
-    public sealed class NativeRocketPluginProvider : RocketProviderBase, IRocketPluginProvider
+    public sealed class NativeRocketPluginProvider : IRocketPluginProvider
     {
         public static readonly string PluginDirectory = "Plugins/{0}/";
         public static readonly string PluginTranslationFileTemplate = "{0}.{1}.translation.xml";
@@ -21,14 +19,11 @@ namespace Rocket.Plugins.Native
         public static NativeRocketPluginProvider Instance { get; private set; }
         private static List<Assembly> pluginAssemblies;
         private static List<NativeRocketPlugin> plugins = new List<NativeRocketPlugin>();
-        private Dictionary<string, string> libraries = new Dictionary<string, string>();
+        private Dictionary<string, string> libraries = new Dictionary<string, string>();   
 
-        private IRocketCommandProvider 
-       
-
-        public List<IRocketPlugin> GetPlugins()
+        public ReadOnlyCollection<IRocketPlugin> GetPlugins()
         {
-            return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null).Select(p => (IRocketPlugin)p).ToList();
+            return plugins.Select(g => g.GetComponent<NativeRocketPlugin>()).Where(p => p != null).Select(p => (IRocketPlugin)p).ToList().AsReadOnly();
         }
 
         public IRocketPlugin GetPlugin(string name)
@@ -43,7 +38,13 @@ namespace Rocket.Plugins.Native
 
         public string PluginsDirectory { get; private set; }
 
-        public List<Type> Providers => throw new NotImplementedException();
+        public ReadOnlyCollection<Type> Providers
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
 
         string librariesDirectory;
         public void Load(string pluginDirectory, string languageCode, string librariesDirectory)
@@ -56,7 +57,7 @@ namespace Rocket.Plugins.Native
         public List<IRocketCommand> GetCommandTypesFromAssembly(Assembly assembly, Type plugin)
         {
             List<IRocketCommand> commands = new List<IRocketCommand>();
-            List<Type> commandTypes = assembly.GetTypesFromInterface("IRocketCommand");
+            List<Type> commandTypes = GetTypesFromInterface(assembly, "IRocketCommand");
             foreach (Type commandType in commandTypes)
             {
                 if (commandType.GetConstructor(Type.EmptyTypes) != null)
@@ -112,7 +113,7 @@ namespace Rocket.Plugins.Native
 
             foreach (Assembly pluginAssembly in pluginAssemblies)
             {
-                List<Type> pluginImplemenations = pluginAssembly.GetTypesFromInterface("IRocketPlugin");
+                List<Type> pluginImplemenations = GetTypesFromInterface(pluginAssembly, "IRocketPlugin");
 
                 foreach (Type pluginType in pluginImplemenations)
                 {
@@ -169,7 +170,7 @@ namespace Rocket.Plugins.Native
                 {
                     Assembly assembly = Assembly.Load(File.ReadAllBytes(library.FullName));
 
-                    if (assembly.GetTypesFromInterface("IRocketPlugin").Count == 1)
+                    if (GetTypesFromInterface(assembly, "IRocketPlugin").Count == 1)
                     {
                         assemblies.Add(assembly);
                     }
@@ -186,7 +187,7 @@ namespace Rocket.Plugins.Native
             return assemblies;
         }
 
-        public override void Load(bool isReload = false)
+        public void Load(bool isReload = false)
         {
             try
             {
@@ -209,7 +210,31 @@ namespace Rocket.Plugins.Native
             }
         }
 
-        public override void Unload()
+        public static List<Type> GetTypesFromInterface(Assembly assembly, string interfaceName)
+        {
+            List<Type> allTypes = new List<Type>();
+            Type[] types;
+            try
+            {
+                types = assembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types = e.Types;
+            }
+            foreach (Type type in types.Where(t => t != null))
+            {
+                if (type.GetInterface(interfaceName) != null)
+                {
+                    allTypes.Add(type);
+                }
+            }
+            return allTypes;
+        }
+
+        public RocketCommandList CommandProvider { get; set; }
+
+        public void Unload()
         {
             unloadPlugins();
         }

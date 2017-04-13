@@ -1,5 +1,4 @@
-﻿using Rocket.API;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Rocket.API.Commands;
 using Rocket.API.Player;
 

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Rocket.API.Logging;
 using Rocket.Core;
 
 namespace Rocket.Plugins.ScriptBase
@@ -62,7 +61,7 @@ namespace Rocket.Plugins.ScriptBase
             if (!Directory.Exists(LibrariesDir))
                 Directory.CreateDirectory(LibrariesDir);
 
-            R.PluginProviders.Add(PluginProvider);
+            R.Providers.RegisterProvider(PluginProvider);
 
             OnLoad();
         }
@@ -136,8 +135,8 @@ namespace Rocket.Plugins.ScriptBase
             Contexts.Add(context);
             var engine = context.ScriptEngine;
             engine.RegisterType("R", typeof(R), context);
-            engine.RegisterType("Logger", typeof(Logger), context);
-            engine.RegisterType("UnityLogger", typeof(UnityEngine.Logger), context);
+            //engine.RegisterType("Logger", typeof(Logger), context);
+            //engine.RegisterType("UnityLogger", typeof(UnityEngine.Logger), context);
             //todo auto register unturneds & rockets stuff?
 
             //todo bad code:

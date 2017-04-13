@@ -3,15 +3,15 @@ using System.Net.Sockets;
 
 namespace Rocket.Core.Providers.Remoting.RCON
 {
-    public class RCONConnection
+    public class RconConnection
     {
         public TcpClient Client;
         public bool Authenticated;
         public bool Interactive;
 
-        public RCONConnection(TcpClient client)
+        public RconConnection(TcpClient client)
         {
-            this.Client = client;
+            Client = client;
             Authenticated = false;
             Interactive = true;
         }
@@ -21,25 +21,25 @@ namespace Rocket.Core.Providers.Remoting.RCON
             if (Interactive)
             {
                 if (nonewline == true)
-                    RocketBuiltinRCONRemotingProvider.Send(Client, command);
+                    RocketBuiltinRconRemotingProvider.Send(Client, command);
                 else
-                    RocketBuiltinRCONRemotingProvider.Send(Client, command + (!command.Contains('\n') ? "\r\n" : ""));
+                    RocketBuiltinRconRemotingProvider.Send(Client, command + (!command.Contains('\n') ? "\r\n" : ""));
                 return;
             }
         }
 
         public string Read()
         {
-            return RocketBuiltinRCONRemotingProvider.Read(Client);
+            return RocketBuiltinRconRemotingProvider.Read(Client);
         }
 
         public void Close()
         {
-            this.Client.Close();
+            Client.Close();
             return;
         }
 
-        public string Address { get { return this.Client.Client.RemoteEndPoint.ToString(); } }
+        public string Address { get { return Client.Client.RemoteEndPoint.ToString(); } }
     }
 
 }

@@ -87,12 +87,14 @@
     <Compile Include="Commands\CommandRocket.cs" />
     <Compile Include="Commands\RocketBuiltinCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandList.cs" />
-    <Compile Include="Providers\Commands\RocketCommandProviderProxy.cs" />
+    <Compile Include="Player\ConsolePlayer.cs" />
+    <Compile Include="Player\RocketPlayerBase.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />
     <Compile Include="Providers\Logging\Logger.cs" />
-    <Compile Include="Providers\Logging\LogMessage.cs" />
-    <Compile Include="Providers\Logging\RocketLoggingProviderProxy.cs" />
+    <Compile Include="Providers\Logging\RocketPermissionsProviderProxy.cs" />
+    <Compile Include="Providers\Permissions\RocketPermissionDataProviderProxy.cs" />
+    <Compile Include="Providers\Permissions\RocketPermissionsDataProviderProxy.cs" />
     <Compile Include="Providers\Translation\RocketBuiltinTranslationProvider.cs" />
     <Compile Include="Providers\Plugin\RocketPluginProviderProxy.cs" />
     <Compile Include="Providers\Remoting\RPC\RocketService.cs" />
@@ -105,7 +107,6 @@
     <Compile Include="Providers\Permissions\RocketBuiltinPermissionsProvider.cs" />
     <Compile Include="R.cs" />
     <Compile Include="Providers\Remoting\RPC\RPCUsernameValidator.cs" />
-    <Compile Include="Providers\Remoting\RocketRemotingProviderProxy.cs" />
     <Compile Include="Utils\Web\RocketWebClient.cs">
       <SubType>Component</SubType>
     </Compile>

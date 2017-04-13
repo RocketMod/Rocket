@@ -10,5 +10,6 @@ namespace Rocket.API.Providers.Logging
         void Warn(object message, Exception exception = null);
         void Error(object message, Exception exception = null);
         void Fatal(object message, Exception exception = null);
+        event Action<LogMessage> OnLog;
     }
 }

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using Rocket.API.Logging;
-using Rocket.API.Plugins;
 using Rocket.API.Providers;
+using Rocket.API.Providers.Plugins;
+using Rocket.Core;
 
 namespace Rocket.Plugins.ScriptBase
 {
@@ -12,6 +13,7 @@ namespace Rocket.Plugins.ScriptBase
     /// <p>The PluginProvider for a scripting implementation</p>
     /// <p>To be implemented by the script implementation.</p>
     /// </summary>
+    [NoProviderAutoRegistration]
     public class ScriptRocketPluginProvider : IRocketPluginProvider
     {
         private readonly ScriptEngine _engine;
@@ -31,25 +33,6 @@ namespace Rocket.Plugins.ScriptBase
             => _plugins.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
         public string PluginsDirectory => _engine.PluginsDir;
-        public void Load(string pluginDirectory, string languageCode)
-        {
-            //todo: languageCode impl
-            IScriptContext context = null;
-            var res = _engine.LoadPluginFromDirectory(pluginDirectory, ref context);
-            string plName = new DirectoryInfo(pluginDirectory).Name;
-
-            switch (res.ExecutionResult)
-            {
-                case ScriptExecutionResult.SUCCESS:
-                    _plugins.Add(context.Plugin);
-                    break;
-                default:
-                    Logger.Error($"[${_engine.Name}PluginProvider] Failed to load script plugin: {plName} ({res.ExecutionResult})", res.Exception);
-                    break;
-            }
-
-            _plugins.Add(context.Plugin);
-        }
 
         public void Reload()
         {
@@ -67,15 +50,40 @@ namespace Rocket.Plugins.ScriptBase
             => Path.Combine(PluginsDirectory, name);
 
         public ScriptEngine ScriptEngine => _engine;
-        public void Load()
-        {
-            throw new NotImplementedException();
-        }
 
         public List<Type> GetProviders()
         {
             return new List<Type>();
             //throw new NotImplementedException();
         }
+
+        public void Load(bool isReload = false)
+        {
+            if (!Directory.Exists(PluginsDirectory))
+                Directory.CreateDirectory(PluginsDirectory);
+
+            IScriptContext context = null;
+            var res = _engine.LoadPluginFromDirectory(PluginsDirectory, ref context);
+            string plName = new DirectoryInfo(PluginsDirectory).Name;
+
+            switch (res.ExecutionResult)
+            {
+                case ScriptExecutionResult.SUCCESS:
+                    _plugins.Add(context.Plugin);
+                    break;
+                default:
+                    R.Logger.Error($"[${_engine.Name}PluginProvider] Failed to load script plugin: {plName} ({res.ExecutionResult})", res.Exception);
+                    break;
+            }
+
+            _plugins.Add(context.Plugin);
+        }
+
+        ReadOnlyCollection<IRocketPlugin> IRocketPluginProvider.GetPlugins()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ReadOnlyCollection<Type> Providers { get; }
     }
 }

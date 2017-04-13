@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace Rocket.Core.Providers.Logging
+namespace Rocket.API.Providers.Logging
 {
     public enum LogLevel { DEBUG, INFO, WARN, ERROR, FATAL };
 

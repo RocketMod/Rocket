@@ -9,9 +9,12 @@ using System.Windows.Forms;
 using Rocket.API;
 using System.Reflection;
 using System.Diagnostics;
+using System.Configuration;
 using System.IO;
 using Rocket.API.Assets;
 using Rocket.API.Serialisation;
+using Rocket.Core;
+using Rocket.Core.Assets;
 
 namespace Rocket.Launcher
 {
@@ -64,8 +67,10 @@ namespace Rocket.Launcher
         {
             try
             {
-                /*if (File.Exists(Program.Executable))
+                if (File.Exists(Program.Executable))
                 {
+                    throw new NotImplementedException();
+                    /*
                     Mode = Mode.SingleInstance;
                     if (!Directory.Exists(Program.ServerPath)) Directory.CreateDirectory(Program.ServerPath);
                     settings = new XMLFileAsset<RocketSettings>(Path.Combine(Program.ServerPath, "Rocket.config.xml"));
@@ -86,7 +91,8 @@ namespace Rocket.Launcher
                     Width -= panel2.Width;
                     panel1.Left-= panel2.Width;
                     panel1.Width += panel2.Width;
-                }*/
+                    */
+                }
 
 
                 Text = "Rocket Launcher " + typeof(MainWindow).Assembly.GetName().Version;
