@@ -3,6 +3,8 @@
 
 **Are you sure this issue is related to Rocketmod, and not to Unturned, mono, etc?**
 
+**Have you tried to reproduce the issue without Rocketmod?**
+
 **If there is an error, does the error state anything about XML? If yes, have you checked that the XML is valid and not broken?**
 
 **What is the expected result?**
@@ -19,7 +21,7 @@ Operating System:
  - [ ] macOS
  - [ ] Windows
 
-<!-- Please specify the versions you use, you can see them with /rocket ->
+<!-- Please specify the versions you use, you can see them with /rocket -->
 Unturned Version:
 Rocketmod Version:
 
