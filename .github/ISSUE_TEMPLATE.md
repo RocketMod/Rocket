@@ -3,7 +3,7 @@
 
 **Are you sure this issue is related to Rocketmod, and not to Unturned, mono, etc?**
 
-**If there is an error, does the error state anything about XML? If yes, have you checked that he XML is valid and not broken?**
+**If there is an error, does the error state anything about XML? If yes, have you checked that the XML is valid and not broken?**
 
 **What is the expected result?**
 
