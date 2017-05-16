@@ -1,7 +1,6 @@
 <!-- 
      If this is your first issue, please take the time to read this introduction.
-     
-     We use GitHub to track repeatable bugs, and feature requests. 
+     We use GitHub to track reproducable bugs, and feature requests. 
      Please consult [this guide](https://github.com/RocketMod/Rocket/wiki/Fixing-Issues) to figure a solution for most common problems.
      If you can reproduce the bug in Unturned without RocketMod being installed you may report it directly to the [Unturned developers] (https://github.com/SmartlyDressedGames/Unturned/issues).
 -->
