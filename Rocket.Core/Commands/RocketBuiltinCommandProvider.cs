@@ -7,7 +7,7 @@ namespace Rocket.Core.Commands
 {
     public class RocketBuiltinCommandProvider : IRocketCommandProvider
     {
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
 
         }

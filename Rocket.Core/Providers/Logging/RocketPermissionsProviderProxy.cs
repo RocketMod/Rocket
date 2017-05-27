@@ -43,9 +43,9 @@ namespace Rocket.Core.Providers.Logging
             Invoke(provider => { provider.Debug(message, exception); });
         }
 
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
-            Invoke(provider => { provider.Unload(); });
+            Invoke(provider => { provider.Unload(isReload); });
         }
 
         public void Load(bool isReload = false)

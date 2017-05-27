@@ -26,7 +26,7 @@ namespace Rocket.Plugins.Native
 
         }
 
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
 
         }

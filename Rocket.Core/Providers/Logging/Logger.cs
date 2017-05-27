@@ -94,7 +94,7 @@ namespace Rocket.Core.Providers.Logging
             OnLog?.Invoke(new LogMessage(LogLevel.FATAL, message));
         }
 
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
 
         }

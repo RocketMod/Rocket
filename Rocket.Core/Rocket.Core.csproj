@@ -54,6 +54,11 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net35-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.IdentityModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\System.IdentityModel.dll</HintPath>
@@ -89,6 +94,9 @@
     <Compile Include="Commands\RocketCommandList.cs" />
     <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="Player\RocketPlayerBase.cs" />
+    <Compile Include="Providers\Database\AdoNetEntityDatabaseProvider.cs" />
+    <Compile Include="Providers\Database\AdoNetQueryResult.cs" />
+    <Compile Include="Providers\Database\TestContext.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />
     <Compile Include="Providers\Logging\Logger.cs" />

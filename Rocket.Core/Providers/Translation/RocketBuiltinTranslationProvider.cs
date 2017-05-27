@@ -13,7 +13,7 @@ namespace Rocket.Core.Providers.Translation
 {
     public class RocketBuiltinTranslationProvider : IRocketTranslationDataProvider
     {
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
             throw new NotImplementedException();
         }

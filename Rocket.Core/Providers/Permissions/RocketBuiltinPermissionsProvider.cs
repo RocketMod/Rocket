@@ -44,18 +44,13 @@ namespace Rocket.Core.Providers.Permissions
         {
             return helper.DeleteGroup(group);
         }
-
-        public void Reload()
-        {
-            helper.permissions.Load();
-        }
-
+        
         public void Save()
         {
             helper.permissions.Save();
         }
 
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
             helper.permissions.Unload();
         }

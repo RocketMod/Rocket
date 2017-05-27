@@ -34,13 +34,8 @@ namespace Rocket.Plugins.ScriptBase
 
         public string PluginsDirectory => _engine.PluginsDir;
 
-        public void Reload()
-        {
-            //todo
-            throw new System.NotImplementedException();
-        }
 
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
             //todo
             throw new System.NotImplementedException();

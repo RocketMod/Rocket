@@ -52,6 +52,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Entity.Design" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Runtime.Serialization">
       <Private>False</Private>
     </Reference>
@@ -83,6 +87,10 @@
     <Compile Include="Event\Player\PlayerEvent.cs" />
     <Compile Include="Event\Player\PrePlayerConnectedEvent.cs" />
     <Compile Include="Event\Plugin\PluginEvent.cs" />
+    <Compile Include="Providers\Database\DatabaseContext.cs" />
+    <Compile Include="Providers\Database\DatabaseProvider.cs" />
+    <Compile Include="Providers\Database\IQueryResult.cs" />
+    <Compile Include="Providers\Database\QueryState.cs" />
     <Compile Include="Providers\Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />

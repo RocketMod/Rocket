@@ -234,7 +234,7 @@ namespace Rocket.Plugins.Native
 
         public RocketCommandList CommandProvider { get; set; }
 
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
             unloadPlugins();
         }

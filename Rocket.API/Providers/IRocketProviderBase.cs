@@ -22,7 +22,7 @@ namespace Rocket.API.Providers
 
     public interface IRocketProviderBase
     {
-        void Unload();
+        void Unload(bool isReload = false);
         void Load(bool isReload = false);
     }
 }
