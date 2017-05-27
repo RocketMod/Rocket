@@ -87,10 +87,10 @@
     <Compile Include="Event\Player\PlayerEvent.cs" />
     <Compile Include="Event\Player\PrePlayerConnectedEvent.cs" />
     <Compile Include="Event\Plugin\PluginEvent.cs" />
+    <Compile Include="Providers\Database\ContextInitializationResult.cs" />
     <Compile Include="Providers\Database\DatabaseContext.cs" />
     <Compile Include="Providers\Database\DatabaseProvider.cs" />
-    <Compile Include="Providers\Database\IQueryResult.cs" />
-    <Compile Include="Providers\Database\QueryState.cs" />
+    <Compile Include="Providers\Database\ContextInitializationState.cs" />
     <Compile Include="Providers\Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />

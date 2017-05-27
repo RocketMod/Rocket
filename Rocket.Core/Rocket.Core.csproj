@@ -95,7 +95,6 @@
     <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="Player\RocketPlayerBase.cs" />
     <Compile Include="Providers\Database\AdoNetEntityDatabaseProvider.cs" />
-    <Compile Include="Providers\Database\AdoNetQueryResult.cs" />
     <Compile Include="Providers\Database\TestContext.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />

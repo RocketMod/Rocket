@@ -9,7 +9,7 @@ namespace Rocket.API.Providers.Database
     {
         IDbConnection Connection { get; }
         void Setup(string connectionString);
-        IQueryResult InitializeContext(DatabaseContext context);
+        ContextInitializationResult InitializeContext(DatabaseContext context);
         bool TableExists(string name);
         List<DatabaseContext> DatabaseContexts { get; }
     }

@@ -33,7 +33,7 @@ namespace Rocket.Core.Providers.Database
             Connection = new EntityConnection(connectionString);
         }
 
-        public IQueryResult InitializeContext(DatabaseContext context)
+        public ContextInitializationResult InitializeContext(DatabaseContext context)
         {
             if(!context.DatabaseExists())
                 context.CreateDatabase();
@@ -58,7 +58,7 @@ namespace Rocket.Core.Providers.Database
                     continue;
 
                 var result = CreateTable(tableName, serializerClass);
-                if (result.State != QueryState.SUCCESS)
+                if (result.State != ContextInitializationState.SUCCESS)
                 {
                     return result;
                 }
@@ -68,7 +68,7 @@ namespace Rocket.Core.Providers.Database
             */
 
             DatabaseContexts.Add(context);
-            return new AdoNetQueryResult(QueryState.SUCCESS);
+            return new ContextInitializationResult(ContextInitializationState.CONNECTED);
         }
 
         /*
@@ -105,7 +105,7 @@ namespace Rocket.Core.Providers.Database
             }
             catch (Exception e)
             {
-                return new AdoNetQueryResult(QueryState.EXCEPTION) { Exception = e};
+                return new ContextInitializationResult(ContextInitializationState.EXCEPTION) { Exception = e};
             }
         }
         */
