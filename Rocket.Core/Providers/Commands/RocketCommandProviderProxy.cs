@@ -11,16 +11,20 @@ using Rocket.API.Providers;
 using Rocket.API.Providers.Commands;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Providers.Remoting;
+using Rocket.Core.Player;
 
 namespace Rocket.Core.Providers.Commands
 {
     [RocketProviderProxy]
     public class RocketCommandProviderProxy : IRocketCommandProvider
     {
-        public ReadOnlyCollection<IRocketCommand> Commands {
-            get {
+        public ReadOnlyCollection<IRocketCommand> Commands
+        {
+            get
+            {
                 List<IRocketCommand> result = new List<IRocketCommand>();
-                foreach (IRocketCommandProvider provider in R.Providers.GetProviders<IRocketCommandProvider>()) {
+                foreach (IRocketCommandProvider provider in R.Providers.GetProviders<IRocketCommandProvider>())
+                {
                     result.AddRange(provider.Commands);
                 }
                 return result.AsReadOnly();
@@ -29,7 +33,7 @@ namespace Rocket.Core.Providers.Commands
 
         public bool Execute(IRocketPlayer caller, string commandString)
         {
-            R.Logger.Debug("EXECUTE:"+commandString);
+            R.Logger.Debug("EXECUTE:" + commandString);
             string name = "";
             string[] parameters = new string[0];
             try
@@ -46,7 +50,7 @@ namespace Rocket.Core.Providers.Commands
 
                 List<IRocketCommand> commands = new List<IRocketCommand>();
 
-                R.Logger.Debug("NAME:"+name);
+                R.Logger.Debug("NAME:" + name);
 
                 //TODO: Figure a way to prioritise commands
 
@@ -55,25 +59,26 @@ namespace Rocket.Core.Providers.Commands
                     IRocketCommand command = commands[0];
 
                     bool cancelCommand = false;
-                        try
-                        {
-                            command.Execute(caller, parameters);
-                            R.Logger.Debug("EXECUTED");
-                            return true;
-                        }
-                        catch (NoPermissionsForCommandException ex)
-                        {
-                            R.Logger.Warn(ex);
-                        }
-                        catch (WrongUsageOfCommandException)
-                        {
-                            //
-                        }
-                        catch (Exception)
-                        {
-                            throw;
-                        }
-                }else
+                    try
+                    {
+                        command.Execute(caller, parameters);
+                        R.Logger.Debug("EXECUTED");
+                        return true;
+                    }
+                    catch (NoPermissionsForCommandException ex)
+                    {
+                        R.Logger.Warn(ex);
+                    }
+                    catch (WrongUsageOfCommandException)
+                    {
+                        //
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+                }
+                else
                 {
                     R.Logger.Info("Command not found");
                 }
@@ -90,7 +95,7 @@ namespace Rocket.Core.Providers.Commands
 
         }
 
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
 
         }

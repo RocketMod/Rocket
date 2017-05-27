@@ -1,7 +1,6 @@
 ﻿using Rocket.API.Collections;
 using System;
 using System.ComponentModel;
-using System.Linq;
 using UnityEngine;
 using System.Reflection;
 using Rocket.API.Extensions;
@@ -17,10 +16,7 @@ using Rocket.API.Providers.Remoting;
 using Rocket.API.Providers.Translations;
 using Rocket.Core.Commands;
 using Rocket.Core.Managers;
-using Rocket.Core.Providers.Commands;
-using Rocket.Core.Providers.Logging;
 using Rocket.Core.Providers.Permissions;
-using Rocket.Core.Providers.Plugin;
 using Rocket.Core.Providers.Translation;
 
 namespace Rocket.Core
@@ -59,15 +55,19 @@ namespace Rocket.Core
 
         public static RocketProviderManager Providers { get; } = new RocketProviderManager();
 
-        public static IRocketImplementationProvider Implementation => Providers.GetProviders<IRocketImplementationProvider>().First();
-        public static IRocketTranslationDataProvider Translations => Providers.GetProviders<IRocketTranslationDataProvider>().First();
-        public static IRocketConfigurationDataProvider Configuration => Providers.GetProviders<IRocketConfigurationDataProvider>().First();
-        public static IRocketPermissionsDataProvider Permissions => Providers.GetProviders<IRocketPermissionsDataProvider>().First();
+        public static IRocketImplementationProvider Implementation => Providers.GetProvider<IRocketImplementationProvider>();
+        public static IRocketTranslationDataProvider Translations => Providers.GetProvider<IRocketTranslationDataProvider>();
+        public static IRocketConfigurationDataProvider Configuration => Providers.GetProvider<IRocketConfigurationDataProvider>();
+        public static IRocketPermissionsDataProvider Permissions => Providers.GetProvider<IRocketPermissionsDataProvider>();
 
-        public static RocketPluginProviderProxy Plugins => Providers.GetProviderProxy<RocketPluginProviderProxy>();
-        public static RocketLoggingProviderProxy Logger => Providers.GetProviderProxy<RocketLoggingProviderProxy>();
-        public static RocketCommandProviderProxy Commands => Providers.GetProviderProxy<RocketCommandProviderProxy>();
-        public static RocketRemotingProviderProxy Remoting => Providers.GetProviderProxy<RocketRemotingProviderProxy>();
+        public static IRocketPluginProvider Plugins => Providers.GetProvider<IRocketPluginProvider>();
+        public static IRocketLoggingProvider Logger => Providers.GetProvider<IRocketLoggingProvider>();
+        public static IRocketCommandProvider Commands => Providers.GetProvider<IRocketCommandProvider>();
+        public static IRocketRemotingProvider Remoting => Providers.GetProvider<IRocketRemotingProvider>();
+        //public static RocketPluginProviderProxy Plugins => Providers.GetProviderProxy<RocketPluginProviderProxy>();
+        //public static RocketLoggingProviderProxy Logger => Providers.GetProviderProxy<RocketLoggingProviderProxy>();
+        //public static RocketCommandProviderProxy Commands => Providers.GetProviderProxy<RocketCommandProviderProxy>();
+        //public static RocketRemotingProviderProxy Remoting => Providers.GetProviderProxy<RocketRemotingProviderProxy>();
 
         public static void Reload()
         {

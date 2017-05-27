@@ -19,7 +19,7 @@ namespace Rocket.Plugins.Native
         public static NativeRocketPluginProvider Instance { get; private set; }
         private static List<Assembly> pluginAssemblies;
         private static List<NativeRocketPlugin> plugins = new List<NativeRocketPlugin>();
-        private Dictionary<string, string> libraries = new Dictionary<string, string>();   
+        private Dictionary<string, string> libraries = new Dictionary<string, string>();
 
         public ReadOnlyCollection<IRocketPlugin> GetPlugins()
         {
@@ -33,18 +33,12 @@ namespace Rocket.Plugins.Native
 
         public string GetPluginDirectory(string name)
         {
-            return Path.Combine(PluginsDirectory, name)+"/";
+            return Path.Combine(PluginsDirectory, name) + "/";
         }
 
         public string PluginsDirectory { get; private set; }
 
-        public ReadOnlyCollection<Type> Providers
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public ReadOnlyCollection<Type> Providers => new List<Type>().AsReadOnly();
 
         string librariesDirectory;
         public void Load(string pluginDirectory, string languageCode, string librariesDirectory)
@@ -98,7 +92,7 @@ namespace Rocket.Plugins.Native
                             }
                         }
 
-                        IRocketCommand command = new RocketAttributeCommand(this,commandAttribute.Name, commandAttribute.Help, commandAttribute.Syntax, commandAttribute.AllowedCaller, Permissions, Aliases, method);
+                        IRocketCommand command = new RocketAttributeCommand(this, commandAttribute.Name, commandAttribute.Help, commandAttribute.Syntax, commandAttribute.AllowedCaller, Permissions, Aliases, method);
                         commands.Add(command);
                     }
                 }
@@ -130,12 +124,6 @@ namespace Rocket.Plugins.Native
                 //Destroy(plugins[i - 1]);
             }
             plugins.Clear();
-        }
-        
-        public void Reload()
-        {
-            unloadPlugins();
-            loadPlugins();
         }
 
         private static Dictionary<string, string> GetAssembliesFromDirectory(string directory, string searchPattern = "*.dll")
@@ -234,9 +222,15 @@ namespace Rocket.Plugins.Native
 
         public RocketCommandList CommandProvider { get; set; }
 
-        public void Unload(bool isReload = false)
+        public void Unload(bool isReload)
         {
             unloadPlugins();
+        }
+
+        public ReadOnlyCollection<IRocketPlugin> Plugins => GetPlugins();
+        public ReadOnlyCollection<Type> LoadProviders()
+        {
+            return Providers;
         }
     }
 }

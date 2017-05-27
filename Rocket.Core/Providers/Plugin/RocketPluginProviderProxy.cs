@@ -37,7 +37,7 @@ namespace Rocket.Core.Providers.Plugin
             throw new NotImplementedException();
         }
 
-        public void Unload()
+        public void Unload(bool isReloading)
         {
             throw new NotImplementedException();
         }

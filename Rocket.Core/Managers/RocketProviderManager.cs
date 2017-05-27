@@ -63,7 +63,7 @@ namespace Rocket.Core.Managers
 
         public IRocketProviderBase GetProviderProxy(Type providerProxy)
         {
-            Type providerType = providerProxy.DeclaringType.GetInterfaces().FirstOrDefault();
+            Type providerType = providerProxy.DeclaringType.GetInterfaces().FirstOrDefault(typeof(IRocketProviderBase).IsAssignableFrom);
              if (providerType != null && providerProxies.ContainsKey(providerType.FullName))
             {
                 return providerProxies[providerType.FullName];
@@ -71,9 +71,17 @@ namespace Rocket.Core.Managers
             return null;
         }
 
-        public List<T> GetProviders<T>()
+        public List<T> GetProviders<T>() where T : IRocketProviderBase
         {
             return GetProviders(typeof(T)).Cast<T>().ToList();
+        }
+
+        public T GetProvider<T>() where T: IRocketProviderBase
+        {
+            var proxy = GetProviderProxy<T>();
+            if (proxy != null)
+                return proxy;
+            return GetProviders<T>().FirstOrDefault();
         }
 
         public List<IRocketProviderBase> GetProviders(Type providerType)
@@ -90,7 +98,6 @@ namespace Rocket.Core.Managers
                 return true;
             });
         }
-
 
 
         internal void Load()

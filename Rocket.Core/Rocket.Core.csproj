@@ -94,14 +94,14 @@
     <Compile Include="Commands\RocketCommandList.cs" />
     <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="Player\RocketPlayerBase.cs" />
+    <Compile Include="Providers\Commands\RocketCommandProviderProxy.cs" />
     <Compile Include="Providers\Database\AdoNetEntityDatabaseProvider.cs" />
     <Compile Include="Providers\Database\TestContext.cs" />
+    <Compile Include="Providers\Logging\RocketLoggingProviderProxy.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />
     <Compile Include="Providers\Logging\Logger.cs" />
-    <Compile Include="Providers\Logging\RocketPermissionsProviderProxy.cs" />
-    <Compile Include="Providers\Permissions\RocketPermissionDataProviderProxy.cs" />
-    <Compile Include="Providers\Permissions\RocketPermissionsDataProviderProxy.cs" />
+    <Compile Include="Providers\Remoting\RocketRemotingProviderProxy.cs" />
     <Compile Include="Providers\Translation\RocketBuiltinTranslationProvider.cs" />
     <Compile Include="Providers\Plugin\RocketPluginProviderProxy.cs" />
     <Compile Include="Providers\Remoting\RPC\RocketService.cs" />

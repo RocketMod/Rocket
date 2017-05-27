@@ -28,7 +28,7 @@ namespace Rocket.Core.Commands
 
             string language = "";
 
-            var allPlugins = R.Plugins.GetPlugins();
+            var allPlugins = R.Plugins.Plugins;
             if (command.Length == 1)
             {
                 switch (command[0].ToLower()) {

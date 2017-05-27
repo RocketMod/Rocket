@@ -15,9 +15,9 @@ namespace Rocket.API.Providers.Permissions
 
         ReadOnlyCollection<RocketPermissionsGroup> GetGroups(string id);
 
-        ReadOnlyCollection<string> GetPermissions(IRocketPlayer player);
+        //ReadOnlyCollection<string> GetPermissions(IRocketPlayer player);
 
-        ReadOnlyCollection<string> GetPermissions(string id);
+        //ReadOnlyCollection<string> GetPermissions(string id);
 
         RocketPermissionsGroup GetGroup(string groupId);
 

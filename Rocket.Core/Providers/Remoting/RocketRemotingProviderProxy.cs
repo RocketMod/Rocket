@@ -1,7 +1,7 @@
 ﻿using System;
 using Rocket.API.Providers.Remoting;
 
-namespace Rocket.Core
+namespace Rocket.Core.Providers.Remoting
 {
     public class RocketRemotingProviderProxy : IRocketRemotingProvider
     {
@@ -15,7 +15,7 @@ namespace Rocket.Core
             throw new NotImplementedException();
         }
 
-        public void Unload()
+        public void Unload(bool isReload = false)
         {
             throw new NotImplementedException();
         }

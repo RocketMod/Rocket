@@ -74,11 +74,11 @@ namespace Rocket.Plugins.ScriptBase
             _plugins.Add(context.Plugin);
         }
 
-        ReadOnlyCollection<IRocketPlugin> IRocketPluginProvider.GetPlugins()
+        public ReadOnlyCollection<Type> Providers => new List<Type>().AsReadOnly();
+        public ReadOnlyCollection<IRocketPlugin> Plugins => _plugins.AsReadOnly();
+        public ReadOnlyCollection<Type> LoadProviders()
         {
-            throw new NotImplementedException();
+            return Providers;
         }
-
-        public ReadOnlyCollection<Type> Providers { get; }
     }
 }
