@@ -95,6 +95,17 @@ namespace Rocket.API.Event
             }
         }
 
+        public void UnregisterEvents(IListener listener, IRocketPlugin plugin)
+        {
+            if (plugin == null) throw new ArgumentNullException(nameof(plugin));
+            UnregisterEventsInternal(listener, plugin);
+        }
+
+        internal void UnregisterEventsInternal(IListener listener, IRocketPlugin plugin)
+        {
+            //todo
+        }
+
         /// <summary>
         /// Call an event which will be send to all <see cref="IListener"/>s which are listening for it
         /// </summary>
