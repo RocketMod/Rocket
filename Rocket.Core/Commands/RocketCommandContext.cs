@@ -6,14 +6,17 @@ namespace Rocket.Core.Commands
 {
     public class RocketCommandContext: ICommandContext
     {
-        public RocketCommandContext(IRocketPlayer caller, string[] arguments)
+        public RocketCommandContext(IRocketPlayer caller, string[] arguments, IRocketCommand command)
         {
             Caller = caller;
-            Arguments = arguments;
+            Parameters = arguments;
+            Command = command;
         }
 
         public IRocketPlayer Caller { get; }
-        public string[] Arguments { get; }
+        public string[] Parameters { get; }
+        public IRocketCommand Command { get; }
+
         public void Print(string msg)
         {
             R.Implementation.Chat.Say(Caller, msg);

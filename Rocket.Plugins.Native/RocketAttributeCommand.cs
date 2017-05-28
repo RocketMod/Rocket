@@ -44,16 +44,16 @@ namespace Rocket.Plugins.Native
                     if (methodParameters[0].ParameterType == typeof(IRocketPlayer))
                         Method.Invoke(plugin, new object[] { ctx.Caller });
                     else if (methodParameters[0].ParameterType == typeof(string[]))
-                        Method.Invoke(plugin, new object[] { ctx.Arguments });
+                        Method.Invoke(plugin, new object[] { ctx.Parameters });
                     else if (typeof(ICommandContext).IsAssignableFrom(methodParameters[0].ParameterType))
                         Method.Invoke(plugin, new object[] { ctx });
                     break;
 
                 case 2:
                     if (methodParameters[0].ParameterType == typeof(IRocketPlayer) && methodParameters[1].ParameterType == typeof(string[]))
-                        Method.Invoke(plugin, new object[] { ctx.Caller, ctx.Arguments });
+                        Method.Invoke(plugin, new object[] { ctx.Caller, ctx.Parameters });
                     else if (methodParameters[0].ParameterType == typeof(string[]) && methodParameters[1].ParameterType == typeof(IRocketPlayer))
-                        Method.Invoke(plugin, new object[] { ctx.Arguments, ctx.Caller });
+                        Method.Invoke(plugin, new object[] { ctx.Parameters, ctx.Caller });
                     break;
             }
         }

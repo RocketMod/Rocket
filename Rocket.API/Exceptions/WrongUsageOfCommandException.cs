@@ -1,26 +1,18 @@
 ﻿using Rocket.API.Commands;
 using System;
-using Rocket.API.Player;
 
 namespace Rocket.API.Exceptions
 {
     public class WrongUsageOfCommandException : Exception
     {
-        private IRocketCommand command;
-        private IRocketPlayer player;
+        public ICommandContext CommandContext { get; }
 
-        public WrongUsageOfCommandException(IRocketPlayer player, IRocketCommand command)
+
+        public WrongUsageOfCommandException(ICommandContext ctx)
         {
-            this.command = command;
-            this.player = player;
+            CommandContext = ctx;
         }
 
-        public override string Message
-        {
-            get
-            {
-                return "The player " + player.DisplayName + " did not correctly use the command " + command.Name;
-            }
-        }
+        public override string Message => "The player " + CommandContext.Caller.DisplayName + " did not correctly use the command " + CommandContext.Command.Name;
     }
 }

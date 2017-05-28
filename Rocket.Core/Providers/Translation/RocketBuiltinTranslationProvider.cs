@@ -1,12 +1,6 @@
-﻿using Rocket.API.Providers;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using Rocket.API.Collections;
 using Rocket.API.Providers.Plugins;
-using Rocket.API.Serialisation;
-using Rocket.Core.Assets;
 using Rocket.API.Providers.Translations;
 
 namespace Rocket.Core.Providers.Translation
@@ -28,14 +22,14 @@ namespace Rocket.Core.Providers.Translation
             throw new NotImplementedException();
         }
 
-        public string Translate(string key, string language, params object[] args)
+        public string Translate(string key, params object[] args)
         {
-            throw new NotImplementedException();
+            return TranslateLanguage(key, GetCurrentLanguage(), args);
         }
 
-        public string Translate(IRocketPlugin plugin, string key, string language, params object[] args)
+        public string Translate(IRocketPlugin plugin, string key, params object[] args)
         {
-            throw new NotImplementedException();
+            return TranslateLanguage(plugin, key, GetCurrentLanguage(), args);
         }
 
         public void RegisterDefaultTranslations(IRocketPlugin plugin, TranslationList defaultTranslations)
@@ -49,6 +43,16 @@ namespace Rocket.Core.Providers.Translation
         }
 
         public string GetCurrentLanguage()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string TranslateLanguage(string key, string language, params object[] args)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string TranslateLanguage(IRocketPlugin plugin, string key, string language, params object[] args)
         {
             throw new NotImplementedException();
         }

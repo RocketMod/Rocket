@@ -110,7 +110,7 @@ namespace Rocket.Core
 
                 try
                 {
-                    rocketCommand.Execute(new RocketCommandContext(player, parameters));
+                    rocketCommand.Execute(new RocketCommandContext(player, parameters, rocketCommand));
                 }
                 catch (NoPermissionsForCommandException ex)
                 {

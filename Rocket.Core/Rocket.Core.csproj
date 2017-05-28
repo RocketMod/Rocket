@@ -86,7 +86,6 @@
   <ItemGroup>
     <Compile Include="Assets\WebXMLFileAsset.cs" />
     <Compile Include="Commands\CommandExit.cs" />
-    <Compile Include="Commands\CommandExtensions.cs" />
     <Compile Include="Commands\CommandHelp.cs" />
     <Compile Include="Commands\CommandP.cs" />
     <Compile Include="Commands\CommandRocket.cs" />
