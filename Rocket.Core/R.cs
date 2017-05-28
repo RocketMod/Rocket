@@ -1,9 +1,16 @@
 ﻿using Rocket.API.Collections;
 using System;
 using System.ComponentModel;
+using System.Linq;
 using UnityEngine;
 using System.Reflection;
+using System.Text.RegularExpressions;
+using Rocket.API.Commands;
+using Rocket.API.Event;
+using Rocket.API.Event.Command;
+using Rocket.API.Exceptions;
 using Rocket.API.Extensions;
+using Rocket.API.Player;
 using Rocket.API.Providers;
 using Rocket.API.Providers.Commands;
 using Rocket.API.Providers.Configuration;
@@ -16,6 +23,7 @@ using Rocket.API.Providers.Remoting;
 using Rocket.API.Providers.Translations;
 using Rocket.Core.Commands;
 using Rocket.Core.Managers;
+using Rocket.Core.Player;
 using Rocket.Core.Providers.Permissions;
 using Rocket.Core.Providers.Translation;
 
@@ -68,6 +76,57 @@ namespace Rocket.Core
         //public static RocketLoggingProviderProxy Logger => Providers.GetProviderProxy<RocketLoggingProviderProxy>();
         //public static RocketCommandProviderProxy Commands => Providers.GetProviderProxy<RocketCommandProviderProxy>();
         //public static RocketRemotingProviderProxy Remoting => Providers.GetProviderProxy<RocketRemotingProviderProxy>();
+
+        //todo refactor this but dont use providers? (we have events)
+        public static bool Execute(IRocketPlayer player, string command)
+        {
+            command = command.TrimStart('/');
+            string[] commandParts = Regex.Matches(command, @"[\""](.+?)[\""]|([^ ]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture).Cast<Match>().Select(m => m.Value.Trim('"').Trim()).ToArray();
+
+            if (commandParts.Length == 0)
+                return false;
+
+            string name = commandParts[0];
+            string[] parameters = commandParts.Skip(1).ToArray();
+            if (player == null) player = new ConsolePlayer();
+            IRocketCommand rocketCommand = R.Commands.Commands.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+            if (rocketCommand == null)
+                return false;
+
+            if (rocketCommand.AllowedCaller == AllowedCaller.Player && player is ConsolePlayer)
+                return false;
+            if (rocketCommand.AllowedCaller == AllowedCaller.Console && !(player is ConsolePlayer))
+                return false;
+
+            try
+            {
+                ExecuteCommandEvent @event = new ExecuteCommandEvent(player, rocketCommand, parameters);
+                EventManager.Instance.CallEvent(@event);
+
+                if (@event.IsCancelled)
+                {
+                    return false;
+                }
+
+                try
+                {
+                    rocketCommand.Execute(new RocketCommandContext(player, parameters));
+                }
+                catch (NoPermissionsForCommandException ex)
+                {
+                    R.Logger.Warn(ex.Message);
+                }
+                catch (WrongUsageOfCommandException ex)
+                {
+                    R.Logger.Info(ex.Message);
+                }
+            }
+            catch (Exception ex)
+            {
+                R.Logger.Error("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]", ex);
+            }
+            return true;
+        }
 
         public static void Reload()
         {

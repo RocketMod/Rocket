@@ -42,9 +42,9 @@ namespace Rocket.Core.Commands
             }
         }
 
-        public void Execute(IRocketPlayer caller, string[] command)
+        public void Execute(ICommandContext ctx)
         {
-            caller.Kick("You exited.");
+            ctx.Caller.Kick("You exited.");
         }
     }
 }

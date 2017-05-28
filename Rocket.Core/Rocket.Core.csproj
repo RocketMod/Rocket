@@ -91,6 +91,7 @@
     <Compile Include="Commands\CommandP.cs" />
     <Compile Include="Commands\CommandRocket.cs" />
     <Compile Include="Commands\RocketBuiltinCommandProvider.cs" />
+    <Compile Include="Commands\RocketCommandContext.cs" />
     <Compile Include="Commands\RocketCommandList.cs" />
     <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="Player\RocketPlayerBase.cs" />

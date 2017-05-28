@@ -44,9 +44,9 @@ namespace Rocket.API.Commands
         [XmlIgnore]
         public IRocketPluginProvider Provider { get; private set; }
 
-        public void Execute(IRocketPlayer caller, string[] command)
+        public void Execute(ICommandContext ctx)
         {
-            Command.Execute(caller, command);
+            Command.Execute(ctx);
         }
 
         public RegisteredRocketCommand() { }

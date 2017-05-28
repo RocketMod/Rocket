@@ -17,8 +17,11 @@ namespace Rocket.Core.Commands
         public List<string> Aliases => new List<string>();
         public List<string> Permissions => new List<string>() { "rocket.info", "rocket.rocket" };
 
-        public void Execute(IRocketPlayer caller, string[] command)
+        public void Execute(ICommandContext ctx)
         {
+            var command = ctx.Arguments;
+            var caller = ctx.Caller;
+
             if (command.Length == 0)
             {
                 R.Implementation.Chat.Say(caller, "Rocket v" + Assembly.GetExecutingAssembly().GetName().Version + " for "+R.Implementation.Name);
