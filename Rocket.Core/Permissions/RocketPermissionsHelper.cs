@@ -9,53 +9,48 @@ namespace Rocket.Core.Permissions
 {
     internal class RocketPermissionsHelper
     {
-        internal Asset<RocketPermissions> permissions = null;
+        internal Asset<RocketPermissions> permissions;
 
         public RocketPermissionsHelper(Asset<RocketPermissions> permissions)
         {
             this.permissions = permissions;
         }
 
-        public List<RocketPermissionsGroup> GetGroupsByIds(List<string> ids)
-        {
-            return permissions.Instance.Groups.Where(g => ids.Select(i => i.ToLower()).Contains(g.Id.ToLower())).ToList();
-        }
+        public List<RocketPermissionsGroup> GetGroupsByIds(List<string> ids) => this.permissions.Instance.Groups.OrderBy(x => x.Priority)
+            .Where(g => ids.Select(i => i.ToLower()).Contains(g.Id.ToLower())).ToList();
 
         public List<string> GetParentGroups(string parentGroup, string currentGroup)
         {
-            List<string> allgroups = new List<string>();
-            RocketPermissionsGroup group = permissions.Instance.Groups.Where(gr => (String.Compare(gr.Id, parentGroup, true) == 0)).FirstOrDefault();
-            if (group != null && (String.Compare(currentGroup, group.Id, true) != 0))
-            {
-                allgroups.Add(group.Id);
-                allgroups.AddRange(GetParentGroups(group.ParentGroup, currentGroup));
-            }
-            return allgroups;
+            var allGroups = new List<string>();
+            RocketPermissionsGroup group = this.permissions.Instance.Groups.OrderBy(x => x.Priority)
+                .FirstOrDefault(g => string.Equals(g.Id, parentGroup, StringComparison.CurrentCultureIgnoreCase));
+
+            if (group == null || string.Equals(group.Id, currentGroup, StringComparison.CurrentCultureIgnoreCase)) { return allGroups; }
+
+            allGroups.Add(group.Id);
+            allGroups.AddRange(this.GetParentGroups(group.ParentGroup, currentGroup));
+
+            return allGroups;
         }
 
         public bool HasPermission(IRocketPlayer player, List<string> requestedPermissions)
         {
-            if (player.IsAdmin) return true;
-            List<Permission> applyingPermissions = GetPermissions(player, requestedPermissions);
+            if (player.IsAdmin) { return true; }
 
-            if (applyingPermissions.Count != 0 )
-            {
-                return true;
-            }
-            return false;
+            List<Permission> applyingPermissions = this.GetPermissions(player, requestedPermissions);
+
+            return applyingPermissions.Count != 0;
         }
 
-        internal RocketPermissionsGroup GetGroup(string groupId)
-        {
-            return permissions.Instance.Groups.Where(g => g.Id.ToLower() == groupId.ToLower()).FirstOrDefault();
-        }
+        internal RocketPermissionsGroup GetGroup(string groupId) => permissions.Instance.Groups.OrderBy(x => x.Priority)
+            .FirstOrDefault(g => string.Equals(g.Id, groupId, StringComparison.CurrentCultureIgnoreCase));
 
         internal RocketPermissionsProviderResult RemovePlayerFromGroup(string groupId, IRocketPlayer player)
         {
             RocketPermissionsGroup g = GetGroup(groupId);
             if (g == null) return RocketPermissionsProviderResult.GroupNotFound;
 
-            if (g.Members.Where(m => m == player.Id).FirstOrDefault() == null) return RocketPermissionsProviderResult.PlayerNotFound;
+            if (g.Members.FirstOrDefault(m => m == player.Id) == null) return RocketPermissionsProviderResult.PlayerNotFound;
 
             g.Members.Remove(player.Id);
             SaveGroup(g);
@@ -67,7 +62,7 @@ namespace Rocket.Core.Permissions
             RocketPermissionsGroup g = GetGroup(groupId);
             if (g == null) return RocketPermissionsProviderResult.GroupNotFound;
 
-            if (g.Members.Where(m => m == player.Id).FirstOrDefault() != null) return RocketPermissionsProviderResult.DuplicateEntry;
+            if (g.Members.FirstOrDefault(m => m == player.Id) != null) return RocketPermissionsProviderResult.DuplicateEntry;
 
             g.Members.Add(player.Id);
             SaveGroup(g);
@@ -79,7 +74,7 @@ namespace Rocket.Core.Permissions
             RocketPermissionsGroup g = GetGroup(groupId);
             if (g == null) return RocketPermissionsProviderResult.GroupNotFound;
 
-            permissions.Instance.Groups.Remove(g); 
+            permissions.Instance.Groups.Remove(g);
             permissions.Save();
             return RocketPermissionsProviderResult.Success;
         }
@@ -105,73 +100,92 @@ namespace Rocket.Core.Permissions
 
         public List<RocketPermissionsGroup> GetGroups(IRocketPlayer player, bool includeParentGroups)
         {
-            List<RocketPermissionsGroup> groups = permissions.Instance?.Groups?.Where(g => g.Members.Contains(player.Id)).ToList(); // Get my Groups
-            if (groups == null) groups = new List<RocketPermissionsGroup>();
-            RocketPermissionsGroup defaultGroup = permissions.Instance?.Groups?.Where(g => (String.Compare(g.Id, permissions.Instance.DefaultGroup, true) == 0)).FirstOrDefault();
-            if (defaultGroup != null) groups.Add(defaultGroup);
+            // get player groups
+            List<RocketPermissionsGroup> groups = this.permissions.Instance?.Groups?.OrderBy(x => x.Priority)
+                                                      .Where(g => g.Members.Contains(player.Id))
+                                                      .ToList() ?? new List<RocketPermissionsGroup>();
 
-            if (includeParentGroups)
-            {
-                List<RocketPermissionsGroup> parentGroups = new List<RocketPermissionsGroup>();
-                foreach (RocketPermissionsGroup g in groups)
-                {
-                    parentGroups.AddRange(GetGroupsByIds(GetParentGroups(g.ParentGroup, g.Id)));
-                }
-                groups.AddRange(parentGroups);
-            }
+            // get first default group
+            RocketPermissionsGroup defaultGroup = this.permissions.Instance?.Groups?.OrderBy(x => x.Priority)
+                .FirstOrDefault(g => string.Equals(g.Id, this.permissions.Instance.DefaultGroup, StringComparison.CurrentCultureIgnoreCase));
 
-            return groups.Distinct().ToList();
+            // if exists, add to player groups
+            if (defaultGroup != null) { groups.Add(defaultGroup); }
+
+            // if requested, return list without parent groups
+            if (!includeParentGroups) { return groups.Distinct().OrderBy(x => x.Priority).ToList(); }
+
+            // add parent groups
+            var parentGroups = new List<RocketPermissionsGroup>();
+            groups.ForEach(g => parentGroups.AddRange(this.GetGroupsByIds(this.GetParentGroups(g.ParentGroup, g.Id))));
+            groups.AddRange(parentGroups);
+
+            return groups.Distinct().OrderBy(x => x.Priority).ToList();
         }
 
         public List<Permission> GetPermissions(IRocketPlayer player)
         {
-            List<Permission> p = new List<Permission>();
+            var result = new List<Permission>();
 
-            List<RocketPermissionsGroup> myGroups = GetGroups(player, true);
+            List<RocketPermissionsGroup> playerGroups = this.GetGroups(player, true);
+            playerGroups.Reverse(); // because we need desc ordering
 
-            foreach (RocketPermissionsGroup g in myGroups)
+            playerGroups.ForEach(group =>
             {
-                p.AddRange(g.Permissions);
-            }
+                group.Permissions.ForEach(permission =>
+                {
 
-            return p.Distinct().ToList();
+                    if (permission.Name.StartsWith("-"))
+                    {
+                        result.RemoveAll(x => string.Equals(x.Name, permission.Name.Substring(1), StringComparison.InvariantCultureIgnoreCase));
+                    } else if (result.Contains(permission))
+                    {
+                        result.Remove(permission);
+                        result.Add(permission);
+                    } else
+                    {
+                        result.Add(permission);
+                    }
+
+                });
+            });
+
+            return result.Distinct().ToList();
         }
 
         public List<Permission> GetPermissions(IRocketPlayer player, List<string> requestedPermissions)
         {
-            List<Permission> playerPermissions = GetPermissions(player);
-            playerPermissions.ForEach((Permission p) => { p.Name = p.Name.ToLower(); });
+            List<Permission> playerPermissions = this.GetPermissions(player);
 
-            List<Permission> applyingPermissions = playerPermissions.Where(p => requestedPermissions.Contains(p.Name)).ToList();
+            List<Permission> applyingPermissions = playerPermissions
+                .Where(p => requestedPermissions.Exists(x => string.Equals(x, p.Name, StringComparison.InvariantCultureIgnoreCase)))
+                .ToList();
 
+            if (playerPermissions.Exists(p => p.Name == "*")) { applyingPermissions.Add(new Permission("*")); }
 
-            if (playerPermissions.Where(p => p.Name == "*").FirstOrDefault() != null) applyingPermissions.Add(new Permission("*"));
-
-            foreach (Permission p in playerPermissions)
+            playerPermissions.ForEach(p =>
             {
-                string pb = p.Name;
-                if (pb.Contains(".")) pb = p.Name.Substring(0, p.Name.IndexOf('.'));
 
-                if (p.Name.EndsWith(".*")) //Player permission is a wildcard permission
+                if (!p.Name.EndsWith(".*")) { return; }
+
+                requestedPermissions.ForEach(requestedPermission =>
                 {
-                    foreach (string ps in requestedPermissions)
-                    {
-                        string b = ps;
-                        if (ps.Contains("."))
-                            b = ps.Substring(0, ps.IndexOf('.')).ToLower();
 
-                        if (ps.StartsWith(pb + ".")) //Check if wildcard base pb is the start of this permission
-                        {
-                            applyingPermissions.Add(p);
-                        }
-                    }
-                }
+                    int dotIndex = requestedPermission.LastIndexOf(".", StringComparison.InvariantCultureIgnoreCase);
+                    string baseRequested = dotIndex > 0 ? requestedPermission.Substring(0, dotIndex) : requestedPermission;
 
-                //Grant base permission if required
-                requestedPermissions.Where(ps => ps == pb).ToList().ForEach((ap) => { applyingPermissions.Add(p); });
-            }
-            return applyingPermissions;
+                    dotIndex = p.Name.LastIndexOf(".", StringComparison.InvariantCultureIgnoreCase);
+                    string basePlayer = dotIndex > 0 ? p.Name.Substring(0, dotIndex) : p.Name;
+
+                    if (string.Equals(basePlayer, baseRequested, StringComparison.InvariantCultureIgnoreCase)) { applyingPermissions.Add(p); }
+
+                });
+
+            });
+
+            return applyingPermissions.Distinct().ToList();
         }
 
     }
+
 }

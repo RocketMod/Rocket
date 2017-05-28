@@ -1,5 +1,4 @@
 ﻿using Rocket.API;
-using Rocket.Core.Logging;
 using Rocket.Core.Utils;
 using System;
 using System.Collections.Generic;
@@ -123,14 +122,16 @@ namespace Rocket.Core.Plugins
                 {
                     Assembly assembly = Assembly.LoadFile(library.FullName);//Assembly.Load(File.ReadAllBytes(library.FullName));
 
-                    if (RocketHelper.GetTypesFromInterface(assembly, "IRocketPlugin").Count == 1)
+                    List<Type> types = RocketHelper.GetTypesFromInterface(assembly, "IRocketPlugin").FindAll(x => !x.IsAbstract);
+
+                    if (types.Count == 1)
                     {
                         Logging.Logger.Log("Loading "+ assembly.GetName().Name +" from "+ assembly.Location);
                         assemblies.Add(assembly);
                     }
                     else
                     {
-                        //Logging.Logger.LogError("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
+                        Logging.Logger.LogError("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
                     }
                 }
                 catch (Exception ex)

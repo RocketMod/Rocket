@@ -11,7 +11,7 @@ namespace Rocket.API.Serialisation
         {
         }
 
-        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<Permission> permissions, string color = null)
+        public RocketPermissionsGroup(string id, string displayName, string parentGroup, List<string> members, List<Permission> permissions, string color = null, short priority = 100)
         {
             Id = id;
             DisplayName = displayName;
@@ -19,6 +19,7 @@ namespace Rocket.API.Serialisation
             Permissions = permissions;
             ParentGroup = parentGroup;
             Color = color;
+            Priority = priority;
         }
 
         [XmlElement("Id")]
@@ -71,5 +72,9 @@ namespace Rocket.API.Serialisation
 
         [XmlElement("ParentGroup")]
         public string ParentGroup;
+
+        [XmlElement("Priority")]
+        public short Priority = 100;
+
     }
 }
