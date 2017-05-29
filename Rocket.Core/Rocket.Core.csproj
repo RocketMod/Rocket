@@ -57,13 +57,7 @@
     <Reference Include="System.Data">
       <Private>True</Private>
     </Reference>
-    <Reference Include="System.Data.DataSetExtensions">
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Data.Entity">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Data.Entity.Design">
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.Linq">
@@ -141,7 +135,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Providers\Remoting\RPC\LongPollingEvent.cs" />
-    <None Include="packages.config" />
     <None Include="Rocket.Core.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
