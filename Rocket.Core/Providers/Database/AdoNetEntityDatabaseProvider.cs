@@ -7,7 +7,6 @@ using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
-using Harmony;
 using Rocket.API.Providers.Database;
 
 namespace Rocket.Core.Providers.Database
@@ -41,6 +40,7 @@ namespace Rocket.Core.Providers.Database
 
         public ContextInitializationResult InitializeContext(DatabaseContext context)
         {
+
             if ((context.Connection.State & ConnectionState.Open) != 0)
             {
                 return new ContextInitializationResult(ContextInitializationState.NOT_CONNECTED);
@@ -63,6 +63,8 @@ namespace Rocket.Core.Providers.Database
                     continue;
 
                 var serializerClass = propType.GetGenericArguments()[0];
+                if(!typeof(DatabaseTable).IsAssignableFrom(serializerClass))
+                    throw new Exception(serializerClass.FullName + " does not extend " + typeof(DatabaseTable).FullName + "!");
 
                 if (property.GetValue(context, null) == null)
                     property.SetValue(context, context.GetTable(serializerClass), null);
@@ -78,19 +80,8 @@ namespace Rocket.Core.Providers.Database
 
         private void SetupProperties(Type serializerClass)
         {
-            HarmonyInstance instance = HarmonyInstance.Create(serializerClass.FullName);
             foreach (var property in serializerClass.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
-                if (serializerClass.GetInterface(nameof(INotifyPropertyChanged)) == null)
-                {
-                //    throw new Exception("Class " + serializerClass.FullName + " is missing INotifyPropertyChanged interface");
-                }
-
-                if (serializerClass.GetInterface(nameof(INotifyPropertyChanging)) == null)
-                {
-                //    throw new Exception("Class " + serializerClass.FullName + " is missing INotifyPropertyChanging interface");
-                }
-
                 if (property.GetGetMethod() == null || property.GetSetMethod() == null)
                 {
                     throw new Exception("Property: " + property.Name + " in class " + serializerClass.FullName +
@@ -101,26 +92,7 @@ namespace Rocket.Core.Providers.Database
                     throw new Exception("Property: " + property.Name + " in class " + serializerClass.FullName +
                                         " has non virtual getter or setter!");
                 }
-
-                PatchProperty(instance, property);
             }
-        }
-
-        private void PatchProperty(HarmonyInstance instance, PropertyInfo property)
-        {
-            var method = property.GetGetMethod();
-
-            var prefix = typeof(AdoNetEntityDatabaseProvider).GetMethod("Prefix",
-                BindingFlags.Static | BindingFlags.NonPublic);
-
-
-            var postfix = typeof(AdoNetEntityDatabaseProvider).GetMethod("Postfix",
-                BindingFlags.Static | BindingFlags.NonPublic);
-
-            HarmonyMethod preM = new HarmonyMethod(prefix);
-            HarmonyMethod postM = new HarmonyMethod(postfix);
-
-            instance.Patch(method, preM, postM);
         }
 
         private static void Prefix(INotifyPropertyChanging __instance)

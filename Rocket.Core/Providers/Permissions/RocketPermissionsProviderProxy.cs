@@ -130,6 +130,12 @@ namespace Rocket.Core.Providers.Permissions
             foreach (var prov in R.Providers.GetProviders<IRocketPermissionsDataProvider>())
             {
                 var provResult = prov.CheckPermission(id, permission);
+
+                if (provResult.Priority < result.Priority)
+                {
+                    continue;
+                }
+
                 if (provResult.Priority > result.Priority)
                 {
                     result = provResult;

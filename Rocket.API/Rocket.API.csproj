@@ -91,6 +91,7 @@
     <Compile Include="Providers\Database\DatabaseContext.cs" />
     <Compile Include="Providers\Database\DatabaseProvider.cs" />
     <Compile Include="Providers\Database\ContextInitializationState.cs" />
+    <Compile Include="Providers\Database\DatabaseTable.cs" />
     <Compile Include="Providers\Implementation\Managers\IChatManager.cs" />
     <Compile Include="Collections\PropertyList.cs" />
     <Compile Include="Commands\RegisteredRocketCommand.cs" />
