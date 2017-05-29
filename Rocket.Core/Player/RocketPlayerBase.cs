@@ -49,7 +49,7 @@ namespace Rocket.Core.Player
 
         public virtual bool HasPermission(string permission)
         {
-            return R.Providers.GetProvider<IRocketPermissionsDataProvider>().CheckPermission(this, permission);
+            return R.Providers.GetProvider<IRocketPermissionsDataProvider>().CheckPermission(this, permission).Result == PermissionResultType.GRANT;
         }
     }
 }
