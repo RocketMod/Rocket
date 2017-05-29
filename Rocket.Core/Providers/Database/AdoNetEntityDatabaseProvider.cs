@@ -7,6 +7,7 @@ using System.Data.Linq;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
+using Harmony;
 using Rocket.API.Providers.Database;
 
 namespace Rocket.Core.Providers.Database
@@ -66,7 +67,7 @@ namespace Rocket.Core.Providers.Database
                 if (property.GetValue(context, null) == null)
                     property.SetValue(context, context.GetTable(serializerClass), null);
 
-                SetupProperties(serializerClass);
+                //SetupProperties(serializerClass);
             }
 
             DatabaseContexts.Add(context);
@@ -77,16 +78,17 @@ namespace Rocket.Core.Providers.Database
 
         private void SetupProperties(Type serializerClass)
         {
+            HarmonyInstance instance = HarmonyInstance.Create(serializerClass.FullName);
             foreach (var property in serializerClass.GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (serializerClass.GetInterface(nameof(INotifyPropertyChanged)) == null)
                 {
-                    throw new Exception("Class " + serializerClass.FullName + " is missing INotifyPropertyChanged interface");
+                //    throw new Exception("Class " + serializerClass.FullName + " is missing INotifyPropertyChanged interface");
                 }
 
                 if (serializerClass.GetInterface(nameof(INotifyPropertyChanging)) == null)
                 {
-                    throw new Exception("Class " + serializerClass.FullName + " is missing INotifyPropertyChanging interface");
+                //    throw new Exception("Class " + serializerClass.FullName + " is missing INotifyPropertyChanging interface");
                 }
 
                 if (property.GetGetMethod() == null || property.GetSetMethod() == null)
@@ -100,13 +102,35 @@ namespace Rocket.Core.Providers.Database
                                         " has non virtual getter or setter!");
                 }
 
-                PatchProperty(serializerClass, property);
+                PatchProperty(instance, property);
             }
         }
 
-        private void PatchProperty(Type serializerClass, PropertyInfo property)
+        private void PatchProperty(HarmonyInstance instance, PropertyInfo property)
         {
+            var method = property.GetGetMethod();
 
+            var prefix = typeof(AdoNetEntityDatabaseProvider).GetMethod("Prefix",
+                BindingFlags.Static | BindingFlags.NonPublic);
+
+
+            var postfix = typeof(AdoNetEntityDatabaseProvider).GetMethod("Postfix",
+                BindingFlags.Static | BindingFlags.NonPublic);
+
+            HarmonyMethod preM = new HarmonyMethod(prefix);
+            HarmonyMethod postM = new HarmonyMethod(postfix);
+
+            instance.Patch(method, preM, postM);
+        }
+
+        private static void Prefix(INotifyPropertyChanging __instance)
+        {
+            
+        }
+
+        private static void Postfix(INotifyPropertyChanged __instance)
+        {
+            
         }
 
         /*
