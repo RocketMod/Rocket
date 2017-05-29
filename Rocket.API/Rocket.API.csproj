@@ -117,19 +117,19 @@
     <Compile Include="Providers\Translations\IRocketTranslationDataProvider.cs" />
     <Compile Include="Providers\IRocketDataProviderBase.cs" />
     <Compile Include="Providers\IRocketProviderBase.cs" />
-    <Compile Include="Serialisation\IDefaultable.cs" />
+    <Compile Include="Serialization\IDefaultable.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
     <Compile Include="Exceptions\WrongUsageOfCommandException.cs" />
     <Compile Include="Exceptions\NoPermissionsForCommandException.cs" />
     <Compile Include="Providers\Plugins\IRocketPlugin.cs" />
     <Compile Include="Providers\Permissions\IRocketPermissionsDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Serialisation\IRocketPluginConfiguration.cs" />
-    <Compile Include="Serialisation\RocketSettings.cs" />
+    <Compile Include="Serialization\IRocketPluginConfiguration.cs" />
+    <Compile Include="Serialization\RocketSettings.cs" />
     <Compile Include="Collections\TranslationList.cs" />
     <Compile Include="Player\IRocketPlayer.cs" />
-    <Compile Include="Serialisation\RocketPermissions.cs" />
-    <Compile Include="Serialisation\RocketPermissionsGroup.cs" />
+    <Compile Include="Serialization\RocketPermissions.cs" />
+    <Compile Include="Serialization\RocketPermissionsGroup.cs" />
     <Compile Include="Utils\Debugging\Assert.cs" />
     <Compile Include="Utils\TaskDispatcher.cs" />
   </ItemGroup>

@@ -1,5 +1,5 @@
 ﻿using System.IO;
-using Rocket.API.Serialisation;
+using Rocket.API.Serialization;
 
 namespace Rocket.Plugins.Native
 {

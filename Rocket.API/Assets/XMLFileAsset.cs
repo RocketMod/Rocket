@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Xml.Serialization;
-using Rocket.API.Serialisation;
+using Rocket.API.Serialization;
 
 namespace Rocket.API.Assets
 {

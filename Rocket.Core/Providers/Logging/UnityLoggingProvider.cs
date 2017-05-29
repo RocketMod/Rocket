@@ -4,7 +4,7 @@ using Debug = UnityEngine.Debug;
 
 namespace Rocket.Core.Providers.Logging
 {
-    public class UntiyLoggingProvider: IRocketLoggingProvider
+    public class UnityLoggingProvider: IRocketLoggingProvider
     {
         public bool EchoNativeOutput { get; } = false;
 

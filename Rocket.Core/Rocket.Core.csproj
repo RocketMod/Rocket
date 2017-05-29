@@ -108,7 +108,7 @@
     <Compile Include="Providers\Database\TestContext.cs" />
     <Compile Include="Providers\Logging\ConsoleLoggingProvider.cs" />
     <Compile Include="Providers\Logging\RocketLoggingProviderProxy.cs" />
-    <Compile Include="Providers\Logging\UntiyLoggingProvider.cs" />
+    <Compile Include="Providers\Logging\UnityLoggingProvider.cs" />
     <Compile Include="Providers\Permissions\RocketPermissionsProviderProxy.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />

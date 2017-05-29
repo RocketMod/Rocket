@@ -164,7 +164,7 @@ namespace Rocket.Core
             //currently it generates everything in unturneds root directory
 
             Providers.registerProvider<ConsoleLoggingProvider>(true); //do not set to false!!
-            //Providers.registerProvider<UntiyLoggingProvider>(true);
+            //Providers.registerProvider<UnityLoggingProvider>(true);
             //Providers.registerProvider<Log4NetLoggingProvider>(true); TODO: Not working
 
             Assert.NotNull(Logger);

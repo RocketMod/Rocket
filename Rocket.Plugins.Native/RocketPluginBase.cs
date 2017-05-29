@@ -9,7 +9,7 @@ using Rocket.API.Event.Plugin;
 using Rocket.API.Providers.Logging;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Providers.Translations;
-using Rocket.API.Serialisation;
+using Rocket.API.Serialization;
 using Rocket.Core;
 using Rocket.Core.Assets;
 using UnityEngine;

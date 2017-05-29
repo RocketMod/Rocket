@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using Rocket.API.Player;
 using Rocket.API.Providers;
 using Rocket.API.Providers.Permissions;
-using Rocket.API.Serialisation;
+using Rocket.API.Serialization;
 
 namespace Rocket.Core.Providers.Permissions
 {

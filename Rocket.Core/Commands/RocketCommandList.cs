@@ -6,7 +6,7 @@ using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Player;
 using Rocket.API.Providers.Plugins;
-using Rocket.API.Serialisation;
+using Rocket.API.Serialization;
 
 namespace Rocket.Core.Commands
 {

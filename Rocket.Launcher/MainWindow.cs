@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using System.IO;
 using Rocket.API.Assets;
-using Rocket.API.Serialisation;
+using Rocket.API.Serialization;
 
 namespace Rocket.Launcher
 {
