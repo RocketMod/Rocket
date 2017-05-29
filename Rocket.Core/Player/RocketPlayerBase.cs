@@ -18,23 +18,16 @@ namespace Rocket.Core.Player
         [DataMember]
         public bool IsAdmin { get; private set; }
 
-        public RocketPlayerBase(string Id, string DisplayName = null, bool IsAdmin = false)
+        public RocketPlayerBase(string id, string displayName = null, bool isAdmin = false)
         {
-            this.Id = Id;
-            if (DisplayName == null)
-            {
-                DisplayName = Id;
-            }
-            else
-            {
-                this.DisplayName = DisplayName;
-            }
-            this.IsAdmin = IsAdmin;
+            Id = id;
+            DisplayName = displayName ?? id;
+            IsAdmin = isAdmin;
         }
 
         public int CompareTo(object obj)
         {
-            return Id.CompareTo(((IRocketPlayer)obj).Id);
+            return String.Compare(Id, ((IRocketPlayer)obj).Id, StringComparison.Ordinal);
         }
 
         public virtual void Kick(string message)
