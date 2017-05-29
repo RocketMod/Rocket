@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Rocket.API.Commands;
+using Rocket.API.Providers.Logging;
 using Rocket.API.Providers.Plugins;
 using Rocket.Core;
 using Rocket.Core.Commands;
@@ -164,12 +165,12 @@ namespace Rocket.Plugins.Native
                     }
                     else
                     {
-                        R.Logger.Error("Invalid or outdated plugin assembly: " + assembly.GetName().Name);
+                        R.Logger.Log(LogLevel.ERROR, "Invalid or outdated plugin assembly: " + assembly.GetName().Name);
                     }
                 }
                 catch (Exception ex)
                 {
-                    R.Logger.Error("Could not load plugin assembly: " + library.Name, ex);
+                    R.Logger.Log(LogLevel.ERROR, "Could not load plugin assembly: " + library.Name, ex);
                 }
             }
             return assemblies;
@@ -194,7 +195,7 @@ namespace Rocket.Plugins.Native
             }
             catch (Exception ex)
             {
-                R.Logger.Fatal(ex);
+                R.Logger.Log(LogLevel.FATAL, ex);
             }
         }
 

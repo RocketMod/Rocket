@@ -1,14 +1,11 @@
 ﻿using System;
 using System.ServiceModel;
 using System.ServiceModel.Description;
-using Rocket.API;
 using Rocket.API.Event;
 using Rocket.API.Event.Implementation;
 using Rocket.API.Event.Player;
-using Rocket.API.Player;
 using Rocket.API.Providers.Logging;
 using Rocket.Core.Player;
-using Rocket.Core.Providers.Logging;
 
 namespace Rocket.Core.Providers.Remoting.RPC
 {
@@ -52,13 +49,13 @@ namespace Rocket.Core.Providers.Remoting.RPC
                 }
                 
                 //TODO double log
-                R.Logger.OnLog += message => { if (message.LogLevel != LogLevel.DEBUG) OnLog.Invoke(message); };
+                //R.Logger.OnLog += message => { if (message.LogLevel != LogLevel.DEBUG) OnLog.Invoke(message); };
 
-                R.Logger.Info("Starting IPC at " + endpoint);
+                R.Logger.Log(LogLevel.INFO, "Starting IPC at " + endpoint);
             }
             catch (Exception e)
             {
-                R.Logger.Error("Failed to start IPC at " + endpoint, e);
+                R.Logger.Log(LogLevel.ERROR, "Failed to start IPC at " + endpoint, e);
             }
         }
 

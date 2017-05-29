@@ -1,6 +1,6 @@
 ﻿using Rocket.API.Providers;
 using Rocket.API.Providers.Plugins;
-using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Rocket.Core.Providers.Plugin
@@ -10,36 +10,38 @@ namespace Rocket.Core.Providers.Plugin
     {
         public ReadOnlyCollection<IRocketPlugin> Plugins
         {
-            get { return null; }
-        }
+            get
+            {
+                var list = new List<IRocketPlugin>();
+                foreach (var prov in R.Providers.GetProviders<IRocketPluginProvider>())
+                {
+                    list.AddRange(prov.Plugins);
+                }
 
-        public ReadOnlyCollection<Type> Providers {
-            get { return null; }
+                return list.AsReadOnly();
+            }
         }
 
         public IRocketPlugin GetPlugin(string name)
         {
-            throw new NotImplementedException();
-        }
+            foreach (var prov in R.Providers.GetProviders<IRocketPluginProvider>())
+            {
+                var pl = prov.GetPlugin(name);
+                if (pl != null)
+                    return pl;
+            }
 
-        public ReadOnlyCollection<IRocketPlugin> GetPlugins()
-        {
-            throw new NotImplementedException();
+            return null;
         }
 
         public void Load(bool isReload = false)
         {
-            throw new NotImplementedException();
-        }
 
-        public ReadOnlyCollection<Type> LoadProviders()
-        {
-            throw new NotImplementedException();
         }
 
         public void Unload(bool isReloading)
         {
-            throw new NotImplementedException();
+       
         }
     }
 }

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using System.Threading;
-using Rocket.API;
-using Rocket.API.Player;
+using Rocket.API.Providers.Logging;
 using UnityEngine;
 namespace Rocket.Core.Providers.Remoting.RCON
 {
@@ -103,7 +101,7 @@ namespace Rocket.Core.Providers.Remoting.RCON
                         continue;
                     }
                     if (command != "ia")
-                        R.Logger.Info("Client has executed command \"" + command + "\"");
+                        R.Logger.Log(LogLevel.INFO, "Client has executed command \"" + command + "\"");
 
                     lock (commands)
                     {
@@ -116,13 +114,13 @@ namespace Rocket.Core.Providers.Remoting.RCON
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
                 Thread.Sleep(1500);
-                R.Logger.Info("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
+                R.Logger.Log(LogLevel.INFO, "Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
                 newclient.Close();
 
             }
             catch (Exception ex)
             {
-                R.Logger.Error(ex);
+                R.Logger.Log(LogLevel.ERROR, null, ex);
             }
         }
 

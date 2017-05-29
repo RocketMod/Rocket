@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 
 namespace Rocket.API.Providers.Plugins
 {
@@ -8,6 +7,5 @@ namespace Rocket.API.Providers.Plugins
     {
         ReadOnlyCollection<IRocketPlugin> Plugins { get; }
         IRocketPlugin GetPlugin(string name);
-        ReadOnlyCollection<Type> LoadProviders();
     }
 }

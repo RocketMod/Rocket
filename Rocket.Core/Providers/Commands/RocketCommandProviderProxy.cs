@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Rocket.API.Commands;
-using Rocket.API.Exceptions;
-using Rocket.API.Player;
 using Rocket.API.Providers;
 using Rocket.API.Providers.Commands;
-using Rocket.Core.Player;
 
 namespace Rocket.Core.Providers.Commands
 {

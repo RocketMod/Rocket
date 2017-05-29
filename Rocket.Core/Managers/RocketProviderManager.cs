@@ -4,11 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
-using Rocket.API.Assets;
 using Rocket.API.Providers;
+using Rocket.API.Providers.Logging;
 using Rocket.API.Providers.Plugins;
 using Rocket.Core.Providers;
 using UnityEngine;
+using Assert = Rocket.Core.Utils.Debugging.Assert;
 
 namespace Rocket.Core.Managers
 {
@@ -19,40 +20,73 @@ namespace Rocket.Core.Managers
         private Dictionary<string, IRocketProviderBase> providerProxies = new Dictionary<string, IRocketProviderBase>();
         private readonly List<ProviderRegistration> providers = new List<ProviderRegistration>();
 
-        internal RocketProviderManager() {
+        internal RocketProviderManager()
+        {
+            LoadFromAssembly(typeof(API.Environment).Assembly);
+            LoadFromAssembly(typeof(R).Assembly);
+        }
 
-            foreach (Type type in typeof(Rocket.API.Environment).Assembly.GetTypes()) {
-                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsInterface && type.IsAssignableFrom(typeof(IRocketProviderBase))) {
+        private void LoadFromAssembly(Assembly asm)
+        {
+            foreach (Type type in asm.GetTypes())
+            {
+                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsInterface && typeof(IRocketProviderBase).IsAssignableFrom(type))
+                {
+                    Console.WriteLine("Registering provider: " + type.FullName); //logger not ready yet
                     providerTypes.Add(type);
                 }
-            }
+                }
 
-            foreach (Type type in Assembly.GetExecutingAssembly().GetTypes())
+            foreach (Type type in asm.GetTypes())
             {
-                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsAssignableFrom(typeof(IRocketProviderBase))) {
-                    registerProvider(type);
-                }
-                RocketProviderProxyAttribute proxyAttribute =  type.GetCustomAttributes(typeof(RocketProviderProxyAttribute), true).Cast<RocketProviderProxyAttribute>().FirstOrDefault();
-                if (proxyAttribute != null && type.IsAssignableFrom(typeof(IRocketProviderBase)))
+                if (!typeof(IRocketProviderBase).IsAssignableFrom(type))
+                    continue;
+
+                RocketProviderProxyAttribute proxyAttribute = (RocketProviderProxyAttribute)type.GetCustomAttributes(typeof(RocketProviderProxyAttribute), true).FirstOrDefault();
+                
+                if (proxyAttribute == null)
+                    continue;
+
+                if (proxyAttribute.Provider == null)
                 {
-                    providerProxies.Add(proxyAttribute.Provider.FullName, (IRocketProviderBase)Activator.CreateInstance(type));
+                    proxyAttribute.Provider =
+                        type.GetInterfaces().First(typeof(IRocketProviderBase).IsAssignableFrom);
                 }
+
+                Console.WriteLine("Registering provider proxy: " + type.FullName + "[" + proxyAttribute.Provider.FullName + "]"); //logger not ready yet
+                providerProxies.Add(proxyAttribute.Provider.FullName, (IRocketProviderBase)Activator.CreateInstance(type));
             }
+
         }
 
-        internal ProviderRegistration registerProvider<T>() where T : IRocketProviderBase
+        internal ProviderRegistration registerProvider<T>(bool autoLoad = false) where T : IRocketProviderBase
         {
-            return registerProvider(typeof(T));
+            return registerProvider(typeof(T), autoLoad);
         }
 
-        internal ProviderRegistration registerProvider(Type provider)
+        internal ProviderRegistration registerProvider(Type provider, bool autoLoad = false)
         {
-            Type providerType = provider.DeclaringType.GetInterfaces().FirstOrDefault();
-            if (providerType == null) throw new ArgumentException("The given type is no interface");
-            if (providerTypes.Contains(providerType)) throw new ArgumentException("The given type is not a known provider interface");
-            
-            ProviderRegistration result = new ProviderRegistration(providerType.FullName,provider);
+            Console.WriteLine("Registering provider implementation: " + provider.FullName + " (autoload: " + autoLoad + ")");
+            Assert.NotNull(provider, nameof(provider));
+            Type providerType = provider.GetInterfaces().FirstOrDefault(typeof(IRocketProviderBase).IsAssignableFrom);
+            Assert.NotNull(providerType, nameof(providerType));
+
+            bool isClass = !provider.IsInterface && !provider.IsAbstract;
+            Assert.IsTrue(isClass, nameof(isClass));
+
+            if (!providerTypes.Contains(providerType))
+                throw new ArgumentException($"The type {providerType.FullName} is not a known provider interface");
+
+            ProviderRegistration result = new ProviderRegistration(providerType.FullName, provider);
             providers.Add(result);
+
+            if (autoLoad)
+            {
+                Console.WriteLine("Loading provider: " + provider.FullName);
+                result.Load();
+                result.Implementation.Load();
+            }
+
             return result;
         }
 
@@ -63,10 +97,11 @@ namespace Rocket.Core.Managers
 
         public IRocketProviderBase GetProviderProxy(Type providerProxy)
         {
-            Type providerType = providerProxy.DeclaringType.GetInterfaces().FirstOrDefault(typeof(IRocketProviderBase).IsAssignableFrom);
-             if (providerType != null && providerProxies.ContainsKey(providerType.FullName))
+            Assert.NotNull(providerProxy, nameof(providerProxy));
+
+            if (providerProxies.ContainsKey(providerProxy.FullName))
             {
-                return providerProxies[providerType.FullName];
+                return providerProxies[providerProxy.FullName];
             }
             return null;
         }
@@ -76,24 +111,37 @@ namespace Rocket.Core.Managers
             return GetProviders(typeof(T)).Cast<T>().ToList();
         }
 
-        public T GetProvider<T>() where T: IRocketProviderBase
+        public T GetProvider<T>() where T : IRocketProviderBase
         {
-            var proxy = GetProviderProxy<T>();
+            return (T) GetProvider(typeof(T));
+        }
+
+        public IRocketProviderBase GetProvider(Type type)
+        {
+            var providers = GetProviders(type);
+            if (providers.Count == 0)
+            {
+                R.Logger.Log(LogLevel.WARN, "Could not find provider implementations for: " + type.FullName);
+                return null;
+            }
+
+            var proxy = GetProviderProxy(type);
             if (proxy != null)
                 return proxy;
-            return GetProviders<T>().FirstOrDefault();
+            return providers.FirstOrDefault();
         }
 
         public List<IRocketProviderBase> GetProviders(Type providerType)
         {
-            if (!providerType.IsInterface) throw new ArgumentException("The given type is no interface");
-            if (providerTypes.Contains(providerType)) throw new ArgumentException("The given type is not a known provider interface");
-            return providers.Where(p => p.ProviderType == providerType.FullName && p.Enabled).Select(p => p.Implementation).ToList();
+            if (!providerType.IsInterface) throw new ArgumentException($"The type {providerType.FullName} is no interface");
+            if (!providerTypes.Contains(providerType)) throw new ArgumentException($"The type {providerType.FullName} is not a known provider interface");
+            return providers.Where(p => p.ProviderType.Equals(providerType.FullName, StringComparison.OrdinalIgnoreCase) && p.Enabled).Select(p => p.Implementation).ToList();
         }
 
         internal void Unload()
         {
-            providers.Where(p => p.Enabled).All(p => {
+            providers.Where(p => p.Enabled).All(p =>
+            {
                 p.Implementation.Unload();
                 return true;
             });
@@ -105,7 +153,7 @@ namespace Rocket.Core.Managers
             //All providers must be loaded at this point;
             string providerFileName = "Providers.config.xml";
 
-            List <ProviderRegistration> persistantProviderRegistrations = new List<ProviderRegistration>();
+            List<ProviderRegistration> persistantProviderRegistrations = new List<ProviderRegistration>();
             XmlSerializer serializer = new XmlSerializer(typeof(List<ProviderRegistration>));
 
             if (File.Exists(providerFileName))
@@ -116,44 +164,54 @@ namespace Rocket.Core.Managers
                 }
             }
 
-            foreach (ProviderRegistration provider in persistantProviderRegistrations) {
-                if (provider.Provider.Resolve()) {
-                    R.Logger.Info("Resolving " + provider.ProviderType + " " + provider.Provider);
+            foreach (ProviderRegistration provider in persistantProviderRegistrations)
+            {
+                if (provider.Provider.Resolve())
+                {
+                    Console.WriteLine("Resolving " + provider.ProviderType + " " + provider.Provider);
                 }
                 else
                 {
-                    R.Logger.Error("Failed to resolve "+ provider.ProviderType+" " + provider.Provider);
+                    Console.WriteLine("Failed to resolve " + provider.ProviderType + " " + provider.Provider);
                 }
-                if (provider.Enabled && provider.ProviderType == typeof(IRocketPluginProvider).FullName) {
-                    provider.Load();
-                    foreach (Type newProviderType in ((IRocketPluginProvider) provider.Implementation).LoadProviders()) {
-                        registerProvider(newProviderType);
-                    }
+
+                providers.Add(provider);
+
+                if (provider.Enabled && provider.ProviderType == typeof(IRocketPluginProvider).FullName)
+                {
+                    //foreach (Type newProviderType in ((IRocketPluginProvider) provider.Implementation).LoadProviders()) {
+                    //    registerProvider(newProviderType);
+                    //}
                 }
             }
 
             foreach (ProviderRegistration provider in providers)
             {
-                if (persistantProviderRegistrations.FirstOrDefault(p => p.Equals(provider) && !p.Enabled) == null) {
-                    if (providerProxies.ContainsKey(provider.ProviderType)) {
-                        provider.Load();
-                    }
-                    else {
-                        if (providers.FirstOrDefault(p => p.Enabled && p.ProviderType == provider.ProviderType) == null) {
-                            provider.Load();
-                        }
-                    }
+                if (persistantProviderRegistrations.FirstOrDefault(p => p.Equals(provider) && !p.Enabled) != null)
+                    continue;
+
+                if (providerProxies.ContainsKey(provider.ProviderType))
+                {
+                    provider.Load();
+                    provider.Implementation.Load();
+                    continue;
+                }
+
+                if (providers.FirstOrDefault(p => p.Enabled && p.ProviderType == provider.ProviderType) == null)
+                {
+                    provider.Load();
+                    provider.Implementation.Load();
                 }
             }
             using (StreamWriter writer = new StreamWriter(providerFileName))
             {
-                serializer.Serialize(writer,providers);
+                serializer.Serialize(writer, providers);
             }
         }
 
-        public void RegisterProvider(IRocketProviderBase pluginProvider)
+        public void RegisterProvider(IRocketPluginProvider pluginProvider)
         {
-            //??
+            //todo: register instance providers
         }
     }
 }

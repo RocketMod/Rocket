@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Rocket.API.Providers.Logging;
 
 namespace Rocket.Core.Providers.Remoting.RPC
 {
@@ -39,7 +40,7 @@ namespace Rocket.Core.Providers.Remoting.RPC
             }
             catch (Exception ex)
             {
-                R.Logger.Error(ex);
+                R.Logger.Log(LogLevel.ERROR, null, ex);
             }
             return default(T);
         }
@@ -72,7 +73,7 @@ namespace Rocket.Core.Providers.Remoting.RPC
             }
             catch (Exception ex)
             {
-                R.Logger.Error(ex);
+                R.Logger.Log(LogLevel.ERROR, null, ex);
             }
             return new Queue<T>();
         }
@@ -95,7 +96,7 @@ namespace Rocket.Core.Providers.Remoting.RPC
             }
             catch (Exception ex)
             {
-                R.Logger.Error(ex);
+                R.Logger.Log(LogLevel.ERROR, null, ex);
             }
             return false;
         }

@@ -5,6 +5,7 @@ using System;
 using System.Reflection;
 using System.Xml.Serialization;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Rocket.Core.Providers
 {
@@ -18,11 +19,10 @@ namespace Rocket.Core.Providers
             Provider = new TypeReference(provider);
         }
 
-        public string ProviderType { get; private set; }
-        public TypeReference Provider { get; }
-        public bool Enabled { get; private set; } = false;
-
-
+        public string ProviderType { get; set; }
+        public TypeReference Provider { get; set; }
+        public bool Enabled { get; private set; }
+        
         public void Load()
         {
             if (!Enabled)
@@ -40,7 +40,7 @@ namespace Rocket.Core.Providers
             if (Enabled)
             {
                 if (Provider.Type.IsAssignableFrom(typeof(MonoBehaviour)))
-                    GameObject.Destroy((MonoBehaviour)Implementation);
+                    Object.Destroy((MonoBehaviour)Implementation);
                 Implementation = null;
                 Enabled = false;
             }

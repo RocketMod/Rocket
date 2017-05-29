@@ -1,4 +1,5 @@
 ﻿using System;
+using Rocket.API.Providers.Logging;
 using Rocket.Core;
 using Rocket.Core.Providers.Remoting.RPC;
 
@@ -13,7 +14,7 @@ namespace Rocket.IPC.Host
                 RocketServiceHost host = new RocketServiceHost(27115);
                 while (true)
                 {
-                    R.Logger.Info(Console.ReadLine());
+                    R.Logger.Log(LogLevel.INFO, Console.ReadLine());
                 }
             }
             catch (Exception)

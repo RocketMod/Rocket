@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Commands;
-using Rocket.API.Player;
 
 namespace Rocket.Core.Commands
 {

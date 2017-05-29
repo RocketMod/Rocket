@@ -1,15 +1,13 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Rocket.API.Providers.Logging
 {
     [RocketProvider]
     public interface IRocketLoggingProvider : IRocketProviderBase
     {
-        void Debug(object message, Exception exception = null);
-        void Info(object message, Exception exception = null);
-        void Warn(object message, Exception exception = null);
-        void Error(object message, Exception exception = null);
-        void Fatal(object message, Exception exception = null);
-        event Action<LogMessage> OnLog;
+        bool EchoNativeOutput { get; }
+        void Log(LogLevel level, object message, Exception exception = null);
+        void Log(LogLevel level, Exception exception);
     }
 }

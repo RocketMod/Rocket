@@ -1,13 +1,11 @@
 ﻿using Rocket.API.Player;
-using Rocket.API.Providers;
 using Rocket.API.Providers.Permissions;
 using Rocket.API.Serialisation;
-using Rocket.Core.Assets;
 using System;
-using System.Collections.Generic;
 using Rocket.API.Assets;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Rocket.API.Providers.Logging;
 
 namespace Rocket.Core.Providers.Permissions
 {
@@ -63,7 +61,7 @@ namespace Rocket.Core.Providers.Permissions
             }
             catch (Exception ex)
             {
-                R.Logger.Fatal(ex);
+                R.Logger.Log(LogLevel.FATAL, ex);
             }
         }
 

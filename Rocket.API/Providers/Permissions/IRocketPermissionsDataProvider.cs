@@ -1,9 +1,5 @@
-﻿using Rocket.API.Commands;
-using Rocket.API.Serialisation;
-using System;
-using System.Collections.Generic;
+﻿using Rocket.API.Serialisation;
 using System.Collections.ObjectModel;
-using System.Linq;
 using Rocket.API.Player;
 
 namespace Rocket.API.Providers.Permissions

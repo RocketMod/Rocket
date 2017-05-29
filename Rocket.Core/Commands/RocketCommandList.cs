@@ -3,15 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using Rocket.API.Commands;
-using Rocket.API.Event;
-using Rocket.API.Event.Command;
-using Rocket.API.Exceptions;
 using Rocket.API.Player;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialisation;
-using Rocket.Core.Player;
 
 namespace Rocket.Core.Commands
 {

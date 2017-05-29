@@ -65,17 +65,9 @@ namespace Rocket.API.Event
                     continue;
                 }
 
-                List<MethodInfo> methods;
-                try
-                {
-                    methods = _eventListeners[t];
-                }
-                catch (KeyNotFoundException)
-                {
-
-                    methods = new List<MethodInfo>();
-                }
-                if (!methods.Contains(method)) methods.Add(method);
+                List<MethodInfo> methods = _eventListeners.ContainsKey(t) ? _eventListeners[t] : new List<MethodInfo>();
+                if (!methods.Contains(method))
+                    methods.Add(method);
 
                 if (_eventListeners.ContainsKey(t))
                 {
@@ -103,7 +95,18 @@ namespace Rocket.API.Event
 
         internal void UnregisterEventsInternal(IListener listener, IRocketPlugin plugin)
         {
-            //todo
+            if (plugin == null)
+                plugin = dummyPlugin;
+
+            _listenerMethods.Remove(listener);
+            if (_listeners.ContainsKey(plugin))
+                _listeners.Remove(plugin);
+
+            foreach (var listenerKey in _eventListeners.Keys)
+            {
+                var list = _eventListeners[listenerKey];
+                list.RemoveAll(c => c.DeclaringType == listener.GetType());
+            }
         }
 
         /// <summary>
@@ -185,28 +188,28 @@ namespace Rocket.API.Event
 
         private class DummyPlugin : IRocketPlugin
         {
-            public string Name { get{throw new NotImplementedException(); } }
-            public PluginState State { get { throw new NotImplementedException(); } }
+            public string Name { get{throw new NotSupportedException(); } }
+            public PluginState State { get { throw new NotSupportedException(); } }
             public TranslationList DefaultTranslations => new TranslationList();
-            public string WorkingDirectory { get{ throw new NotImplementedException(); } }
+            public string WorkingDirectory { get{ throw new NotSupportedException(); } }
             public void LoadPlugin()
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
 
             public void UnloadPlugin(PluginState state = PluginState.Unloaded)
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
 
             public void ReloadPlugin()
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
 
             public void DestroyPlugin()
             {
-                throw new NotImplementedException();
+                throw new NotSupportedException();
             }
 
             public bool Enabled

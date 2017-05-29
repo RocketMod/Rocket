@@ -6,13 +6,13 @@ using Rocket.API.Assets;
 using Rocket.API.Collections;
 using Rocket.API.Event;
 using Rocket.API.Event.Plugin;
+using Rocket.API.Providers.Logging;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Providers.Translations;
 using Rocket.API.Serialisation;
 using Rocket.Core;
 using Rocket.Core.Assets;
 using UnityEngine;
-using Environment = Rocket.API.Environment;
 
 namespace Rocket.Plugins.Native
 {
@@ -104,7 +104,7 @@ namespace Rocket.Plugins.Native
 
         public virtual void LoadPlugin()
         {
-            R.Logger.Info("\n[loading] " + name);
+            R.Logger.Log(LogLevel.INFO, "\n[loading] " + name);
             Translations.Load();
 
             try
@@ -113,7 +113,7 @@ namespace Rocket.Plugins.Native
             }
             catch (Exception ex)
             {
-                R.Logger.Fatal("Failed to load " + Name + ", unloading now...", ex);
+                R.Logger.Log(LogLevel.FATAL, "Failed to load " + Name + ", unloading now...", ex);
                 try
                 {
                     UnloadPlugin(PluginState.Failure);
@@ -121,7 +121,7 @@ namespace Rocket.Plugins.Native
                 }
                 catch (Exception ex1)
                 {
-                    R.Logger.Fatal("Failed to unload " + Name, ex1);
+                    R.Logger.Log(LogLevel.FATAL, "Failed to unload " + Name, ex1);
                 }
             }
 
@@ -139,7 +139,7 @@ namespace Rocket.Plugins.Native
                 }
                 catch (Exception ex1)
                 {
-                    R.Logger.Fatal("Failed to unload " + Name, ex1);
+                    R.Logger.Log(LogLevel.FATAL, "Failed to unload " + Name, ex1);
                 }
             }
 
@@ -151,7 +151,7 @@ namespace Rocket.Plugins.Native
 
         public virtual void UnloadPlugin(PluginState state = PluginState.Unloaded)
         {
-            R.Logger.Info("\n[Unloading] " + Name);
+            R.Logger.Log(LogLevel.INFO, "\n[Unloading] " + Name);
             PluginUnloadingEvent unloadingEvent = new PluginUnloadingEvent(this);
             EventManager.Instance.CallEvent(unloadingEvent);
             Unload();

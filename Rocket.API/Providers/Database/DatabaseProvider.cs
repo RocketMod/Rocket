@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Data;
-using System.Data.Linq;
 
 namespace Rocket.API.Providers.Database
 {

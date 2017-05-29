@@ -1,7 +1,6 @@
 ﻿using Rocket.API.Collections;
 using Rocket.API.Providers.Implementation.Managers;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Rocket.API.Providers.Implementation

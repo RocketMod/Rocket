@@ -24,8 +24,10 @@ using Rocket.API.Providers.Translations;
 using Rocket.Core.Commands;
 using Rocket.Core.Managers;
 using Rocket.Core.Player;
+using Rocket.Core.Providers.Logging;
 using Rocket.Core.Providers.Permissions;
 using Rocket.Core.Providers.Translation;
+using Assert = Rocket.Core.Utils.Debugging.Assert;
 
 namespace Rocket.Core
 {
@@ -114,16 +116,16 @@ namespace Rocket.Core
                 }
                 catch (NoPermissionsForCommandException ex)
                 {
-                    R.Logger.Warn(ex.Message);
+                    R.Logger.Log(LogLevel.INFO, ex.Message);
                 }
                 catch (WrongUsageOfCommandException ex)
                 {
-                    R.Logger.Info(ex.Message);
+                    R.Logger.Log(LogLevel.INFO, ex.Message);
                 }
             }
             catch (Exception ex)
             {
-                R.Logger.Error("An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]", ex);
+                R.Logger.Log(LogLevel.ERROR, "An error occured while executing " + rocketCommand.Name + " [" + String.Join(", ", parameters) + "]", ex);
             }
             return true;
         }
@@ -137,7 +139,7 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logger.Fatal(ex);
+                Logger.Log(LogLevel.FATAL, null, ex);
             }
         }
 
@@ -149,7 +151,7 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logger.Fatal(ex);
+                Logger.Log(LogLevel.FATAL, null, ex);
             }
         }
 
@@ -158,10 +160,18 @@ namespace Rocket.Core
         [EditorBrowsable(EditorBrowsableState.Never)]
         public static void Bootstrap<T>() where T : IRocketImplementationProvider, IRocketProviderBase
         {
-            Logger.Info("####################################################################################");
-            Logger.Info("Starting RocketMod " + R.Version);
-            Logger.Info("####################################################################################");
+            //todo: set working dir to /<server>/Rocket
+            //currently it generates everything in unturneds root directory
 
+            Providers.registerProvider<ConsoleLoggingProvider>(true); //do not set to false!!
+            //Providers.registerProvider<UntiyLoggingProvider>(true);
+            //Providers.registerProvider<Log4NetLoggingProvider>(true); TODO: Not working
+
+            Assert.NotNull(Logger);
+            Logger.Log(LogLevel.INFO, "####################################################################################");
+            Logger.Log(LogLevel.INFO, "Starting RocketMod " + Version);
+            Logger.Log(LogLevel.INFO, "####################################################################################");
+            
             try
             {
                 Providers.registerProvider<T>();
@@ -178,7 +188,7 @@ namespace Rocket.Core
             }
             catch (Exception ex)
             {
-                Logger.Fatal(ex);
+                Logger.Log(LogLevel.FATAL, null, ex);
             }
         }
     }

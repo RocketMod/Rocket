@@ -54,11 +54,21 @@
       <HintPath>..\packages\log4net.2.0.8\lib\net35-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data.Entity" />
-    <Reference Include="System.Data.Entity.Design" />
-    <Reference Include="System.Data.Linq" />
+    <Reference Include="System.Data">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.DataSetExtensions">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.Entity">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.Entity.Design">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Data.Linq">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.IdentityModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>lib\System.IdentityModel.dll</HintPath>
@@ -97,10 +107,12 @@
     <Compile Include="Providers\Commands\RocketCommandProviderProxy.cs" />
     <Compile Include="Providers\Database\AdoNetEntityDatabaseProvider.cs" />
     <Compile Include="Providers\Database\TestContext.cs" />
+    <Compile Include="Providers\Logging\ConsoleLoggingProvider.cs" />
     <Compile Include="Providers\Logging\RocketLoggingProviderProxy.cs" />
+    <Compile Include="Providers\Logging\UntiyLoggingProvider.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />
-    <Compile Include="Providers\Logging\Logger.cs" />
+    <Compile Include="Providers\Logging\Log4NetLoggingProvider.cs" />
     <Compile Include="Providers\Remoting\RocketRemotingProviderProxy.cs" />
     <Compile Include="Providers\Translation\RocketBuiltinTranslationProvider.cs" />
     <Compile Include="Providers\Plugin\RocketPluginProviderProxy.cs" />
@@ -114,6 +126,7 @@
     <Compile Include="Providers\Permissions\RocketBuiltinPermissionsProvider.cs" />
     <Compile Include="R.cs" />
     <Compile Include="Providers\Remoting\RPC\RPCUsernameValidator.cs" />
+    <Compile Include="Utils\Debugging\Assert.cs" />
     <Compile Include="Utils\Web\RocketWebClient.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -136,7 +149,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Providers\Configuration\" />
-    <Folder Include="Utils\Debugging\" />
     <Folder Include="Utils\Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

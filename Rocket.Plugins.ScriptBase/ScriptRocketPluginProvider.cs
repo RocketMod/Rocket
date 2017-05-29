@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Rocket.API.Providers;
+using Rocket.API.Providers.Logging;
 using Rocket.API.Providers.Plugins;
 using Rocket.Core;
 
@@ -46,12 +47,6 @@ namespace Rocket.Plugins.ScriptBase
 
         public ScriptEngine ScriptEngine => _engine;
 
-        public List<Type> GetProviders()
-        {
-            return new List<Type>();
-            //throw new NotImplementedException();
-        }
-
         public void Load(bool isReload = false)
         {
             if (!Directory.Exists(PluginsDirectory))
@@ -67,7 +62,7 @@ namespace Rocket.Plugins.ScriptBase
                     _plugins.Add(context.Plugin);
                     break;
                 default:
-                    R.Logger.Error($"[${_engine.Name}PluginProvider] Failed to load script plugin: {plName} ({res.ExecutionResult})", res.Exception);
+                    R.Logger.Log(LogLevel.ERROR, $"[${_engine.Name}PluginProvider] Failed to load script plugin: {plName} ({res.ExecutionResult})", res.Exception);
                     break;
             }
 

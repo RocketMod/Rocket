@@ -1,5 +1,4 @@
-﻿using Rocket.API;
-using Rocket.API.Serialisation;
+﻿using Rocket.API.Serialisation;
 using Rocket.Plugins.Native;
 
 namespace Rocket.Plugins.ScriptBase

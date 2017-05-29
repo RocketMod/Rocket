@@ -1,110 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Rocket.API.Commands;
-using Rocket.API.Player;
 
 namespace Rocket.Core.Tests.Mock
 {
     public class TestingCommand : IRocketCommand
     {
-        public TestingCommand(string name)
-        {
-            Name = name;
-        }
+        public List<string> Aliases { get; set; } = new List<string>();
 
-        private List<string> aliases = new List<string>();
+        public AllowedCaller AllowedCaller { get; set; } = AllowedCaller.Both;
 
-        private AllowedCaller allowedCaller = AllowedCaller.Both;
+        public string Help { get; set; } = "Test Help";
 
-        private string help = "Test Help";
+        public string Name { get; set; } = "test";
 
-        private string name ="test";
+        public List<string> Permissions { get; set; } = new List<string> {"test"};
 
-        private List<string> permissions = new List<string>(){"test"};
-
-        private string syntax = "";
-
-        public List<string> Aliases
-        {
-            get
-            {
-                return aliases;
-            }
-
-            set
-            {
-                aliases = value;
-            }
-        }
-
-        public AllowedCaller AllowedCaller
-        {
-            get
-            {
-                return allowedCaller;
-            }
-
-            set
-            {
-                allowedCaller = value;
-            }
-        }
-
-        public string Help
-        {
-            get
-            {
-                return help;
-            }
-
-            set
-            {
-                help = value;
-            }
-        }
-
-        public string Name
-        {
-            get
-            {
-                return name;
-            }
-
-            set
-            {
-                name = value;
-            }
-        }
-
-        public List<string> Permissions
-        {
-            get
-            {
-                return permissions;
-            }
-
-            set
-            {
-                permissions = value;
-            }
-        }
-
-        public string Syntax
-        {
-            get
-            {
-                return syntax;
-            }
-
-            set
-            {
-                syntax = value;
-            }
-        }
+        public string Syntax { get; set; } = "";
 
         public void Execute(ICommandContext ctx)
         {
-            throw new NotImplementedException();
+            ctx.Print("yay");
         }
     }
 }

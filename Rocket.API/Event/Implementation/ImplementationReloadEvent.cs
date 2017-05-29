@@ -1,5 +1,4 @@
-﻿using Rocket.API.Providers;
-using Rocket.API.Providers.Implementation;
+﻿using Rocket.API.Providers.Implementation;
 
 namespace Rocket.API.Event.Implementation
 {

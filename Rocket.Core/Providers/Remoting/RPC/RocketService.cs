@@ -1,7 +1,4 @@
-﻿using Rocket.API;
-using Rocket.API.Player;
-
-namespace Rocket.Core.Providers.Remoting.RPC
+﻿namespace Rocket.Core.Providers.Remoting.RPC
 {
     public class RocketService : IRocketService
     {
