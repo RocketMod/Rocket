@@ -1,19 +1,27 @@
-﻿using System.ComponentModel;
-using System.Data.Linq;
+﻿using System.Data.Linq;
+using Rocket.API.Providers.Plugins;
+using Rocket.API.Utils.Debugging;
 
 namespace Rocket.API.Providers.Database
 {
-    public class DatabaseContext : DataContext, INotifyPropertyChanging, INotifyPropertyChanged
+    public abstract class DatabaseContext : DataContext
     {
+        public IRocketPlugin Plugin { get; }
         public IDatabaseProvider Provider { get; }
 
-        public DatabaseContext(IDatabaseProvider provider) : base(provider.Connection)
+        internal DatabaseContext(IDatabaseProvider provider) : base(provider.Connection)
         {
             Provider = provider;
         }
 
-        //Todo:
-        public event PropertyChangingEventHandler PropertyChanging;
-        public event PropertyChangedEventHandler PropertyChanged;
+        protected DatabaseContext(IRocketPlugin plugin, IDatabaseProvider provider) : base(provider.Connection)
+        {
+            Assert.NotNull(plugin, nameof(plugin));
+            Assert.NotNull(provider, nameof(provider));
+            Plugin = plugin;
+            Provider = provider;
+        }
+
+        public abstract void OnDatabaseCreated();
     }
 }

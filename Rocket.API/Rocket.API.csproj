@@ -110,6 +110,7 @@
     <Compile Include="Providers\Logging\IRocketLoggingProvider.cs" />
     <Compile Include="Providers\Logging\LogMessage.cs" />
     <Compile Include="Providers\NoProviderAutoRegistrationAttribute.cs" />
+    <Compile Include="Providers\Permissions\PermissionResult.cs" />
     <Compile Include="Providers\Player\IRocketPlayerDataProvider.cs" />
     <Compile Include="Providers\Implementation\IRocketImplementationProvider.cs" />
     <Compile Include="Providers\Commands\IRocketCommandProvider.cs" />
@@ -131,6 +132,7 @@
     <Compile Include="Player\IRocketPlayer.cs" />
     <Compile Include="Serialisation\RocketPermissions.cs" />
     <Compile Include="Serialisation\RocketPermissionsGroup.cs" />
+    <Compile Include="Utils\Debugging\Assert.cs" />
     <Compile Include="Utils\TaskDispatcher.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -50,7 +50,7 @@
 
 //        public void Execute(IRocketPlayer caller, string[] command)
 //        {
-//            if(command.Length == 1 && command[0].ToLower() == "reload" && caller.HasPermission("p.reload"))
+//            if(command.Length == 1 && command[0].ToLower() == "reload" && caller.CheckPermission("p.reload"))
 //            {
 //                R.Permissions.Reload();
 //                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_reload"));
@@ -62,14 +62,14 @@
 
 //            if (command.Length == 0 && !(caller is ConsolePlayer))
 //            {
-//                R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Permissions.GetGroups(caller).Select(g => g.DisplayName).ToArray())));
+//                R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", "Your", string.Join(", ", R.Permissions.GetPlayerGroups(caller).Select(g => g.DisplayName).ToArray())));
 //                R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", "Your", string.Join(", ", R.Permissions.GetPermissions(caller).ToArray())));
 //            }
 //            else if(command.Length == 1) {
 
 //                IRocketPlayer player = command.GetRocketPlayerParameter(0);
 //                if (player != null) {
-//                    R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Permissions.GetGroups(player).Select(g => g.DisplayName).ToArray())));
+//                    R.Implementation.Chat.Say(caller, R.Translate("command_p_groups_private", player.DisplayName+"s", string.Join(", ", R.Permissions.GetPlayerGroups(player).Select(g => g.DisplayName).ToArray())));
 //                    R.Implementation.Chat.Say(caller, R.Translate("command_p_permissions_private", player.DisplayName + "s", string.Join(", ", R.Permissions.GetPermissions(player).ToArray())));
 //                }
 //                else
@@ -89,7 +89,7 @@
 //                switch (c)
 //                {
 //                    case "add":
-//                        if (caller.HasPermission("p.add")&& player != null && groupName != null) {
+//                        if (caller.CheckPermission("p.add")&& player != null && groupName != null) {
 
 //                            if (R.Permissions.AddPlayerToGroup(groupName, player))
 //                            {
@@ -102,7 +102,7 @@
 //                        }
 //                        return;
 //                    case "remove":
-//                        if (caller.HasPermission("p.remove") && player != null && groupName != null) {
+//                        if (caller.CheckPermission("p.remove") && player != null && groupName != null) {
 //                            if (R.Permissions.RemovePlayerFromGroup(groupName, player))
 //                            {
 //                                R.Implementation.Chat.Say(caller, R.Translate("command_p_group_player_removed", player.DisplayName, groupName));

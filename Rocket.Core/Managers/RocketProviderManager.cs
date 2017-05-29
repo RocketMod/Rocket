@@ -9,7 +9,7 @@ using Rocket.API.Providers.Logging;
 using Rocket.API.Providers.Plugins;
 using Rocket.Core.Providers;
 using UnityEngine;
-using Assert = Rocket.Core.Utils.Debugging.Assert;
+using Assert = Rocket.API.Utils.Debugging.Assert;
 
 namespace Rocket.Core.Managers
 {
@@ -35,7 +35,7 @@ namespace Rocket.Core.Managers
                     Console.WriteLine("Registering provider: " + type.FullName); //logger not ready yet
                     providerTypes.Add(type);
                 }
-                }
+            }
 
             foreach (Type type in asm.GetTypes())
             {
@@ -43,7 +43,7 @@ namespace Rocket.Core.Managers
                     continue;
 
                 RocketProviderProxyAttribute proxyAttribute = (RocketProviderProxyAttribute)type.GetCustomAttributes(typeof(RocketProviderProxyAttribute), true).FirstOrDefault();
-                
+
                 if (proxyAttribute == null)
                     continue;
 
@@ -113,7 +113,7 @@ namespace Rocket.Core.Managers
 
         public T GetProvider<T>() where T : IRocketProviderBase
         {
-            return (T) GetProvider(typeof(T));
+            return (T)GetProvider(typeof(T));
         }
 
         public IRocketProviderBase GetProvider(Type type)

@@ -30,8 +30,8 @@
       <xs:maxInclusive value="P10675199DT2H48M5.4775807S" />
     </xs:restriction>
   </xs:simpleType>
-  <xs:element name="guid" nillable="true" type="tns:guid" />
-  <xs:simpleType name="guid">
+  <xs:element name="guplayerId" nillable="true" type="tns:guplayerId" />
+  <xs:simpleType name="guplayerId">
     <xs:restriction base="xs:string">
       <xs:pattern value="[\da-fA-F]{8}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{4}-[\da-fA-F]{12}" />
     </xs:restriction>

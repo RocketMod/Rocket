@@ -7,13 +7,13 @@ namespace Rocket.API.Providers.Permissions
     [RocketProvider]
     public interface IRocketPermissionsDataProvider : IRocketDataProviderBase
     {
-        ReadOnlyCollection<RocketPermissionsGroup> GetGroups(IRocketPlayer player);
+        ReadOnlyCollection<RocketPermissionsGroup> GetPlayerGroups(IRocketPlayer player);
 
-        ReadOnlyCollection<RocketPermissionsGroup> GetGroups(string id);
+        ReadOnlyCollection<RocketPermissionsGroup> GetPlayerGroups(string playerId);
 
         //ReadOnlyCollection<string> GetPermissions(IRocketPlayer player);
 
-        //ReadOnlyCollection<string> GetPermissions(string id);
+        //ReadOnlyCollection<string> GetPermissions(string playerId);
 
         RocketPermissionsGroup GetGroup(string groupId);
 
@@ -23,7 +23,7 @@ namespace Rocket.API.Providers.Permissions
 
         bool DeleteGroup(RocketPermissionsGroup group);
 
-        bool HasPermission(IRocketPlayer player, string permission);
-        bool HasPermission(string id, string permission);
+        PermissionResult CheckPermission(IRocketPlayer player, string permission);
+        PermissionResult CheckPermission(string id, string permission);
     }
 }

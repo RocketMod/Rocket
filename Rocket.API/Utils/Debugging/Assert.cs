@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rocket.Core.Utils.Debugging
+namespace Rocket.API.Utils.Debugging
 {
     public static class Assert
     {

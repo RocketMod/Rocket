@@ -27,7 +27,7 @@ using Rocket.Core.Player;
 using Rocket.Core.Providers.Logging;
 using Rocket.Core.Providers.Permissions;
 using Rocket.Core.Providers.Translation;
-using Assert = Rocket.Core.Utils.Debugging.Assert;
+using Assert = Rocket.API.Utils.Debugging.Assert;
 
 namespace Rocket.Core
 {

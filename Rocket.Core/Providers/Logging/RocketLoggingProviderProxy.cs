@@ -11,7 +11,7 @@ namespace Rocket.Core.Providers.Logging
         {
             var providers = R.Providers.GetProviders<IRocketLoggingProvider>();
             foreach (var provider in providers)
-                action.Invoke(provider);
+                action?.Invoke(provider);
         }
 
         public void Unload(bool isReload = false)

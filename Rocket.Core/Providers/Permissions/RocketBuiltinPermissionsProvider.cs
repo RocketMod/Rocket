@@ -13,7 +13,7 @@ namespace Rocket.Core.Providers.Permissions
     {
         private RocketPermissionsHelper helper;
         
-        public ReadOnlyCollection<RocketPermissionsGroup> GetGroups(IRocketPlayer player)
+        public ReadOnlyCollection<RocketPermissionsGroup> GetPlayerGroups(IRocketPlayer player)
         {
             return helper.GetGroups(player).AsReadOnly();
         }
@@ -67,17 +67,29 @@ namespace Rocket.Core.Providers.Permissions
 
         public string PermissionFile => "Permissions.config.xml";
 
-        public bool HasPermission(IRocketPlayer player, string permission)
+        public PermissionResult CheckPermission(IRocketPlayer player, string permission)
         {
-            //todo ??
-            return
-                GetPermissions(player)
-                    .Any(c => c.Equals(permission, StringComparison.OrdinalIgnoreCase) && !c.StartsWith("!"));
+            PermissionResult result = new PermissionResult(PermissionResultType.DEFAULT, PermissionPriority.LOW);
+
+            foreach (var perm in GetPermissions(player))
+            {
+                if (perm.Equals(permission, StringComparison.OrdinalIgnoreCase) && result.Result != PermissionResultType.DENY)
+                {
+                    result.Result = PermissionResultType.GRANT;
+                }
+
+                if (perm.Substring(1).Equals(permission, StringComparison.OrdinalIgnoreCase) && perm.StartsWith("!"))
+                {
+                    result.Result = PermissionResultType.DENY;
+                }
+            }
+
+            return result;
         }
 
-        public ReadOnlyCollection<RocketPermissionsGroup> GetGroups(string id)
+        public ReadOnlyCollection<RocketPermissionsGroup> GetPlayerGroups(string playerId)
         {
-            return helper.GetGroups(id).AsReadOnly();
+            return helper.GetGroups(playerId).AsReadOnly();
         }
 
         public ReadOnlyCollection<string> GetPermissions(string id)
@@ -85,22 +97,35 @@ namespace Rocket.Core.Providers.Permissions
             return helper.GetPermissions(id).AsReadOnly();
         }
 
-        public bool HasPermission(string id, string permission)
+        public PermissionResult CheckPermission(string id, string permission)
         {
-            return
-                GetPermissions(id)
-                    .Any(c => c.Equals(permission, StringComparison.OrdinalIgnoreCase) && !c.StartsWith("!"));
+            PermissionResult result = new PermissionResult(PermissionResultType.DEFAULT, PermissionPriority.LOW);
+            
+            foreach (var perm in GetPermissions(id))
+            {
+                if (perm.Equals(permission, StringComparison.OrdinalIgnoreCase) && result.Result != PermissionResultType.DENY)
+                {
+                    result.Result = PermissionResultType.GRANT;        
+                }
+
+                if (perm.Substring(1).Equals(permission, StringComparison.OrdinalIgnoreCase) && perm.StartsWith("!"))
+                {
+                    result.Result = PermissionResultType.DENY;
+                }
+            }
+
+            return result;
         }
     }
 }
-//    public static bool HasPermission(this IRocketPlayer player, string permission)
+//    public static bool CheckPermission(this IRocketPlayer player, string permission)
 //    {
-//        return R.Permissions.HasPermission(player, permission);
+//        return R.Permissions.CheckPermission(player, permission);
 //    }
 
 //    public static bool HasPermissions(this IRocketPlayer player, IRocketCommand command)
 //    {
-//        return R.Permissions.HasPermission(player, command);
+//        return R.Permissions.CheckPermission(player, command);
 //    }
 
 //    public static List<string> GetPermissions(this IRocketPlayer player)
@@ -108,20 +133,20 @@ namespace Rocket.Core.Providers.Permissions
 //        return R.Permissions.GetPermissions(player);
 //    }
 //}
-//    public static bool HasPermission(this IRocketPermissionsDataProvider rocketPermissionProvider, IRocketPlayer player, string permission)
+//    public static bool CheckPermission(this IRocketPermissionsDataProvider rocketPermissionProvider, IRocketPlayer player, string permission)
 //    {
-//        return rocketPermissionProvider.HasPermission(player, new List<string>() { permission });
+//        return rocketPermissionProvider.CheckPermission(player, new List<string>() { permission });
 //    }
 
-//    public static bool HasPermission(this IRocketPermissionsDataProvider rocketPermissionProvider, IRocketPlayer player, IRocketCommand command)
+//    public static bool CheckPermission(this IRocketPermissionsDataProvider rocketPermissionProvider, IRocketPlayer player, IRocketCommand command)
 //    {
 //        List<string> requestedPermissions = command.Permissions;
 //        requestedPermissions.Add(command.Name);
 //        requestedPermissions.AddRange(command.Aliases);
-//        return rocketPermissionProvider.HasPermission(player, command);
+//        return rocketPermissionProvider.CheckPermission(player, command);
 //    }
 
-//    public static bool HasPermission(this IRocketPermissionsDataProvider rocketPermissionProvider, IRocketPlayer player, List<string> requestedPermissions)
+//    public static bool CheckPermission(this IRocketPermissionsDataProvider rocketPermissionProvider, IRocketPlayer player, List<string> requestedPermissions)
 //    {
 //        if (player.IsAdmin) return true;
 

@@ -15,6 +15,10 @@ namespace Rocket.Core.Providers.Database
         //These are your tables
         public virtual Table<PlayerStatistics> PlayerStatistics => GetTable<PlayerStatistics>();
         public virtual Table<VehicleStatistics> VehicleStatistics => GetTable<VehicleStatistics>();
+        public override void OnDatabaseCreated()
+        {
+            
+        }
     }
 
     [Table(Name = "VehicleStats")] // You dont need to include Name, it will get from class if you dont

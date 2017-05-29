@@ -110,6 +110,7 @@
     <Compile Include="Providers\Logging\ConsoleLoggingProvider.cs" />
     <Compile Include="Providers\Logging\RocketLoggingProviderProxy.cs" />
     <Compile Include="Providers\Logging\UntiyLoggingProvider.cs" />
+    <Compile Include="Providers\Permissions\RocketPermissionsProviderProxy.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />
     <Compile Include="Providers\Logging\Log4NetLoggingProvider.cs" />
@@ -126,7 +127,6 @@
     <Compile Include="Providers\Permissions\RocketBuiltinPermissionsProvider.cs" />
     <Compile Include="R.cs" />
     <Compile Include="Providers\Remoting\RPC\RPCUsernameValidator.cs" />
-    <Compile Include="Utils\Debugging\Assert.cs" />
     <Compile Include="Utils\Web\RocketWebClient.cs">
       <SubType>Component</SubType>
     </Compile>

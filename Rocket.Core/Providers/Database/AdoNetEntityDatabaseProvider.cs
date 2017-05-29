@@ -1,7 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.Data.EntityClient;
+using System.Data.Linq;
 using System.Data.SqlClient;
+using System.Linq;
+using System.Reflection;
 using Rocket.API.Providers.Database;
 
 namespace Rocket.Core.Providers.Database
@@ -24,7 +29,7 @@ namespace Rocket.Core.Providers.Database
 
         public void Save()
         {
-            foreach(var ctx in DatabaseContexts)
+            foreach (var ctx in DatabaseContexts)
                 ctx.SubmitChanges();
         }
 
@@ -35,40 +40,73 @@ namespace Rocket.Core.Providers.Database
 
         public ContextInitializationResult InitializeContext(DatabaseContext context)
         {
-            if(!context.DatabaseExists())
-                context.CreateDatabase();
-            
-            /*
-            foreach (var property in context.GetType().GetProperties(BindingFlags.Instance|BindingFlags.Public))
+            if ((context.Connection.State & ConnectionState.Open) != 0)
+            {
+                return new ContextInitializationResult(ContextInitializationState.NOT_CONNECTED);
+            }
+
+            try
+            {
+                if (!context.DatabaseExists())
+                    context.CreateDatabase();
+            }
+            catch (Exception e)
+            {
+                return new ContextInitializationResult(ContextInitializationState.EXCEPTION) { Exception = e };
+            }
+
+            foreach (var property in context.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
                 var propType = property.PropertyType;
-                if(!typeof(Table<>).IsAssignableFrom(propType))
+                if (!typeof(Table<>).IsAssignableFrom(propType))
                     continue;
 
                 var serializerClass = propType.GetGenericArguments()[0];
 
-                string tableName = property.Name;
-                var attribute = (TableAttribute) property.GetCustomAttributes(typeof(TableAttribute), true).FirstOrDefault();
-                if (attribute != null)
-                {
-                    tableName = attribute.Name;
-                }
+                if (property.GetValue(context, null) == null)
+                    property.SetValue(context, context.GetTable(serializerClass), null);
 
-                if(TableExists(tableName))
-                    continue;
-
-                var result = CreateTable(tableName, serializerClass);
-                if (result.State != ContextInitializationState.SUCCESS)
-                {
-                    return result;
-                }
-
-                property.SetValue(context, Activator.CreateInstance(propType, context), null);
+                SetupProperties(serializerClass);
             }
-            */
 
             DatabaseContexts.Add(context);
+            context.OnDatabaseCreated();
+
             return new ContextInitializationResult(ContextInitializationState.CONNECTED);
+        }
+
+        private void SetupProperties(Type serializerClass)
+        {
+            foreach (var property in serializerClass.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (serializerClass.GetInterface(nameof(INotifyPropertyChanged)) == null)
+                {
+                    throw new Exception("Class " + serializerClass.FullName + " is missing INotifyPropertyChanged interface");
+                }
+
+                if (serializerClass.GetInterface(nameof(INotifyPropertyChanging)) == null)
+                {
+                    throw new Exception("Class " + serializerClass.FullName + " is missing INotifyPropertyChanging interface");
+                }
+
+                if (property.GetGetMethod() == null || property.GetSetMethod() == null)
+                {
+                    throw new Exception("Property: " + property.Name + " in class " + serializerClass.FullName +
+                                        " is missing getter or setter!");
+                }
+                if (!property.GetGetMethod().IsVirtual || !property.GetSetMethod().IsVirtual)
+                {
+                    throw new Exception("Property: " + property.Name + " in class " + serializerClass.FullName +
+                                        " has non virtual getter or setter!");
+                }
+
+                PatchProperty(serializerClass, property);
+            }
+        }
+
+        private void PatchProperty(Type serializerClass, PropertyInfo property)
+        {
+
         }
 
         /*
@@ -112,7 +150,7 @@ namespace Rocket.Core.Providers.Database
 
         public bool TableExists(string name)
         {
-            DataTable dTable = ((SqlConnection)Connection).GetSchema("TABLES", new[] { null, null, name});
+            DataTable dTable = ((SqlConnection)Connection).GetSchema("TABLES", new[] { null, null, name });
 
             return dTable.Rows.Count > 0;
         }
