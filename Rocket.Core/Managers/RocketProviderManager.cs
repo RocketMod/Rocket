@@ -191,6 +191,13 @@ namespace Rocket.Core.Managers
                     persistantProviderRegistrations = (List<ProviderRegistration>)serializer.Deserialize(reader);
                 }
             }
+            else
+            {
+                foreach (var provider in providers)
+                {
+                    provider.Implementation?.Load();
+                }
+            }
 
             foreach (ProviderRegistration provider in persistantProviderRegistrations)
             {
