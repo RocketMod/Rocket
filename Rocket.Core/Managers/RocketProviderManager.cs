@@ -163,7 +163,7 @@ namespace Rocket.Core.Managers
         {
             if (!providerType.IsInterface) throw new ArgumentException($"The type {providerType.FullName} is no interface");
             if (!providerTypes.Contains(providerType)) throw new ArgumentException($"The type {providerType.FullName} is not a known provider interface");
-            return providers.Where(p => p.ProviderType.Equals(providerType.FullName, StringComparison.OrdinalIgnoreCase) && p.Enabled).Select(p => p.Implementation).ToList();
+            return providers.Where(p => p.ProviderType.Equals(providerType.FullName, StringComparison.OrdinalIgnoreCase) && p.Enabled && p.Implementation != null).Select(p => p.Implementation).ToList();
         }
 
         internal void Unload()
@@ -215,20 +215,30 @@ namespace Rocket.Core.Managers
 
             foreach (ProviderRegistration provider in providers)
             {
-                if (persistantProviderRegistrations.FirstOrDefault(p => p.Equals(provider) && !p.Enabled) != null)
-                    continue;
-
-                if (providerProxies.ContainsKey(provider.ProviderType))
+                try
                 {
-                    provider.Load();
-                    provider.Implementation.Load();
-                    continue;
+                    if (persistantProviderRegistrations.FirstOrDefault(p => p.Equals(provider) && !p.Enabled) != null)
+                        continue;
+
+                    if (providerProxies.ContainsKey(provider.ProviderType))
+                    {
+                        provider.Load();
+                        provider.Implementation?.Load();
+                        continue;
+                    }
+
+                    if (providers.FirstOrDefault(p => p.Enabled && p.ProviderType == provider.ProviderType) == null)
+                    {
+                        provider.Load();
+                        if(provider.Implementation == null)
+                            Console.WriteLine("Warning: " + provider.Provider.TypeName + " has no implementation");
+                        provider.Implementation?.Load();
+                    }
                 }
-
-                if (providers.FirstOrDefault(p => p.Enabled && p.ProviderType == provider.ProviderType) == null)
+                catch (Exception e)
                 {
-                    provider.Load();
-                    provider.Implementation.Load();
+                    Console.WriteLine("Failed to load provider implementation: " + provider.Implementation.GetType().FullName);
+                    Console.WriteLine(e);
                 }
             }
             using (StreamWriter writer = new StreamWriter(providerFileName))

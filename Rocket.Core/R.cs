@@ -176,6 +176,8 @@ namespace Rocket.Core
             try
             {
                 Providers.registerProvider<T>();
+                Providers.LoadFromAssembly(typeof(T).Assembly); // Load implementation providers
+
                 //Providers.registerProvider<RocketBuiltinCommandProvider>();
                 //Providers.registerProvider<RocketBuiltinTranslationProvider>();
                 //Providers.registerProvider<RocketBuiltinPermissionsProvider>();

@@ -5,12 +5,13 @@ using System.Data;
 using System.Data.EntityClient;
 using System.Data.Linq;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Reflection;
+using Rocket.API.Providers;
 using Rocket.API.Providers.Database;
 
 namespace Rocket.Core.Providers.Database
 {
+    //[RocketProviderImplementation]
     public class AdoNetEntityDatabaseProvider : IDatabaseProvider
     {
         public List<DatabaseContext> DatabaseContexts { get; } = new List<DatabaseContext>();

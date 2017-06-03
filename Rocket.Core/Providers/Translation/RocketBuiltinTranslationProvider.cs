@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Collections;
+using Rocket.API.Providers;
 using Rocket.API.Providers.Plugins;
 using Rocket.API.Providers.Translations;
 
 namespace Rocket.Core.Providers.Translation
 {
+    [RocketProviderImplementation]
     public class RocketBuiltinTranslationProvider : IRocketTranslationDataProvider
     {
         //TODO: Implement file loading
