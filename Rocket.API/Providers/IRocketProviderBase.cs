@@ -14,8 +14,6 @@ namespace Rocket.API.Providers
         }
     }
 
-    public class RocketProviderAttribute : Attribute { }
-
     public interface IRocketProviderBase
     {
         void Unload(bool isReload = false);

@@ -1,8 +1,10 @@
 ﻿using System;
+using Rocket.API.Providers;
 using Rocket.API.Providers.Logging;
 
 namespace Rocket.Core.Providers.Logging
 {
+    [RocketProviderImplementation(true)]
     public class ConsoleLoggingProvider : IRocketLoggingProvider
     {
         public void Log(LogLevel level, object message, Exception exception = null)

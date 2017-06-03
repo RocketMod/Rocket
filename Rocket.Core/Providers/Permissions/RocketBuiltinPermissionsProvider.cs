@@ -3,12 +3,13 @@ using Rocket.API.Providers.Permissions;
 using System;
 using Rocket.API.Assets;
 using System.Collections.ObjectModel;
-using System.Linq;
+using Rocket.API.Providers;
 using Rocket.API.Providers.Logging;
 using Rocket.API.Serialization;
 
 namespace Rocket.Core.Providers.Permissions
 {
+    [RocketProviderImplementation]
     public sealed class RocketBuiltinPermissionsProvider : IRocketPermissionsDataProvider
     {
         private RocketPermissionsHelper helper;

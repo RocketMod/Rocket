@@ -22,21 +22,33 @@ namespace Rocket.Core.Managers
 
         internal RocketProviderManager()
         {
+
+        }
+
+        internal void LoadRocketProviders()
+        {
             LoadFromAssembly(typeof(API.Environment).Assembly);
             LoadFromAssembly(typeof(R).Assembly);
         }
 
-        private void LoadFromAssembly(Assembly asm)
+        public void LoadFromAssembly(Assembly asm)
         {
+            // Do NOT change Console.WriteLine to any logging provider, because logger might not be loaded yet!
+
+            //Load providers
             foreach (Type type in asm.GetTypes())
             {
-                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsInterface && typeof(IRocketProviderBase).IsAssignableFrom(type))
+                if (!typeof(IRocketProviderBase).IsAssignableFrom(type))
+                    continue;
+
+                if (type.GetCustomAttributes(typeof(RocketProviderAttribute), true).Length > 0 && type.IsInterface)
                 {
                     Console.WriteLine("Registering provider: " + type.FullName); //logger not ready yet
                     providerTypes.Add(type);
                 }
             }
 
+            //Load proxies
             foreach (Type type in asm.GetTypes())
             {
                 if (!typeof(IRocketProviderBase).IsAssignableFrom(type))
@@ -57,6 +69,20 @@ namespace Rocket.Core.Managers
                 providerProxies.Add(proxyAttribute.Provider.FullName, (IRocketProviderBase)Activator.CreateInstance(type));
             }
 
+
+            //Load implementations
+            foreach (Type type in asm.GetTypes())
+            {
+                if (!typeof(IRocketProviderBase).IsAssignableFrom(type))
+                    continue;
+
+                var attr = (RocketProviderImplementationAttribute) type.GetCustomAttributes(typeof(RocketProviderImplementationAttribute), true).FirstOrDefault();
+                if (attr != null && type.IsClass)
+                {
+                    registerProvider(type, attr.AutoLoad);
+                }
+            }
+
         }
 
         internal ProviderRegistration registerProvider<T>(bool autoLoad = false) where T : IRocketProviderBase
@@ -66,6 +92,8 @@ namespace Rocket.Core.Managers
 
         internal ProviderRegistration registerProvider(Type provider, bool autoLoad = false)
         {
+            // Do NOT change Console.WriteLine to any logging provider, because logger might not be loaded yet!
+
             Console.WriteLine("Registering provider implementation: " + provider.FullName + " (autoload: " + autoLoad + ")");
             Assert.NotNull(provider, nameof(provider));
             Type providerType = provider.GetInterfaces().FirstOrDefault(typeof(IRocketProviderBase).IsAssignableFrom);

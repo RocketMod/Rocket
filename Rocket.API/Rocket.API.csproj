@@ -114,7 +114,10 @@
     <Compile Include="Providers\Implementation\IRocketImplementationProvider.cs" />
     <Compile Include="Providers\Commands\IRocketCommandProvider.cs" />
     <Compile Include="Providers\Plugins\IRocketPluginProvider.cs" />
+    <Compile Include="Providers\ProviderDependency.cs" />
     <Compile Include="Providers\Remoting\IRocketRemotingProvider.cs" />
+    <Compile Include="Providers\RocketProviderAttribute.cs" />
+    <Compile Include="Providers\RocketProviderImplementation.cs" />
     <Compile Include="Providers\Translations\IRocketTranslationDataProvider.cs" />
     <Compile Include="Providers\IRocketDataProviderBase.cs" />
     <Compile Include="Providers\IRocketProviderBase.cs" />

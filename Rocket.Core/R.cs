@@ -163,7 +163,8 @@ namespace Rocket.Core
             //todo: set working dir to /<server>/Rocket
             //currently it generates everything in unturneds root directory
 
-            Providers.registerProvider<ConsoleLoggingProvider>(true); //do not set to false!!
+            Providers.LoadRocketProviders();
+            //Providers.registerProvider<ConsoleLoggingProvider>(true); //do not set to false!!
             //Providers.registerProvider<UnityLoggingProvider>(true);
             //Providers.registerProvider<Log4NetLoggingProvider>(true); TODO: Not working
 
@@ -175,9 +176,9 @@ namespace Rocket.Core
             try
             {
                 Providers.registerProvider<T>();
-                Providers.registerProvider<RocketBuiltinCommandProvider>();
-                Providers.registerProvider<RocketBuiltinTranslationProvider>();
-                Providers.registerProvider<RocketBuiltinPermissionsProvider>();
+                //Providers.registerProvider<RocketBuiltinCommandProvider>();
+                //Providers.registerProvider<RocketBuiltinTranslationProvider>();
+                //Providers.registerProvider<RocketBuiltinPermissionsProvider>();
 
                 Providers.Load();
 
