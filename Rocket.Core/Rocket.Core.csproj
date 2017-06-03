@@ -107,6 +107,12 @@
     <Compile Include="Providers\Logging\RocketLoggingProviderProxy.cs" />
     <Compile Include="Providers\Logging\UnityLoggingProvider.cs" />
     <Compile Include="Providers\Permissions\RocketPermissionsProviderProxy.cs" />
+    <Compile Include="Providers\Plugin\Native\NativeRocketCommandProvider.cs" />
+    <Compile Include="Providers\Plugin\Native\NativeRocketPlugin.cs" />
+    <Compile Include="Providers\Plugin\Native\NativeRocketPluginProvider.cs" />
+    <Compile Include="Providers\Plugin\Native\RocketAttributeCommand.cs" />
+    <Compile Include="Providers\Plugin\Native\RocketCommandAttribute.cs" />
+    <Compile Include="Providers\Plugin\Native\RocketPluginBase.cs" />
     <Compile Include="Providers\ProviderRegistration.cs" />
     <Compile Include="Managers\RocketProviderManager.cs" />
     <Compile Include="Providers\Logging\Log4NetLoggingProvider.cs" />

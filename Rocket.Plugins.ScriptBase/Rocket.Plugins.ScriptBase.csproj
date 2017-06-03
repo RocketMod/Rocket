@@ -62,10 +62,6 @@
       <Project>{7a9d652f-dc18-45fd-8964-dbaad6384c3d}</Project>
       <Name>Rocket.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rocket.Plugins.Native\Rocket.Plugins.Native.csproj">
-      <Project>{6d02a4ec-cfdd-4f20-a76f-bf9add9586f0}</Project>
-      <Name>Rocket.Plugins.Native</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
