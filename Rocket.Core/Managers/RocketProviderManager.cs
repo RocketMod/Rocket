@@ -110,7 +110,7 @@ namespace Rocket.Core.Managers
 
             if (autoLoad)
             {
-                Console.WriteLine("Loading provider: " + provider.FullName);
+                Console.WriteLine("Autoloading provider implementation: " + provider.FullName);
                 result.Load();
                 result.Implementation.Load();
             }
@@ -191,16 +191,12 @@ namespace Rocket.Core.Managers
                     persistantProviderRegistrations = (List<ProviderRegistration>)serializer.Deserialize(reader);
                 }
             }
-            else
-            {
-                foreach (var provider in providers)
-                {
-                    provider.Implementation?.Load();
-                }
-            }
 
             foreach (ProviderRegistration provider in persistantProviderRegistrations)
             {
+                if(providers.Any(c => c.Provider.TypeName.Equals(provider.Provider.TypeName, StringComparison.OrdinalIgnoreCase)))
+                    continue; //Prevent duplicate registration
+
                 if (provider.Provider.Resolve())
                 {
                     Console.WriteLine("Resolving " + provider.ProviderType + " " + provider.Provider);
@@ -229,6 +225,7 @@ namespace Rocket.Core.Managers
 
                     if (providerProxies.ContainsKey(provider.ProviderType))
                     {
+                        Console.WriteLine("Loading provider implementation: " + provider.ProviderType);
                         provider.Load();
                         provider.Implementation?.Load();
                         continue;
@@ -236,10 +233,15 @@ namespace Rocket.Core.Managers
 
                     if (providers.FirstOrDefault(p => p.Enabled && p.ProviderType == provider.ProviderType) == null)
                     {
+                        Console.WriteLine("Loading provider implementation: " + provider.ProviderType);
                         provider.Load();
-                        if(provider.Implementation == null)
+                        if (provider.Implementation == null)
                             Console.WriteLine("Warning: " + provider.Provider.TypeName + " has no implementation");
                         provider.Implementation?.Load();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Skipping provider implementation: " + provider.ProviderType + ", a implementation was already loaded for this provider");
                     }
                 }
                 catch (Exception e)
