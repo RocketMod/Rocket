@@ -42,7 +42,7 @@ namespace Rocket.Core.Providers.Logging
 
                 AppDomain.CurrentDomain.UnhandledException += (sender, e) =>
                 {
-                    Log(LogLevel.ERROR, e.ExceptionObject);
+                    LogMessage(LogLevel.ERROR, e.ExceptionObject, ConsoleColor.DarkRed);
                 };
             }
             catch (Exception ex)
@@ -65,7 +65,7 @@ namespace Rocket.Core.Providers.Logging
         public bool IsErrorEnabled => GetLogger().IsErrorEnabled;
         public bool IsFatalEnabled => GetLogger().IsFatalEnabled;
 
-        public void Log(LogLevel level, object message, Exception exception = null)
+        public void Log(LogLevel level, object message, Exception exception = null, ConsoleColor? color = null)
         {
             switch (level)
             {
@@ -92,9 +92,14 @@ namespace Rocket.Core.Providers.Logging
             //
         }
 
-        public void Log(LogLevel level, Exception exception)
+        public void Log(LogLevel level, Exception exception, ConsoleColor? color = null)
         {
-            Log(level, null, exception);
+            Log(level, null, exception, color);
+        }
+
+        public void LogMessage(LogLevel level, object message, ConsoleColor? color = null)
+        {
+            Log(level, message, null, color);
         }
     }
 }

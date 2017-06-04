@@ -1,5 +1,6 @@
 ﻿using System;
 using Rocket.API.Player;
+using UnityEngine;
 
 namespace Rocket.Core.Tests.Mock
 {
@@ -33,6 +34,11 @@ namespace Rocket.Core.Tests.Mock
         }
 
         public bool HasPermission(string permission)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Message(string message, Color? color)
         {
             throw new NotImplementedException();
         }

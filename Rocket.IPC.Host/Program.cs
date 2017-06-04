@@ -14,7 +14,7 @@ namespace Rocket.IPC.Host
                 RocketServiceHost host = new RocketServiceHost(27115);
                 while (true)
                 {
-                    R.Logger.Log(LogLevel.INFO, Console.ReadLine());
+                    R.Logger.LogMessage(LogLevel.INFO, Console.ReadLine());
                 }
             }
             catch (Exception)

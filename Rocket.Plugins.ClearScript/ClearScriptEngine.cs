@@ -29,7 +29,7 @@ namespace Rocket.Plugins.ClearScript
 
             if (engine == null)
             {
-                R.Logger.Log(LogLevel.WARN, "ClearScript ScriptEngine equals null, script: " + path);
+                R.Logger.LogMessage(LogLevel.WARN, "ClearScript ScriptEngine equals null, script: " + path);
                 return new ScriptResult(ScriptExecutionResult.FAILED_MISC);
             }
 

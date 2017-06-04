@@ -24,9 +24,9 @@ namespace Rocket.Core.Providers.Logging
             Invoke(provider => { provider.Load(isReload); });
         }
 
-        public void Log(LogLevel level, object message, Exception exception = null)
+        public void Log(LogLevel level, object message, Exception exception = null, ConsoleColor? color = null)
         {
-            Invoke(provider => { provider.Log(level, message, exception); });
+            Invoke(provider => { provider.Log(level, message, exception, color); });
         }
 
         public bool EchoNativeOutput
@@ -37,9 +37,14 @@ namespace Rocket.Core.Providers.Logging
             }
         }
 
-        public void Log(LogLevel level, Exception exception)
+        public void Log(LogLevel level, Exception exception, ConsoleColor? color = null)
         {
-            Log(level, null, exception);
+            Invoke(provider => { provider.Log(level, exception, color); });
+        }
+
+        public void LogMessage(LogLevel level, object message, ConsoleColor? color = null)
+        {
+            Invoke(provider => { provider.LogMessage(level, message, color); });
         }
     }
 }

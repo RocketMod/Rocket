@@ -41,7 +41,7 @@ namespace Rocket.Plugins.NLua
 
             if (luaContext?.State == null)
             {
-                R.Logger.Log(LogLevel.WARN, "Lua state equals null, script: " + path);
+                R.Logger.LogMessage(LogLevel.WARN, "Lua state equals null, script: " + path);
                 return new ScriptResult(ScriptExecutionResult.FAILED_MISC);
             }
 

@@ -129,6 +129,7 @@
     <Compile Include="Providers\Permissions\RocketBuiltinPermissionsProvider.cs" />
     <Compile Include="R.cs" />
     <Compile Include="Providers\Remoting\RPC\RPCUsernameValidator.cs" />
+    <Compile Include="Utils\ColorUtils.cs" />
     <Compile Include="Utils\Web\RocketWebClient.cs">
       <SubType>Component</SubType>
     </Compile>

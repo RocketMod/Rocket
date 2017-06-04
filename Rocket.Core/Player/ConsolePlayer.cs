@@ -1,4 +1,7 @@
-﻿using Rocket.API.Player;
+﻿using System;
+using Rocket.API.Player;
+using Rocket.API.Providers.Logging;
+using UnityEngine;
 
 namespace Rocket.Core.Player
 {
@@ -28,6 +31,11 @@ namespace Rocket.Core.Player
         public bool HasPermission(string permission)
         {
             return true;
+        }
+
+        public void Message(string message, Color? color)
+        {
+            R.Logger.LogMessage(LogLevel.INFO, message, ConsoleColor.Gray);
         }
     }
 }

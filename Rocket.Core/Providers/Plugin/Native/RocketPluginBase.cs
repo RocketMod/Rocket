@@ -103,7 +103,7 @@ namespace Rocket.Core.Providers.Plugin.Native
 
         public virtual void LoadPlugin()
         {
-            R.Logger.Log(LogLevel.INFO, "\n[loading] " + name);
+            R.Logger.Log(LogLevel.INFO, "\n[loading] " + name, null, null);
             Translations.Load();
 
             try

@@ -2,12 +2,13 @@
 using System.Runtime.Serialization;
 using Rocket.API.Player;
 using Rocket.API.Providers.Permissions;
+using UnityEngine;
 
 namespace Rocket.Core.Player
 {
     [Serializable]
     [DataContract]
-    public class RocketPlayerBase : IRocketPlayer
+    public abstract class RocketPlayerBase : IRocketPlayer
     {
         [DataMember]
         public string Id { get; private set; }
@@ -18,7 +19,7 @@ namespace Rocket.Core.Player
         [DataMember]
         public bool IsAdmin { get; private set; }
 
-        public RocketPlayerBase(string id, string displayName = null, bool isAdmin = false)
+        protected RocketPlayerBase(string id, string displayName = null, bool isAdmin = false)
         {
             Id = id;
             DisplayName = displayName ?? id;
@@ -44,5 +45,7 @@ namespace Rocket.Core.Player
         {
             return R.Providers.GetProvider<IRocketPermissionsDataProvider>().CheckPermission(this, permission).Result == PermissionResultType.GRANT;
         }
+
+        public abstract void Message(string message, Color? color);
     }
 }

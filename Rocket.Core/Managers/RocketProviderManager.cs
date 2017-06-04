@@ -149,7 +149,7 @@ namespace Rocket.Core.Managers
             var providers = GetProviders(type);
             if (providers.Count == 0)
             {
-                R.Logger.Log(LogLevel.WARN, "Could not find provider implementations for: " + type.FullName);
+                R.Logger.LogMessage(LogLevel.WARN, "Could not find provider implementations for: " + type.FullName, ConsoleColor.DarkRed);
                 return null;
             }
 

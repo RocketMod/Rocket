@@ -166,7 +166,7 @@ namespace Rocket.Core.Providers.Plugin.Native
                     }
                     else
                     {
-                        R.Logger.Log(LogLevel.ERROR, "Invalid or outdated plugin assembly: " + assembly.GetName().Name);
+                        R.Logger.LogMessage(LogLevel.ERROR, "Invalid or outdated plugin assembly: " + assembly.GetName().Name, ConsoleColor.DarkRed);
                     }
                 }
                 catch (Exception ex)

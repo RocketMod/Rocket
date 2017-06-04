@@ -116,11 +116,11 @@ namespace Rocket.Core
                 }
                 catch (NoPermissionsForCommandException ex)
                 {
-                    R.Logger.Log(LogLevel.INFO, ex.Message);
+                    R.Logger.Log(LogLevel.INFO, ex.Message, null, null);
                 }
                 catch (WrongUsageOfCommandException ex)
                 {
-                    R.Logger.Log(LogLevel.INFO, ex.Message);
+                    R.Logger.Log(LogLevel.INFO, ex.Message, null, null);
                 }
             }
             catch (Exception ex)
@@ -169,9 +169,9 @@ namespace Rocket.Core
             //Providers.registerProvider<Log4NetLoggingProvider>(true); TODO: Not working
 
             Assert.NotNull(Logger);
-            Logger.Log(LogLevel.INFO, "####################################################################################");
-            Logger.Log(LogLevel.INFO, "Starting RocketMod " + Version);
-            Logger.Log(LogLevel.INFO, "####################################################################################");
+            Logger.LogMessage(LogLevel.INFO, "####################################################################################", ConsoleColor.Yellow);
+            Logger.LogMessage(LogLevel.INFO, "Starting RocketMod " + Version, ConsoleColor.Yellow);
+            Logger.LogMessage(LogLevel.INFO, "####################################################################################", ConsoleColor.Yellow);
             
             try
             {

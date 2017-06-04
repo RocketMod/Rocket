@@ -7,7 +7,8 @@ namespace Rocket.API.Providers.Logging
     public interface IRocketLoggingProvider : IRocketProviderBase
     {
         bool EchoNativeOutput { get; }
-        void Log(LogLevel level, object message, Exception exception = null);
-        void Log(LogLevel level, Exception exception);
+        void LogMessage(LogLevel level, object message, ConsoleColor? color = null);
+        void Log(LogLevel level, object message, Exception exception = null, ConsoleColor? color = null);
+        void Log(LogLevel level, Exception exception, ConsoleColor? color = null);
     }
 }

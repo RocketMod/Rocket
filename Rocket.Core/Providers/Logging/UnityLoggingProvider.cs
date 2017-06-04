@@ -18,7 +18,7 @@ namespace Rocket.Core.Providers.Logging
 
         }
 
-        public void Log(LogLevel level, object message, Exception exception = null)
+        public void Log(LogLevel level, object message, Exception exception = null, ConsoleColor? color = null)
         {
             object msg = (message ?? "") + (exception?.ToString() ?? "");
 
@@ -46,9 +46,14 @@ namespace Rocket.Core.Providers.Logging
             }
         }
 
-        public void Log(LogLevel level, Exception exception)
+        public void Log(LogLevel level, Exception exception, ConsoleColor? color = null)
         {
-            Log(level, null, exception);
+            Log(level, null, exception, color);
+        }
+
+        public void LogMessage(LogLevel level, object message, ConsoleColor? color = null)
+        {
+            Log(level, message, null, color);
         }
     }
 }
