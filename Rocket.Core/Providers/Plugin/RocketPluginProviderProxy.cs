@@ -41,7 +41,16 @@ namespace Rocket.Core.Providers.Plugin
 
         public void Unload(bool isReloading)
         {
-       
+
+        }
+
+
+        public void LoadPlugins()
+        {
+            foreach (var prov in R.Providers.GetProviders<IRocketPluginProvider>())
+            {
+                prov.LoadPlugins();
+            }
         }
     }
 }

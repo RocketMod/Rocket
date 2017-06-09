@@ -19,7 +19,7 @@ namespace Rocket.Core.Providers.Plugin.Native
         public static readonly string PluginTranslationFileTemplate = "{0}.{1}.translation.xml";
         public static readonly string PluginConfigurationFileTemplate = "{0}.configuration.xml";
         public static NativeRocketPluginProvider Instance { get; private set; }
-        private static List<Assembly> pluginAssemblies;
+        private static List<Assembly> pluginAssemblies = new List<Assembly>();
         private static List<NativeRocketPlugin> plugins = new List<NativeRocketPlugin>();
         private Dictionary<string, string> libraries = new Dictionary<string, string>();
 
@@ -41,14 +41,6 @@ namespace Rocket.Core.Providers.Plugin.Native
         public string PluginsDirectory { get; private set; }
 
         public ReadOnlyCollection<Type> Providers => new List<Type>().AsReadOnly();
-
-        string librariesDirectory;
-        public void Load(string pluginDirectory, string languageCode, string librariesDirectory)
-        {
-            PluginsDirectory = pluginDirectory;
-            this.librariesDirectory = librariesDirectory;
-            loadPlugins();
-        }
 
         public List<IRocketCommand> GetCommandTypesFromAssembly(Assembly assembly, Type plugin)
         {
@@ -102,9 +94,11 @@ namespace Rocket.Core.Providers.Plugin.Native
             return commands;
         }
 
-        private void loadPlugins()
+        public void LoadPlugins()
         {
-            libraries = GetAssembliesFromDirectory(librariesDirectory);
+            PluginsDirectory = "Plugins";
+            
+            libraries = GetAssembliesFromDirectory("Libraries");
             pluginAssemblies = LoadAssembliesFromDirectory(PluginsDirectory);
 
             foreach (Assembly pluginAssembly in pluginAssemblies)
@@ -130,6 +124,8 @@ namespace Rocket.Core.Providers.Plugin.Native
 
         private static Dictionary<string, string> GetAssembliesFromDirectory(string directory, string searchPattern = "*.dll")
         {
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
             Dictionary<string, string> l = new Dictionary<string, string>();
             IEnumerable<FileInfo> libraries = new DirectoryInfo(directory).GetFiles(searchPattern, SearchOption.AllDirectories);
             foreach (FileInfo library in libraries)
@@ -151,6 +147,9 @@ namespace Rocket.Core.Providers.Plugin.Native
 
         private static List<Assembly> LoadAssembliesFromDirectory(string directory, string extension = "*.dll")
         {
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+
             List<Assembly> assemblies = new List<Assembly>();
             IEnumerable<FileInfo> pluginsLibraries = new DirectoryInfo(directory).GetFiles(extension, SearchOption.TopDirectoryOnly);
 

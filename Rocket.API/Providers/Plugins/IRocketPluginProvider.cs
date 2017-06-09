@@ -7,5 +7,6 @@ namespace Rocket.API.Providers.Plugins
     {
         ReadOnlyCollection<IRocketPlugin> Plugins { get; }
         IRocketPlugin GetPlugin(string name);
+        void LoadPlugins();
     }
 }

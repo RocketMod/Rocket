@@ -51,7 +51,17 @@ namespace Rocket.Plugins.ScriptBase
         {
             if (!Directory.Exists(PluginsDirectory))
                 Directory.CreateDirectory(PluginsDirectory);
+        }
 
+        public ReadOnlyCollection<Type> Providers => new List<Type>().AsReadOnly();
+        public ReadOnlyCollection<IRocketPlugin> Plugins => _plugins.AsReadOnly();
+        public ReadOnlyCollection<Type> LoadProviders()
+        {
+            return Providers;
+        }
+
+        public void LoadPlugins()
+        {
             IScriptContext context = null;
             var res = _engine.LoadPluginFromDirectory(PluginsDirectory, ref context);
             string plName = new DirectoryInfo(PluginsDirectory).Name;
@@ -67,13 +77,6 @@ namespace Rocket.Plugins.ScriptBase
             }
 
             _plugins.Add(context.Plugin);
-        }
-
-        public ReadOnlyCollection<Type> Providers => new List<Type>().AsReadOnly();
-        public ReadOnlyCollection<IRocketPlugin> Plugins => _plugins.AsReadOnly();
-        public ReadOnlyCollection<Type> LoadProviders()
-        {
-            return Providers;
         }
     }
 }

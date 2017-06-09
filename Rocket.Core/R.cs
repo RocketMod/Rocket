@@ -184,6 +184,8 @@ namespace Rocket.Core
 
                 Providers.Load();
 
+                Plugins.LoadPlugins();
+
                 Translations.RegisterDefaultTranslations(defaultTranslation);
                 Translations.RegisterDefaultTranslations(Implementation.DefaultTranslation);
 

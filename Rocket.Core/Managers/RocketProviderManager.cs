@@ -65,6 +65,13 @@ namespace Rocket.Core.Managers
                         type.GetInterfaces().First(typeof(IRocketProviderBase).IsAssignableFrom);
                 }
 
+                if (!providerTypes.Contains(proxyAttribute.Provider))
+                    continue;
+
+                var provAttr = (RocketProviderAttribute)type.GetCustomAttributes(typeof(RocketProviderAttribute), true).First();
+                if (!provAttr.SupportsMultiple)
+                    continue;
+
                 Console.WriteLine("Registering provider proxy: " + type.FullName + "[" + proxyAttribute.Provider.FullName + "]"); //logger not ready yet
                 providerProxies.Add(proxyAttribute.Provider.FullName, (IRocketProviderBase)Activator.CreateInstance(type));
             }
@@ -76,7 +83,7 @@ namespace Rocket.Core.Managers
                 if (!typeof(IRocketProviderBase).IsAssignableFrom(type))
                     continue;
 
-                var attr = (RocketProviderImplementationAttribute) type.GetCustomAttributes(typeof(RocketProviderImplementationAttribute), true).FirstOrDefault();
+                var attr = (RocketProviderImplementationAttribute)type.GetCustomAttributes(typeof(RocketProviderImplementationAttribute), true).FirstOrDefault();
                 if (attr != null && type.IsClass)
                 {
                     registerProvider(type, attr.AutoLoad);
@@ -92,12 +99,22 @@ namespace Rocket.Core.Managers
 
         internal ProviderRegistration registerProvider(Type provider, bool autoLoad = false)
         {
-            // Do NOT change Console.WriteLine to any logging provider, because logger might not be loaded yet!
-
-            Console.WriteLine("Registering provider implementation: " + provider.FullName + " (autoload: " + autoLoad + ")");
             Assert.NotNull(provider, nameof(provider));
+
+            // Do NOT change Console.WriteLine to any logging provider, because logger might not be loaded yet!
             Type providerType = provider.GetInterfaces().FirstOrDefault(typeof(IRocketProviderBase).IsAssignableFrom);
             Assert.NotNull(providerType, nameof(providerType));
+
+            var provAttr = (RocketProviderAttribute)providerType.GetCustomAttributes(typeof(RocketProviderAttribute), true).First();
+
+            Console.WriteLine("Registering provider implementation: " + provider.FullName + " (autoload: " + autoLoad + ")");
+
+            if (provAttr == null || !provAttr.SupportsMultiple)
+            {
+                Console.WriteLine("WARN: " + provider.FullName + " could not be registered because provider was not found or provider has already implementation!");
+                return null;
+            }
+
 
             bool isClass = !provider.IsInterface && !provider.IsAbstract;
             Assert.IsTrue(isClass, nameof(isClass));
@@ -194,7 +211,7 @@ namespace Rocket.Core.Managers
 
             foreach (ProviderRegistration provider in persistantProviderRegistrations)
             {
-                if(providers.Any(c => c.Provider.TypeName.Equals(provider.Provider.TypeName, StringComparison.OrdinalIgnoreCase)))
+                if (providers.Any(c => c.Provider.TypeName.Equals(provider.Provider.TypeName, StringComparison.OrdinalIgnoreCase)))
                     continue; //Prevent duplicate registration
 
                 if (provider.Provider.Resolve())
