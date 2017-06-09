@@ -14,23 +14,27 @@ namespace Rocket.Core.Providers
     {
         public ProviderRegistration() { }
 
-        public ProviderRegistration(string providerType,Type provider) {
-            ProviderType = providerType;
-            Provider = new TypeReference(provider);
+        public ProviderRegistration(Type provider,Type implementation) {
+            ProviderType = provider.FullName;
+            Provider = provider;
+            ProviderImplementation = new TypeReference(implementation);
         }
 
+        [XmlIgnore]
+        public Type Provider { get; set; }
+
         public string ProviderType { get; set; }
-        public TypeReference Provider { get; set; }
+        public TypeReference ProviderImplementation { get; set; }
         public bool Enabled { get; private set; }
         
         public void Load()
         {
             if (!Enabled)
             {
-                if (Provider.Type.IsAssignableFrom(typeof(MonoBehaviour)))
-                    Implementation = (IRocketProviderBase)RocketProviderManager.providersGameObject.TryAddComponent(Provider.Type);
+                if (ProviderImplementation.Type.IsAssignableFrom(typeof(MonoBehaviour)))
+                    Implementation = (IRocketProviderBase)RocketProviderManager.providersGameObject.TryAddComponent(ProviderImplementation.Type);
                 else
-                    Implementation = (IRocketProviderBase)Activator.CreateInstance(Provider.Type);
+                    Implementation = (IRocketProviderBase)Activator.CreateInstance(ProviderImplementation.Type);
                 Enabled = true;
             }
         }
@@ -39,7 +43,7 @@ namespace Rocket.Core.Providers
         {
             if (Enabled)
             {
-                if (Provider.Type.IsAssignableFrom(typeof(MonoBehaviour)))
+                if (ProviderImplementation.Type.IsAssignableFrom(typeof(MonoBehaviour)))
                     Object.Destroy((MonoBehaviour)Implementation);
                 Implementation = null;
                 Enabled = false;
@@ -50,7 +54,7 @@ namespace Rocket.Core.Providers
         public IRocketProviderBase Implementation { get; set; }
 
         public override bool Equals(object obj) {
-            if (obj is ProviderRegistration) return this.Provider == ((ProviderRegistration) obj).Provider;
+            if (obj is ProviderRegistration) return this.ProviderImplementation == ((ProviderRegistration) obj).ProviderImplementation;
             return base.Equals(obj);
         }
     }

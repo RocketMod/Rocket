@@ -109,7 +109,7 @@ namespace Rocket.Core.Managers
 
             Console.WriteLine("Registering provider implementation: " + provider.FullName + " (autoload: " + autoLoad + ")");
 
-            if (provAttr == null || !provAttr.SupportsMultiple)
+            if (provAttr == null || (!provAttr.SupportsMultiple && GetProvider(providerType) != null))
             {
                 Console.WriteLine("WARN: " + provider.FullName + " could not be registered because provider was not found or provider has already implementation!");
                 return null;
@@ -122,7 +122,7 @@ namespace Rocket.Core.Managers
             if (!providerTypes.Contains(providerType))
                 throw new ArgumentException($"The type {providerType.FullName} is not a known provider interface");
 
-            ProviderRegistration result = new ProviderRegistration(providerType.FullName, provider);
+            ProviderRegistration result = new ProviderRegistration(providerType, provider);
             providers.Add(result);
 
             if (autoLoad)
@@ -209,23 +209,31 @@ namespace Rocket.Core.Managers
                 }
             }
 
-            foreach (ProviderRegistration provider in persistantProviderRegistrations)
+            foreach (ProviderRegistration providerRegistration in persistantProviderRegistrations)
             {
-                if (providers.Any(c => c.Provider.TypeName.Equals(provider.Provider.TypeName, StringComparison.OrdinalIgnoreCase)))
+                if (providers.Any(c => c.ProviderImplementation.TypeName.Equals(providerRegistration.ProviderImplementation.TypeName, StringComparison.OrdinalIgnoreCase)))
                     continue; //Prevent duplicate registration
 
-                if (provider.Provider.Resolve())
+                if (providerRegistration.ProviderImplementation.Resolve())
                 {
-                    Console.WriteLine("Resolving " + provider.ProviderType + " " + provider.Provider);
+                    Console.WriteLine("Resolving " + providerRegistration.ProviderType + " " + providerRegistration.ProviderImplementation);
                 }
                 else
                 {
-                    Console.WriteLine("Failed to resolve " + provider.ProviderType + " " + provider.Provider);
+                    Console.WriteLine("Failed to resolve " + providerRegistration.ProviderType + " " + providerRegistration.ProviderImplementation);
                 }
 
-                providers.Add(provider);
 
-                if (provider.Enabled && provider.ProviderType == typeof(IRocketPluginProvider).FullName)
+                var provAttr = (RocketProviderAttribute)providerRegistration.Provider.GetCustomAttributes(typeof(RocketProviderAttribute), true).First();
+                if (provAttr == null || (!provAttr.SupportsMultiple && GetProvider(providerRegistration.Provider) != null))
+                {
+                    Console.WriteLine("WARN: " + providerRegistration.ProviderImplementation.Type.FullName + " could not be registered because provider was not found or provider has already implementation!");
+                    continue;
+                }
+
+                providers.Add(providerRegistration);
+
+                if (providerRegistration.Enabled && providerRegistration.ProviderType == typeof(IRocketPluginProvider).FullName)
                 {
                     //foreach (Type newProviderType in ((IRocketPluginProvider) provider.Implementation).LoadProviders()) {
                     //    registerProvider(newProviderType);
@@ -253,7 +261,7 @@ namespace Rocket.Core.Managers
                         Console.WriteLine("Loading provider implementation: " + provider.ProviderType);
                         provider.Load();
                         if (provider.Implementation == null)
-                            Console.WriteLine("Warning: " + provider.Provider.TypeName + " has no implementation");
+                            Console.WriteLine("Warning: " + provider.ProviderImplementation.TypeName + " has no implementation");
                         provider.Implementation?.Load();
                     }
                     else
