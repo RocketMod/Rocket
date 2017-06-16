@@ -160,7 +160,7 @@ namespace Rocket.Core.RCON
 
         public static string Read(TcpClient client)
         {
-            byte[] _data = new byte[1];
+            byte[] _data = new byte[6];
             string data = "";
             NetworkStream _stream = client.GetStream();
 
@@ -171,13 +171,14 @@ namespace Rocket.Core.RCON
                     int k = _stream.Read(_data, 0, 1);
                     if (k == 0)
                         return "";
-                    char kk = Convert.ToChar(_data[0]);
+                    string kk = Encoding.UTF8.GetString(_data, 0, 1);
                     data += kk;
-                    if (kk == '\n')
+                    if (kk == "\n")
                         break;
                 }
-                catch
+                catch(Exception ex)
                 {
+                    Logging.Logger.LogException(ex);
                     return "";
                 }
             }
