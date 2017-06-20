@@ -83,7 +83,7 @@ namespace Rocket.Core
         public static bool Execute(IRocketPlayer player, string command)
         {
             command = command.TrimStart('/');
-            string[] commandParts = Regex.Matches(command, @"["'](?<1>.*?)["']|(?<1>[^ ]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture).Cast<Match>().Select(m => m.Value.Trim()).ToArray();
+            string[] commandParts = Regex.Matches(command, @"[\""'](?<1>.*?)[\""']|(?<1>[^ ]+)", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture).Cast<Match>().Select(m => m.Groups [0].Value.Trim()).ToArray();
 
             if (commandParts.Length == 0)
                 return false;
