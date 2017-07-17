@@ -1,4 +1,6 @@
 <!-- 
+     READ AND FILL THIS CAREFULLY OR YOUR ISSUE WILL GET CLOSED. ISSUES WITH NO TEMPLATE WILL LIKELY GET CLOSED DIRECTLY.
+     
      If this is your first issue, please take the time to read this introduction.
      We use GitHub to track reproducable bugs, and feature requests. 
      Please consult https://github.com/RocketMod/Rocket/wiki/Fixing-Issues to figure a solution for most common problems.
