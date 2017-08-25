@@ -8,7 +8,7 @@ namespace Rocket.Core.Player
 {
     [Serializable]
     [DataContract]
-    public abstract class RocketPlayerBase : IRocketPlayer
+    public abstract class PlayerBase : IRocketPlayer
     {
         [DataMember]
         public string Id { get; private set; }
@@ -19,7 +19,7 @@ namespace Rocket.Core.Player
         [DataMember]
         public bool IsAdmin { get; private set; }
 
-        protected RocketPlayerBase(string id, string displayName = null, bool isAdmin = false)
+        protected PlayerBase(string id, string displayName = null, bool isAdmin = false)
         {
             Id = id;
             DisplayName = displayName ?? id;

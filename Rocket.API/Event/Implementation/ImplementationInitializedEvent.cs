@@ -4,7 +4,7 @@ namespace Rocket.API.Event.Implementation
 {
     public class ImplementationInitializedEvent : ImplementationEvent
     {
-        public ImplementationInitializedEvent(IRocketImplementationProvider implementation) : base(implementation)
+        public ImplementationInitializedEvent(IGameProvider implementation) : base(implementation)
         {
         }
     }

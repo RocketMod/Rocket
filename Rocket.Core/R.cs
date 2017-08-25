@@ -22,19 +22,18 @@ using Rocket.API.Providers.Plugins;
 using Rocket.API.Providers.Remoting;
 using Rocket.API.Providers.Translations;
 using Rocket.Core.Commands;
-using Rocket.Core.Managers;
 using Rocket.Core.Player;
 using Rocket.Core.Providers.Logging;
 using Rocket.Core.Providers.Permissions;
 using Rocket.Core.Providers.Translation;
-using Assert = Rocket.API.Utils.Debugging.Assert;
+using Rocket.Core.Providers;
 
 namespace Rocket.Core
 {
     public static class R
     {
         public static string Version { get; } = Assembly.GetExecutingAssembly().GetName().Version.ToString();
-
+        /*
         private static TranslationList defaultTranslation => new TranslationList
         {
             { "rocket_join_public","{0} connected to the server" },
@@ -62,23 +61,14 @@ namespace Rocket.Core
             { "command_not_found","Command not found."},
             { "command_cooldown","You have to wait {0} seconds before you can use this command again."}
         };
-
-        public static RocketProviderManager Providers { get; } = new RocketProviderManager();
-
-        public static IRocketImplementationProvider Implementation => Providers.GetProvider<IRocketImplementationProvider>();
-        public static IRocketTranslationDataProvider Translations => Providers.GetProvider<IRocketTranslationDataProvider>();
-        public static IRocketConfigurationDataProvider Configuration => Providers.GetProvider<IRocketConfigurationDataProvider>();
-        public static IRocketPermissionsDataProvider Permissions => Providers.GetProvider<IRocketPermissionsDataProvider>();
-
-        public static IRocketPluginProvider Plugins => Providers.GetProvider<IRocketPluginProvider>();
-        public static IRocketLoggingProvider Logger => Providers.GetProvider<IRocketLoggingProvider>();
-        public static IRocketCommandProvider Commands => Providers.GetProvider<IRocketCommandProvider>();
-        public static IRocketRemotingProvider Remoting => Providers.GetProvider<IRocketRemotingProvider>();
+        */
+        public static ProviderManager Providers { get; } = new ProviderManager();
+        
         //public static RocketPluginProviderProxy Plugins => Providers.GetProviderProxy<RocketPluginProviderProxy>();
         //public static RocketLoggingProviderProxy Logger => Providers.GetProviderProxy<RocketLoggingProviderProxy>();
         //public static RocketCommandProviderProxy Commands => Providers.GetProviderProxy<RocketCommandProviderProxy>();
         //public static RocketRemotingProviderProxy Remoting => Providers.GetProviderProxy<RocketRemotingProviderProxy>();
-
+        /*
         //todo refactor this but dont use providers? (we have events)
         public static bool Execute(IRocketPlayer player, string command)
         {
@@ -129,46 +119,24 @@ namespace Rocket.Core
             }
             return true;
         }
-
-        public static void Reload()
-        {
-            try
-            {
-                Providers.Unload();
-                Providers.Load();
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(LogLevel.FATAL, null, ex);
-            }
-        }
-
-        public static void Shutdown()
-        {
-            try
-            {
-                Providers.Unload();
-            }
-            catch (Exception ex)
-            {
-                Logger.Log(LogLevel.FATAL, null, ex);
-            }
-        }
-
+        */
         internal static GameObject gameObject = new GameObject("Rocket");
 
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static void Bootstrap<T>() where T : IRocketImplementationProvider, IRocketProviderBase
+        public static void Bootstrap<T>() where T : IGameProvider
         {
             //todo: set working dir to /<server>/Rocket
             //currently it generates everything in unturneds root directory
 
-            Providers.LoadRocketProviders();
-            //Providers.registerProvider<ConsoleLoggingProvider>(true); //do not set to false!!
-            //Providers.registerProvider<UnityLoggingProvider>(true);
-            //Providers.registerProvider<Log4NetLoggingProvider>(true); TODO: Not working
+            //TODO : Load all types then do :
+            //Providers.LoadRocketProviders();
+            
 
-            Assert.NotNull(Logger);
+
+
+            /*
+             * 
+             * FOlgendes gehört NICHT hier her
             Logger.LogMessage(LogLevel.INFO, "####################################################################################", ConsoleColor.Yellow);
             Logger.LogMessage(LogLevel.INFO, "Starting RocketMod " + Version, ConsoleColor.Yellow);
             Logger.LogMessage(LogLevel.INFO, "####################################################################################", ConsoleColor.Yellow);
@@ -194,7 +162,7 @@ namespace Rocket.Core
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.FATAL, null, ex);
-            }
+            }*/
         }
     }
 }

@@ -3,8 +3,8 @@ using Rocket.API.Providers.Plugins;
 
 namespace Rocket.API.Providers.Translations
 {
-    [RocketProvider]
-    public interface IRocketTranslationDataProvider : IRocketDataProviderBase
+    [ProviderDefinition]
+    public interface IRocketTranslationDataProvider
     {
         string Translate(string key, params object[] args);
         string Translate(IRocketPlugin plugin,string key, params object[] args);

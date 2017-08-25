@@ -14,8 +14,8 @@ namespace Rocket.Core.Providers.Remoting.RPC
         private ServiceHost serviceHost = null;
         private Uri endpoint;
 
-        public static LongPollingEvent<RocketPlayerBase> OnPlayerConnected = new LongPollingEvent<RocketPlayerBase>();
-        public static LongPollingEvent<RocketPlayerBase> OnPlayerDisconnected = new LongPollingEvent<RocketPlayerBase>();
+        public static LongPollingEvent<PlayerBase> OnPlayerConnected = new LongPollingEvent<PlayerBase>();
+        public static LongPollingEvent<PlayerBase> OnPlayerDisconnected = new LongPollingEvent<PlayerBase>();
         public static LongPollingEvent<LogMessage> OnLog = new LongPollingEvent<LogMessage>();
         public static LongPollingEvent OnShutdown = new LongPollingEvent();
         private static RocketPollingListener _listener;
@@ -74,13 +74,13 @@ namespace Rocket.Core.Providers.Remoting.RPC
         [API.Event.EventHandler]
         public void OnPlayerConnected(PlayerConnectedEvent @event)
         {
-            RocketServiceHost.OnPlayerConnected.Invoke((RocketPlayerBase)@event.Player);
+            RocketServiceHost.OnPlayerConnected.Invoke((PlayerBase)@event.Player);
         }
 
         [API.Event.EventHandler]
         public void OnPlayerDisconnected(PlayerDisconnectedEvent @event)
         {
-            RocketServiceHost.OnPlayerDisconnected.Invoke((RocketPlayerBase)@event.Player);
+            RocketServiceHost.OnPlayerDisconnected.Invoke((PlayerBase)@event.Player);
         }
 
         [API.Event.EventHandler]

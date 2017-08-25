@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Rocket.API.Commands;
 using Rocket.API.Providers;
@@ -6,8 +7,8 @@ using Rocket.API.Providers.Commands;
 
 namespace Rocket.Core.Providers.Commands
 {
-    [RocketProviderProxy]
-    public class RocketCommandProviderProxy : IRocketCommandProvider
+    [ProviderProxy]
+    public class CommandProviderProxy : ProviderBase, IRocketCommandProvider
     {
         public ReadOnlyCollection<IRocketCommand> Commands
         {
@@ -22,14 +23,14 @@ namespace Rocket.Core.Providers.Commands
             }
         }
 
-        public void Load(bool isReload = false)
+        protected override void OnLoad(ProviderManager providerManager)
         {
-
+            throw new NotImplementedException();
         }
 
-        public void Unload(bool isReload = false)
+        protected override void OnUnload()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

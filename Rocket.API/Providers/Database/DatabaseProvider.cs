@@ -3,8 +3,8 @@ using System.Data;
 
 namespace Rocket.API.Providers.Database
 {
-    [RocketProvider]
-    public interface IDatabaseProvider : IRocketDataProviderBase
+    [ProviderDefinition]
+    public interface IDatabaseProvider
     {
         IDbConnection Connection { get; }
         void Setup(string connectionString);

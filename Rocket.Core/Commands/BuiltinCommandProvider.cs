@@ -2,21 +2,22 @@
 using Rocket.API.Providers.Commands;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Rocket.API.Providers;
+using Rocket.Core.Providers;
+using System;
 
 namespace Rocket.Core.Commands
 {
-    [RocketProviderImplementation]
-    public class RocketBuiltinCommandProvider : IRocketCommandProvider
+   
+    public class BuiltinCommandProvider : ProviderBase, IRocketCommandProvider
     {
-        public void Unload(bool isReload = false)
+        protected override void OnLoad(ProviderManager providerManager)
         {
-
+            throw new NotImplementedException();
         }
 
-        public void Load(bool isReload = false)
+        protected override void OnUnload()
         {
-            //do nothing
+            throw new NotImplementedException();
         }
 
         public ReadOnlyCollection<IRocketCommand> Commands { get; } = new List<IRocketCommand>

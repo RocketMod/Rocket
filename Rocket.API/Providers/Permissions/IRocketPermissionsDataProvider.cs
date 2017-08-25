@@ -4,8 +4,8 @@ using Rocket.API.Serialization;
 
 namespace Rocket.API.Providers.Permissions
 {
-    [RocketProvider]
-    public interface IRocketPermissionsDataProvider : IRocketDataProviderBase
+    [ProviderDefinition]
+    public interface IRocketPermissionsDataProvider 
     {
         ReadOnlyCollection<RocketPermissionsGroup> GetPlayerGroups(IRocketPlayer player);
 

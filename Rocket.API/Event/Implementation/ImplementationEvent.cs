@@ -4,9 +4,9 @@ namespace Rocket.API.Event.Implementation
 {
     public abstract class ImplementationEvent : Event
     {
-        public IRocketImplementationProvider Implementation { get; }
+        public IGameProvider Implementation { get; }
 
-        protected ImplementationEvent(IRocketImplementationProvider implementation)
+        protected ImplementationEvent(IGameProvider implementation)
         {
             Implementation = implementation;
         }

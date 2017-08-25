@@ -107,13 +107,13 @@ namespace Rocket.Launcher
         }
 
 
-        public delegate void PlayerConnected(RocketPlayerBase message);
+        public delegate void PlayerConnected(PlayerBase message);
         public PlayerConnected OnPlayerConnected;
         private async void getPlayerConnected()
         {
             try
             {
-                RocketPlayerBase player = await R.OnPlayerConnectedAsync();
+                PlayerBase player = await R.OnPlayerConnectedAsync();
                 if (player != null)
                     OnPlayerConnected?.Invoke(player);
             }
@@ -127,13 +127,13 @@ namespace Rocket.Launcher
         }
 
 
-        public delegate void PlayerDisconnected(RocketPlayerBase message);
+        public delegate void PlayerDisconnected(PlayerBase message);
         public PlayerDisconnected OnPlayerDisconnected;
         private async void getPlayerDisconnected()
         {
             try
             {
-                RocketPlayerBase player = await R.OnPlayerDisconnectedAsync();
+                PlayerBase player = await R.OnPlayerDisconnectedAsync();
                 if (player != null)
                     OnPlayerDisconnected?.Invoke(player);
             }

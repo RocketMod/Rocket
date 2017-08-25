@@ -4,7 +4,7 @@ using Rocket.API.Providers;
 
 namespace Rocket.Core.Providers.Logging
 {
-    [RocketProviderProxy]
+    [ProviderProxy]
     public class RocketLoggingProviderProxy : IRocketLoggingProvider
     {
         public void Invoke(Action<IRocketLoggingProvider> action)

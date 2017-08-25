@@ -2,8 +2,8 @@
 
 namespace Rocket.API.Providers.Plugins
 {
-    [RocketProvider]
-    public interface IRocketPluginProvider : IRocketProviderBase
+    [ProviderDefinition]
+    public interface IRocketPluginProvider
     {
         ReadOnlyCollection<IRocketPlugin> Plugins { get; }
         IRocketPlugin GetPlugin(string name);

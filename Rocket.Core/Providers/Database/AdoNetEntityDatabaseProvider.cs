@@ -11,11 +11,10 @@ using Rocket.API.Providers.Database;
 
 namespace Rocket.Core.Providers.Database
 {
-    //[RocketProviderImplementation]
-    public class AdoNetEntityDatabaseProvider : IDatabaseProvider
+    public class AdoNetEntityDatabaseProvider : ProviderBase, IDatabaseProvider
     {
         public List<DatabaseContext> DatabaseContexts { get; } = new List<DatabaseContext>();
-        public void Unload(bool isReload = false)
+        protected override void OnUnload()
         {
             if (Connection == null || Connection.State == ConnectionState.Closed)
                 return;
@@ -23,7 +22,7 @@ namespace Rocket.Core.Providers.Database
             Connection.Close();
         }
 
-        public void Load(bool isReload = false)
+        protected override void OnLoad(ProviderManager providerManager)
         {
             Connection.Open();
         }
@@ -151,7 +150,7 @@ namespace Rocket.Core.Providers.Database
 
             return dTable.Rows.Count > 0;
         }
-
+        
         public IDbConnection Connection { get; private set; }
     }
 }

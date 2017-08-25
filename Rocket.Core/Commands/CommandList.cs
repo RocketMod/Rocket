@@ -11,19 +11,19 @@ using Rocket.API.Serialization;
 namespace Rocket.Core.Commands
 {
     [Serializable]
-    public class RocketCommandList : IEnumerable<RegisteredRocketCommand>, IDefaultable
+    public class CommandList : IEnumerable<RegisteredRocketCommand>, IDefaultable
     {
         private List<RegisteredRocketCommand> commands = new List<RegisteredRocketCommand>();
         public ReadOnlyCollection<RegisteredRocketCommand> Commands { get; internal set; }
 
         private IRocketPluginProvider manager;
 
-        public RocketCommandList()
+        public CommandList()
         {
             Commands = commands.AsReadOnly();
         }
 
-        public RocketCommandList(IRocketPluginProvider manager){
+        public CommandList(IRocketPluginProvider manager){
             this.manager = manager;
             Commands = commands.AsReadOnly();
         }

@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace Rocket.Core.Commands
 {
-    public class RocketCommandContext: ICommandContext
+    public class CommandContext: ICommandContext
     {
-        public RocketCommandContext(IRocketPlayer caller, string[] arguments, IRocketCommand command)
+        public CommandContext(IRocketPlayer caller, string[] arguments, IRocketCommand command)
         {
             Caller = caller;
             Parameters = arguments;

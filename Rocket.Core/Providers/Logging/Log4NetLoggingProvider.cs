@@ -7,11 +7,56 @@ using Rocket.API.Providers.Logging;
 
 namespace Rocket.Core.Providers.Logging
 {
-    public class Log4NetLoggingProvider : IRocketLoggingProvider
+    public class Log4NetLoggingProvider : ProviderBase, IRocketLoggingProvider
     {
         public bool EchoNativeOutput { get; } = true;
+        
+        private static ILog GetLogger()
+        {
+            StackFrame frame = new StackFrame(2);
+            var method = frame.GetMethod();
+            return LogManager.GetLogger(method.DeclaringType);
+        }
 
-        public void Load(bool isReload)
+        public bool IsDebugEnabled => GetLogger().IsDebugEnabled;
+        public bool IsInfoEnabled => GetLogger().IsInfoEnabled;
+        public bool IsWarnEnabled => GetLogger().IsWarnEnabled;
+        public bool IsErrorEnabled => GetLogger().IsErrorEnabled;
+        public bool IsFatalEnabled => GetLogger().IsFatalEnabled;
+
+        public void Log(LogLevel level, object message, Exception exception = null, ConsoleColor? color = null)
+        {
+            switch (level)
+            {
+                case LogLevel.DEBUG:
+                    GetLogger().Debug(message, exception);
+                    break;
+                case LogLevel.INFO:
+                    GetLogger().Info(message, exception);
+                    break;
+                case LogLevel.WARN:
+                    GetLogger().Warn(message, exception);
+                    break;
+                case LogLevel.ERROR:
+                    GetLogger().Error(message, exception);
+                    break;
+                case LogLevel.FATAL:
+                    GetLogger().Fatal(message, exception);
+                    break;
+            }
+        }
+
+        public void Log(LogLevel level, Exception exception, ConsoleColor? color = null)
+        {
+            Log(level, null, exception, color);
+        }
+
+        public void LogMessage(LogLevel level, object message, ConsoleColor? color = null)
+        {
+            Log(level, message, null, color);
+        }
+
+        protected override void OnLoad(ProviderManager providerManager)
         {
             string logConfiguration = "log4net.config.xml";
             try
@@ -51,55 +96,9 @@ namespace Rocket.Core.Providers.Logging
             }
         }
 
-
-        private static ILog GetLogger()
+        protected override void OnUnload()
         {
-            StackFrame frame = new StackFrame(2);
-            var method = frame.GetMethod();
-            return LogManager.GetLogger(method.DeclaringType);
-        }
-
-        public bool IsDebugEnabled => GetLogger().IsDebugEnabled;
-        public bool IsInfoEnabled => GetLogger().IsInfoEnabled;
-        public bool IsWarnEnabled => GetLogger().IsWarnEnabled;
-        public bool IsErrorEnabled => GetLogger().IsErrorEnabled;
-        public bool IsFatalEnabled => GetLogger().IsFatalEnabled;
-
-        public void Log(LogLevel level, object message, Exception exception = null, ConsoleColor? color = null)
-        {
-            switch (level)
-            {
-                case LogLevel.DEBUG:
-                    GetLogger().Debug(message, exception);
-                    break;
-                case LogLevel.INFO:
-                    GetLogger().Info(message, exception);
-                    break;
-                case LogLevel.WARN:
-                    GetLogger().Warn(message, exception);
-                    break;
-                case LogLevel.ERROR:
-                    GetLogger().Error(message, exception);
-                    break;
-                case LogLevel.FATAL:
-                    GetLogger().Fatal(message, exception);
-                    break;
-            }
-        }
-
-        public void Unload(bool isReload = false)
-        {
-            //
-        }
-
-        public void Log(LogLevel level, Exception exception, ConsoleColor? color = null)
-        {
-            Log(level, null, exception, color);
-        }
-
-        public void LogMessage(LogLevel level, object message, ConsoleColor? color = null)
-        {
-            Log(level, message, null, color);
+            throw new NotImplementedException();
         }
     }
 }

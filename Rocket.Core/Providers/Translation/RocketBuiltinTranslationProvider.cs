@@ -6,7 +6,6 @@ using Rocket.API.Providers.Translations;
 
 namespace Rocket.Core.Providers.Translation
 {
-    [RocketProviderImplementation]
     public class RocketBuiltinTranslationProvider : IRocketTranslationDataProvider
     {
         //TODO: Implement file loading

@@ -5,7 +5,7 @@ namespace Rocket.API.Providers.Remoting
 {
     public delegate void RockedCommandExecute(IRocketPlayer player, IRocketCommand command, ref bool cancel);
 
-    public interface IRocketRemotingProvider : IRocketProviderBase
+    public interface IRocketRemotingProvider
     {
         RockedCommandExecute OnExecute();
     }

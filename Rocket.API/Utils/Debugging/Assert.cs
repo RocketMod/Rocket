@@ -9,7 +9,7 @@ namespace Rocket.API.Utils.Debugging
 #if !DEBUG
             return;
 #endif
-
+            
             if (o != null)
                 return;
 

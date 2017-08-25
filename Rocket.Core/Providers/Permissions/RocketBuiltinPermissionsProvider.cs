@@ -9,7 +9,7 @@ using Rocket.API.Serialization;
 
 namespace Rocket.Core.Providers.Permissions
 {
-    [RocketProviderImplementation]
+   
     public sealed class RocketBuiltinPermissionsProvider : IRocketPermissionsDataProvider
     {
         private RocketPermissionsHelper helper;

@@ -3,8 +3,8 @@
 namespace Rocket.API.Providers
 {
     [AttributeUsage(AttributeTargets.Interface)]
-    public class RocketProviderAttribute : Attribute
+    public class ProviderDefinitionAttribute : Attribute
     {
-        public bool SupportsMultiple { get; set; } = true;
+        public bool MultiInstance { get; set; } = true;
     }
 }

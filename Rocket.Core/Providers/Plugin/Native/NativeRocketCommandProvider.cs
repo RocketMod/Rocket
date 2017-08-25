@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Rocket.API.Commands;
@@ -8,8 +9,7 @@ using Rocket.API.Providers.Plugins;
 
 namespace Rocket.Core.Providers.Plugin.Native
 {
-    [NoProviderAutoRegistration]
-    public class NativeRocketCommandProvider : IRocketCommandProvider
+    public class NativeRocketCommandProvider : ProviderBase, IRocketCommandProvider
     {
         public NativeRocketCommandProvider(IRocketPluginProvider manager)
         {
@@ -23,14 +23,14 @@ namespace Rocket.Core.Providers.Plugin.Native
             InternalCommands.AddRange(commands.AsEnumerable());
         }
 
-        public void Load(bool isReload = false)
+        protected override void OnLoad(ProviderManager providerManager)
         {
-
+            throw new NotImplementedException();
         }
 
-        public void Unload(bool isReload = false)
+        protected override void OnUnload()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

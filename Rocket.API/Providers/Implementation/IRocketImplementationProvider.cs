@@ -5,15 +5,11 @@ using System.Collections.ObjectModel;
 
 namespace Rocket.API.Providers.Implementation
 {
-    [RocketProvider]
-    public interface IRocketImplementationProvider : IRocketProviderBase
+    [ProviderDefinition]
+    public interface IGameProvider
     {
         string InstanceName { get; }
         string Name { get; }
-        IChatManager Chat { get; }
-        IPlayerManager Players { get; }
-        ReadOnlyCollection<Type> Providers { get; }
-        TranslationList DefaultTranslation { get; }
         void Shutdown();
         void Reload();
     }

@@ -7,7 +7,7 @@ using Rocket.API.Serialization;
 
 namespace Rocket.Core.Providers.Permissions
 {
-    [RocketProviderProxy]
+    [ProviderProxy]
     public class RocketPermissionsProviderProxy : IRocketPermissionsDataProvider
     {
         public void Unload(bool isReload = false)

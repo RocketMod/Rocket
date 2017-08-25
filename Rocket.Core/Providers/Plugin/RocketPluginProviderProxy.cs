@@ -2,11 +2,12 @@
 using Rocket.API.Providers.Plugins;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System;
 
 namespace Rocket.Core.Providers.Plugin
 {
-    [RocketProviderProxy]
-    public class RocketPluginProviderProxy : IRocketPluginProvider
+    [ProviderProxy]
+    public class RocketPluginProviderProxy : ProviderBase, IRocketPluginProvider
     {
         public ReadOnlyCollection<IRocketPlugin> Plugins
         {
@@ -34,23 +35,22 @@ namespace Rocket.Core.Providers.Plugin
             return null;
         }
 
-        public void Load(bool isReload = false)
-        {
-
-        }
-
-        public void Unload(bool isReloading)
-        {
-
-        }
-
-
         public void LoadPlugins()
         {
             foreach (var prov in R.Providers.GetProviders<IRocketPluginProvider>())
             {
                 prov.LoadPlugins();
             }
+        }
+
+        protected override void OnLoad(ProviderManager providerManager)
+        {
+            throw new NotImplementedException();
+        }
+
+        protected override void OnUnload()
+        {
+            throw new NotImplementedException();
         }
     }
 }

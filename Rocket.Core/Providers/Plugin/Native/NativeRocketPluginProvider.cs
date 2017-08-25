@@ -12,7 +12,7 @@ using Rocket.Core.Commands;
 
 namespace Rocket.Core.Providers.Plugin.Native
 {
-    [RocketProviderImplementation]
+   
     public sealed class NativeRocketPluginProvider : IRocketPluginProvider
     {
         public static readonly string PluginDirectory = "Plugins/{0}/";
@@ -181,7 +181,7 @@ namespace Rocket.Core.Providers.Plugin.Native
             try
             {
                 Instance = this;
-                CommandProvider = new RocketCommandList(this);
+                CommandProvider = new CommandList(this);
                 AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
                 {
                     string file;
@@ -221,7 +221,7 @@ namespace Rocket.Core.Providers.Plugin.Native
             return allTypes;
         }
 
-        public RocketCommandList CommandProvider { get; set; }
+        public CommandList CommandProvider { get; set; }
 
         public void Unload(bool isReload)
         {
