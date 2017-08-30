@@ -1,30 +1,23 @@
-﻿using Rocket.API.Commands;
+﻿using System;
+using Rocket.API;
+using Rocket.API.Commands;
 using Rocket.API.Player;
-using UnityEngine;
 
 namespace Rocket.Core.Commands
 {
     public class CommandContext: ICommandContext
     {
-        public CommandContext(IRocketPlayer caller, string[] arguments, IRocketCommand command)
+        public CommandContext(IPlayer caller, string[] arguments, ICommand command, ICommandOutput output)
         {
             Caller = caller;
             Parameters = arguments;
             Command = command;
+            Output = output;
         }
 
-        public IRocketPlayer Caller { get; }
+        public IPlayer Caller { get; }
         public string[] Parameters { get; }
-        public IRocketCommand Command { get; }
-
-        public void Print(string msg)
-        {
-            R.Implementation.Chat.Say(Caller, msg);
-        }
-
-        public void Print(string msg, Color color)
-        {
-            R.Implementation.Chat.Say(Caller, msg, color);
-        }
+        public ICommand Command { get; }
+        public ICommandOutput Output { get; }
     }
 }

@@ -1,10 +1,10 @@
-﻿using Rocket.API.Providers.Plugins;
+﻿using Rocket.API.Plugins;
 
 namespace Rocket.API.Event.Plugin
 {
     public class PluginLoadingEvent : PluginEvent, ICancellableEvent
     {
-        public PluginLoadingEvent(IRocketPlugin plugin) : base(plugin)
+        public PluginLoadingEvent(IPlugin plugin) : base(plugin)
         {
         }
 

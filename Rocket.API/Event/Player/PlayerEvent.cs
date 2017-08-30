@@ -4,9 +4,9 @@ namespace Rocket.API.Event.Player
 {
     public abstract class PlayerEvent : Event
     {
-        public IRocketPlayer Player { get; }
+        public IPlayer Player { get; }
 
-        protected PlayerEvent(IRocketPlayer player)
+        protected PlayerEvent(IPlayer player)
         {
             Player = player;
         }

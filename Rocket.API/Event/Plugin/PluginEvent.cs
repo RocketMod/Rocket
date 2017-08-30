@@ -1,12 +1,14 @@
-﻿using Rocket.API.Providers.Plugins;
+﻿
+
+using Rocket.API.Plugins;
 
 namespace Rocket.API.Event.Plugin
 {
     public abstract class PluginEvent : Event
     {
-        public IRocketPlugin Plugin { get; }
+        public IPlugin Plugin { get; }
 
-        protected PluginEvent(IRocketPlugin plugin)
+        protected PluginEvent(IPlugin plugin)
         {
             Plugin = plugin;
         }

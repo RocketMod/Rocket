@@ -130,7 +130,6 @@ namespace Rocket.Sandbox
             typeof(AddComponentMenu).FullName,
             typeof(ContextMenu).FullName,
             typeof(ExecuteInEditMode).FullName,
-            typeof(RPC).FullName,
             typeof(Timer).FullName,
             typeof(System.Timers.Timer).FullName,
             typeof(AsyncOperation).FullName,

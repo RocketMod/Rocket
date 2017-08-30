@@ -1,0 +1,14 @@
+﻿using Rocket.API.Logging;
+using System;
+using UnityEngine;
+
+namespace Rocket.API.Providers
+{
+    [ProviderDefinition]
+    public interface ILoggingProvider
+    {
+        void LogMessage(LogLevel level, object message, ConsoleColor? color = null);
+        void Log(LogLevel level, object message, Exception exception = null, ConsoleColor? color = null);
+        void Log(LogLevel level, Exception exception, ConsoleColor? color = null);
+    }
+}

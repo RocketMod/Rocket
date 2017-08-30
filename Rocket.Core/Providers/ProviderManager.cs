@@ -4,13 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 using Rocket.API.Providers;
-using Rocket.API.Providers.Logging;
-using Rocket.API.Providers.Plugins;
-using Assert = Rocket.API.Utils.Debugging.Assert;
+using System.Reflection;
 
 namespace Rocket.Core.Providers
 {
-    public class ProviderManager
+    public class ProviderManager : IProviderManager
     {
         private List<Type> providerDefinitionTypes = new List<Type>();
         private List<ProviderImplementation> providerImplementations = new List<ProviderImplementation>();
@@ -29,16 +27,45 @@ namespace Rocket.Core.Providers
             providerImplementations.Add(new ProviderImplementation(typeof(T), instance.GetType()) { Instance = instance });
         }
 
-        internal void LoadRocketProviders(Type[] types)
+        internal void LoadRocketProviders()
         {
+            Type[] types = new Type[0]; //TODO: Get types from folder Providers and Rocket.Core
+
             loadProviderDefinitionsFromTypes(types);
             loadProviderImplementationsFromTypes(types);
 
             instanciateProviderImplemenations();
 
             loadProviderImplementations();
-
+            
             OnProvidersLoaded?.Invoke();
+
+        }
+
+        public T CreateInstance<T>(params object[] arguments)
+        {
+            Type type = typeof(T);
+            //TODO: Instanciate new object with injected providers and optional arguments
+            ConstructorInfo constructor = type.GetConstructors().OrderBy(c => c.GetParameters().Length).FirstOrDefault();//TODO: Decide which constructor to use for dependency injection (find the one closest to the arguments that we can satisfy)
+
+            //
+            ParameterInfo[] parameters = constructor.GetParameters();
+            object[] constructorArguments = arguments;
+            //Prepare & add all the instances required from the provider list
+
+            return (T)Activator.CreateInstance(type, constructorArguments);
+        }
+
+        public T Call<T>(object context,string methodName,params object[] arguments)
+        {
+            Type type = context.GetType();
+            MethodInfo method = type.GetMethod(methodName);
+            ParameterInfo[] parameters = method.GetParameters();
+
+            object[] methodArguments = arguments;
+            //Prepare & add all the instances required from the provider list
+
+            return (T)method.Invoke(context, methodArguments);
         }
 
         private void loadProviderImplementations()
@@ -92,14 +119,13 @@ namespace Rocket.Core.Providers
             foreach (Type type in types)
             {
                 if (!type.IsAssignableFrom(typeof(ProviderBase))) continue;
-                ProviderProxyAttribute proxyAttribute = (ProviderProxyAttribute)type.GetCustomAttributes(typeof(ProviderProxyAttribute), true).FirstOrDefault();
 
                 foreach (Type providerType in type.GetInterfaces())
                 {
                     ProviderDefinitionAttribute providerAttribute = (ProviderDefinitionAttribute)providerType.GetCustomAttributes(typeof(ProviderDefinitionAttribute), true).First();
                     if (providerAttribute != null)
                     {
-                        if (proxyAttribute != null && providerAttribute.MultiInstance)
+                        if (type.BaseType.IsGenericType && type.BaseType.GetGenericTypeDefinition() == typeof(ProxyBase<Type>).GetGenericTypeDefinition() && providerAttribute.MultiInstance)
                         {
                             providerProxyImplementations.Add(new ProviderImplementation(providerType, type));
                         }
@@ -119,6 +145,7 @@ namespace Rocket.Core.Providers
 
         public object GetProvider(Type providerDefinitionType)
         {
+            if (providerDefinitionType.GetType() == typeof(IProviderManager)) return this;
             if (!providerDefinitionType.IsInterface) throw new ArgumentException($"The type {providerDefinitionType.FullName} is no interface");
             if (!providerDefinitionTypes.Contains(providerDefinitionType)) throw new ArgumentException($"The type {providerDefinitionType.FullName} is not a known provider interface");
 
@@ -130,6 +157,16 @@ namespace Rocket.Core.Providers
             if (providerImplementation != null) return providerImplementation;
 
             return null;
+        }
+
+        internal List<T> GetProviders<T>()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Reload()
+        {
+            throw new NotImplementedException();
         }
     }
 }

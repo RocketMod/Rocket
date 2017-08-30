@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
-using Rocket.API.Providers.Plugins;
+using Rocket.API.Providers;
 
 namespace Rocket.API.Commands
 {
@@ -19,9 +19,9 @@ namespace Rocket.API.Commands
     //}
 
     [Serializable]
-    public class RegisteredRocketCommand : IRocketCommand
+    public class RegisteredRocketCommand : ICommand
     {
-        public RegisteredRocketCommand(IRocketPluginProvider provider, string name, IRocketCommand command)
+        public RegisteredRocketCommand(IPluginProvider provider, string name, ICommand command)
         {
             Provider = provider;
             Name = name.ToLower();
@@ -37,10 +37,10 @@ namespace Rocket.API.Commands
         }
 
         [XmlIgnore]
-        public IRocketCommand Command;
+        public ICommand Command;
 
         [XmlIgnore]
-        public IRocketPluginProvider Provider { get; private set; }
+        public IPluginProvider Provider { get; private set; }
 
         public void Execute(ICommandContext ctx)
         {

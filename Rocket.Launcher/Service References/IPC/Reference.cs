@@ -8,8 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using Rocket.API.Logging;
 using Rocket.API.Player;
-using Rocket.API.Providers.Logging;
 using Rocket.Core.Player;
 
 namespace Rocket.Launcher.Service_References.IPC {

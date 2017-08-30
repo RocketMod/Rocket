@@ -1,8 +1,8 @@
-﻿using Rocket.API.Providers.Implementation;
+﻿using Rocket.API.Providers;
 
 namespace Rocket.API.Event.Implementation
 {
-    public class ImplementationShutdownEvent : ImplementationEvent
+    public class ImplementationShutdownEvent : GameEvent
     {
         public ImplementationShutdownEvent(IGameProvider implementation) : base(implementation)
         {

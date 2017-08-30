@@ -25,7 +25,7 @@ namespace Rocket.Plugins.ScriptBase
     /// <p>The RocketPluginBase with configuration for a scripting implementation</p>
     /// <p>To be implemented by the script implementation.</p>
     /// </summary>
-    public class ScriptRocketPlugin<TRocketPluginConfiguration> : RocketPluginBase<TRocketPluginConfiguration> where TRocketPluginConfiguration : class, IRocketPluginConfiguration
+    public class ScriptRocketPlugin<TRocketPluginConfiguration> : RocketPluginBase<TRocketPluginConfiguration> where TRocketPluginConfiguration : class, IPluginConfiguration
     {
         public void Awake()
         {

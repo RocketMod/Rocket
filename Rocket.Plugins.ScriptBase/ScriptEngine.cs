@@ -61,8 +61,6 @@ namespace Rocket.Plugins.ScriptBase
             if (!Directory.Exists(LibrariesDir))
                 Directory.CreateDirectory(LibrariesDir);
 
-            R.Providers.RegisterProvider(PluginProvider);
-
             OnLoad();
         }
 

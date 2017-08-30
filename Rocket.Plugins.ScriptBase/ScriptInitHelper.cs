@@ -17,7 +17,7 @@ namespace Rocket.Plugins.ScriptBase
             Context = ctx;
         }
 
-        public void RegisterCommand(IRocketCommand command)
+        public void RegisterCommand(ICommand command)
         {
             //todo
             //Engine.PluginProvider.CommandProvider.Add(command);

@@ -1,8 +1,8 @@
-﻿using Rocket.API.Providers.Implementation;
+﻿using Rocket.API.Providers;
 
 namespace Rocket.API.Event.Implementation
 {
-    public class ImplementationReloadEvent : ImplementationEvent
+    public class ImplementationReloadEvent : GameEvent
     {
         public ImplementationReloadEvent(IGameProvider implementation) : base(implementation)
         {

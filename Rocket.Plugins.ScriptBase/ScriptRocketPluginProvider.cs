@@ -4,9 +4,9 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using Rocket.API.Providers;
-using Rocket.API.Providers.Logging;
-using Rocket.API.Providers.Plugins;
 using Rocket.Core;
+using Rocket.API.Plugins;
+using Rocket.API.Logging;
 
 namespace Rocket.Plugins.ScriptBase
 {
@@ -14,23 +14,25 @@ namespace Rocket.Plugins.ScriptBase
     /// <p>The PluginProvider for a scripting implementation</p>
     /// <p>To be implemented by the script implementation.</p>
     /// </summary>
-    [NoProviderAutoRegistration]
-    public class ScriptRocketPluginProvider : IRocketPluginProvider
+    public class ScriptRocketPluginProvider : IPluginProvider
     {
         private readonly ScriptEngine _engine;
         public static ScriptRocketPluginProvider Instance { get; private set; }
 
-        private readonly List<IRocketPlugin> _plugins = new List<IRocketPlugin>();
+        private readonly List<IPlugin> _plugins = new List<IPlugin>();
+
+        ILoggingProvider Logging;
 
         public ScriptRocketPluginProvider(ScriptEngine engine)
         {
+            Logging = R.Providers.GetProvider<ILoggingProvider>();
             _engine = engine;
             Instance = this;
         }
 
-        public List<IRocketPlugin> GetPlugins() => _plugins;
+        public List<IPlugin> GetPlugins() => _plugins;
 
-        public IRocketPlugin GetPlugin(string name)
+        public IPlugin GetPlugin(string name)
             => _plugins.FirstOrDefault(c => c.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
 
         public string PluginsDirectory => _engine.PluginsDir;
@@ -54,7 +56,7 @@ namespace Rocket.Plugins.ScriptBase
         }
 
         public ReadOnlyCollection<Type> Providers => new List<Type>().AsReadOnly();
-        public ReadOnlyCollection<IRocketPlugin> Plugins => _plugins.AsReadOnly();
+        public ReadOnlyCollection<IPlugin> Plugins => _plugins.AsReadOnly();
         public ReadOnlyCollection<Type> LoadProviders()
         {
             return Providers;
@@ -72,7 +74,7 @@ namespace Rocket.Plugins.ScriptBase
                     _plugins.Add(context.Plugin);
                     break;
                 default:
-                    R.Logger.Log(LogLevel.ERROR, $"[${_engine.Name}PluginProvider] Failed to load script plugin: {plName} ({res.ExecutionResult})", res.Exception);
+                    Logging.Log(LogLevel.ERROR, $"[${_engine.Name}PluginProvider] Failed to load script plugin: {plName} ({res.ExecutionResult})", res.Exception);
                     break;
             }
 

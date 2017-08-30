@@ -1,6 +1,6 @@
 ﻿namespace Rocket.API.Serialization
 {
-    public interface IRocketPluginConfiguration : IDefaultable
+    public interface IPluginConfiguration : IDefaultable
     {
     }
 }

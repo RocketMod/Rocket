@@ -6,10 +6,10 @@ namespace Rocket.API.Exceptions
 {
     public class NoPermissionsForCommandException : Exception
     {
-        private IRocketCommand command;
-        private IRocketPlayer player;
+        private ICommand command;
+        private IPlayer player;
 
-        public NoPermissionsForCommandException(IRocketPlayer player, IRocketCommand command)
+        public NoPermissionsForCommandException(IPlayer player, ICommand command)
         {
             this.command = command;
             this.player = player;

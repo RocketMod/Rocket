@@ -4,7 +4,7 @@ namespace Rocket.API.Commands
 {
     public enum AllowedCaller { Console, Player, Both }
 
-    public interface IRocketCommand
+    public interface ICommand
     {
         AllowedCaller AllowedCaller { get; }
         string Name { get; }

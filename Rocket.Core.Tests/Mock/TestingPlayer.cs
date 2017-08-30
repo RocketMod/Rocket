@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Rocket.Core.Tests.Mock
 {
-    public class TestingPlayer : IRocketPlayer
+    public class TestingPlayer : IPlayer
     {
         public string DisplayName => "TestingPlayer";
 
@@ -20,7 +20,7 @@ namespace Rocket.Core.Tests.Mock
 
         public int CompareTo(object obj)
         {
-            return String.Compare(Id, ((IRocketPlayer)obj).Id, StringComparison.Ordinal);
+            return String.Compare(Id, ((IPlayer)obj).Id, StringComparison.Ordinal);
         }
 
         public void Kick(string message)

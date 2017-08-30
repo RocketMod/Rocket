@@ -96,7 +96,7 @@ namespace Rocket.API.Utils
             {
                 ((Action)action)();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
             }
             finally

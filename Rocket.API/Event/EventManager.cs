@@ -4,7 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using Rocket.API.Collections;
-using Rocket.API.Providers.Plugins;
+using Rocket.API.Plugins;
 
 namespace Rocket.API.Event
 {
@@ -13,7 +13,7 @@ namespace Rocket.API.Event
         private static EventManager _instance;
         private readonly Dictionary<Type, List<MethodInfo>> _eventListeners = new Dictionary<Type, List<MethodInfo>>();
         private readonly Dictionary<IListener, List<MethodInfo>> _listenerMethods = new Dictionary<IListener, List<MethodInfo>>();
-        private readonly Dictionary<IRocketPlugin, List<IListener>> _listeners = new Dictionary<IRocketPlugin, List<IListener>>();
+        private readonly Dictionary<IPlugin, List<IListener>> _listeners = new Dictionary<IPlugin, List<IListener>>();
         public static EventManager Instance => _instance ?? (_instance = new EventManager());
         private readonly DummyPlugin dummyPlugin = new DummyPlugin();
         /// <summary>
@@ -21,13 +21,13 @@ namespace Rocket.API.Event
         /// </summary>
         /// <param name="listener">The listener class which implements the <see cref="EventHandler"/> listener methods</param>
         /// <param name="plugin">The plugin which wants to register a new listener</param>
-        public void RegisterEvents(IListener listener, IRocketPlugin plugin)
+        public void RegisterEvents(IListener listener, IPlugin plugin)
         {
             if (plugin == null) throw new ArgumentNullException(nameof(plugin));
             RegisterEventsInternal(listener, plugin);
         }
 
-        internal void RegisterEventsInternal(IListener listener, IRocketPlugin plugin)
+        internal void RegisterEventsInternal(IListener listener, IPlugin plugin)
         {
             if (plugin == null) //Event listened by Rocket
                 plugin = dummyPlugin;
@@ -87,13 +87,13 @@ namespace Rocket.API.Event
             }
         }
 
-        public void UnregisterEvents(IListener listener, IRocketPlugin plugin)
+        public void UnregisterEvents(IListener listener, IPlugin plugin)
         {
             if (plugin == null) throw new ArgumentNullException(nameof(plugin));
             UnregisterEventsInternal(listener, plugin);
         }
 
-        internal void UnregisterEventsInternal(IListener listener, IRocketPlugin plugin)
+        internal void UnregisterEventsInternal(IListener listener, IPlugin plugin)
         {
             if (plugin == null)
                 plugin = dummyPlugin;
@@ -139,7 +139,7 @@ namespace Rocket.API.Event
                         instance = c;
                     }
                 }
-                catch (KeyNotFoundException e)
+                catch (KeyNotFoundException)
                 {
                     return;
                 }
@@ -167,7 +167,7 @@ namespace Rocket.API.Event
             }
         }
 
-        public void ClearListeners(IRocketPlugin plugin)
+        public void ClearListeners(IPlugin plugin)
         {
             if (!_listeners.ContainsKey(plugin)) return;
             foreach (IListener listener in _listeners[plugin])
@@ -186,7 +186,7 @@ namespace Rocket.API.Event
             _instance = null;
         }
 
-        private class DummyPlugin : IRocketPlugin
+        private class DummyPlugin : IPlugin
         {
             public string Name { get{throw new NotSupportedException(); } }
             public PluginState State { get { throw new NotSupportedException(); } }

@@ -4,7 +4,7 @@ namespace Rocket.API.Event.Player
 {
     public class PrePlayerConnectedEvent : PlayerEvent
     {
-        public PrePlayerConnectedEvent(IRocketPlayer player) : base(player)
+        public PrePlayerConnectedEvent(IPlayer player) : base(player)
         {
         }
     }

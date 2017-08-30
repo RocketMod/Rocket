@@ -1,8 +1,8 @@
-﻿using Rocket.API.Providers.Implementation;
+﻿using Rocket.API.Providers;
 
 namespace Rocket.API.Event.Implementation
 {
-    public class ImplementationInitializedEvent : ImplementationEvent
+    public class ImplementationInitializedEvent : GameEvent
     {
         public ImplementationInitializedEvent(IGameProvider implementation) : base(implementation)
         {

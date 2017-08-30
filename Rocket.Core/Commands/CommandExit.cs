@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Commands;
+using Rocket.API.Providers;
 
 namespace Rocket.Core.Commands
 {
-    public class CommandExit : IRocketCommand
+    public class CommandExit : ICommand
     {
         public AllowedCaller AllowedCaller => AllowedCaller.Player;
 
@@ -17,9 +18,15 @@ namespace Rocket.Core.Commands
 
         public List<string> Permissions => new List<string>() { "rocket.exit" };
 
+        IPlayerProvider Players;
+        public CommandExit(IPlayerProvider playerProvider)
+        {
+            Players = playerProvider;
+        }
+
         public void Execute(ICommandContext ctx)
         {
-            ctx.Caller.Kick("You exited.");
+            Players.Kick(ctx.Caller,"You exited.");
         }
     }
 }

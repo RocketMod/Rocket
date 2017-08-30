@@ -3,7 +3,7 @@ using Rocket.API.Commands;
 
 namespace Rocket.Core.Tests.Mock
 {
-    public class TestingCommand : IRocketCommand
+    public class TestingCommand : ICommand
     {
         public List<string> Aliases { get; set; } = new List<string>();
 
@@ -19,7 +19,7 @@ namespace Rocket.Core.Tests.Mock
 
         public void Execute(ICommandContext ctx)
         {
-            ctx.Print("yay");
+            ctx.Output.Print("yay");
         }
     }
 }

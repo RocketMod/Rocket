@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using NLua;
-using Rocket.API.Providers.Logging;
 using Rocket.Core;
 using Rocket.Plugins.ScriptBase;
 
@@ -41,7 +40,6 @@ namespace Rocket.Plugins.NLua
 
             if (luaContext?.State == null)
             {
-                R.Logger.LogMessage(LogLevel.WARN, "Lua state equals null, script: " + path);
                 return new ScriptResult(ScriptExecutionResult.FAILED_MISC);
             }
 

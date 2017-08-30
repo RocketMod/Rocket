@@ -12,20 +12,6 @@ using Rocket.API.Exceptions;
 using Rocket.API.Extensions;
 using Rocket.API.Player;
 using Rocket.API.Providers;
-using Rocket.API.Providers.Commands;
-using Rocket.API.Providers.Configuration;
-using Rocket.API.Utils;
-using Rocket.API.Providers.Implementation;
-using Rocket.API.Providers.Logging;
-using Rocket.API.Providers.Permissions;
-using Rocket.API.Providers.Plugins;
-using Rocket.API.Providers.Remoting;
-using Rocket.API.Providers.Translations;
-using Rocket.Core.Commands;
-using Rocket.Core.Player;
-using Rocket.Core.Providers.Logging;
-using Rocket.Core.Providers.Permissions;
-using Rocket.Core.Providers.Translation;
 using Rocket.Core.Providers;
 
 namespace Rocket.Core

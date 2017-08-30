@@ -1,14 +1,14 @@
 ﻿using Rocket.API.Commands;
-using Rocket.API.Providers.Commands;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Rocket.Core.Providers;
 using System;
+using Rocket.API.Providers;
 
 namespace Rocket.Core.Commands
 {
    
-    public class BuiltinCommandProvider : ProviderBase, IRocketCommandProvider
+    public class BuiltinCommandProvider : ProviderBase, ICommandProvider
     {
         protected override void OnLoad(ProviderManager providerManager)
         {
@@ -20,12 +20,12 @@ namespace Rocket.Core.Commands
             throw new NotImplementedException();
         }
 
-        public ReadOnlyCollection<IRocketCommand> Commands { get; } = new List<IRocketCommand>
+        public ReadOnlyCollection<Type> Commands { get; } = new List<Type>
         {
-            new CommandExit(),
+            typeof(CommandExit),
             //new CommandHelp(),
             //new CommandP(),
-            new CommandRocket()
+            typeof(CommandRocket)
         }.AsReadOnly();
     }
 }

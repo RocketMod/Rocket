@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using Rocket.API.Player;
-using Rocket.API.Providers.Permissions;
 using UnityEngine;
+using Rocket.API.Providers;
+using Rocket.API.Permissions;
 
 namespace Rocket.Core.Player
 {
     [Serializable]
     [DataContract]
-    public abstract class PlayerBase : IRocketPlayer
+    public abstract class PlayerBase : IPlayer
     {
         [DataMember]
         public string Id { get; private set; }
@@ -28,7 +29,7 @@ namespace Rocket.Core.Player
 
         public int CompareTo(object obj)
         {
-            return String.Compare(Id, ((IRocketPlayer)obj).Id, StringComparison.Ordinal);
+            return String.Compare(Id, ((IPlayer)obj).Id, StringComparison.Ordinal);
         }
 
         public virtual void Kick(string message)
@@ -43,7 +44,7 @@ namespace Rocket.Core.Player
 
         public virtual bool HasPermission(string permission)
         {
-            return R.Providers.GetProvider<IRocketPermissionsDataProvider>().CheckPermission(this, permission).Result == PermissionResultType.GRANT;
+            return R.Providers.GetProvider<IPermissionsProvider>().CheckPermission(this, permission).Result == PermissionResultType.GRANT;
         }
 
         public abstract void Message(string message, Color? color);

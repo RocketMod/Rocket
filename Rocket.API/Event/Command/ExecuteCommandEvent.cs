@@ -5,11 +5,11 @@ namespace Rocket.API.Event.Command
 {
     public class ExecuteCommandEvent : Event, ICancellableEvent
     {
-        public IRocketPlayer Player { get; }
-        public IRocketCommand Command { get; }
+        public IPlayer Player { get; }
+        public ICommand Command { get; }
         public string[] Arguments { get; }
 
-        public ExecuteCommandEvent(IRocketPlayer player, IRocketCommand command, string[] args)
+        public ExecuteCommandEvent(IPlayer player, ICommand command, string[] args)
         {
             Player = player;
             Command = command;

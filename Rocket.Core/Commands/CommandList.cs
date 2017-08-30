@@ -5,8 +5,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Player;
-using Rocket.API.Providers.Plugins;
 using Rocket.API.Serialization;
+using Rocket.API.Providers;
+using Rocket.API.Plugins;
 
 namespace Rocket.Core.Commands
 {
@@ -16,21 +17,21 @@ namespace Rocket.Core.Commands
         private List<RegisteredRocketCommand> commands = new List<RegisteredRocketCommand>();
         public ReadOnlyCollection<RegisteredRocketCommand> Commands { get; internal set; }
 
-        private IRocketPluginProvider manager;
+        private IPluginProvider manager;
 
         public CommandList()
         {
             Commands = commands.AsReadOnly();
         }
 
-        public CommandList(IRocketPluginProvider manager){
+        public CommandList(IPluginProvider manager){
             this.manager = manager;
             Commands = commands.AsReadOnly();
         }
 
-        public delegate void ExecuteCommand(IRocketPlayer player, IRocketCommand command, ref bool cancel);
+        public delegate void ExecuteCommand(IPlayer player, ICommand command, ref bool cancel);
 
-        public RegisteredRocketCommand GetCommand(IRocketPlugin plugin)
+        public RegisteredRocketCommand GetCommand(IPlugin plugin)
         {
             return GetCommand(plugin.Name);
         }
@@ -55,7 +56,7 @@ namespace Rocket.Core.Commands
             commands.Add(command);
         }
 
-        public void Add(IRocketCommand command)
+        public void Add(ICommand command)
         {
             string name = manager.GetType().Assembly.GetName().Name;
             string identifier = name+"."+command.GetType().Assembly.GetName().Name+"."+command.Name;
@@ -67,9 +68,9 @@ namespace Rocket.Core.Commands
             }
         }
 
-        public void AddRange(IEnumerable<IRocketCommand> commands)
+        public void AddRange(IEnumerable<ICommand> commands)
         {
-            foreach (IRocketCommand command in commands)
+            foreach (ICommand command in commands)
             {
                 Add(command);
             }

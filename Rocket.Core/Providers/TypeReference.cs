@@ -26,7 +26,7 @@ public class TypeReference
             Type = a.GetType(TypeName, true);
             return true;
         }
-        catch (Exception e)
+        catch (Exception)
         {
             return false;
         }

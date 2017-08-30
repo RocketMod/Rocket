@@ -51,7 +51,7 @@
 //            ReadOnlyCollection<IRocketCommand> commands = R.co();
 //            if (command.Length == 0)
 //            {
-//                foreach (IRocketPluginProvider pluginManager in R.PluginProviders)
+//                foreach (IPluginProvider pluginManager in R.PluginProviders)
 //                {
 //                    string name = pluginManager.GetType().Assembly.GetName().Name;
 //                    Console.ForegroundColor = ConsoleColor.Cyan;

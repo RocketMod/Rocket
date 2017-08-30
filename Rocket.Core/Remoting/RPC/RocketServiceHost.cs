@@ -1,0 +1,95 @@
+﻿using System;
+using System.ServiceModel;
+using System.ServiceModel.Description;
+using Rocket.API.Event;
+using Rocket.API.Event.Implementation;
+using Rocket.API.Event.Player;
+using Rocket.Core.Player;
+using Rocket.API.Logging;
+using Rocket.API.Providers;
+
+namespace Rocket.Core.Remoting.RPC
+{
+    public class RocketServiceHost
+    {
+        private ServiceHost serviceHost = null;
+        private Uri endpoint;
+        ILoggingProvider Logging;
+
+        public static LongPollingEvent<PlayerBase> OnPlayerConnected = new LongPollingEvent<PlayerBase>();
+        public static LongPollingEvent<PlayerBase> OnPlayerDisconnected = new LongPollingEvent<PlayerBase>();
+        public static LongPollingEvent<LogMessage> OnLog = new LongPollingEvent<LogMessage>();
+        public static LongPollingEvent OnShutdown = new LongPollingEvent();
+        private static RocketPollingListener _listener;
+        public RocketServiceHost(ushort port)
+        {
+            Logging = R.Providers.GetProvider<ILoggingProvider>();
+            endpoint = new Uri(String.Format("http://localhost:{0}/", port));
+            try
+            {
+                serviceHost = new ServiceHost(typeof(RocketService), endpoint);
+                BasicHttpBinding binding = new BasicHttpBinding(BasicHttpSecurityMode.TransportCredentialOnly);
+                binding.Security.Message.ClientCredentialType = BasicHttpMessageCredentialType.UserName;
+                binding.Security.Mode = BasicHttpSecurityMode.TransportCredentialOnly;
+                serviceHost.Credentials.UserNameAuthentication.CustomUserNamePasswordValidator = new RPCUserNameValidator();
+
+                binding.CloseTimeout = new TimeSpan(0, 10, 0);
+                binding.OpenTimeout = new TimeSpan(0, 10, 0);
+                binding.ReceiveTimeout = new TimeSpan(0, 10, 0);
+                binding.SendTimeout = new TimeSpan(0, 10, 0);
+
+                serviceHost.AddServiceEndpoint(typeof(IRocketService), binding, "");
+#if DEBUG
+                serviceHost.Description.Behaviors.Add(new ServiceMetadataBehavior());
+                serviceHost.AddServiceEndpoint(typeof(IMetadataExchange), MetadataExchangeBindings.CreateMexHttpBinding(), "mex");
+#endif
+                serviceHost.Open();
+
+                if (_listener == null)
+                {
+                    _listener = new RocketPollingListener();
+                    EventManager.Instance.RegisterEventsInternal(_listener, null);
+                }
+
+                //TODO double log
+                //R.Logger.OnLog += message => { if (message.LogLevel != LogLevel.DEBUG) OnLog.Invoke(message); };
+
+                Logging.Log(LogLevel.INFO, "Starting IPC at " + endpoint);
+            }
+            catch (Exception e)
+            {
+                Logging.Log(LogLevel.ERROR, "Failed to start IPC at " + endpoint, e);
+            }
+        }
+
+        public void Stop()
+        {
+            if (serviceHost != null)
+            {
+                serviceHost.Close();
+                serviceHost = null;
+            }
+        }
+    }
+
+    public class RocketPollingListener : IListener
+    {
+        [API.Event.EventHandler]
+        public void OnPlayerConnected(PlayerConnectedEvent @event)
+        {
+            RocketServiceHost.OnPlayerConnected.Invoke((PlayerBase)@event.Player);
+        }
+
+        [API.Event.EventHandler]
+        public void OnPlayerDisconnected(PlayerDisconnectedEvent @event)
+        {
+            RocketServiceHost.OnPlayerDisconnected.Invoke((PlayerBase)@event.Player);
+        }
+
+        [API.Event.EventHandler]
+        public void OnShutdown(ImplementationShutdownEvent @event)
+        {
+            RocketServiceHost.OnShutdown.Invoke();
+        }
+    }
+}
