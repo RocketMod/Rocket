@@ -61,6 +61,17 @@ namespace Rocket.Core.Providers
                     {
                         return method;
                     }
+                    if(extraParameters[extraParametersIndex] == null)
+                    {
+                        if(Nullable.GetUnderlyingType(parameterType) != null)
+                        {
+                            extraParametersIndex++;
+                        }
+                        else
+                        {
+                            throw new Exception("Parameter "+parameter.Name+" can not be null");
+                        }
+                    }
                     if (extraParameters[extraParametersIndex].GetType() == parameterType)
                     {
                         extraParametersIndex++;
