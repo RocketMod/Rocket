@@ -43,25 +43,8 @@ namespace Rocket.Core.Providers
 
         }
 
-        public T CreateInstance<T>(params object[] customArguments)
-        {
-            return (T) CreateInstance(typeof(T), customArguments);
-        }
-
-
-        public object CreateInstance(Type type, params object[] customArguments)
-        {
-            ConstructorInfo[] constructors = type.GetConstructors();
-            var success = GetDIMatch(constructors, out _ /* not used */, out var args, customArguments);
-
-            if (!success)
-            {
-                throw new Exception("DI failed on type: " + type.FullName);
-            }
-
-            return Activator.CreateInstance(type, args);
-        }
-
+        [Obsolete]
+        //TODO: Remove after reusing in the other method
         private bool GetDIMatch(MethodBase[] targets, out MethodBase match, out object[] matchArguments, params object[] customArguments)
         {
             match = null;
@@ -70,7 +53,7 @@ namespace Rocket.Core.Providers
             bool matched = false;
             foreach (var target in targets)
             {
-                bool success = GetDIArguments(target.GetParameters(), out matchArguments, customArguments);
+                bool success = //GetDIArguments(target.GetParameters(), out matchArguments, customArguments);
                 if (success && matched)
                 {
                     return false; // multiple matches
@@ -91,7 +74,9 @@ namespace Rocket.Core.Providers
             return false;
         }
 
-        private bool GetDIArguments(ParameterInfo[] parameters, out object[] args, params object[] customArguments)
+        [Obsolete]
+        //TODO: Remove after reusing in the other method
+        private bool getFittingMethod(ParameterInfo[] parameters, out object[] args, params object[] customArguments)
         {
             args = null;
             var result = new List<object>();
@@ -123,38 +108,66 @@ namespace Rocket.Core.Providers
             return true;
         }
 
+
+        private MethodInfo getMatchingMethod(object context, string methodName, object[] customArguments)
+        {
+            Type type = context.GetType();
+            MethodInfo[] methods = type.GetMethods().Where(c => c.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase)).ToArray();
+            //TODO: Get matching method by customArguments and name
+            return methods[0];
+        }
+
+        private ConstructorInfo getMatchingConstructor(Type type,object[] customArguments)
+        {
+            ConstructorInfo[] methods = type.GetConstructors();
+            //TODO: Get matching constructor by customArguments
+            return methods[0];
+        }
+
+        private object[] resolveArguments(ParameterInfo[] parameters, object[] customArguments)
+        {
+            //TODO: Resolve dependencies and return merged array to pass to the method / constructor
+            return new object[0];
+        }
+
+
+        public T CreateInstance<T>(params object[] customArguments)
+        {
+            return (T)CreateInstance(typeof(T), customArguments);
+        }
+
+        public object CreateInstance(Type type, params object[] customArguments)
+        {
+            try
+            {
+                ConstructorInfo constructor = getMatchingConstructor(type, customArguments);
+                return Activator.CreateInstance(type, resolveArguments(constructor.GetParameters(), customArguments));
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to construct type: " + type.FullName, ex);
+                throw;
+            }
+        }
+
+
         public T Call<T>(object context, string methodName, params object[] customArguments)
         {
             return (T)Call(context, methodName, customArguments);
         }
 
-
-        public T Call<T>(object context,string methodName, BindingFlags flags, params object[] customArguments)
-        {
-            return (T) Call(context, methodName, flags, customArguments);
-        }
-
         public object Call(object context, string methodName, params object[] customArguments)
         {
-            return Call(context, methodName,
-                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance,
-                customArguments);
-        }
-
-        public object Call(object context, string methodName, BindingFlags flags, params object[] customArguments)
-        {
             Type type = context.GetType();
-            MethodInfo[] methods = type.GetMethods(flags)
-                .Where(c => c.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase)).ToArray();
-
-            var success = GetDIMatch(methods, out var method, out var args, customArguments);
-
-            if (!success)
+            try
             {
-                throw new Exception("DI failed on method: " + type.FullName + "." + methodName);
+                MethodInfo method = getMatchingMethod(context, methodName, customArguments);
+                return method.Invoke(context, resolveArguments(method.GetParameters(),customArguments));
             }
-
-            return method.Invoke(context, args);
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to call method: " + type.FullName + "." + methodName,ex);
+            }
         }
 
         private void loadProviderImplementations()
