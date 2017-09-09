@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Odbc;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
@@ -42,30 +43,118 @@ namespace Rocket.Core.Providers
 
         }
 
-        public T CreateInstance<T>(params object[] arguments)
+        public T CreateInstance<T>(params object[] customArguments)
         {
-            Type type = typeof(T);
-            //TODO: Instanciate new object with injected providers and optional arguments
-            ConstructorInfo constructor = type.GetConstructors().OrderBy(c => c.GetParameters().Length).FirstOrDefault();//TODO: Decide which constructor to use for dependency injection (find the one closest to the arguments that we can satisfy)
-
-            //
-            ParameterInfo[] parameters = constructor.GetParameters();
-            object[] constructorArguments = arguments;
-            //Prepare & add all the instances required from the provider list
-
-            return (T)Activator.CreateInstance(type, constructorArguments);
+            return (T) CreateInstance(typeof(T), customArguments);
         }
 
-        public T Call<T>(object context,string methodName,params object[] arguments)
+
+        public object CreateInstance(Type type, params object[] customArguments)
+        {
+            ConstructorInfo[] constructors = type.GetConstructors();
+            var success = GetDIMatch(constructors, out _ /* not used */, out var args, customArguments);
+
+            if (!success)
+            {
+                throw new Exception("DI failed on type: " + type.FullName);
+            }
+
+            return Activator.CreateInstance(type, args);
+        }
+
+        private bool GetDIMatch(MethodBase[] targets, out MethodBase match, out object[] matchArguments, params object[] customArguments)
+        {
+            match = null;
+            matchArguments = null;
+
+            bool matched = false;
+            foreach (var target in targets)
+            {
+                bool success = GetDIArguments(target.GetParameters(), out matchArguments, customArguments);
+                if (success && matched)
+                {
+                    return false; // multiple matches
+                }
+                if (success)
+                {
+                    matched = true;
+                    match = target;
+                }
+            }
+
+
+            if (matched)
+                return true;
+
+            match = null;
+            matchArguments = null;
+            return false;
+        }
+
+        private bool GetDIArguments(ParameterInfo[] parameters, out object[] args, params object[] customArguments)
+        {
+            args = null;
+            var result = new List<object>();
+
+            int nIndex = 0;
+            foreach (var param in parameters)
+            {
+                var provider = GetProvider(param.ParameterType);
+
+                if (provider != null)
+                {
+                    result.Add(provider);
+                    continue;
+                }
+
+                result.Add(customArguments[nIndex]);
+                nIndex++;
+            }
+
+            if (result.Count != parameters.Length)
+                return false;
+            
+
+            if (parameters.Where((param, i) => result[i] != null && !param.ParameterType.IsInstanceOfType(result[i])).Any())
+                return false;
+
+            args = result.ToArray();
+            
+            return true;
+        }
+
+        public T Call<T>(object context, string methodName, params object[] customArguments)
+        {
+            return (T)Call(context, methodName, customArguments);
+        }
+
+
+        public T Call<T>(object context,string methodName, BindingFlags flags, params object[] customArguments)
+        {
+            return (T) Call(context, methodName, flags, customArguments);
+        }
+
+        public object Call(object context, string methodName, params object[] customArguments)
+        {
+            return Call(context, methodName,
+                BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance,
+                customArguments);
+        }
+
+        public object Call(object context, string methodName, BindingFlags flags, params object[] customArguments)
         {
             Type type = context.GetType();
-            MethodInfo method = type.GetMethod(methodName);
-            ParameterInfo[] parameters = method.GetParameters();
+            MethodInfo[] methods = type.GetMethods(flags)
+                .Where(c => c.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            object[] methodArguments = arguments;
-            //Prepare & add all the instances required from the provider list
+            var success = GetDIMatch(methods, out var method, out var args, customArguments);
 
-            return (T)method.Invoke(context, methodArguments);
+            if (!success)
+            {
+                throw new Exception("DI failed on method: " + type.FullName + "." + methodName);
+            }
+
+            return method.Invoke(context, args);
         }
 
         private void loadProviderImplementations()
