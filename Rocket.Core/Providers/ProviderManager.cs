@@ -38,135 +38,103 @@ namespace Rocket.Core.Providers
             instanciateProviderImplemenations();
 
             loadProviderImplementations();
-            
-            OnProvidersLoaded?.Invoke();
 
+            OnProvidersLoaded?.Invoke();
         }
 
-        [Obsolete]
-        //TODO: Remove after reusing in the other method
-        private bool GetDIMatch(MethodBase[] targets, out MethodBase match, out object[] matchArguments, params object[] customArguments)
+        private MethodBase getMatchingMethod(object context, MethodBase[] type, object[] extraParameters)
         {
-            match = null;
-            matchArguments = null;
+            return getMatchingMethod(context.GetType(), type, extraParameters);
+        }
 
-            bool matched = false;
-            foreach (var target in targets)
-            {
-                bool success = //GetDIArguments(target.GetParameters(), out matchArguments, customArguments);
-                if (success && matched)
+        private MethodBase getMatchingMethod(MethodBase[] methods, object[] extraParameters)
+        {
+            foreach(MethodBase method in methods){
+                ParameterInfo[]  parameters = method.GetParameters();
+                int extraParametersIndex = 0;
+                foreach (ParameterInfo parameter in parameters)
                 {
-                    return false; // multiple matches
-                }
-                if (success)
-                {
-                    matched = true;
-                    match = target;
+                    Type parameterType = parameter.ParameterType;
+                    object provider = GetProvider(parameterType);
+                    if (provider != null) continue;
+                    if(extraParametersIndex == extraParameters.Length)
+                    {
+                        return method;
+                    }
+                    if (extraParameters[extraParametersIndex].GetType() == parameterType)
+                    {
+                        extraParametersIndex++;
+                    }
+                    else break;
                 }
             }
-
-
-            if (matched)
-                return true;
-
-            match = null;
-            matchArguments = null;
-            return false;
+            throw new Exception("Couldn't find matching method");
         }
 
-        [Obsolete]
-        //TODO: Remove after reusing in the other method
-        private bool getFittingMethod(ParameterInfo[] parameters, out object[] args, params object[] customArguments)
+        private object[] resolveArguments(ParameterInfo[] parameters, object[] extraParameters)
         {
-            args = null;
-            var result = new List<object>();
+            List<object> result = new List<object>();
 
-            int nIndex = 0;
-            foreach (var param in parameters)
+            int extraParametersIndex = 0;
+            foreach (ParameterInfo parameter in parameters)
             {
-                var provider = GetProvider(param.ParameterType);
-
-                if (provider != null)
+                Type parameterType = parameter.ParameterType;
+                object provider = GetProvider(parameterType);
+                if(provider != null)
                 {
                     result.Add(provider);
-                    continue;
                 }
-
-                result.Add(customArguments[nIndex]);
-                nIndex++;
+                if (extraParameters.GetType() == parameterType && extraParameters.Length < extraParametersIndex)
+                {
+                    result.Add(extraParameters[extraParametersIndex++]);
+                }
+                else
+                {
+                    if(parameterType.IsInterface) throw new Exception("Couldn't resolve provider "+ parameterType.FullName);
+                    throw new Exception("Parameters don't match for " + parameterType.FullName);
+                }
             }
-
-            if (result.Count != parameters.Length)
-                return false;
-            
-
-            if (parameters.Where((param, i) => result[i] != null && !param.ParameterType.IsInstanceOfType(result[i])).Any())
-                return false;
-
-            args = result.ToArray();
-            
-            return true;
+            return result.ToArray();
         }
 
 
-        private MethodInfo getMatchingMethod(object context, string methodName, object[] customArguments)
+        public T CreateInstance<T>(params object[] extraParameters)
         {
-            Type type = context.GetType();
-            MethodInfo[] methods = type.GetMethods().Where(c => c.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase)).ToArray();
-            //TODO: Get matching method by customArguments and name
-            return methods[0];
+            return (T)CreateInstance(typeof(T), extraParameters);
         }
 
-        private ConstructorInfo getMatchingConstructor(Type type,object[] customArguments)
-        {
-            ConstructorInfo[] methods = type.GetConstructors();
-            //TODO: Get matching constructor by customArguments
-            return methods[0];
-        }
-
-        private object[] resolveArguments(ParameterInfo[] parameters, object[] customArguments)
-        {
-            //TODO: Resolve dependencies and return merged array to pass to the method / constructor
-            return new object[0];
-        }
-
-
-        public T CreateInstance<T>(params object[] customArguments)
-        {
-            return (T)CreateInstance(typeof(T), customArguments);
-        }
-
-        public object CreateInstance(Type type, params object[] customArguments)
+        public object CreateInstance(Type type, params object[] extraParameters)
         {
             try
             {
-                ConstructorInfo constructor = getMatchingConstructor(type, customArguments);
-                return Activator.CreateInstance(type, resolveArguments(constructor.GetParameters(), customArguments));
+                MethodBase[] constructors = type.GetConstructors();
+                MethodBase constructor = getMatchingMethod(constructors, extraParameters);
+                return Activator.CreateInstance(type, resolveArguments(constructor.GetParameters(), extraParameters));
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to construct type: " + type.FullName, ex);
+                throw new Exception("Failed to construct type " + type.FullName, ex);
                 throw;
             }
         }
 
-
-        public T Call<T>(object context, string methodName, params object[] customArguments)
+        public T Call<T>(object context, string methodName, params object[] extraParameters)
         {
-            return (T)Call(context, methodName, customArguments);
+            return (T)Call(context, methodName, extraParameters);
         }
 
-        public object Call(object context, string methodName, params object[] customArguments)
+        public object Call(object context, string methodName, params object[] extraParameters)
         {
             Type type = context.GetType();
             try
             {
-                MethodInfo method = getMatchingMethod(context, methodName, customArguments);
-                return method.Invoke(context, resolveArguments(method.GetParameters(),customArguments));
+                MethodBase[] methods = type.GetMethods().Where(c => c.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase)).ToArray();
+                MethodBase method = getMatchingMethod(context, methods, extraParameters);
+                return method.Invoke(context, resolveArguments(method.GetParameters(), extraParameters));
             }
             catch (Exception ex)
             {
-                throw new Exception("Failed to call method: " + type.FullName + "." + methodName,ex);
+                throw new Exception("Failed to call method " + type.FullName + "." + methodName, ex);
             }
         }
 
@@ -239,7 +207,7 @@ namespace Rocket.Core.Providers
                 }
             }
         }
-        
+
         public T GetProvider<T>() where T : class
         {
             return (T)GetProvider(typeof(T));
@@ -272,3 +240,5 @@ namespace Rocket.Core.Providers
         }
     }
 }
+
+
