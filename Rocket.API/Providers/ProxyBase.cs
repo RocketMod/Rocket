@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rocket.Core.Providers
+namespace Rocket.API.Providers
 {
     public class ProxyBase<T> : ProviderBase
     {
@@ -21,7 +21,7 @@ namespace Rocket.Core.Providers
             return results;
         }
 
-        protected override void OnLoad(ProviderManager providerManager)
+        protected override void OnLoad(IProviderManager providerManager)
         {
             InvokeAll(provider => { if (provider is ProviderBase) { ((ProviderBase)(object)provider).Load(providerManager); } });
         }

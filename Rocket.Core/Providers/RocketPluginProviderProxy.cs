@@ -42,7 +42,7 @@ namespace Rocket.Core.Providers.Plugin
             }
         }
 
-        protected override void OnLoad(ProviderManager providerManager)
+        protected override void OnLoad(IProviderManager providerManager)
         {
             throw new NotImplementedException();
         }

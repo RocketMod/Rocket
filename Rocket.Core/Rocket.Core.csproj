@@ -98,7 +98,6 @@
     <Compile Include="Commands\BuiltinCommandProvider.cs" />
     <Compile Include="Commands\CommandContext.cs" />
     <Compile Include="Commands\CommandList.cs" />
-    <Compile Include="Providers\ProxyBase.cs" />
     <Compile Include="Player\ConsolePlayer.cs" />
     <Compile Include="Player\PlayerBase.cs" />
     <Compile Include="Providers\CommandProviderProxy.cs" />
@@ -114,7 +113,6 @@
     <Compile Include="Providers\Native\RocketAttributeCommand.cs" />
     <Compile Include="Providers\Native\RocketCommandAttribute.cs" />
     <Compile Include="Providers\Native\RocketPluginBase.cs" />
-    <Compile Include="Providers\ProviderBase.cs" />
     <Compile Include="Providers\ProviderImplementation.cs" />
     <Compile Include="Providers\ProviderManager.cs" />
     <Compile Include="Logging\Log4NetLoggingProvider.cs" />
@@ -152,7 +150,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Providers\Translation\" />
     <Folder Include="Utils\Tasks\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
