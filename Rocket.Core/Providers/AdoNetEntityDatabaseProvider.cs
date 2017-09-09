@@ -22,7 +22,7 @@ namespace Rocket.Core.Providers.Database
             Connection.Close();
         }
 
-        protected override void OnLoad(ProviderManager providerManager)
+        protected override void OnLoad(IProviderManager providerManager)
         {
             Connection.Open();
         }

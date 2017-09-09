@@ -6,7 +6,6 @@ namespace Rocket.Core.Providers.Logging
 {
     public class ConsoleLoggingProvider : ProviderBase, ILoggingProvider
     {
-
         public bool EchoNativeOutput { get; } = false;
         public void LogMessage(LogLevel level, object message, ConsoleColor? color = null)
         {
@@ -32,16 +31,6 @@ namespace Rocket.Core.Providers.Logging
         public void Log(LogLevel level, Exception exception, ConsoleColor? color = null)
         {
             Log(level, null, exception, color);
-        }
-
-        protected override void OnLoad(ProviderManager providerManager)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void OnUnload()
-        {
-            throw new NotImplementedException();
         }
     }
 }

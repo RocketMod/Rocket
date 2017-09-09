@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rocket.API.Providers;
 
-namespace Rocket.API.Providers
+namespace Rocket.Core.Providers
 {
     public class ProxyBase<T> : ProviderBase
     {
@@ -30,6 +31,5 @@ namespace Rocket.API.Providers
         {
             InvokeAll(provider => { if (provider is ProviderBase) { ((ProviderBase)(object)provider).Unload(); } });
         }
-
     }
 }

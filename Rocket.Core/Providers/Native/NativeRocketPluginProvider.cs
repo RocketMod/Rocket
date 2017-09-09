@@ -236,14 +236,9 @@ namespace Rocket.Core.Providers.Plugin.Native
 
         ILoggingProvider Logging;
 
-        protected override void OnLoad(ProviderManager providerManager)
+        protected override void OnLoad(IProviderManager providerManager)
         {
             Logging = providerManager.GetProvider<ILoggingProvider>();
-        }
-
-        protected override void OnUnload()
-        {
-            throw new NotImplementedException();
         }
     }
 }

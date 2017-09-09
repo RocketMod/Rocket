@@ -201,14 +201,9 @@ namespace Rocket.Core.Permissions
             permissions.Save();
         }
 
-        protected override void OnLoad(ProviderManager providerManager)
+        protected override void OnLoad(IProviderManager providerManager)
         {
             Logger = providerManager.GetProvider<ILoggingProvider>();
-        }
-
-        protected override void OnUnload()
-        {
-
         }
     }
 }

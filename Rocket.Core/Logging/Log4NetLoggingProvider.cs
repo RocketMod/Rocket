@@ -57,7 +57,7 @@ namespace Rocket.Core.Providers.Logging
             Log(level, message, null, color);
         }
 
-        protected override void OnLoad(ProviderManager providerManager)
+        protected override void OnLoad(IProviderManager providerManager)
         {
             string logConfiguration = "log4net.config.xml";
             try
@@ -95,11 +95,6 @@ namespace Rocket.Core.Providers.Logging
             {
                 File.AppendAllText("error.txt", ex.ToString());
             }
-        }
-
-        protected override void OnUnload()
-        {
-            throw new NotImplementedException();
         }
     }
 }

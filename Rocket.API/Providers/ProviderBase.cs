@@ -7,9 +7,16 @@ namespace Rocket.API.Providers
 {
     public abstract class ProviderBase
     {
-        protected abstract void OnLoad(ProviderManager providerManager);
-        protected abstract void OnUnload();
-        internal void Load(ProviderManager providerManager) { OnLoad(providerManager); }
+        protected virtual void OnLoad(IProviderManager providerManager)
+        {
+            
+        }
+
+        protected virtual void OnUnload()
+        {
+            
+        }
+        internal void Load(IProviderManager providerManager) { OnLoad(providerManager); }
         internal void Unload() { OnUnload(); }
     }
 }

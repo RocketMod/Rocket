@@ -132,15 +132,5 @@ namespace Rocket.Core.Providers.Permissions
 
             return result;
         }
-
-        protected override void OnLoad(ProviderManager providerManager)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void OnUnload()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

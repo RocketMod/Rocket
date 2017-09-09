@@ -118,7 +118,6 @@
     <Compile Include="Providers\ProviderBase.cs" />
     <Compile Include="Providers\ProviderDefinitionAttribute.cs" />
     <Compile Include="Providers\ITranslationProvider.cs" />
-    <Compile Include="Providers\ProxyBase.cs" />
     <Compile Include="Serialization\IDefaultable.cs" />
     <Compile Include="Commands\IRocketCommand.cs" />
     <Compile Include="Exceptions\WrongUsageOfCommandException.cs" />

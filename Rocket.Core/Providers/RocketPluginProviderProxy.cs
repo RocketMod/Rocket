@@ -41,15 +41,5 @@ namespace Rocket.Core.Providers.Plugin
                 prov.LoadPlugins();
             }
         }
-
-        protected override void OnLoad(IProviderManager providerManager)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void OnUnload()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

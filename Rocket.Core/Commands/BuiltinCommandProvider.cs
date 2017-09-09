@@ -10,16 +10,6 @@ namespace Rocket.Core.Commands
    
     public class BuiltinCommandProvider : ProviderBase, ICommandProvider
     {
-        protected override void OnLoad(ProviderManager providerManager)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void OnUnload()
-        {
-            throw new NotImplementedException();
-        }
-
         public ReadOnlyCollection<Type> Commands { get; } = new List<Type>
         {
             typeof(CommandExit),

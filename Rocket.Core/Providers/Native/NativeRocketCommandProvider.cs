@@ -20,15 +20,5 @@ namespace Rocket.Core.Providers.Plugin.Native
         {
             InternalCommands.AddRange(commands.AsEnumerable());
         }
-
-        protected override void OnLoad(ProviderManager providerManager)
-        {
-            throw new NotImplementedException();
-        }
-
-        protected override void OnUnload()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

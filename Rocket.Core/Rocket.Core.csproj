@@ -102,6 +102,7 @@
     <Compile Include="Player\PlayerBase.cs" />
     <Compile Include="Providers\CommandProviderProxy.cs" />
     <Compile Include="Providers\AdoNetEntityDatabaseProvider.cs" />
+    <Compile Include="Providers\ProxyBase.cs" />
     <Compile Include="Providers\TestContext.cs" />
     <Compile Include="Logging\ConsoleLoggingProvider.cs" />
     <Compile Include="Providers\RocketLoggingProviderProxy.cs" />
