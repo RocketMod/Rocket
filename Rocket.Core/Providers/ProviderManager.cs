@@ -42,11 +42,6 @@ namespace Rocket.Core.Providers
             OnProvidersLoaded?.Invoke();
         }
 
-        private MethodBase getMatchingMethod(object context, MethodBase[] type, object[] extraParameters)
-        {
-            return getMatchingMethod(context.GetType(), type, extraParameters);
-        }
-
         private MethodBase getMatchingMethod(MethodBase[] methods, object[] extraParameters)
         {
             foreach(MethodBase method in methods){
@@ -69,7 +64,7 @@ namespace Rocket.Core.Providers
                         }
                         else
                         {
-                            throw new Exception("Parameter "+parameter.Name+" can not be null");
+                            throw new Exception("Parameter "+parameter.Name+"");
                         }
                     }
                     if (extraParameters[extraParametersIndex].GetType() == parameterType)
@@ -140,7 +135,7 @@ namespace Rocket.Core.Providers
             try
             {
                 MethodBase[] methods = type.GetMethods().Where(c => c.Name.Equals(methodName, StringComparison.OrdinalIgnoreCase)).ToArray();
-                MethodBase method = getMatchingMethod(context, methods, extraParameters);
+                MethodBase method = getMatchingMethod(methods, extraParameters);
                 return method.Invoke(context, resolveArguments(method.GetParameters(), extraParameters));
             }
             catch (Exception ex)
