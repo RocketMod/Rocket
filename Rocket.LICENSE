@@ -7,12 +7,17 @@ and http://creativecommons.org/licenses/by-sa/3.0/legalcode for the full license
 
 --------------------------------------------------------------------------------------
 
-The RocketMod API and core components are licensed under the 
-Creative Commons Attribution-NoDerivs 3.0 Unported License.
-You are free to share it as long as you give appropiate credit and 
-don't distribute modified versions.
-See http://creativecommons.org/licenses/by-nd/3.0/ for the human-readable summary
-and http://creativecommons.org/licenses/by-nd/3.0/legalcode for the full license.
-Copyright (C) | RocketMod | Sven Mawby <fr34kyn01535@bam.yt>
+The RocketMod core libraries, consisting of Rocket.API.dll and Rocket.Core.dll, are licensed under the 
+Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).
 
-RocketMod is not affiliated with Unity3D or Unity Technologies SF.
+You are free to:
+  Share — copy and redistribute the material in any medium or format
+Under the following terms:
+  Attribution — You must give appropriate credit, provide a link to the license, and indicate if changes were made. 
+                You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+  NonCommercial — You may not use the material for commercial purposes.
+  NoDerivatives — If you remix, transform, or build upon the material, you may not distribute the modified material.
+
+You can retrieve the full license text at https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.
+
+Copyright (C) | RocketMod | Sven Mawby <fr34kyn01535@bam.yt>
