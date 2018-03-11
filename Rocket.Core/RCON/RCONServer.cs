@@ -5,9 +5,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Collections.Generic;
 using System.Reflection;
-using Rocket.Core.Logging;
 using UnityEngine;
 using Rocket.API;
+using Logger = Rocket.Core.Logging.Logger;
 
 namespace Rocket.Core.RCON
 {
@@ -87,7 +87,7 @@ namespace Rocket.Core.RCON
                             else
                             {
                                 newclient.Send("Error: Invalid password!\r\n");
-                                Logging.Logger.Log("Client has failed to log in.");
+                                Logger.Log("Client has failed to log in.");
                                 break;
                             }
                         }
@@ -117,7 +117,7 @@ namespace Rocket.Core.RCON
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
                 Thread.Sleep(1500);
-                Logging.Logger.Log("Client has disconnected! (IP: " + newclient.Client.Client.RemoteEndPoint + ")");
+                Logger.Log("Client has disconnected! (IP: " + newclient.Address + ")");
                 newclient.Close();
 
             }
@@ -160,27 +160,29 @@ namespace Rocket.Core.RCON
 
         public static string Read(TcpClient client)
         {
-            byte[] _data = new byte[6];
+            byte[] _data = new byte[1];
+            List<byte> dataArray = new List<byte>();
             string data = "";
             NetworkStream _stream = client.GetStream();
 
-            while (true)
+            try
             {
-                try
+                while (true)
                 {
                     int k = _stream.Read(_data, 0, 1);
                     if (k == 0)
                         return "";
-                    string kk = Encoding.UTF8.GetString(_data, 0, 1);
-                    data += kk;
-                    if (kk == "\n")
+                    dataArray.Add(_data[0]);
+                    if (Encoding.UTF8.GetString(_data, 0, 1) == "\n")
                         break;
                 }
-                catch(Exception ex)
-                {
-                    Logging.Logger.LogException(ex);
-                    return "";
-                }
+                // Convert byte array into UTF8 string.
+                data = Encoding.UTF8.GetString(dataArray.ToArray(), 0, dataArray.Count - 1);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+                return "";
             }
             return data;
         }
