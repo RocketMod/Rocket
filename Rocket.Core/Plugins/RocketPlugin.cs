@@ -82,7 +82,7 @@ namespace Rocket.Core.Plugins
         {
             Assembly = GetType().Assembly;
             Name = Assembly.GetName().Name;
-            Directory = Path.Combine(Path.GetDirectoryName(Assembly.Location), Name); // String.Format(Core.Environment.PluginDirectory, Name);
+            Directory = Path.Combine(Core.Environment.PluginsDirectory, Name); // String.Format(Core.Environment.PluginDirectory, Name);
             if (!System.IO.Directory.Exists(Directory))
                 System.IO.Directory.CreateDirectory(Directory);
 
