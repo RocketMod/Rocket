@@ -61,6 +61,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandRFlush.cs" />
+    <Compile Include="Commands\CommandRKick.cs" />
+    <Compile Include="Commands\CommandRWho.cs" />
     <Compile Include="Commands\RocketCommandAttribute.cs" />
     <Compile Include="Commands\RocketCommandManager.cs" />
     <Compile Include="Debugger.cs" />
