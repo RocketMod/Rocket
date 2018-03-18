@@ -83,6 +83,16 @@ namespace Rocket.Core.RCON
                     Thread.Sleep(100);
                     command = newclient.Read();
                     if (command == "") break;
+                    if (!newclient.Authenticated)
+                    {
+                        nonAuthCommandCount++;
+                        if (nonAuthCommandCount > 4)
+                        {
+                            newclient.Send("Error: Too many commands sent before Authentication!\r\n");
+                            Logger.LogWarning("Client has sent too many commands before Authentication!");
+                            break;
+                        }
+                    }
                     command = command.TrimEnd('\n', '\r', ' ');
                     if (command == "quit") break;
                     if (command == "ia")
