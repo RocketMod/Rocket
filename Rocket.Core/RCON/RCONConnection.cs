@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Linq;
+using System;
 
 namespace Rocket.Core.RCON
 {
@@ -8,12 +9,16 @@ namespace Rocket.Core.RCON
         public TcpClient Client;
         public bool Authenticated;
         public bool Interactive;
+        public int InstanceID { get; private set; }
+        public DateTime ConnectedTime { get; private set; }
 
-        public RCONConnection(TcpClient client)
+        public RCONConnection(TcpClient client, int instance)
         {
             this.Client = client;
             Authenticated = false;
             Interactive = true;
+            InstanceID = instance;
+            ConnectedTime = DateTime.Now;
         }
 
         public void Send(string command, bool nonewline = false)
@@ -30,16 +35,16 @@ namespace Rocket.Core.RCON
 
         public string Read()
         {
-            return RCONServer.Read(Client);
+            return RCONServer.Read(Client, Authenticated);
         }
 
         public void Close()
         {
-            this.Client.Close();
-            return;
+            if (Client.Client.Connected)
+                Client.Close();
         }
 
-        public string Address { get { return this.Client.Client.RemoteEndPoint.ToString(); } }
+        public string Address { get { return Client.Client.Connected ? Client.Client.RemoteEndPoint.ToString() : "?"; } }
     }
 
 }

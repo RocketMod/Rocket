@@ -16,6 +16,14 @@ namespace Rocket.Core.Serialization
         public ushort Port = 27115;
         [XmlAttribute]
         public string Password = "changeme";
+        [XmlAttribute]
+        public bool EnableMaxGlobalConnections = true;
+        [XmlAttribute]
+        public ushort MaxGlobalConnections = 10;
+        [XmlAttribute]
+        public bool EnableMaxLocalConnections = true;
+        [XmlAttribute]
+        public ushort MaxLocalConnections = 3;
     }
 
     public sealed class AutomaticShutdown
