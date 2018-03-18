@@ -93,7 +93,7 @@ namespace Rocket.Core.RCON
                             break;
                         }
                     }
-                    command = command.TrimEnd('\n', '\r', ' ');
+                    command = command.Trim('\n', '\r', ' ', '\0');
                     if (command == "quit") break;
                     if (command == "ia")
                     {
@@ -106,7 +106,7 @@ namespace Rocket.Core.RCON
                         if (newclient.Authenticated)
                             newclient.Send("Notice: You are already logged in!\r\n");
                         else
-                            newclient.Send("Syntax: login <password>");
+                            newclient.Send("Syntax: login <password>\r\n");
                         continue;
                     }
                     if (command.Split(' ').Length > 1 && command.Split(' ')[0] == "login")
@@ -129,7 +129,7 @@ namespace Rocket.Core.RCON
                             else
                             {
                                 newclient.Send("Error: Invalid password!\r\n");
-                                Logger.Log("Client has failed to log in.");
+                                Logger.LogWarning("Client has failed to log in.");
                                 break;
                             }
                         }
@@ -142,11 +142,11 @@ namespace Rocket.Core.RCON
                     }
                     if (!newclient.Authenticated)
                     {
-                        newclient.Send("Error: You have not logged in yet!\r\n");
+                        newclient.Send("Error: You have not logged in yet! Login with syntax: login <password>\r\n");
                         continue;
                     }
                     if (command != "ia")
-                        Logging.Logger.Log("Client has executed command \"" + command + "\"");
+                        Logger.Log("Client has executed command \"" + command + "\"");
 
                     lock (commands)
                     {
@@ -191,7 +191,9 @@ namespace Rocket.Core.RCON
         {
             exiting = true;
             // Force all connected RCON clients to disconnect from the server on shutdown. The server will get stuck in the shutdown process until all clients disconnect.
-            foreach (RCONConnection client in clients)
+            List<RCONConnection> connections = new List<RCONConnection>();
+            connections.AddRange(clients);
+            foreach (RCONConnection client in connections)
             {
                 client.Close();
             }
@@ -200,26 +202,48 @@ namespace Rocket.Core.RCON
             listener.Stop();
         }
 
-        public static string Read(TcpClient client)
+        public static string Read(TcpClient client, bool auth)
         {
             byte[] _data = new byte[1];
             List<byte> dataArray = new List<byte>();
             string data = "";
-            NetworkStream _stream = client.GetStream();
+            int loopCount = 0;
+            int skipCount = 0;
 
             try
             {
-                while (true)
+                if (client.Client.Connected)
                 {
-                    int k = _stream.Read(_data, 0, 1);
-                    if (k == 0)
-                        return "";
-                    dataArray.Add(_data[0]);
-                    if (Encoding.UTF8.GetString(_data, 0, 1) == "\n")
-                        break;
+                    NetworkStream _stream = client.GetStream();
+                    while (true)
+                    {
+                        loopCount++;
+                        if (loopCount > 2048)
+                            break;
+                        int k = _stream.Read(_data, 0, 1);
+                        if (k == 0)
+                            return "";
+                        byte b = _data[0];
+                        // Ignore Putty connection Preamble.
+                        if (!auth && b == 0xFF && skipCount <= 0)
+                        {
+                            skipCount = 2;
+                            continue;
+                        }
+                        else if (!auth && skipCount > 0)
+                        {
+                            skipCount--;
+                            continue;
+                        }
+                        dataArray.Add(b);
+                        //Logger.Log(BitConverter.ToString(_data) + ":" + Encoding.UTF8.GetString(_data, 0, 1));
+                        // break on \r and \n.
+                        if (b == 0x0D || b == 0x0A)
+                            break;
+                    }
+                    // Convert byte array into UTF8 string.
+                    data = Encoding.UTF8.GetString(dataArray.ToArray(), 0, dataArray.Count);
                 }
-                // Convert byte array into UTF8 string.
-                data = Encoding.UTF8.GetString(dataArray.ToArray(), 0, dataArray.Count - 1);
             }
             catch (Exception ex)
             {

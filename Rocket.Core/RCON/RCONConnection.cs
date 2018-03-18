@@ -30,7 +30,7 @@ namespace Rocket.Core.RCON
 
         public string Read()
         {
-            return RCONServer.Read(Client);
+            return RCONServer.Read(Client, Authenticated);
         }
 
         public void Close()
