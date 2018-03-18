@@ -46,7 +46,39 @@ namespace Rocket.Core.RCON
             {
                 RCONConnection newclient = (RCONConnection)obj;
                 string command = "";
-                while (newclient.Client.Client.Connected)
+
+                int nonAuthCommandCount = 0;
+                bool maxClientsReached = false;
+                if (R.Settings.Instance.RCON.EnableMaxGlobalConnections)
+                {
+                    if (clients.Count > R.Settings.Instance.RCON.MaxGlobalConnections)
+                    {
+                        maxClientsReached = true;
+                        newclient.Send("Error: Too many clients connected to RCON, not accepting connection!\r\n");
+                        Logger.LogWarning("Maximum global RCON connections has been reached.");
+                    }
+                }
+                if (R.Settings.Instance.RCON.EnableMaxLocalConnections && !maxClientsReached)
+                {
+                    int currentLocalCount = 0;
+                    for (int i = 0; i < clients.Count; i++)
+                    {
+                        if (newclient.Client.Client.Connected && clients[i].Client.Client.Connected)
+                            if (((IPEndPoint)newclient.Client.Client.RemoteEndPoint).Address.Equals(((IPEndPoint)clients[i].Client.Client.RemoteEndPoint).Address))
+                            {
+                                currentLocalCount++;
+                                if (currentLocalCount > R.Settings.Instance.RCON.MaxLocalConnections)
+                                {
+                                    maxClientsReached = true;
+                                    newclient.Send("Error: Too many clients connected from your address, not accepting connection!\r\n");
+                                    Logger.LogWarning("Maximum Local RCON connections has been reached for address: " + newclient.Address + ".");
+                                    break;
+                                }
+                            }
+                    }
+                }
+
+                while (newclient.Client.Client.Connected && !maxClientsReached)
                 {
                     Thread.Sleep(100);
                     command = newclient.Read();
