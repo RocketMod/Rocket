@@ -149,7 +149,7 @@ namespace Rocket.Core.RCON
                         continue;
                     }
                     if (command != "ia")
-                        Logger.Log("Client has executed command \"" + command + "\"");
+                        Logger.Log("Client ID: " + newclient.InstanceID + " has executed command \"" + command + "\"");
 
                     lock (commands)
                     {
@@ -162,7 +162,7 @@ namespace Rocket.Core.RCON
                 clients.Remove(newclient);
                 newclient.Send("Good bye!");
                 Thread.Sleep(1500);
-                Logger.Log("Client has disconnected! (IP: " + newclient.Address + ")");
+                Logger.Log("Client ID: " + newclient.InstanceID + " has disconnected! (IP: " + newclient.Address + ")");
                 newclient.Close();
 
             }
