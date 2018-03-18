@@ -14,9 +14,11 @@ namespace Rocket.Core.RCON
     public class RCONServer : MonoBehaviour
     {
         private static List<RCONConnection> clients = new List<RCONConnection>();
+        public static List<RCONConnection> Clients { get { return clients; } }
         private TcpListener listener;
         private bool exiting = false;
         private Thread waitingThread;
+        private static int instanceID = 0;
 
         private static Queue<string> commands = new Queue<string>();
 
@@ -31,7 +33,8 @@ namespace Rocket.Core.RCON
             {
                 while (!exiting)
                 {
-                    RCONConnection newclient = new RCONConnection(listener.AcceptTcpClient());
+                    instanceID++;
+                    RCONConnection newclient = new RCONConnection(listener.AcceptTcpClient(), instanceID);
                     clients.Add(newclient);
                     newclient.Send("RocketRcon v" + Assembly.GetExecutingAssembly().GetName().Version + "\r\n");
                     ThreadPool.QueueUserWorkItem(handleConnection, newclient);
@@ -247,7 +250,9 @@ namespace Rocket.Core.RCON
             }
             catch (Exception ex)
             {
-                Logger.LogException(ex);
+                // "if" disables error message on Read for lost or force closed connections(ie, kicked by command.).
+                if (client.Client.Connected)
+                    Logger.LogException(ex);
                 return "";
             }
             return data;
@@ -256,7 +261,15 @@ namespace Rocket.Core.RCON
         public static void Send(TcpClient client, string text)
         {
             byte[] data = new UTF8Encoding().GetBytes(text);
-            client.GetStream().Write(data, 0, data.Length);
+            try
+            {
+                if (client.Client.Connected)
+                    client.GetStream().Write(data, 0, data.Length);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogException(ex);
+            }
         }
     }
 }
