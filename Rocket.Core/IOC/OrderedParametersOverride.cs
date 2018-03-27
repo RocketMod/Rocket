@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Rocket.Core
+namespace Rocket.Core.IOC
 {
     public class OrderedParametersOverride : ResolverOverride
     {

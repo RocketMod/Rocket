@@ -1,20 +1,21 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Microsoft.Practices.Unity;
+﻿using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Rocket.Core
+namespace Rocket.Core.IOC
 {
     public class DependencyContainer : IDependencyResolver, IDependencyContainer
     {
         private IUnityContainer container;
+        public IServiceLocator ServiceLocator { get; private set; }
         public DependencyContainer()
         {
             container = new UnityContainer();
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
-            ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
+            Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
+            ServiceLocator = new ServiceLocator(Microsoft.Practices.ServiceLocation.ServiceLocator.Current);
         }
         
         private void GuardRegistered(Type type, bool throwException = true)
