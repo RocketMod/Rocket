@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Rocket.Core
+namespace Rocket.IOC
 {
     public interface IServiceLocator
     {
@@ -11,8 +11,8 @@ namespace Rocket.Core
         IEnumerable<object> GetAllInstances(Type serviceType);
         IEnumerable<TService> GetAllInstances<TService>();
         object GetInstance(Type serviceType);
-        object GetInstance(Type serviceType, string key);
+        object GetInstance(Type serviceType, string mapppingName);
         TService GetInstance<TService>();
-        TService GetInstance<TService>(string key);
+        TService GetInstance<TService>(string mapppingName);
     }
 }

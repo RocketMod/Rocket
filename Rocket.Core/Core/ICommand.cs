@@ -5,9 +5,10 @@ using System.Text;
 
 namespace Rocket.Core
 {
-    public class Permission
+    public interface ICommand
     {
-        public string Name;
-        public uint Cooldown;
+        string[] Permissions { get; }
+        
+        void Execute(ICommandContext context);
     }
 }

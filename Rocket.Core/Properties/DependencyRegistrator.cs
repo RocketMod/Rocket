@@ -1,9 +1,10 @@
-﻿using System;
+﻿using Rocket.IOC;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Rocket.Core.Properties
+namespace Rocket.Properties
 {
     public class DependencyRegistrator : IDependencyRegistrator
     {

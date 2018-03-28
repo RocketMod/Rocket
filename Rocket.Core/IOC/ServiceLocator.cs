@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rocket.Core.IOC
+namespace Rocket.IOC
 {
     internal class ServiceLocator : IServiceLocator
     {

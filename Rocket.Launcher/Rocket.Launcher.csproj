@@ -42,9 +42,9 @@
     <Compile Include="TestThingie.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj">
+    <ProjectReference Include="..\Rocket.Core\Rocket.csproj">
       <Project>{5d260f94-bb23-4397-94df-ba4af0cd8bcb}</Project>
-      <Name>Rocket.Core</Name>
+      <Name>Rocket</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
