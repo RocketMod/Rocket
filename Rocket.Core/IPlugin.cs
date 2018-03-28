@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Rocket.Core
 {
@@ -11,8 +10,8 @@ namespace Rocket.Core
     public interface IPlugin
     {
         string Name { get; }
-        PluginState State { get; }
-        void Load(IDependencyResolver resolver, IConfigurationManager configuration, ITranslationManager translation);
+        PluginState State { get; set; }
+        void Load();
         void Unload();
     }
 }

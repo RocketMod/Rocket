@@ -5,8 +5,7 @@ using System.Text;
 
 namespace Rocket.Core
 {
-    public interface IPluginConfiguration
+    public interface IPluginManager
     {
-        void LoadDefaults();
     }
 }

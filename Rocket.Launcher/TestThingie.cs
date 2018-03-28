@@ -1,9 +1,4 @@
 ﻿using Rocket.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Rocket.Launcher
 {
@@ -11,11 +6,14 @@ namespace Rocket.Launcher
     {
         public TestThingie(ILog logger)
         {
-            logger.Info("test");
+            logger.Info("Hallo");
         }
+
+        public bool SetTheThing { get; set; } = false;
     }
 
     public interface ITestThingie
     {
+        bool SetTheThing { get; set; }
     }
 }

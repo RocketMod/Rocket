@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Practices.ServiceLocation;
 
 namespace Rocket.Core.IOC
 {

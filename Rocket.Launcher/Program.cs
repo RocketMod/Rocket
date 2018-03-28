@@ -1,9 +1,4 @@
-﻿using CommonServiceLocator;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using Rocket.Core;
 
 namespace Rocket.Launcher
@@ -14,6 +9,11 @@ namespace Rocket.Launcher
         {
             R.Bootstrap();
             ITestThingie test = R.ServiceLocator.GetInstance<ITestThingie>();
+            test.SetTheThing = true;
+
+            ITestThingie test2 = R.ServiceLocator.GetInstance<ITestThingie>();
+            Console.WriteLine(test2.SetTheThing);
+
             Console.ReadLine();
         }
     }
