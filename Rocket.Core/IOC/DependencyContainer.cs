@@ -24,6 +24,12 @@ namespace Rocket.Core.IOC
                 throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
         }
 
+        private void GuardRegistered(Type type, string mapping, bool throwException = true)
+        {
+            if (!container.IsRegistered(type, mapping) && throwException)
+                throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
+        }
+
         public T Activate<T>()
         {
             return (T)Activate(typeof(T));
@@ -171,6 +177,74 @@ namespace Rocket.Core.IOC
         public void RegisterType<TInterface, TClass>() where TClass : TInterface
         {
             container.RegisterType<TInterface, TClass>();
+        }
+
+        public T Get<T>(string mapping)
+        {
+            GuardRegistered(typeof(T), mapping);
+            return container.Resolve<T>(mapping, new OrderedParametersOverride(new object[0]));
+        }
+
+        public T Get<T>(string mapping, params object[] parameters)
+        {
+            GuardRegistered(typeof(T), mapping);
+            return container.Resolve<T>(mapping, new OrderedParametersOverride(parameters));
+        }
+
+        public bool IsRegistered<T>(string mapping)
+        {
+            return container.IsRegistered<T>(mapping);
+        }
+
+        public bool IsRegistered(Type type, string mapping)
+        {
+            return container.IsRegistered(type, mapping);
+        }
+
+        public T TryGet<T>(string mapping)
+        {
+            GuardRegistered(typeof(T), mapping, false);
+            return container.Resolve<T>(mapping, new OrderedParametersOverride(new object[0]));
+        }
+
+        public T TryGet<T>(string mapping, params object[] parameters)
+        {
+            GuardRegistered(typeof(T), mapping, false);
+            return container.Resolve<T>(mapping, new OrderedParametersOverride(parameters));
+        }
+
+        public object Get(Type serviceType, string mapping)
+        {
+            GuardRegistered(serviceType, mapping);
+            return container.Resolve(serviceType, mapping, new OrderedParametersOverride(new object[0]));
+        }
+
+        public object Get(Type serviceType, string mapping, params object[] parameters)
+        {
+            GuardRegistered(serviceType, mapping);
+            return container.Resolve(serviceType, mapping, new OrderedParametersOverride(parameters));
+        }
+
+        public object TryGet(Type serviceType, string mapping)
+        {
+            GuardRegistered(serviceType, mapping, false);
+            return container.Resolve(serviceType, mapping, new OrderedParametersOverride(new object[0]));
+        }
+
+        public object TryGet(Type serviceType, string mapping, params object[] parameters)
+        {
+            GuardRegistered(serviceType, mapping, false);
+            return container.Resolve(serviceType, mapping, new OrderedParametersOverride(parameters));
+        }
+
+        public void RegisterType<TInterface, TClass>(string mapping) where TClass : TInterface
+        {
+            container.RegisterType<TInterface, TClass>(mapping);
+        }
+
+        public void RegisterInstance<TInterface>(TInterface value, string mapping)
+        {
+            container.RegisterInstance<TInterface>(mapping, value);
         }
     }
 }
