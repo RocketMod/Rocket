@@ -9,6 +9,7 @@ namespace Rocket.IOC
     {
         private IUnityContainer container;
         public IServiceLocator ServiceLocator { get; private set; }
+
         public DependencyContainer()
         {
             container = new UnityContainer();
@@ -18,16 +19,13 @@ namespace Rocket.IOC
             ServiceLocator = new ServiceLocator(Microsoft.Practices.ServiceLocation.ServiceLocator.Current);
         }
         
-        private void GuardRegistered(Type type, bool throwException = true)
+        //TODO: What was the purpose of this method if it was set not to throw an exception?
+        private void GuardRegistered(Type type, string mappingName = null)
         {
-            if (!container.IsRegistered(type) && throwException)
+            if (!container.IsRegistered(type, mappingName))
+            {
                 throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
-        }
-
-        private void GuardRegistered(Type type, string mappingName, bool throwException = true)
-        {
-            if (!container.IsRegistered(type, mappingName) && throwException)
-                throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
+            }
         }
 
         public T Activate<T>()
@@ -58,93 +56,29 @@ namespace Rocket.IOC
             return null;
         }
 
-        public T Get<T>()
-        {
-            GuardRegistered(typeof(T));
-            return container.Resolve<T>();
-        }
-
-        public T Get<T>(params object[] parameters)
-        {
-            GuardRegistered(typeof(T));
-            return container.Resolve<T>(new OrderedParametersOverride(parameters));
-        }
-
-        public object Get(Type type)
-        {
-            GuardRegistered(type);
-            return container.Resolve(type);
-        }
-
-        public object Get(Type type, params object[] parameters)
-        {
-            GuardRegistered(type);
-            return container.Resolve(type, new OrderedParametersOverride(parameters));
-        }
-
         public IEnumerable<T> GetAll<T>()
         {
-            GuardRegistered(typeof(T));
             return container.ResolveAll<T>();
         }
 
         public IEnumerable<T> GetAll<T>(params object[] parameters)
         {
-            GuardRegistered(typeof(T));
             return container.ResolveAll<T>(new OrderedParametersOverride(parameters));
         }
 
         public IEnumerable<object> GetAll(Type type)
         {
-            GuardRegistered(type);
             return container.ResolveAll(type);
         }
 
         public IEnumerable<object> GetAll(Type type, params object[] parameters)
         {
-            GuardRegistered(type);
-            return container.ResolveAll(type,new OrderedParametersOverride(parameters));
-        }
-
-        public T TryGet<T>(params object[] parameters)
-        {
-            GuardRegistered(typeof(T), false);
-            return container.Resolve<T>(new OrderedParametersOverride(parameters));
-        }
-
-        public object TryGet(Type type, params object[] parameters)
-        {
-            GuardRegistered(type, false);
-            return container.Resolve(type,new OrderedParametersOverride(parameters));
-        }
-
-        public IEnumerable<T> TryGetAll<T>()
-        {
-            GuardRegistered(typeof(T), false);
-            return container.ResolveAll<T>();
-        }
-
-        public IEnumerable<T> TryGetAll<T>(params object[] parameters)
-        {
-            GuardRegistered(typeof(T), false);
-            return container.ResolveAll<T>(new OrderedParametersOverride(parameters));
-        }
-
-        public IEnumerable<object> TryGetAll(Type type)
-        {
-            GuardRegistered(type, false);
-            return container.ResolveAll(type);
-        }
-
-        public IEnumerable<object> TryGetAll(Type type, params object[] parameters)
-        {
-            GuardRegistered(type, false);
             return container.ResolveAll(type, new OrderedParametersOverride(parameters));
         }
-        
+ 
         public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
-            container.RegisterType<TInterface, TClass>(mappingName = null,new ContainerControlledLifetimeManager(), new InjectionMember[0]);
+            container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager(), new InjectionMember[0]);
         }
         
         public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
@@ -179,16 +113,38 @@ namespace Rocket.IOC
             return container.IsRegistered(type, mappingName);
         }
 
-        public T TryGet<T>(string mappingName = null)
+        public bool TryGet<T>(string mappingName, out T output)
         {
-            GuardRegistered(typeof(T), mappingName, false);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+            try
+            {
+                GuardRegistered(typeof(T), mappingName);
+                output = container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+
+                return true;
+            }
+            catch
+            {
+                output = default(T);
+
+                return false;
+            }
         }
 
-        public T TryGet<T>(string mappingName, params object[] parameters)
+        public bool TryGet<T>(string mappingName, out T output, params object[] parameters)
         {
-            GuardRegistered(typeof(T), mappingName, false);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+            try
+            {
+                GuardRegistered(typeof(T), mappingName);
+                output = container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+
+                return true;
+            }
+            catch
+            {
+                output = default(T);
+
+                return false;
+            }
         }
 
         public object Get(Type serviceType, string mappingName = null)
@@ -203,16 +159,52 @@ namespace Rocket.IOC
             return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
         }
 
-        public object TryGet(Type serviceType, string mappingName = null)
+        public bool TryGet(Type serviceType, string mappingName, out object output)
         {
-            GuardRegistered(serviceType, mappingName, false);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+            try
+            {
+                GuardRegistered(serviceType, mappingName);
+                output = container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+
+                return true;
+            }
+            catch
+            {
+                if (serviceType.IsValueType)
+                {
+                    output = Activator.CreateInstance(serviceType);
+                }
+                else
+                {
+                    output = null;
+                }
+
+                return false;
+            }
         }
 
-        public object TryGet(Type serviceType, string mappingName, params object[] parameters)
+        public bool TryGet(Type serviceType, string mappingName, out object output, params object[] parameters)
         {
-            GuardRegistered(serviceType, mappingName, false);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+            try
+            {
+                GuardRegistered(serviceType, mappingName);
+                output = container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+
+                return true;
+            }
+            catch
+            {
+                if (serviceType.IsValueType)
+                {
+                    output = Activator.CreateInstance(serviceType);
+                }
+                else
+                {
+                    output = null;
+                }
+
+                return false;
+            }
         }
     }
 }
