@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Cooldown.cs" />
     <Compile Include="ICommand.cs" />
+    <Compile Include="ICommandContext.cs" />
     <Compile Include="IOC\ServiceLocator.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IServiceLocator.cs" />

@@ -13,8 +13,7 @@ namespace Rocket.Core
 
         //If this is empty, the command should handle the permissions itself.
         string[] Permissions { get; }
-
-        //This could be expanded later, possibly to use an ICommandContect object similar to the sandbox.
-        void Execute(IPlayer caller, string[] args);
+        
+        void Execute(ICommandContext context);
     }
 }
