@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Rocket.Core
 {
-    public struct Permission
+    public class Permission
     {
         public string Name;
         public uint Cooldown;

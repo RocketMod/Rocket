@@ -50,7 +50,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cooldown.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandContext.cs" />
     <Compile Include="IOC\ServiceLocator.cs" />
@@ -71,7 +70,6 @@
     <Compile Include="IPlugin.cs" />
     <Compile Include="ITranslationManager.cs" />
     <Compile Include="IOC\OrderedParametersOverride.cs" />
-    <Compile Include="Providers\ICooldownProvider.cs" />
     <Compile Include="Providers\IPermissionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
