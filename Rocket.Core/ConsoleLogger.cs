@@ -54,13 +54,13 @@ namespace Rocket.Core
         public void Debug(string message, params object[] arguments)
         {
             setColor(ConsoleColor.Cyan);
-            Console.Write($"{debugPrefix} {message}", arguments);
+            Console.WriteLine($"{debugPrefix} {message}", arguments);
         }
 
         public void Debug(string message, Exception exception, params object[] arguments)
         {
             setColor(ConsoleColor.Cyan);
-            Console.Write($"{debugPrefix} {message}", arguments);
+            Console.WriteLine($"{debugPrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(exception);
         }
@@ -68,13 +68,13 @@ namespace Rocket.Core
         public void Error(string message, params object[] arguments)
         {
             setColor(ConsoleColor.Red);
-            Console.Write($"{errorPrefix} {message}", arguments);
+            Console.WriteLine($"{errorPrefix} {message}", arguments);
         }
 
         public void Error(string message, Exception exception, params object[] arguments)
         {
             setColor(ConsoleColor.Red);
-            Console.Write($"{errorPrefix} {message}", arguments);
+            Console.WriteLine($"{errorPrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(exception);
         }
@@ -82,13 +82,13 @@ namespace Rocket.Core
         public void Fatal(string message, params object[] arguments)
         {
             setColor(ConsoleColor.Red);
-            Console.Write($"{fatalPrefix} {message}", arguments);
+            Console.WriteLine($"{fatalPrefix} {message}", arguments);
         }
 
         public void Fatal(string message, Exception exception, params object[] arguments)
         {
             setColor(ConsoleColor.Red);
-            Console.Write($"{fatalPrefix} {message}", arguments);
+            Console.WriteLine($"{fatalPrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(exception);
         }
@@ -96,13 +96,13 @@ namespace Rocket.Core
         public void Info(string message, params object[] arguments)
         {
             setColor(ConsoleColor.White);
-            Console.Write($"{infoPrefix} {message}", arguments);
+            Console.WriteLine($"{infoPrefix} {message}", arguments);
         }
 
         public void Info(string message, Exception exception, params object[] arguments)
         {
             setColor(ConsoleColor.White);
-            Console.Write($"{fatalPrefix} {message}", arguments);
+            Console.WriteLine($"{fatalPrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(infoPrefix);
         }
@@ -110,13 +110,13 @@ namespace Rocket.Core
         public void Trace(string message, params object[] arguments)
         {
             setColor(ConsoleColor.Cyan);
-            Console.Write($"{tracePrefix} {message}", arguments);
+            Console.WriteLine($"{tracePrefix} {message}", arguments);
         }
 
         public void Trace(string message, Exception exception, params object[] arguments)
         {
             setColor(ConsoleColor.Cyan);
-            Console.Write($"{tracePrefix} {message}", arguments);
+            Console.WriteLine($"{tracePrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(exception);
         }
@@ -124,13 +124,13 @@ namespace Rocket.Core
         public void Warning(string message, params object[] arguments)
         {
             setColor(ConsoleColor.Yellow);
-            Console.Write($"{warnPrefix} {message}", arguments);
+            Console.WriteLine($"{warnPrefix} {message}", arguments);
         }
 
         public void Warning(string message, Exception exception, params object[] arguments)
         {
             setColor(ConsoleColor.Yellow);
-            Console.Write($"{tracePrefix} {message}", arguments);
+            Console.WriteLine($"{tracePrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(warnPrefix);
         }
