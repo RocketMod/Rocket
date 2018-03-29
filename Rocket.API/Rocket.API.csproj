@@ -49,6 +49,7 @@
     <Compile Include="Eventing\IEventListener.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslationManager.cs" />
+    <Compile Include="IImplementation.cs" />
     <Compile Include="IOC\IDependencyContainer.cs" />
     <Compile Include="IOC\IDependencyRegistrator.cs" />
     <Compile Include="IOC\IDependencyResolver.cs" />
@@ -56,7 +57,6 @@
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
-    <Compile Include="Plugin\IPluginConfiguration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
