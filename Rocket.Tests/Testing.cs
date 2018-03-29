@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Rocket.Tests
 {
     [TestClass]
-    public class Bootstrap
+    public class Testing
     {
         [TestInitialize()]
         public void Startup()
