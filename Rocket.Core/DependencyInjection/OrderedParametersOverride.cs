@@ -3,7 +3,7 @@ using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 
-namespace Rocket.Core.IOC
+namespace Rocket.Core.DependencyInjection
 {
     public class OrderedParametersOverride : ResolverOverride
     {

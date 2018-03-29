@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rocket.API.IOC
+namespace Rocket.API.DependencyInjection
 {
     public interface IServiceLocator
     {

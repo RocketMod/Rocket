@@ -2,9 +2,9 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Rocket.API.IOC;
+using Rocket.API.DependencyInjection;
 
-namespace Rocket.Core.IOC
+namespace Rocket.Core.DependencyInjection
 {
     public class UnityDependencyContainer : IDependencyContainer
     {

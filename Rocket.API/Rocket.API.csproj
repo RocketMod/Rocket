@@ -50,10 +50,10 @@
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslationManager.cs" />
     <Compile Include="IImplementation.cs" />
-    <Compile Include="IOC\IDependencyContainer.cs" />
-    <Compile Include="IOC\IDependencyRegistrator.cs" />
-    <Compile Include="IOC\IDependencyResolver.cs" />
-    <Compile Include="IOC\IServiceLocator.cs" />
+    <Compile Include="DependencyInjection\IDependencyContainer.cs" />
+    <Compile Include="DependencyInjection\IDependencyRegistrator.cs" />
+    <Compile Include="DependencyInjection\IDependencyResolver.cs" />
+    <Compile Include="DependencyInjection\IServiceLocator.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Plugin\IPlugin.cs" />

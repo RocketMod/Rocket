@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Practices.Unity;
-using Rocket.API.IOC;
+using Rocket.API.DependencyInjection;
 
-namespace Rocket.Core.IOC
+namespace Rocket.Core.DependencyInjection
 {
     internal class UnityServiceLocator : IServiceLocator
     {

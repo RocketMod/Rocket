@@ -1,7 +1,7 @@
-﻿using Rocket.API.IOC;
+﻿using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core;
-using Rocket.Core.IOC;
+using Rocket.Core.DependencyInjection;
 
 namespace Rocket
 {

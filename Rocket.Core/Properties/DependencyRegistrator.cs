@@ -1,4 +1,4 @@
-﻿using Rocket.API.IOC;
+﻿using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.Properties
 {
