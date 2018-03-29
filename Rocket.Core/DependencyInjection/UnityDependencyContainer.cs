@@ -68,7 +68,6 @@ namespace Rocket.Core.DependencyInjection
         #endregion
 
         #region Activate Methods
-
         public T Activate<T>()
         {
             return (T)Activate(typeof(T));
