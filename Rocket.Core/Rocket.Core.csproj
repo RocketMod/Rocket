@@ -50,15 +50,19 @@
     <Compile Include="..\Rocket.Runtime\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Commands\CommandHandler.cs" />
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="Extensibility\EventExtensions.cs" />
     <Compile Include="DependencyInjection\RegistrationByConvention.cs" />
     <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />
     <Compile Include="DependencyInjection\OrderedParametersOverride.cs" />
     <Compile Include="DependencyInjection\UnityServiceLocator.cs" />
-    <Compile Include="Permissions\IPermissionProvider.cs" />
+    <Compile Include="I18N\TranslationProvider.cs" />
+    <Compile Include="Permissions\PermissionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
+    <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="Runtime.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -70,5 +74,6 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

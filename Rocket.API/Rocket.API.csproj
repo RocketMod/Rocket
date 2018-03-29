@@ -44,19 +44,22 @@
     <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandContext.cs" />
-    <Compile Include="Configuration\IConfigurationManager.cs" />
+    <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\IEventListener.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
-    <Compile Include="I18N\ITranslationManager.cs" />
+    <Compile Include="I18N\ITranslationProvider.cs" />
     <Compile Include="IImplementation.cs" />
     <Compile Include="DependencyInjection\IDependencyContainer.cs" />
     <Compile Include="DependencyInjection\IDependencyRegistrator.cs" />
     <Compile Include="DependencyInjection\IDependencyResolver.cs" />
     <Compile Include="DependencyInjection\IServiceLocator.cs" />
+    <Compile Include="Permissions\IPermissionProvider.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
+    <Compile Include="Plugin\IPluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
