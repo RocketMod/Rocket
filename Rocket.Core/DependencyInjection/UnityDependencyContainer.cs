@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Rocket.API.DependencyInjection;
+using System.Diagnostics;
 
 namespace Rocket.Core.DependencyInjection
 {
@@ -45,6 +46,7 @@ namespace Rocket.Core.DependencyInjection
             return (T)Activate(typeof(T));
         }
 
+        [DebuggerStepThrough]
         public object Activate(Type type)
         {
             foreach (ConstructorInfo constructor in type.GetConstructors())

@@ -63,7 +63,6 @@
     <Compile Include="Configuration\ConfigurationManager.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
-    <Compile Include="Runtime.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
