@@ -1,5 +1,9 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API;
+using Rocket.API.Configuration;
+using Rocket.API.I18N;
+using Rocket.API.Permissions;
+using Rocket.API.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +22,19 @@ namespace Rocket.Tests
         }
 
         [TestMethod]
-        public void CheckImplementation()
+        public void ImplementationAvailable()
         {
-            IImplementation implementation = Runtime.ServiceLocator.GetInstance<IImplementation>();
-            Assert.IsNotNull(implementation);
+            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IImplementation>());
+        }
+
+        [TestMethod]
+        public void CoreDependenciesAvailable()
+        {
+            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IConfigurationProvider>());
+            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<ITranslationProvider>());
+            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IPermissionProvider>());
+
+            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IPluginManager>());
         }
     }
 }
