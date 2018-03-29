@@ -2,12 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Rocket.API.IOC;
 
 namespace Rocket.IOC
 {
     public class DependencyContainer : IDependencyResolver, IDependencyContainer
     {
-        private IUnityContainer container;
+        private readonly IUnityContainer container;
         public IServiceLocator ServiceLocator { get; private set; }
         public DependencyContainer()
         {
@@ -21,13 +22,13 @@ namespace Rocket.IOC
         private void GuardRegistered(Type type, bool throwException = true)
         {
             if (!container.IsRegistered(type) && throwException)
-                throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
+                throw new Exception($"Type '{type.AssemblyQualifiedName}' not registered in container.");
         }
 
         private void GuardRegistered(Type type, string mappingName, bool throwException = true)
         {
             if (!container.IsRegistered(type, mappingName) && throwException)
-                throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
+                throw new Exception($"Type '{type.AssemblyQualifiedName}' not registered in container.");
         }
 
         public T Activate<T>()

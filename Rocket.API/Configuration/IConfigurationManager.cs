@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core
+﻿namespace Rocket.API.Configuration
 {
     public interface IConfigurationManager
     {
