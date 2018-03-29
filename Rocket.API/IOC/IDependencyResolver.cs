@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rocket.IOC
+namespace Rocket.API.IOC
 {
     public interface IDependencyResolver
     {

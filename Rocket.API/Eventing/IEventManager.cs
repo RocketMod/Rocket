@@ -1,4 +1,6 @@
-﻿namespace Rocket.Core.Event
+﻿using Rocket.API.Plugin;
+
+namespace Rocket.API.Eventing
 {
     public interface IEventManager
     {

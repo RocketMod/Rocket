@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core.Event
+﻿namespace Rocket.API.Eventing
 {
     public interface IEventListener
     {

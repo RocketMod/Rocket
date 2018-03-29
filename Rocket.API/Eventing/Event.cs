@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rocket.Core.Event
+namespace Rocket.API.Eventing
 {
     public class Event
     {
@@ -24,16 +24,6 @@ namespace Rocket.Core.Event
         {
             Name = name ?? GetType().Name;
             IsAsync = isAsync;
-        }
-
-        /// <summary>
-        /// Shortcut for <see cref="IEventManager"/>.TriggerEvent
-        /// </summary>
-        public void Fire()
-        {
-            var manager = R.ServiceLocator.GetInstance<IEventManager>();
-            if (manager == null) throw new Exception("EventManager instance is null");
-            manager.TriggerEvent(this);
         }
     }
 }

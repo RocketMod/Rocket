@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reflection;
-
-namespace Rocket.IOC
+﻿namespace Rocket.API.IOC
 {
     public interface IDependencyContainer
     {

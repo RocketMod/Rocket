@@ -1,9 +1,7 @@
-﻿using Rocket.Core;
+﻿using Rocket.API.IOC;
+using Rocket.API.Logging;
+using Rocket.Core;
 using Rocket.IOC;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Rocket
 {
@@ -13,7 +11,7 @@ namespace Rocket
         public static void Bootstrap()
         {
             container = new DependencyContainer();
-            container.RegisterSingletonType<ILog, ConsoleLogger>();
+            container.RegisterSingletonType<ILogger, ConsoleLogger>();
             container.Activate(typeof(Initializer));
         }
 

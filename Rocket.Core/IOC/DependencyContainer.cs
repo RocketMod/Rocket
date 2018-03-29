@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Rocket.API.IOC;
 
 namespace Rocket.IOC
 {
