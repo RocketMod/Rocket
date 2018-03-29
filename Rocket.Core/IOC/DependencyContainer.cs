@@ -35,6 +35,11 @@ namespace Rocket.IOC
         {
             container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager(), new InjectionMember[0]);
         }
+
+        public void RegisterSingletonInstance<TInterface>(TInterface value, string mappingName = null)
+        {
+            container.RegisterInstance<TInterface>(mappingName, value, new ContainerControlledLifetimeManager());
+        }
         
         public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
