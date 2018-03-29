@@ -20,15 +20,6 @@ namespace Rocket.IOC
             Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
             ServiceLocator = new ServiceLocator(Microsoft.Practices.ServiceLocation.ServiceLocator.Current);
         }
-        
-        //TODO: What was the purpose of this method if it was set not to throw an exception?
-        private void GuardRegistered(Type type, string mappingName = null)
-        {
-            if (!container.IsRegistered(type, mappingName))
-            {
-                throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
-            }
-        }
 
         #region IDependencyContainer Implementation
         public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
@@ -40,7 +31,7 @@ namespace Rocket.IOC
         {
             container.RegisterInstance<TInterface>(mappingName, value, new ContainerControlledLifetimeManager());
         }
-        
+
         public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
             container.RegisterType<TInterface, TClass>(mappingName);
@@ -99,162 +90,234 @@ namespace Rocket.IOC
 
         #region Get Methods
 
+        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instance is resolved for the requested Type and Mapping.</exception>
         public T Get<T>(string mappingName = null)
         {
-            GuardRegistered(typeof(T), mappingName);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+            if (IsRegistered<T>(mappingName))
+            {
+                return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+            }
+
+            throw new UnityInstanceNotResolvedException(typeof(T), mappingName);
         }
 
+        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instance is resolved for the requested Type and Mapping.</exception>
         public T Get<T>(string mappingName, params object[] parameters)
         {
-            GuardRegistered(typeof(T), mappingName);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+            if (IsRegistered<T>(mappingName))
+            {
+                return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+            }
+
+            throw new UnityInstanceNotResolvedException(typeof(T), mappingName);
         }
 
+        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instance is resolved for the requested Type and Mapping.</exception>
         public object Get(Type serviceType, string mappingName = null)
         {
-            GuardRegistered(serviceType, mappingName);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+            if (IsRegistered(serviceType, mappingName))
+            {
+                return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+            }
+
+            throw new UnityInstanceNotResolvedException(serviceType, mappingName);
         }
 
+        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instance is resolved for the requested Type and Mapping.</exception>
         public object Get(Type serviceType, string mappingName, params object[] parameters)
         {
-            GuardRegistered(serviceType, mappingName);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+            if (IsRegistered(serviceType, mappingName))
+            {
+                return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+            }
+
+            throw new UnityInstanceNotResolvedException(serviceType, mappingName);
         }
 
+        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
         public IEnumerable<T> GetAll<T>()
         {
-            return container.ResolveAll<T>();
+            var instances = container.ResolveAll<T>();
+
+            if (instances.Count() != 0)
+            {
+                return instances;
+            }
+
+            throw new UnityInstanceNotResolvedException(typeof(T));
         }
 
+        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
         public IEnumerable<T> GetAll<T>(params object[] parameters)
         {
-            return container.ResolveAll<T>(new OrderedParametersOverride(parameters));
+            var instances = container.ResolveAll<T>(new OrderedParametersOverride(parameters));
+
+            if (instances.Count() != 0)
+            {
+                return instances;
+            }
+
+            throw new UnityInstanceNotResolvedException(typeof(T));
         }
 
+        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
         public IEnumerable<object> GetAll(Type type)
         {
-            return container.ResolveAll(type);
+            var instances = container.ResolveAll(type);
+
+            if (instances.Count() != 0)
+            {
+                return instances;
+            }
+
+            throw new UnityInstanceNotResolvedException(type);
         }
 
+        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
         public IEnumerable<object> GetAll(Type type, params object[] parameters)
         {
-            return container.ResolveAll(type, new OrderedParametersOverride(parameters));
+            var instances = container.ResolveAll(type, new OrderedParametersOverride(parameters));
+
+            if (instances.Count() != 0)
+            {
+                return instances;
+            }
+
+            throw new UnityInstanceNotResolvedException(type);
         }
 
         #endregion
 
         #region TryGet Methods
 
+        /// <returns><value>true</value> when an instance is resolved.</returns>
         public bool TryGet<T>(string mappingName, out T output)
         {
-            try
+            if (IsRegistered<T>(mappingName))
             {
-                GuardRegistered(typeof(T), mappingName);
                 output = container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
 
                 return true;
             }
-            catch
-            {
-                output = default(T);
 
-                return false;
-            }
+            output = default(T);
+
+            return false;
         }
 
+        /// <returns><value>true</value> when an instance is resolved.</returns>
         public bool TryGet<T>(string mappingName, out T output, params object[] parameters)
         {
-            try
+            if (IsRegistered<T>(mappingName))
             {
-                GuardRegistered(typeof(T), mappingName);
                 output = container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
 
                 return true;
             }
-            catch
-            {
-                output = default(T);
 
-                return false;
-            }
+            output = default(T);
+
+            return false;
         }
 
+        /// <returns><value>true</value> when an instance is resolved.</returns>
         public bool TryGet(Type serviceType, string mappingName, out object output)
         {
-            try
+            if (IsRegistered(serviceType, mappingName))
             {
-                GuardRegistered(serviceType, mappingName);
                 output = container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
 
                 return true;
             }
-            catch
-            {
-                if (serviceType.IsValueType)
-                {
-                    output = Activator.CreateInstance(serviceType);
-                }
-                else
-                {
-                    output = null;
-                }
 
-                return false;
+            if (serviceType.IsValueType)
+            {
+                output = Activator.CreateInstance(serviceType);
             }
+            else
+            {
+                output = null;
+            }
+
+            return false;
         }
 
+        /// <returns><value>true</value> when an instance is resolved.</returns>
         public bool TryGet(Type serviceType, string mappingName, out object output, params object[] parameters)
         {
-            try
+            if (IsRegistered(serviceType, mappingName))
             {
-                GuardRegistered(serviceType, mappingName);
                 output = container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
 
                 return true;
             }
-            catch
-            {
-                if (serviceType.IsValueType)
-                {
-                    output = Activator.CreateInstance(serviceType);
-                }
-                else
-                {
-                    output = null;
-                }
 
-                return false;
+            if (serviceType.IsValueType)
+            {
+                output = Activator.CreateInstance(serviceType);
             }
+            else
+            {
+                output = null;
+            }
+
+            return false;
         }
 
+        /// <returns><value>true</value> when at least one instance is resolved.</returns>
         public bool TryGetAll<T>(out IEnumerable<T> output)
         {
             output = container.ResolveAll<T>();
 
-            return output.Count() != 0;
+            if (output.Count() != 0)
+            {
+                return true;
+            }
+
+            output = null;
+            return false;
         }
 
+        /// <returns><value>true</value> when at least one instance is resolved.</returns>
         public bool TryGetAll<T>(out IEnumerable<T> output, params object[] parameters)
         {
             output = container.ResolveAll<T>(new OrderedParametersOverride(parameters));
 
-            return output.Count() != 0;
+            if (output.Count() != 0)
+            {
+                return true;
+            }
+
+            output = null;
+            return false;
         }
 
+        /// <returns><value>true</value> when at least one instance is resolved.</returns>
         public bool TryGetAll(Type serviceType, out IEnumerable<object> output)
         {
             output = container.ResolveAll(serviceType);
 
-            return output.Count() != 0;
+            if (output.Count() != 0)
+            {
+                return true;
+            }
+
+            output = null;
+            return false;
         }
 
+        /// <returns><value>true</value> when at least one instance is resolved.</returns>
         public bool TryGetAll(Type serviceType, out IEnumerable<object> output, params object[] parameters)
         {
             output = container.ResolveAll(serviceType, new OrderedParametersOverride(parameters));
 
-            return output.Count() != 0;
+            if (output.Count() != 0)
+            {
+                return true;
+            }
+
+            output = null;
+            return false;
         }
 
         #endregion

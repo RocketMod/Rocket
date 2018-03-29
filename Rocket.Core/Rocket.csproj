@@ -46,6 +46,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IOC\UnityInstanceNotResolvedException.cs" />
     <Compile Include="Core\ICommand.cs" />
     <Compile Include="Core\ICommandContext.cs" />
     <Compile Include="IOC\ServiceLocator.cs" />
