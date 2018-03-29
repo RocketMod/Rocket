@@ -52,12 +52,14 @@
     </Compile>
     <Compile Include="ConsoleLogger.cs" />
     <Compile Include="Extensibility\EventExtensions.cs" />
-    <Compile Include="IOC\DependencyContainer.cs" />
+    <Compile Include="IOC\RegistrationByConvention.cs" />
+    <Compile Include="IOC\UnityDependencyContainer.cs" />
     <Compile Include="IOC\OrderedParametersOverride.cs" />
-    <Compile Include="IOC\ServiceLocator.cs" />
+    <Compile Include="IOC\UnityServiceLocator.cs" />
     <Compile Include="Permissions\IPermissionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
+    <Compile Include="Runtime.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
