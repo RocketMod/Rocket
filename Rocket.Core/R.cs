@@ -9,14 +9,14 @@ namespace Rocket
 {
     public static class R
     {
-        private static DependencyContainer _container;
+        private static DependencyContainer container;
         public static void Bootstrap()
         {
-            _container = new DependencyContainer();
-            _container.RegisterSingletonType<ILog, ConsoleLogger>();
-            _container.Activate(typeof(Initializer));
+            container = new DependencyContainer();
+            container.RegisterSingletonType<ILog, ConsoleLogger>();
+            container.Activate(typeof(Initializer));
         }
 
-        public static IServiceLocator ServiceLocator => _container.ServiceLocator;
+        public static IServiceLocator ServiceLocator => container.ServiceLocator;
     }
 }
