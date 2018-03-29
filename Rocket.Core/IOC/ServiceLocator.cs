@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rocket.API.IOC;
 
 namespace Rocket.IOC
 {
     internal class ServiceLocator : IServiceLocator
     {
-        private Microsoft.Practices.ServiceLocation.IServiceLocator serviceLocator;
+        private readonly Microsoft.Practices.ServiceLocation.IServiceLocator serviceLocator;
 
         public ServiceLocator(Microsoft.Practices.ServiceLocation.IServiceLocator serviceLocator)
         {

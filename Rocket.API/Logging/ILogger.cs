@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace Rocket.Core
+namespace Rocket.API.Logging
 {
-    public interface ILog
+    public interface ILogger
     {
         bool IsTraceEnabled { get; }
         void Trace(string message, params object[] arguments);

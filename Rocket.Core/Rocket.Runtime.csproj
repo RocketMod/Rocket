@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Rocket</RootNamespace>
-    <AssemblyName>Rocket</AssemblyName>
+    <AssemblyName>Rocket.Runtime</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -47,34 +47,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IOC\UnityInstanceNotResolvedException.cs" />
-    <Compile Include="Core\ICommand.cs" />
-    <Compile Include="Core\ICommandContext.cs" />
+    <Compile Include="Extension\EventExtensions.cs" />
     <Compile Include="IOC\ServiceLocator.cs" />
-    <Compile Include="Core\IPlayer.cs" />
-    <Compile Include="IOC\IServiceLocator.cs" />
     <Compile Include="R.cs" />
     <Compile Include="Core\ConsoleLogger.cs" />
     <Compile Include="IOC\DependencyContainer.cs" />
-    <Compile Include="Core\IAsset.cs" />
-    <Compile Include="Core\IConfigurationManager.cs" />
-    <Compile Include="IOC\IDependencyContainer.cs" />
-    <Compile Include="IOC\IDependencyRegistrator.cs" />
-    <Compile Include="IOC\IDependencyResolver.cs" />
-    <Compile Include="Core\ILog.cs" />
     <Compile Include="Core\Initializer.cs" />
-    <Compile Include="Core\IPluginConfiguration.cs" />
-    <Compile Include="Core\IPlugin.cs" />
-    <Compile Include="Core\ITranslationManager.cs" />
     <Compile Include="IOC\OrderedParametersOverride.cs" />
     <Compile Include="Providers\IPermissionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
-    <Compile Include="Compability\Tuples.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
+      <Project>{da356abb-aa77-4b22-9ab1-34a30cf4048a}</Project>
+      <Name>Rocket.API</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
