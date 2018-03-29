@@ -48,7 +48,7 @@ namespace Rocket.IOC
         #endregion
 
         #region IDependencyResolver Implementation
-        #region IsRegistered
+        #region IsRegistered Methods
 
         public bool IsRegistered<T>(string mappingName = null)
         {
@@ -61,7 +61,7 @@ namespace Rocket.IOC
         }
         #endregion
 
-        #region Activates
+        #region Activate Methods
 
         public T Activate<T>()
         {
@@ -92,7 +92,7 @@ namespace Rocket.IOC
         }
         #endregion
 
-        #region Gets
+        #region Get Methods
 
         public T Get<T>(string mappingName = null)
         {
@@ -140,7 +140,7 @@ namespace Rocket.IOC
 
         #endregion
 
-        #region TryGets
+        #region TryGet Methods
 
         public bool TryGet<T>(string mappingName, out T output)
         {
