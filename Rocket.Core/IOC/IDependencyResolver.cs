@@ -28,5 +28,11 @@ namespace Rocket.IOC
 
         bool TryGet<T>(string mappingName, out T output, params object[] parameters);
         bool TryGet(Type serviceType, string mappingName, out object output, params object[] parameters);
+
+        bool TryGetAll<T>(out IEnumerable<T> output);
+        bool TryGetAll(Type type, out IEnumerable<object> output);
+
+        bool TryGetAll<T>(out IEnumerable<T> output, params object[] parameters);
+        bool TryGetAll(Type type, out IEnumerable<object> output, params object[] parameters);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Microsoft.Practices.Unity;
+
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -28,6 +30,39 @@ namespace Rocket.IOC
             }
         }
 
+        #region IDependencyContainer Implementation
+        public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
+        {
+            container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager(), new InjectionMember[0]);
+        }
+        
+        public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
+        {
+            container.RegisterType<TInterface, TClass>(mappingName);
+        }
+
+        public void RegisterInstance<TInterface>(TInterface value, string mappingName = null)
+        {
+            container.RegisterInstance<TInterface>(mappingName, value);
+        }
+        #endregion
+
+        #region IDependencyResolver Implementation
+        #region IsRegistered
+
+        public bool IsRegistered<T>(string mappingName = null)
+        {
+            return container.IsRegistered<T>(mappingName);
+        }
+
+        public bool IsRegistered(Type type, string mappingName = null)
+        {
+            return container.IsRegistered(type, mappingName);
+        }
+        #endregion
+
+        #region Activates
+
         public T Activate<T>()
         {
             return (T)Activate(typeof(T));
@@ -55,6 +90,33 @@ namespace Rocket.IOC
             }
             return null;
         }
+        #endregion
+
+        #region Gets
+
+        public T Get<T>(string mappingName = null)
+        {
+            GuardRegistered(typeof(T), mappingName);
+            return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+        }
+
+        public T Get<T>(string mappingName, params object[] parameters)
+        {
+            GuardRegistered(typeof(T), mappingName);
+            return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+        }
+
+        public object Get(Type serviceType, string mappingName = null)
+        {
+            GuardRegistered(serviceType, mappingName);
+            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+        }
+
+        public object Get(Type serviceType, string mappingName, params object[] parameters)
+        {
+            GuardRegistered(serviceType, mappingName);
+            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+        }
 
         public IEnumerable<T> GetAll<T>()
         {
@@ -75,43 +137,10 @@ namespace Rocket.IOC
         {
             return container.ResolveAll(type, new OrderedParametersOverride(parameters));
         }
- 
-        public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
-        {
-            container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager(), new InjectionMember[0]);
-        }
-        
-        public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
-        {
-            container.RegisterType<TInterface, TClass>(mappingName);
-        }
 
-        public void RegisterInstance<TInterface>(TInterface value, string mappingName = null)
-        {
-            container.RegisterInstance<TInterface>(mappingName, value);
-        }
+        #endregion
 
-        public T Get<T>(string mappingName = null)
-        {
-            GuardRegistered(typeof(T), mappingName);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
-        }
-
-        public T Get<T>(string mappingName, params object[] parameters)
-        {
-            GuardRegistered(typeof(T), mappingName);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
-        }
-
-        public bool IsRegistered<T>(string mappingName = null)
-        {
-            return container.IsRegistered<T>(mappingName);
-        }
-
-        public bool IsRegistered(Type type, string mappingName = null)
-        {
-            return container.IsRegistered(type, mappingName);
-        }
+        #region TryGets
 
         public bool TryGet<T>(string mappingName, out T output)
         {
@@ -145,18 +174,6 @@ namespace Rocket.IOC
 
                 return false;
             }
-        }
-
-        public object Get(Type serviceType, string mappingName = null)
-        {
-            GuardRegistered(serviceType, mappingName);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
-        }
-
-        public object Get(Type serviceType, string mappingName, params object[] parameters)
-        {
-            GuardRegistered(serviceType, mappingName);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
         }
 
         public bool TryGet(Type serviceType, string mappingName, out object output)
@@ -206,5 +223,36 @@ namespace Rocket.IOC
                 return false;
             }
         }
+
+        public bool TryGetAll<T>(out IEnumerable<T> output)
+        {
+            output = container.ResolveAll<T>();
+
+            return output.Count() != 0;
+        }
+
+        public bool TryGetAll<T>(out IEnumerable<T> output, params object[] parameters)
+        {
+            output = container.ResolveAll<T>(new OrderedParametersOverride(parameters));
+
+            return output.Count() != 0;
+        }
+
+        public bool TryGetAll(Type serviceType, out IEnumerable<object> output)
+        {
+            output = container.ResolveAll(serviceType);
+
+            return output.Count() != 0;
+        }
+
+        public bool TryGetAll(Type serviceType, out IEnumerable<object> output, params object[] parameters)
+        {
+            output = container.ResolveAll(serviceType, new OrderedParametersOverride(parameters));
+
+            return output.Count() != 0;
+        }
+
+        #endregion
+        #endregion
     }
 }
