@@ -1,5 +1,4 @@
-﻿using Rocket.IOC;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,7 +6,7 @@ using System.Text;
 using Rocket.API.IOC;
 using Rocket.API.Logging;
 
-namespace Rocket.Core
+namespace Rocket
 {
     public class Initializer
     {

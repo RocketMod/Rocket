@@ -4,21 +4,30 @@ using System.Collections.Generic;
 using System.Reflection;
 using Rocket.API.IOC;
 
-namespace Rocket.IOC
+namespace Rocket.Core.IOC
 {
-    public class DependencyContainer : IDependencyResolver, IDependencyContainer
+    public class UnityDependencyContainer : IDependencyContainer
     {
-        private readonly IUnityContainer container;
+        internal readonly IUnityContainer container;
+
         public IServiceLocator ServiceLocator { get; private set; }
-        public DependencyContainer()
+
+        public UnityDependencyContainer()
         {
             container = new UnityContainer();
+            ServiceLocator = new UnityServiceLocator(container);
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
-            Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
-            ServiceLocator = new ServiceLocator(Microsoft.Practices.ServiceLocation.ServiceLocator.Current);
         }
-        
+
+        public UnityDependencyContainer(UnityDependencyContainer parent)
+        {
+            container = parent.container.CreateChildContainer();
+            ServiceLocator = new UnityServiceLocator(container);
+            container.RegisterInstance<IDependencyContainer>(this);
+            container.RegisterInstance<IDependencyResolver>(this);
+        }
+
         private void GuardRegistered(Type type, bool throwException = true)
         {
             if (!container.IsRegistered(type) && throwException)
@@ -215,5 +224,7 @@ namespace Rocket.IOC
             GuardRegistered(serviceType, mappingName, false);
             return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
         }
+
+
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Rocket.API.IOC;
 
-namespace Rocket.Core.Properties
+namespace Rocket.Properties
 {
     public class DependencyRegistrator : IDependencyRegistrator
     {

@@ -1,7 +1,8 @@
 ﻿namespace Rocket.API.IOC
 {
-    public interface IDependencyContainer
+    public interface IDependencyContainer : IDependencyResolver
     {
+        IServiceLocator ServiceLocator { get; }
         void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface;
 
         void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface;

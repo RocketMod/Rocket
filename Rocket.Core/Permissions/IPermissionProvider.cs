@@ -1,6 +1,6 @@
 ﻿using Rocket.API.Player;
 
-namespace Rocket.Providers
+namespace Rocket.Core.Permissions
 {
     //Todo: Going to need a PermissionGroup object.
     public interface IPermissionProvider
