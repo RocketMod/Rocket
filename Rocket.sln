@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Launcher", "Rocket.Launcher\Rocket.Launcher.csproj", "{EB1CD507-FEEB-41E7-98EE-D4ED92CA3712}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Runtime", "Rocket.Core\Rocket.Runtime.csproj", "{5D260F94-BB23-4397-94DF-BA4AF0CD8BCB}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Runtime", "Rocket.Runtime\Rocket.Runtime.csproj", "{5D260F94-BB23-4397-94DF-BA4AF0CD8BCB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.API", "Rocket.API\Rocket.API.csproj", "{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Compability", "Rocket.Compability\Rocket.Compability.csproj", "{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Core", "Rocket.Core\Rocket.Core.csproj", "{A7056AB1-C5F5-493B-8E47-DC42DE69961D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EB1CD507-FEEB-41E7-98EE-D4ED92CA3712}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EB1CD507-FEEB-41E7-98EE-D4ED92CA3712}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB1CD507-FEEB-41E7-98EE-D4ED92CA3712}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EB1CD507-FEEB-41E7-98EE-D4ED92CA3712}.Release|Any CPU.Build.0 = Release|Any CPU
 		{5D260F94-BB23-4397-94DF-BA4AF0CD8BCB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D260F94-BB23-4397-94DF-BA4AF0CD8BCB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D260F94-BB23-4397-94DF-BA4AF0CD8BCB}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,12 +29,16 @@ Global
 		{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 		SolutionGuid = {44CEEF5D-7AE2-4DF9-91E1-E4B4B0C9EAC1}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 	EndGlobalSection
 EndGlobal

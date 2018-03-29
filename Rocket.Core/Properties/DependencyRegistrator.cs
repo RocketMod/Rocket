@@ -1,11 +1,6 @@
-﻿using Rocket.IOC;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Rocket.API.IOC;
+﻿using Rocket.API.DependencyInjection;
 
-namespace Rocket.Properties
+namespace Rocket.Core.Properties
 {
     public class DependencyRegistrator : IDependencyRegistrator
     {

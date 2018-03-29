@@ -38,6 +38,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Rocket.Runtime\Properties\CommonAssemblyInfo.cs">
+      <Link>Properties\CommonAssemblyInfo.cs</Link>
+    </Compile>
     <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandContext.cs" />
@@ -46,14 +49,15 @@
     <Compile Include="Eventing\IEventListener.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslationManager.cs" />
-    <Compile Include="IOC\IDependencyContainer.cs" />
-    <Compile Include="IOC\IDependencyRegistrator.cs" />
-    <Compile Include="IOC\IDependencyResolver.cs" />
-    <Compile Include="IOC\IServiceLocator.cs" />
+    <Compile Include="IImplementation.cs" />
+    <Compile Include="DependencyInjection\IDependencyContainer.cs" />
+    <Compile Include="DependencyInjection\IDependencyRegistrator.cs" />
+    <Compile Include="DependencyInjection\IDependencyResolver.cs" />
+    <Compile Include="DependencyInjection\IServiceLocator.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
-    <Compile Include="Plugin\IPluginConfiguration.cs" />
+    <Compile Include="Plugin\IPluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />

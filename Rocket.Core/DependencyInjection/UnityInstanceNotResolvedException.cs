@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Rocket.IOC
+namespace Rocket.API.DependencyInjection
 {
     public sealed class UnityInstanceNotResolvedException : Exception
     {

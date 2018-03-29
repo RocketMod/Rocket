@@ -1,18 +1,19 @@
-﻿using Rocket.API.IOC;
+﻿using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core;
-using Rocket.IOC;
+using Rocket.Core.DependencyInjection;
 
 namespace Rocket
 {
-    public static class R
+    public static class Runtime
     {
-        private static DependencyContainer container;
+        private static IDependencyContainer container;
+
         public static void Bootstrap()
         {
-            container = new DependencyContainer();
+            container = new UnityDependencyContainer();
             container.RegisterSingletonType<ILogger, ConsoleLogger>();
-            container.Activate(typeof(Initializer));
+            container.Activate(typeof(RegistrationByConvention));
         }
 
         public static IServiceLocator ServiceLocator => container.ServiceLocator;

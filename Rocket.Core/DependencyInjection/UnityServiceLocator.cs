@@ -1,16 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rocket.API.IOC;
+using Microsoft.Practices.Unity;
+using Rocket.API.DependencyInjection;
 
-namespace Rocket.IOC
+namespace Rocket.Core.DependencyInjection
 {
-    internal class ServiceLocator : IServiceLocator
+    internal class UnityServiceLocator : IServiceLocator
     {
         private readonly Microsoft.Practices.ServiceLocation.IServiceLocator serviceLocator;
 
-        public ServiceLocator(Microsoft.Practices.ServiceLocation.IServiceLocator serviceLocator)
+        public UnityServiceLocator(IUnityContainer container)
         {
-            this.serviceLocator = serviceLocator;
+            this.serviceLocator = new Microsoft.Practices.Unity.UnityServiceLocator(container);
         }
 
         public IEnumerable<object> GetAllInstances(Type serviceType)

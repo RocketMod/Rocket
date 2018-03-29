@@ -4,24 +4,33 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
-using Rocket.API.IOC;
 
-namespace Rocket.IOC
+using Rocket.API.DependencyInjection;
+
+namespace Rocket.Core.DependencyInjection
 {
-    public class DependencyContainer : IDependencyResolver, IDependencyContainer
+    public class UnityDependencyContainer : IDependencyContainer
     {
-        private readonly IUnityContainer container;
-        public IServiceLocator ServiceLocator { get; private set; }
+        internal readonly IUnityContainer container;
 
-        public DependencyContainer()
+        public IServiceLocator ServiceLocator { get; private set; }
+        
+        public UnityDependencyContainer()
         {
             container = new UnityContainer();
+            ServiceLocator = new UnityServiceLocator(container);
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
-            Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
-            ServiceLocator = new ServiceLocator(Microsoft.Practices.ServiceLocation.ServiceLocator.Current);
         }
 
+        public UnityDependencyContainer(UnityDependencyContainer parent)
+        {
+            container = parent.container.CreateChildContainer();
+            ServiceLocator = new UnityServiceLocator(container);
+            container.RegisterInstance<IDependencyContainer>(this);
+            container.RegisterInstance<IDependencyResolver>(this);
+        }
+        
         #region IDependencyContainer Implementation
         public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
@@ -320,7 +329,7 @@ namespace Rocket.IOC
             output = null;
             return false;
         }
-
+        
         #endregion
         #endregion
     }
