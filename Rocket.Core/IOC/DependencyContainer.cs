@@ -7,27 +7,27 @@ namespace Rocket.IOC
 {
     public class DependencyContainer : IDependencyResolver, IDependencyContainer
     {
-        private IUnityContainer container;
+        private readonly IUnityContainer _container;
         public IServiceLocator ServiceLocator { get; private set; }
         public DependencyContainer()
         {
-            container = new UnityContainer();
-            container.RegisterInstance<IDependencyContainer>(this);
-            container.RegisterInstance<IDependencyResolver>(this);
-            Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(container));
+            _container = new UnityContainer();
+            _container.RegisterInstance<IDependencyContainer>(this);
+            _container.RegisterInstance<IDependencyResolver>(this);
+            Microsoft.Practices.ServiceLocation.ServiceLocator.SetLocatorProvider(() => new UnityServiceLocator(_container));
             ServiceLocator = new ServiceLocator(Microsoft.Practices.ServiceLocation.ServiceLocator.Current);
         }
         
         private void GuardRegistered(Type type, bool throwException = true)
         {
-            if (!container.IsRegistered(type) && throwException)
-                throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
+            if (!_container.IsRegistered(type) && throwException)
+                throw new Exception($"Type '{type.AssemblyQualifiedName}' not registered in container.");
         }
 
         private void GuardRegistered(Type type, string mappingName, bool throwException = true)
         {
-            if (!container.IsRegistered(type, mappingName) && throwException)
-                throw new Exception(string.Format("Type '{0}' not registered in container.", type.AssemblyQualifiedName));
+            if (!_container.IsRegistered(type, mappingName) && throwException)
+                throw new Exception($"Type '{type.AssemblyQualifiedName}' not registered in container.");
         }
 
         public T Activate<T>()
@@ -47,7 +47,7 @@ namespace Rocket.IOC
                 foreach (ParameterInfo parameterInfo in parameters)
                 {
                     Type parameterType = parameterInfo.ParameterType;
-                    if (!container.IsRegistered(parameterType))
+                    if (!_container.IsRegistered(parameterType))
                     {
                         return null;
                     }
@@ -61,158 +61,158 @@ namespace Rocket.IOC
         public T Get<T>()
         {
             GuardRegistered(typeof(T));
-            return container.Resolve<T>();
+            return _container.Resolve<T>();
         }
 
         public T Get<T>(params object[] parameters)
         {
             GuardRegistered(typeof(T));
-            return container.Resolve<T>(new OrderedParametersOverride(parameters));
+            return _container.Resolve<T>(new OrderedParametersOverride(parameters));
         }
 
         public object Get(Type type)
         {
             GuardRegistered(type);
-            return container.Resolve(type);
+            return _container.Resolve(type);
         }
 
         public object Get(Type type, params object[] parameters)
         {
             GuardRegistered(type);
-            return container.Resolve(type, new OrderedParametersOverride(parameters));
+            return _container.Resolve(type, new OrderedParametersOverride(parameters));
         }
 
         public IEnumerable<T> GetAll<T>()
         {
             GuardRegistered(typeof(T));
-            return container.ResolveAll<T>();
+            return _container.ResolveAll<T>();
         }
 
         public IEnumerable<T> GetAll<T>(params object[] parameters)
         {
             GuardRegistered(typeof(T));
-            return container.ResolveAll<T>(new OrderedParametersOverride(parameters));
+            return _container.ResolveAll<T>(new OrderedParametersOverride(parameters));
         }
 
         public IEnumerable<object> GetAll(Type type)
         {
             GuardRegistered(type);
-            return container.ResolveAll(type);
+            return _container.ResolveAll(type);
         }
 
         public IEnumerable<object> GetAll(Type type, params object[] parameters)
         {
             GuardRegistered(type);
-            return container.ResolveAll(type,new OrderedParametersOverride(parameters));
+            return _container.ResolveAll(type,new OrderedParametersOverride(parameters));
         }
 
         public T TryGet<T>(params object[] parameters)
         {
             GuardRegistered(typeof(T), false);
-            return container.Resolve<T>(new OrderedParametersOverride(parameters));
+            return _container.Resolve<T>(new OrderedParametersOverride(parameters));
         }
 
         public object TryGet(Type type, params object[] parameters)
         {
             GuardRegistered(type, false);
-            return container.Resolve(type,new OrderedParametersOverride(parameters));
+            return _container.Resolve(type,new OrderedParametersOverride(parameters));
         }
 
         public IEnumerable<T> TryGetAll<T>()
         {
             GuardRegistered(typeof(T), false);
-            return container.ResolveAll<T>();
+            return _container.ResolveAll<T>();
         }
 
         public IEnumerable<T> TryGetAll<T>(params object[] parameters)
         {
             GuardRegistered(typeof(T), false);
-            return container.ResolveAll<T>(new OrderedParametersOverride(parameters));
+            return _container.ResolveAll<T>(new OrderedParametersOverride(parameters));
         }
 
         public IEnumerable<object> TryGetAll(Type type)
         {
             GuardRegistered(type, false);
-            return container.ResolveAll(type);
+            return _container.ResolveAll(type);
         }
 
         public IEnumerable<object> TryGetAll(Type type, params object[] parameters)
         {
             GuardRegistered(type, false);
-            return container.ResolveAll(type, new OrderedParametersOverride(parameters));
+            return _container.ResolveAll(type, new OrderedParametersOverride(parameters));
         }
         
         public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
-            container.RegisterType<TInterface, TClass>(mappingName = null,new ContainerControlledLifetimeManager(), new InjectionMember[0]);
+            _container.RegisterType<TInterface, TClass>(mappingName = null,new ContainerControlledLifetimeManager(), new InjectionMember[0]);
         }
         
         public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
-            container.RegisterType<TInterface, TClass>(mappingName);
+            _container.RegisterType<TInterface, TClass>(mappingName);
         }
 
         public void RegisterInstance<TInterface>(TInterface value, string mappingName = null)
         {
-            container.RegisterInstance<TInterface>(mappingName, value);
+            _container.RegisterInstance<TInterface>(mappingName, value);
         }
 
         public T Get<T>(string mappingName = null)
         {
             GuardRegistered(typeof(T), mappingName);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+            return _container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
         }
 
         public T Get<T>(string mappingName, params object[] parameters)
         {
             GuardRegistered(typeof(T), mappingName);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+            return _container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
         }
 
         public bool IsRegistered<T>(string mappingName = null)
         {
-            return container.IsRegistered<T>(mappingName);
+            return _container.IsRegistered<T>(mappingName);
         }
 
         public bool IsRegistered(Type type, string mappingName = null)
         {
-            return container.IsRegistered(type, mappingName);
+            return _container.IsRegistered(type, mappingName);
         }
 
         public T TryGet<T>(string mappingName = null)
         {
             GuardRegistered(typeof(T), mappingName, false);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+            return _container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
         }
 
         public T TryGet<T>(string mappingName, params object[] parameters)
         {
             GuardRegistered(typeof(T), mappingName, false);
-            return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+            return _container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
         }
 
         public object Get(Type serviceType, string mappingName = null)
         {
             GuardRegistered(serviceType, mappingName);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+            return _container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
         }
 
         public object Get(Type serviceType, string mappingName, params object[] parameters)
         {
             GuardRegistered(serviceType, mappingName);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+            return _container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
         }
 
         public object TryGet(Type serviceType, string mappingName = null)
         {
             GuardRegistered(serviceType, mappingName, false);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+            return _container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
         }
 
         public object TryGet(Type serviceType, string mappingName, params object[] parameters)
         {
             GuardRegistered(serviceType, mappingName, false);
-            return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+            return _container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
         }
     }
 }
