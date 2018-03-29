@@ -19,10 +19,10 @@ namespace Rocket.API.DependencyInjection
 
         IEnumerable<T> GetAll<T>();
         IEnumerable<object> GetAll(Type type);
-        
+
         IEnumerable<T> GetAll<T>(params object[] parameters);
         IEnumerable<object> GetAll(Type type, params object[] parameters);
-        
+
         bool TryGet<T>(string mappingName, out T output);
         bool TryGet(Type serviceType, string mappingName, out object output);
 

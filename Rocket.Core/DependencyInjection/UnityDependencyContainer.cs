@@ -14,7 +14,7 @@ namespace Rocket.Core.DependencyInjection
         internal readonly IUnityContainer container;
 
         public IServiceLocator ServiceLocator { get; private set; }
-        
+
         public UnityDependencyContainer()
         {
             container = new UnityContainer();
@@ -30,7 +30,7 @@ namespace Rocket.Core.DependencyInjection
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
         }
-        
+
         #region IDependencyContainer Implementation
         public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
@@ -329,7 +329,7 @@ namespace Rocket.Core.DependencyInjection
             output = null;
             return false;
         }
-        
+
         #endregion
         #endregion
     }
