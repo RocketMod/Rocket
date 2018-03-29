@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core
+﻿namespace Rocket.API.I18N
 {
     public interface ITranslationManager
     {

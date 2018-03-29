@@ -4,12 +4,13 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.Reflection;
+using Rocket.API.IOC;
 
 namespace Rocket.IOC
 {
     public class DependencyContainer : IDependencyResolver, IDependencyContainer
     {
-        private IUnityContainer container;
+        private readonly IUnityContainer container;
         public IServiceLocator ServiceLocator { get; private set; }
 
         public DependencyContainer()

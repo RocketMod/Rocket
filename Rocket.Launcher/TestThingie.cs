@@ -1,10 +1,10 @@
-﻿using Rocket.Core;
+﻿using Rocket.API.Logging;
 
 namespace Rocket.Launcher
 {
     public class TestThingie : ITestThingie
     {
-        public TestThingie(ILog logger)
+        public TestThingie(ILogger logger)
         {
             logger.Info("Hallo");
         }

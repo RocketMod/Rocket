@@ -4,12 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Rocket.API.IOC;
+using Rocket.API.Logging;
 
 namespace Rocket.Core
 {
     public class Initializer
     {
-        public Initializer(IDependencyContainer container, IDependencyResolver resolver, ILog logger)
+        public Initializer(IDependencyContainer container, IDependencyResolver resolver, ILogger logger)
         {
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly assembly in assemblies)

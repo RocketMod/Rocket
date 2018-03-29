@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using Rocket.API.Logging;
 
 namespace Rocket.Core
 {
-    public class ConsoleLogger : ILog
+    public class ConsoleLogger : ILogger
     {
         private readonly string tracePrefix = "[TRACE]";
         private readonly string debugPrefix = "[DEBUG]";
