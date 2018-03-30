@@ -16,6 +16,8 @@ namespace Rocket.Tests
 
         ILogger logger;
 
+        public bool Loaded = false;
+
         public TestPlugin(ILogger logger)
         {
             this.logger = logger;
@@ -24,6 +26,7 @@ namespace Rocket.Tests
 
         public void Load()
         {
+            Loaded = true;
             logger.Info("Hello World (From plugin)");
         }
 

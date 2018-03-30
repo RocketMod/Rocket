@@ -13,7 +13,7 @@ namespace Rocket.API.Plugin
     public interface IPluginManager : ICommandHandler
     {
         IPlugin GetPlugin(string name);
-        IPlugin GetPlugin<IPlugin>();
+
         bool PluginExists(string name);
 
         /// <summary>

@@ -20,8 +20,7 @@ namespace Rocket.Tests
         [AssemblyInitialize()]
         public static void Startup(TestContext testContext)
         {
-            Directory.CreateDirectory("./Plugins");
-            File.Copy(Assembly.GetExecutingAssembly().Location, "./Plugins/TestPlugin.dll", true);
+
         }
 
         [TestInitialize]
@@ -45,9 +44,11 @@ namespace Rocket.Tests
         }
 
         [TestMethod]
-        public void PluginManager()
+        public void PluginImplementation()
         {
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IPluginManager>());
+            IPluginManager pluginManager = Runtime.ServiceLocator.GetInstance<IPluginManager>();
+            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
+            Assert.IsTrue(plugin.Loaded);
         }
     }
 }
