@@ -35,6 +35,8 @@ namespace Rocket.Tests
             Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IPermissionProvider>());
 
             Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IPluginManager>());
+            
+
         }
     }
 }

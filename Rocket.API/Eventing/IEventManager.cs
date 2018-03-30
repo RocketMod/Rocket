@@ -12,6 +12,6 @@ namespace Rocket.API.Eventing
 
         void UnregisterAllEvents(IPlugin plugin);
 
-        void RegisterAllEvvents(IPlugin plugin);
+        void RegisterAllEvents(IPlugin plugin);
     }
 }
