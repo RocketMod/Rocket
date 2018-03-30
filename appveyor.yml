@@ -1,0 +1,11 @@
+version: 1.0.{build}
+branches:
+  only:
+  - rework
+image: Visual Studio 2017
+nuget:
+  project_feed: true
+before_build:
+- cmd: nuget restore
+build:
+  verbosity: minimal
