@@ -19,6 +19,7 @@ namespace Rocket.Tests
         public TestPlugin(ILogger logger)
         {
             this.logger = logger;
+            logger.Info("Constructing TestPlugin (From plugin)");
         }
 
         public void Load()

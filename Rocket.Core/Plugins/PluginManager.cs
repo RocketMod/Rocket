@@ -35,6 +35,7 @@ namespace Rocket.Core.Plugins
         }
 
         IDependencyContainer container;
+        ILogger logger;
 
         public PluginManager(IDependencyContainer dependencyContainer,IEventManager eventManager, ILogger logger)
         {
@@ -69,8 +70,7 @@ namespace Rocket.Core.Plugins
                 try
                 {
                     Assembly pluginAssembly = Assembly.LoadFrom(pluginPath);
-
-                    List<Type> pluginTypes = new List<Type>();
+                    
                     Type[] types;
                     try
                     {
@@ -82,18 +82,31 @@ namespace Rocket.Core.Plugins
                     }
                     foreach (Type type in types.Where(t => t != null))
                     {
-                        if (type.GetInterface("IRocketPlugin") != null)
+                        if (typeof(IPlugin).IsAssignableFrom(type))
                         {
-                            pluginTypes.Add(type);
+                            IPlugin pluginInstance = (IPlugin)dependencyContainer.Activate(type);
+                            container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
                         }
-                        IPlugin pluginInstance = (IPlugin)dependencyContainer.Activate(type);
-                        container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
+                    }
+                    container.TryGetAll<IPlugin>(out IEnumerable<IPlugin> plugins);
+                    foreach (IPlugin plugin in plugins)
+                    {
+                        plugin.Load();
                     }
                 }
                 catch (Exception ex)
                 {
                     logger.Error($"Failed to load plugin assembly at {pluginPath}", ex);
                 }
+            }
+        }
+
+        ~PluginManager()
+        {
+            container.TryGetAll<IPlugin>(out IEnumerable<IPlugin> plugins);
+            foreach (IPlugin plugin in plugins)
+            {
+                plugin.Unload();
             }
         }
 

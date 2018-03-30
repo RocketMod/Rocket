@@ -292,7 +292,7 @@ namespace Rocket.Core.DependencyInjection
                 return true;
             }
 
-            output = null;
+            output = new List<T>();
             return false;
         }
 
@@ -306,7 +306,7 @@ namespace Rocket.Core.DependencyInjection
                 return true;
             }
 
-            output = null;
+            output = new List<T>();
             return false;
         }
 
@@ -320,7 +320,7 @@ namespace Rocket.Core.DependencyInjection
                 return true;
             }
 
-            output = null;
+            output = new List<object>();
             return false;
         }
 
@@ -334,7 +334,7 @@ namespace Rocket.Core.DependencyInjection
                 return true;
             }
 
-            output = null;
+            output = new List<object>();
             return false;
         }
 
