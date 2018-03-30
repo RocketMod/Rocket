@@ -45,7 +45,9 @@
     <Compile Include="System\Tuple.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Rocket.Compability.nuspec" />
+    <None Include="Rocket.Compability.nuspec">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
