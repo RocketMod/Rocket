@@ -38,7 +38,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Rocket.Runtime\Properties\CommonAssemblyInfo.cs">
+    <Compile Include="..\Rocket.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Assets\IAsset.cs" />
