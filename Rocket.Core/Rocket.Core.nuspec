@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package >
+  <metadata>
+    <id>Rocket.Core</id>
+    <version>$version$</version>
+    <authors>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;</authors>
+    <owners>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;</owners>
+    <licenseUrl>https://github.com/RocketMod/Rocket/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://rocketmod.net/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>Unity3D Game Server Mod</description>
+    <copyright>Sven Mawby&lt;fr34kyn01535@bam.yt&gt; ©</copyright>
+    <tags>Rocket Mod Unity3D</tags>
+  </metadata>
+  <files>
+    <file src="Rocket.Core.dll" target="lib/net35" />
+  </files>
+  <dependencies>
+  <dependency id="CommonServiceLocator" version="1.0" targetFramework="net35" />
+  <dependency id="Unity" version="2.1.505.2" targetFramework="net35" />
+  <dependency id="Rocket.API" version="$version$" targetFramework="net35" />
+</dependencies>
+</package>

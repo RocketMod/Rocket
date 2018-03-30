@@ -24,7 +24,7 @@ namespace Rocket.Core.DependencyInjection
             container.RegisterInstance<IDependencyResolver>(this);
         }
 
-        public UnityDependencyContainer(UnityDependencyContainer parent)
+        private UnityDependencyContainer(UnityDependencyContainer parent)
         {
             container = parent.container.CreateChildContainer();
             ServiceLocator = new UnityServiceLocator(container);
@@ -32,7 +32,14 @@ namespace Rocket.Core.DependencyInjection
             container.RegisterInstance<IDependencyResolver>(this);
         }
 
+
         #region IDependencyContainer Implementation
+        
+        public IDependencyContainer CreateChildContainer()
+        {
+            return new UnityDependencyContainer(this);
+        }
+
         public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
             container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager(), new InjectionMember[0]);
@@ -285,7 +292,7 @@ namespace Rocket.Core.DependencyInjection
                 return true;
             }
 
-            output = null;
+            output = new List<T>();
             return false;
         }
 
@@ -299,7 +306,7 @@ namespace Rocket.Core.DependencyInjection
                 return true;
             }
 
-            output = null;
+            output = new List<T>();
             return false;
         }
 
@@ -313,7 +320,7 @@ namespace Rocket.Core.DependencyInjection
                 return true;
             }
 
-            output = null;
+            output = new List<object>();
             return false;
         }
 
@@ -327,7 +334,7 @@ namespace Rocket.Core.DependencyInjection
                 return true;
             }
 
-            output = null;
+            output = new List<object>();
             return false;
         }
 
