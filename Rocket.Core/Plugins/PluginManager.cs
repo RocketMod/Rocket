@@ -40,7 +40,7 @@ namespace Rocket.Core.Plugins
         public PluginManager(IDependencyContainer dependencyContainer,IEventManager eventManager, ILogger logger)
         {
             container = dependencyContainer.CreateChildContainer();
-
+            this.logger = logger;
             Directory.CreateDirectory(pluginsDirectory);
             pluginAssemblies = getAssembliesFromDirectory(pluginsDirectory);
 
