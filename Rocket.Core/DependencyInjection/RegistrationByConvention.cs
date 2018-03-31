@@ -37,7 +37,7 @@ namespace Rocket.Core.DependencyInjection
             catch (ReflectionTypeLoadException)
             {
                 // failed to load ex.Types
-                return null;
+                return new List<Type>();
             }
             catch (Exception)
             {

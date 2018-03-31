@@ -106,7 +106,7 @@ namespace Rocket.Core.Plugins
             }
             foreach (Type type in types.Where(t => t != null))
             {
-                if (typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type))
+                if (typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
                 {
                     IPlugin pluginInstance = (IPlugin)parentContainer.Activate(type);
                     container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
