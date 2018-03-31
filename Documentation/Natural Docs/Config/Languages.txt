@@ -1,0 +1,350 @@
+﻿Format: 2.0
+
+# This is the main Natural Docs languages file.  If you change anything here,
+# it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
+# that you edit the version in your project configuration folder instead.
+# This will keep your changes separate so you won't have to reapply them
+# whenever you upgrade Natural Docs.
+
+
+# Languages
+# ------------------------------------------------------------------------
+# The syntax reference is after the definitions.
+
+Language: Text File
+
+   Extension: txt
+
+   Case Sensitive: No
+
+
+Language: Shebang Script
+
+   Extension: cgi
+
+
+Language: C/C++
+
+   Extensions: c cc cpp cxx c++ h hh hpp hxx h++
+
+   Simple Identifier: C
+   Aliases: C C++
+
+   Line Comment: //
+   Block Comment: /* */
+   Member Operator: ::
+   Enum Values: Under Parent
+   Case Sensitive: Yes
+
+   Class Prototype Enders: ; {
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
+Language: C#
+
+   Extension: cs
+
+   Simple Identifier: CSharp
+
+
+Language: Java
+
+   Extension: java
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Values: Under Type
+   Case Sensitive: Yes
+
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
+   Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+
+
+Language: JavaScript
+
+   Extension: js
+
+   Alias: JS
+
+   Line Comment: //
+   Block Comment: /* */
+   Enum Values: Under Type
+   Case Sensitive: Yes
+
+   Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+
+
+Language: Perl
+
+   Extensions: pl pm
+   Shebang String: perl
+
+   Line Comment: #
+   Case Sensitive: Yes
+
+   Function Prototype Ender: {
+   Variable Prototype Enders: ; =
+
+
+Language: Python
+
+   Extension: py
+   Shebang String: python
+
+   Line Comment: #
+   Line Extender: \
+   Case Sensitive: Yes
+
+   Class Prototype Ender: :
+   Function Prototype Ender: :
+   Variable Prototype Ender: =
+
+
+Language: PHP
+
+   Extensions: inc php php3 php4 phtml
+   Shebang String: php
+
+   Line Comment: // #
+   Block Comment: /* */
+   Case Sensitive: Yes
+
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
+Language: SQL
+
+   Extension: sql
+
+   Alias: PL/SQL
+
+   Line Comment: --
+   Block Comment: /* */
+   Enum Values: Global
+   Case Sensitive: No
+
+   Function Prototype Enders: , ; ) as As AS is Is IS
+   Variable Prototype Enders: , ; ) := default Default DEFAULT
+   Database Index Prototype Enders: , ; )
+   Database Trigger Prototype Enders: begin Begin BEGIN as As AS
+
+
+Language: Visual Basic
+
+   Extensions: vb vbs bas cls frm
+
+   Alias: VB
+
+   Line Comment: '
+   Line Extender: _
+   Enum Values: Under Type
+   Case Sensitive: No
+
+   Class Prototype Ender: \n
+   Interface Prototype Ender: \n
+   Function Prototype Ender: \n
+   Variable Prototype Enders: \n =
+
+
+Language: Pascal
+
+   Extension: pas
+
+   Line Comment: //
+   Block Comment: { } (* *)
+   Case Sensitive: No
+
+   Function Prototype Ender: ;
+   Variable Prototype Enders: ; =
+
+
+Language: Assembly
+
+   Extension: asm
+
+   Alias: ASM
+
+   Line Comment: ;
+   Line Extender: \
+   Case Sensitive: No
+
+   Variable Prototype Ender: \n
+
+
+Language: Ada
+
+   Extensions: ada ads adb
+
+   Line Comment: --
+   Case Sensitive: No
+
+   Function Prototype Enders: ; is Is IS
+   Variable Prototype Enders: ; :=
+
+
+Language: Tcl
+
+   Extensions: tcl exp
+   Shebang Strings: tclsh wish expect
+
+   Line Comment: #
+   Member Operator: ::
+   Line Extender: \
+   Case Sensitive: Yes
+
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; \n
+
+
+Language: Ruby
+
+   Extension: rb
+   Shebang String: ruby
+
+   Line Comment: #
+   Line Extender: \
+   Enum Values: Under Parent
+   Case Sensitive: Yes
+
+   Class Prototype Ender: \n
+   Function Prototype Enders: ; \n
+   Variable Prototype Enders: ; \n =
+
+
+Language: Makefile
+
+   Extensions: mk mak make
+
+   Line Comment: #
+
+
+Language: MSBuild
+
+   Extensions: csproj targets
+
+   Block Comment: <!-- -->
+
+
+Language: ActionScript
+
+   Extensions: as mxml
+
+   Alias: AS
+
+   Line Comment: //
+   Block Comment: /* */
+   Case Sensitive: Yes
+
+   Class Prototype Ender: {
+   Interface Prototype Ender: {
+   Function Prototype Enders: ; {
+   Variable Prototype Enders: ; =
+
+
+Language: ColdFusion
+
+   Extensions: cfm cfml cfc
+
+   Line Comment: //
+   Block Comment: <!--- ---> /* */
+
+   Function Prototype Enders: { <
+
+
+Language: R
+
+   Extension: r
+
+   Line Comment: #
+   Case Sensitive: Yes
+
+   Function Prototype Enders: { ;
+   Variable Prototype Enders: <- = ; \n
+
+
+Language: Fortran
+
+   Extensions: f90 f95 f03
+
+   Line Comment: !
+   Line Extender: &
+   Case Sensitive: No
+
+   Function Prototype Ender: \n
+   Variable Prototype Enders: \n = =>
+
+
+# These settings define the languages Natural Docs knows how to parse.  Note
+# that all lists are space separated so that commas can be used as values.
+#
+# Language: [name]
+#    Defines a new language.  Its name can use any characters.
+#
+#    The language Shebang Script is special.  It's entry is only used for
+#    extensions, and files with those extensions have their shebang (#!) lines
+#    read to determine the real language of the file.  Extensionless files are
+#    always treated this way.
+#
+#    The language Text File is also special.  It's treated as one big comment
+#    so you can put Natural Docs content in them without special symbols.
+#
+# Extensions: [extension] [extension] ...
+#    Defines the file extensions of the language's source files.
+#
+# Shebang Strings: [string] [string] ...
+#    Defines a list of strings that can appear in the shebang (#!) line to
+#    designate that it's part of the language.
+#
+# Simple Identifier: [name]
+#    The name of the language using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the language name
+#    minus any unacceptable characters.  This is used to generate things like
+#    CSS class names.
+#
+# Aliases: [alias] [alias] ...
+#    Defines alternate names for the language that can be used to start a code
+#    block.
+#
+#
+# Properties for Basic Language Support Only
+# ------------------------------------------------------------------------
+# If you're adding your own language to Natural Docs you must define these.
+#
+# Line Comments: [symbol] [symbol] ...
+#    Defines a space-separated list of symbols that are used for line comments,
+#    if any.
+#
+# Block Comments: [opening sym] [closing sym] [opening sym] [closing sym] ...
+#    Defines a space-separated list of symbol pairs that are used for block
+#    comments, if any.
+#
+# Member Operator: [symbol]
+#    Defines the default member operator symbol.  The default is a dot.
+#
+# Line Extender: [symbol]
+#    Defines the symbol that allows a prototype to span multiple lines if
+#    normally a line break would end it.
+#
+# Enum Values: [global|under type|under parent]
+#    Defines how enum values are referenced.  The default is under type.
+#    global       - Values are always global, referenced as 'value'.
+#    under type   - Values are under the enum type, referenced as
+#                   'class.enum.value'.
+#    under parent - Values are under the enum's parent, referenced as
+#                   'class.value'.
+#
+# Case Sensitive: [yes|no]
+#    Defines whether the language's identifiers are case sensitive.  The
+#    default is yes.
+#
+# [Comment Type] Prototype Enders: [symbol] [symbol] ...
+#    When defined, Natural Docs will attempt to get a prototype from the code
+#    immediately following the comment type.  It stops when it reaches one of
+#    these symbols.  Use \n for line breaks.

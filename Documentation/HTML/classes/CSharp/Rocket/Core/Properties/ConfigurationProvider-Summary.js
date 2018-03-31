@@ -1,0 +1,1 @@
+NDFramePage.OnPageTitleLoaded("CSharpClass:Rocket.Core.Properties.ConfigurationProvider","ConfigurationProvider");NDSummary.OnSummaryLoaded("CSharpClass:Rocket.Core.Properties.ConfigurationProvider",[["C#","CSharp"]],[["Classes","Class"]],[[2,0,0,"<span class=\"Qualifier\">Rocket.&#8203;Core.&#8203;Properties.</span>&#8203;ConfigurationProvider"]]);

@@ -1,0 +1,74 @@
+﻿Format: 2.0 (Development Release 04-06-2017)
+
+# This is a configuration file for a Natural Docs HTML output style.
+
+
+# Inheritance
+# ------------------------------------------------------------------------
+
+# You can inherit the settings of another style like this:
+#
+# Inherit: [style]
+#
+# All of its settings will be applied before yours.  You can add this line
+# multiple times to inherit more than one style.
+#
+# If you just want to make some changes to the default style, inherit Default.
+# If you're building your own page design from scratch but want to keep the
+# default JavaScript functions, inherit DefaultJS.  This will include the code
+# but not the CSS or images.
+
+
+# Linked Files
+# ------------------------------------------------------------------------
+
+Link: NDCore.js
+Frame Link: NDFramePage.js
+Frame Link: NDMenu.js
+Frame Link: NDSummary.js
+Frame Link: NDSearch.js
+Content Link: NDContentPage.js
+
+
+# You can link .css, .js, and .json files to the output like this:
+#
+# Link: [file]
+# Frame Link: [file]
+# Content Link: [file]
+#
+# These files will be added to the generated output via link or script tags.
+#
+# You can limit them to just to the frame page, which handles the header,
+# footer, menu, and summary, or to content pages, which is the documentation
+# in the rightmost panel.  If you do not specify a page type, they will be
+# linked to every page.
+#
+# All files will be copied to the output folder even if you don't link them,
+# but they will not be added to the pages automatically.
+
+
+# OnLoad
+# ------------------------------------------------------------------------
+
+OnLoad: NDCore.AddIEClassesToBody();
+
+Frame OnLoad: NDFramePage.Start();
+
+Content OnLoad: NDContentPage.Start();
+
+
+# You can add code to the page's OnLoad handler like this:
+#
+# OnLoad: [statement]
+# Frame OnLoad: [statement]
+# Content OnLoad: [statement]
+#
+# You can limit it to just to the frame page, which handles the header,
+# footer, menu, and summary, or to content pages, which is the documentation
+# in the rightmost panel.  If you do not specify a page type, it will be added
+# to every page.
+#
+# The OnLoad statement is limited to a single line.  If you have a lot of code
+# it's recommended that you make it a function in a separate .js file, link
+# that file, and then call the function from this statement rather than trying
+# to cram it all on this line.
