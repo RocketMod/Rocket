@@ -1,17 +1,22 @@
-﻿using Rocket.API.Plugin;
+﻿using System;
+using Rocket.API.Plugin;
 
 namespace Rocket.API.Eventing
 {
     public interface IEventManager
     {
-        void RegisterEvents(IEventListener listener, IPlugin plugin);
+        void Subscribe(IEventListener listener, IRegisterableObject @object);
 
-        void UnregisterEvents(IEventListener listener, IPlugin plugin);
+        void Unsubscribe(IEventListener listener, IRegisterableObject @object);
 
-        void TriggerEvent(Event @event);
+        void Subscribe<T>(IRegisterableObject @object, Action<T> callback);
 
-        void UnregisterAllEvents(IPlugin plugin);
+        void Subscribe(IRegisterableObject @object, string eventName, Action<Object> callback);
 
-        void RegisterAllEvents(IPlugin plugin);
+        void Emit(Event @event);
+
+        void UnsubcribeAllEvents(IRegisterableObject plugin);
+
+        void SubscribeAllEvents(IRegisterableObject plugin);
     }
 }

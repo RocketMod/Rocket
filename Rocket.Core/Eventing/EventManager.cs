@@ -14,7 +14,7 @@ namespace Rocket.Core.Eventing
             throw new NotImplementedException();
         }
 
-        public void RegisterEvents(IEventListener listener, IPlugin plugin)
+        public void SubscribeEvents(IEventListener listener, IPlugin plugin)
         {
             throw new NotImplementedException();
         }
@@ -29,7 +29,7 @@ namespace Rocket.Core.Eventing
             throw new NotImplementedException();
         }
 
-        public void UnregisterEvents(IEventListener listener, IPlugin plugin)
+        public void UnsubscribeEvents(IEventListener listener, IPlugin plugin)
         {
             throw new NotImplementedException();
         }

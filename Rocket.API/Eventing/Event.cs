@@ -2,9 +2,8 @@
 
 namespace Rocket.API.Eventing
 {
-    public class Event
+    public abstract class Event
     {
-        public IEventManager EventManager { get; }
         /// <summary>
         /// Name of the event
         /// </summary>

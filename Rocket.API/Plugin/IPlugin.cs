@@ -1,14 +1,17 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using Rocket.API.Eventing;
 
 namespace Rocket.API.Plugin
 {
     public enum PluginState { Loaded, Unloaded, Failure, Cancelled };
     
-    public interface IPlugin
+    public interface IPlugin : IRegisterableObject
     {
         IEnumerable<string> Capabilities { get; }
         string Name { get; }
         void Load();
+
         void Unload();
     }
 }

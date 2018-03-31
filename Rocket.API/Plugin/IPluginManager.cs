@@ -7,14 +7,16 @@ using System.Linq;
 using System.Text;
 
 namespace Rocket.API.Plugin
-{
-    public delegate void ExecutePluginDependendCodeAction(IPlugin plugin);
-
+{ 
     public interface IPluginManager : ICommandHandler
     {
         IPlugin GetPlugin(string name);
 
         bool PluginExists(string name);
+
+        bool LoadPlugin(string name);
+
+        bool UnloadPlugin(string name);
 
         /// <summary>
         /// Executes code that depends on another plugin being available.
@@ -31,6 +33,6 @@ namespace Rocket.API.Plugin
         /// <param name="pluginName">Name of the plugin to look for</param>
         /// <param name="action">Delegate method to be invoked</param>
         /// <returns>If true then plugin was found and delegate executed</returns>
-        bool ExecutePluginDependendCode(string pluginName, ExecutePluginDependendCodeAction action);
+        bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action);
     }
 }
