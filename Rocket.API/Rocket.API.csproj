@@ -50,6 +50,8 @@
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="Eventing\Event.cs" />
+    <Compile Include="Eventing\IEventEmitter.cs" />
+    <Compile Include="ILifecycleController.cs" />
     <Compile Include="Eventing\IEventListener.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslationProvider.cs" />
@@ -65,6 +67,9 @@
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Plugin\IPluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Scheduler\ITaskManager.cs" />
+    <Compile Include="Scheduler\ITaskScheduler.cs" />
+    <Compile Include="Scheduler\Task.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Rocket.API.nuspec">
