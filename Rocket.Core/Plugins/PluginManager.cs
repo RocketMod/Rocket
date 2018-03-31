@@ -68,7 +68,7 @@ namespace Rocket.Core.Plugins
                 return null;
             };
 
-            foreach(Assembly assembly in  AppDomain.CurrentDomain.GetAssemblies())
+            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 loadPluginFromAssembly(assembly);
             }
@@ -84,6 +84,12 @@ namespace Rocket.Core.Plugins
                 {
                     logger.Error($"Failed to load plugin assembly at {pluginPath}", ex);
                 }
+            }
+
+            container.TryGetAll<IPlugin>(out IEnumerable<IPlugin> plugins);
+            foreach (IPlugin plugin in plugins)
+            {
+                plugin.Load();
             }
         }
 
@@ -105,11 +111,6 @@ namespace Rocket.Core.Plugins
                     IPlugin pluginInstance = (IPlugin)parentContainer.Activate(type);
                     container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
                 }
-            }
-            container.TryGetAll<IPlugin>(out IEnumerable<IPlugin> plugins);
-            foreach (IPlugin plugin in plugins)
-            {
-                plugin.Load();
             }
         }
 
