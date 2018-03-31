@@ -138,7 +138,17 @@ namespace Rocket.Core.Plugins
             return container.IsRegistered<IPlugin>(name);
         }
 
-        public bool ExecutePluginDependendCode(string pluginName, ExecutePluginDependendCodeAction action)
+        public bool LoadPlugin(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UnloadPlugin(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
         {
             if (PluginExists(pluginName))
             {

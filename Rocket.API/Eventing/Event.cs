@@ -2,20 +2,23 @@
 
 namespace Rocket.API.Eventing
 {
-    public abstract class Event
+    public abstract class Event : IEvent
     {
+        /// <summary>
+        /// The event sender.
+        /// </summary>
         public IEventEmitter Sender { get; internal set; }
 
         /// <summary>
         /// Name of the event
         /// </summary>
-        public virtual string Name { get; }
+        public string Name { get; }
 
         /// <summary>
         /// True if the event should be fired async
         /// Notice: Some APIs do not work correctly async 
         /// </summary>
-        public virtual bool IsAsync { get; }
+        public bool IsAsync { get; }
 
         /// <param name="name">The name of the event. Will be auto set if null</param>
         protected Event(string name = null) : this(false, name) { }

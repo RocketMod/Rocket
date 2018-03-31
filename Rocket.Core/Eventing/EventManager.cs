@@ -4,32 +4,43 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Rocket.API;
 
 namespace Rocket.Core.Eventing
 {
     public class EventManager : IEventManager
     {
-        public void RegisterAllEvents(IPlugin plugin)
+        public void Subscribe(ILifecycleController @object, IEventListener listener)
         {
             throw new NotImplementedException();
         }
 
-        public void SubscribeEvents(IEventListener listener, IPlugin plugin)
+        public void Unsubscribe(ILifecycleController @object, IEventListener listener)
         {
             throw new NotImplementedException();
         }
 
-        public void TriggerEvent(Event @event)
+        public void Subscribe<T>(ILifecycleController @object, Action<T> callback)
         {
             throw new NotImplementedException();
         }
 
-        public void UnregisterAllEvents(IPlugin plugin)
+        public void Subscribe(ILifecycleController @object, string eventName, Action<object> callback)
         {
             throw new NotImplementedException();
         }
 
-        public void UnsubscribeEvents(IEventListener listener, IPlugin plugin)
+        public void Emit(IEventEmitter emitter, Event @event)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UnsubcribeAllEvents(ILifecycleController @object)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SubscribeAllEvents(ILifecycleController @object)
         {
             throw new NotImplementedException();
         }
