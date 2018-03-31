@@ -34,21 +34,21 @@ namespace Rocket.Tests
         [TestMethod]
         public void ImplementationAvailable()
         {
-            Assert.IsNotNull(runtime.Container.GetInstance<IImplementation>());
+            Assert.IsNotNull(runtime.Container.Get<IImplementation>());
         }
 
         [TestMethod]
         public void CoreDependenciesAvailable()
         {
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IConfigurationProvider>());
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<ITranslationProvider>());
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IPermissionProvider>());
+            Assert.IsNotNull(runtime.Container.Get<IConfigurationProvider>());
+            Assert.IsNotNull(runtime.Container.Get<ITranslationProvider>());
+            Assert.IsNotNull(runtime.Container.Get<IPermissionProvider>());
         }
 
         [TestMethod]
         public void PluginImplementation()
         {
-            IPluginManager pluginManager = Runtime.ServiceLocator.GetInstance<IPluginManager>();
+            IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
             TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
             Assert.IsTrue(plugin.Loaded); 
         }

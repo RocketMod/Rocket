@@ -18,6 +18,11 @@ namespace Rocket.Tests
 
         public string InstanceId => "Test Instance";
 
+        public void Load(IRuntime runtime)
+        {
+            logger.Info("Loading implementation");
+        }
+
         public void Reload()
         {
             logger.Info("Reloading implementation");

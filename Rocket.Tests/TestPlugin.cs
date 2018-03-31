@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 
@@ -18,7 +17,9 @@ namespace Rocket.Tests
 
         public IEventEmitter Sender { get; }
         public string Name => "Test Plugin";
-        public IServiceLocator Container => Runtime.ServiceLocator;
+
+        public IDependencyContainer Container;
+
         public bool IsAsync { get; }
 
         public State State { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
@@ -43,7 +44,5 @@ namespace Rocket.Tests
         {
             logger.Info("Bye World (From plugin)");
         }
-
-        public State State { get; set; }
     }
 }

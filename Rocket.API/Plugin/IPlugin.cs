@@ -10,7 +10,6 @@ namespace Rocket.API.Plugin
         IEnumerable<string> Capabilities { get; }
 
         string Name { get; }
-        IServiceLocator Container { get; }
 
         void Load();
 
