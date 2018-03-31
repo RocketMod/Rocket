@@ -1,7 +1,7 @@
 ﻿using System;
 using Rocket.API.Logging;
 
-namespace Rocket.Core
+namespace Rocket.Core.Logging
 {
     public class ConsoleLogger : ILogger
     {
