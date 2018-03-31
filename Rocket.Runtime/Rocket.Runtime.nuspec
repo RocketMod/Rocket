@@ -19,5 +19,6 @@
   </metadata>
   <files>
     <file src="Rocket.Runtime.dll" target="lib/net35" />
+    <file src="Rocket.Runtime.xml" target="lib/net35" />
   </files>
 </package>
