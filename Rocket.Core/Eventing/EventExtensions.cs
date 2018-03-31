@@ -8,7 +8,7 @@ namespace Rocket.Core.Eventing
         /// <summary>
         /// Shortcut for <see cref="IEventManager"/>.TriggerEvent
         /// </summary>
-        public static void Fire(this Event @this, IPlugin plugin)
+        public static void Fire(this IEvent @this, IPlugin plugin)
         {
             plugin.Container.GetInstance<IEventManager>().Emit(plugin, @this);
         }

@@ -30,7 +30,7 @@ namespace Rocket.Core.Eventing
             throw new NotImplementedException();
         }
 
-        public void Emit(IEventEmitter emitter, Event @event)
+        public void Emit(IEventEmitter emitter, IEvent @event)
         {
             throw new NotImplementedException();
         }
