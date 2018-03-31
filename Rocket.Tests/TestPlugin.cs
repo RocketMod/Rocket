@@ -1,4 +1,5 @@
-﻿using Rocket.API.Logging;
+﻿using Rocket.API;
+using Rocket.API.Logging;
 using Rocket.API.Plugin;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,8 @@ namespace Rocket.Tests
         public IEnumerable<string> Capabilities => new List<string>() { "TESTING" };
 
         public string Name => "Test Plugin";
+
+        public State State { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         ILogger logger;
 

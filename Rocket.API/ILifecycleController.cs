@@ -4,6 +4,6 @@
 
     public interface ILifecycleController
     {
-        State State { get; set; }
+        State State { get; }
     }
 }

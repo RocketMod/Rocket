@@ -14,12 +14,9 @@ namespace Rocket.Core.DependencyInjection
     {
         internal readonly IUnityContainer container;
 
-        public IServiceLocator ServiceLocator { get; private set; }
-
         public UnityDependencyContainer()
         {
             container = new UnityContainer();
-            ServiceLocator = new UnityServiceLocator(container);
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
         }
@@ -27,7 +24,6 @@ namespace Rocket.Core.DependencyInjection
         private UnityDependencyContainer(UnityDependencyContainer parent)
         {
             container = parent.container.CreateChildContainer();
-            ServiceLocator = new UnityServiceLocator(container);
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
         }
