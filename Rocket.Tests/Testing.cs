@@ -45,11 +45,22 @@ namespace Rocket.Tests
             Assert.IsNotNull(runtime.Container.Get<IPermissionProvider>());
         }
 
+
         [TestMethod]
         public void PluginImplementation()
         {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
             TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
+        }
+
+        [TestMethod]
+        [Ignore]
+        public async Task PluginEventing()
+        {
+            IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
+            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
+            bool eventingWorks = await plugin.TestEventing();
+            Assert.IsTrue(eventingWorks);
         }
     }
 }

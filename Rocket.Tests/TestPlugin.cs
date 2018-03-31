@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.Core.Plugins;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Tests
 {
@@ -23,6 +24,21 @@ namespace Rocket.Tests
             Logger.Info("Constructing TestPlugin (From plugin)");
 
         }
+
+        public Task<bool> TestEventing()
+        {
+            var promise = new TaskCompletionSource<bool>();
+
+            Subscribe("TestEvent", (IEventArguments arguments) =>
+            {
+                promise.SetResult((bool)arguments.Values[0]);
+            });
+
+            Emit("TestEvent", new EventArguments(true));
+
+            return promise.Task;
+        }
+
 
         public override void Load()
         {

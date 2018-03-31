@@ -8,10 +8,10 @@ namespace Rocket.Core.Eventing
 {
     public class EventArguments : IEventArguments
     {
-        public object[] Arguments { get; private set; }
+        public object[] Values { get; private set; }
         public EventArguments(params object[] arguments)
         {
-            Arguments = arguments;
+            Values = arguments;
         }
     }
 }

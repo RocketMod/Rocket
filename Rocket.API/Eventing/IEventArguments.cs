@@ -2,6 +2,6 @@
 {
     public interface IEventArguments
     {
-        object[] Arguments { get; }
+        object[] Values { get; }
     }
 }
