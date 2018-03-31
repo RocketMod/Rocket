@@ -13,7 +13,7 @@ namespace Rocket.API.Eventing
 
         void Subscribe(ILifecycleController @object, string eventName, Action<Object> callback);
 
-        void Emit(IEventEmitter emitter, Event @event);
+        void Emit(IEventEmitter emitter, IEvent @event);
 
         void UnsubcribeAllEvents(ILifecycleController @object);
 

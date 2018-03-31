@@ -49,7 +49,7 @@
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="DependencyInjection\UnityInstanceNotResolvedException.cs" />
     <Compile Include="Eventing\EventManager.cs" />
-    <Compile Include="Extensibility\EventExtensions.cs" />
+    <Compile Include="Eventing\EventExtensions.cs" />
     <Compile Include="DependencyInjection\RegistrationByConvention.cs" />
     <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />
     <Compile Include="DependencyInjection\OrderedParametersOverride.cs" />
