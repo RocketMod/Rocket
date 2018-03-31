@@ -1,6 +1,6 @@
 ﻿namespace Rocket.API
 {
-    public interface IRegisterableObject 
+    public interface ILifecycleController 
     {
         
     }

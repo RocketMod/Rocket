@@ -5,18 +5,18 @@ namespace Rocket.API.Eventing
 {
     public interface IEventManager
     {
-        void Subscribe(IEventListener listener, IRegisterableObject @object);
+        void Subscribe(ILifecycleController @object, IEventListener listener);
 
-        void Unsubscribe(IEventListener listener, IRegisterableObject @object);
+        void Unsubscribe(ILifecycleController @object, IEventListener listener);
 
-        void Subscribe<T>(IRegisterableObject @object, Action<T> callback);
+        void Subscribe<T>(ILifecycleController @object, Action<T> callback);
 
-        void Subscribe(IRegisterableObject @object, string eventName, Action<Object> callback);
+        void Subscribe(ILifecycleController @object, string eventName, Action<Object> callback);
 
-        void Emit(Event @event);
+        void Emit(IEventEmitter emitter, Event @event);
 
-        void UnsubcribeAllEvents(IRegisterableObject plugin);
+        void UnsubcribeAllEvents(ILifecycleController @object);
 
-        void SubscribeAllEvents(IRegisterableObject plugin);
+        void SubscribeAllEvents(ILifecycleController @object);
     }
 }

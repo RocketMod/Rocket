@@ -4,7 +4,7 @@ namespace Rocket.API.Scheduler
 {
     public class Task
     {
-        public IRegisterableObject Owner { get; }
+        public ILifecycleController Owner { get; }
 
         public Action Action { get; }
 
@@ -15,7 +15,5 @@ namespace Rocket.API.Scheduler
         public bool IsRunning { get; }
 
         public bool IsContinuous { get; }
-
-        public void Cancel();
     }
 }

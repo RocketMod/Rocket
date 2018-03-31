@@ -6,7 +6,7 @@ namespace Rocket.API.Plugin
 {
     public enum PluginState { Loaded, Unloaded, Failure, Cancelled };
     
-    public interface IPlugin : IRegisterableObject
+    public interface IPlugin : ILifecycleController
     {
         IEnumerable<string> Capabilities { get; }
         string Name { get; }

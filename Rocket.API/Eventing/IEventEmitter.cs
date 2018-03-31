@@ -1,6 +1,6 @@
 ﻿namespace Rocket.API.Eventing
 {
-    public interface IEventEmitter
+    public interface IEventEmitter : IEvent
     {
         
     }
