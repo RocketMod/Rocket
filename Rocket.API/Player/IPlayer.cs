@@ -6,6 +6,6 @@ namespace Rocket.API.Player
     {
         string UniqueID { get; }
         string DisplayName { get; }
-        string IsAdmin { get; }
+        bool IsAdmin { get; }
     }
 }

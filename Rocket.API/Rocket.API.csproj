@@ -45,6 +45,7 @@
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandContext.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\IEventListener.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Permissions\IPermissionProvider.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Player\IPlayer.cs" />
+    <Compile Include="Player\IPlayerManager.cs" />
     <Compile Include="Plugin\IPlugin.cs" />
     <Compile Include="Plugin\IPluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
