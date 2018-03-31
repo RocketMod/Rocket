@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API;
 using Rocket.API.Logging;
@@ -17,6 +18,11 @@ namespace Rocket.Tests
         public IEnumerable<string> Capabilities => new List<string>() { "TESTING" };
 
         public string InstanceId => "Test Instance";
+
+        public void Load(IRuntime runtime)
+        {
+            logger.Info("Loading implementation");
+        }
 
         public void Reload()
         {

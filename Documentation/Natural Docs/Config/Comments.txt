@@ -1,0 +1,443 @@
+﻿Format: 2.0
+
+# This is the main Natural Docs comments file.  If you change anything here,
+# it will apply to EVERY PROJECT you use Natural Docs on.  It's recommended
+# that you edit the version in your project configuration folder instead.
+# This will keep your changes separate so you won't have to reapply them
+# whenever you upgrade Natural Docs.
+
+
+# Comment Types
+# ------------------------------------------------------------------------
+# The syntax reference is after the definitions.
+
+Comment Type: Class
+
+   Display Name from Locale: Comments.txt.Class.DisplayName
+   Plural Display Name from Locale: Comments.txt.Class.PluralDisplayName
+
+   Scope: Start
+   Flags: Code, Variable Type, Class Hierarchy
+
+   Keywords:
+      class, classes
+      package, packages
+      namespace, namespaces
+
+
+Comment Type: Interface
+
+   Display Name from Locale: Comments.txt.Interface.DisplayName
+   Plural Display Name from Locale: Comments.txt.Interface.PluralDisplayName
+
+   Scope: Start
+   Flags: Code, Variable Type, Class Hierarchy
+
+   Keywords:
+      interface, interfaces
+
+
+Comment Type: Struct
+
+   Display Name from Locale: Comments.txt.Struct.DisplayName
+   Plural Display Name from Locale: Comments.txt.Struct.PluralDisplayName
+
+   Scope: Start
+   Flags: Code, Variable Type, Class Hierarchy
+
+   Keywords:
+      struct, structs
+      structure, structures
+
+
+Comment Type: Section
+
+   Display Name from Locale: Comments.txt.Section.DisplayName
+   Plural Display Name from Locale: Comments.txt.Section.PluralDisplayName
+
+   Scope: End
+   Flags: Documentation
+
+   Keywords:
+      section
+      title
+
+
+Comment Type: Group
+
+   Display Name from Locale: Comments.txt.Group.DisplayName
+   Plural Display Name from Locale: Comments.txt.Group.PluralDisplayName
+
+   Flags: Documentation
+
+   Keywords:
+      group
+
+
+Comment Type: Information
+
+   Display Name from Locale: Comments.txt.Information.DisplayName
+   Plural Display Name from Locale: Comments.txt.Information.PluralDisplayName
+
+   Flags: Documentation
+
+   Keywords:
+      topic, topics
+      about, list
+
+
+Comment Type: File
+
+   Display Name from Locale: Comments.txt.File.DisplayName
+   Plural Display Name from Locale: Comments.txt.File.PluralDisplayName
+
+   Scope: Always Global
+   Flags: File
+
+   Keywords:
+      file, files
+      program, programs
+      script, scripts
+      document, documents
+      doc, docs
+      header, headers
+
+
+Comment Type: Type
+
+   Display Name from Locale: Comments.txt.Type.DisplayName
+   Plural Display Name from Locale: Comments.txt.Type.PluralDisplayName
+
+   Flags: Code, Variable Type
+
+   Keywords:
+      type, types
+      typedef, typedefs
+
+
+Comment Type: Enumeration
+
+   Display Name from Locale: Comments.txt.Enumeration.DisplayName
+   Plural Display Name from Locale: Comments.txt.Enumeration.PluralDisplayName
+
+   Flags: Code, Variable Type, Enum
+
+   Keywords:
+      enum, enums
+      enumeration, enumerations
+
+
+Comment Type: Delegate
+
+   Display Name from Locale: Comments.txt.Delegate.DisplayName
+   Plural Display Name from Locale: Comments.txt.Delegate.PluralDisplayName
+
+   Flags: Code, Variable Type
+
+   Keywords:
+      delegate, delegates
+
+
+Comment Type: Function
+
+   Display Name from Locale: Comments.txt.Function.DisplayName
+   Plural Display Name from Locale: Comments.txt.Function.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      function, functions
+      func, funcs
+      procedure, procedures
+      proc, procs
+      routine, routines
+      subroutine, subroutines
+      sub, subs
+      method, methods
+      callback, callbacks
+      constructor, constructors
+      destructor, destructors
+
+
+Comment Type: Operator
+
+   Display Name from Locale: Comments.txt.Operator.DisplayName
+   Plural Display Name from Locale: Comments.txt.Operator.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      operator, operators
+
+
+Comment Type: Macro
+
+   Display Name from Locale: Comments.txt.Macro.DisplayName
+   Plural Display Name from Locale: Comments.txt.Macro.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      define, defines
+      def, defs
+      macro, macros
+
+
+Comment Type: Property
+
+   Display Name from Locale: Comments.txt.Property.DisplayName
+   Plural Display Name from Locale: Comments.txt.Property.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      property, properties
+      prop, props
+
+
+Comment Type: Event
+
+   Display Name from Locale: Comments.txt.Event.DisplayName
+   Plural Display Name from Locale: Comments.txt.Event.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      event, events
+
+
+Comment Type: Constant
+
+   Display Name from Locale: Comments.txt.Constant.DisplayName
+   Plural Display Name from Locale: Comments.txt.Constant.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      constant, constants
+      const, consts
+
+
+Comment Type: Variable
+
+   Display Name from Locale: Comments.txt.Variable.DisplayName
+   Plural Display Name from Locale: Comments.txt.Variable.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      variable, variables
+      var, vars
+      integer, integers
+      int, ints
+      uint, uints
+      long, longs
+      ulong, ulongs
+      short, shorts
+      ushort, ushorts
+      byte, bytes
+      ubyte, ubytes
+      sbyte, sbytes
+      float, floats
+      double, doubles
+      real, reals
+      decimal, decimals
+      scalar, scalars
+      array, arrays
+      arrayref, arrayrefs
+      hash, hashes
+      hashref, hashrefs
+      table, tables
+      bool, bools
+      boolean, booleans
+      flag, flags
+      bit, bits
+      bitd, bitfields
+      field, fields
+      pointer, pointers
+      ptr, ptrs
+      reference, references
+      ref, refs
+      object, objects
+      obj, objs
+      character, characters
+      wcharacter, wcharacters
+      char, chars
+      wchar, wchars
+      string, strings
+      wstring, wstrings
+      str, strs
+      wstr, wstrs
+      handle, handles
+
+
+Comment Type: Database
+
+   Display Name from Locale: Comments.txt.Database.DisplayName
+   Plural Display Name from Locale: Comments.txt.Database.PluralDisplayName
+
+   Scope: Start
+   Flags: Code, Database Hierarchy
+
+   Keywords:
+      database, databases
+      db, dbs
+
+
+Comment Type: Database Table
+
+   Display Name from Locale: Comments.txt.DatabaseTable.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseTable.PluralDisplayName
+
+   Scope: Start
+   Flags: Code, Database Hierarchy
+
+   Keywords:
+      database table, database tables
+      databasetable, databasetables
+      db table, db tables
+      dbtable, dbtables
+
+
+Comment Type: Database Field
+
+   Display Name from Locale: Comments.txt.DatabaseField.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseField.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      database field, database fields
+      databasefield, databasefields
+      db field, db fields
+      dbfield, dbfields
+      database column, database columns
+      databasecolumn, databasecolumns
+      db column, db columns
+      dbcolumn, dbcolumns
+
+
+Comment Type: Database View
+
+   Display Name from Locale: Comments.txt.DatabaseView.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseView.PluralDisplayName
+
+   Scope: Start
+   Flags: Code, Database Hierarchy
+
+   Keywords:
+      database view, database views
+      databaseview, databaseviews
+      db view, db views
+      dbview, dbviews
+
+
+Comment Type: Database Index
+
+   Display Name from Locale: Comments.txt.DatabaseIndex.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseIndex.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      database index, database indexes
+      database index, database indices
+      databaseindex, databaseindexes
+      databaseindex, databaseindices
+      db index, db indexes
+      db index, db indices
+      dbindex, dbindexes
+      dbindex, dbindices
+      database key, database keys
+      databasekey, databasekeys
+      db key, db keys
+      dbkey, dbkeys
+      database primary key, database primary keys
+      databaseprimarykey, databaseprimarykeys
+      db primary key, db primary keys
+      dbprimarykey, dbprimarykeys
+
+
+Comment Type: Database Cursor
+
+   Display Name from Locale: Comments.txt.DatabaseCursor.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseCursor.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      database cursor, database cursors
+      databasecursor, databasecursors
+      db cursor, db cursors
+      dbcursor, dbcursors
+
+
+Comment Type: Database Trigger
+
+   Display Name from Locale: Comments.txt.DatabaseTrigger.DisplayName
+   Plural Display Name from Locale: Comments.txt.DatabaseTrigger.PluralDisplayName
+
+   Flags: Code
+
+   Keywords:
+      database trigger, database triggers
+      databasetrigger, databasetriggers
+      db trigger, db triggers
+      dbtrigger, dbtriggers
+
+
+# Each Natural Docs comment has a corresponding type which determine its
+# behavior.  This is how you define them.
+#
+# Comment Type: [name]
+#    Creates a new comment type.
+#
+# Display Name: [name]
+# Plural Display Name: [name]
+#    The singular and plural name of the comment type as it should appear in
+#    the output.  Defaults to the comment type name.
+#
+# Display Name from Locale: [identifier]
+# Plural Display Name from Locale: [identifier]
+#    The identifiers in the current translation file that define the singular
+#    and plural names of the comment type as it should appear in the output.
+#    If you want to change the name of a comment type in the output, you
+#    should remove these properties and use the versions without "from Locale"
+#    instead.
+#
+# Simple Identifier: [name]
+#    The name of the comment type using only the letters A to Z.  No spaces,
+#    numbers, symbols, or Unicode allowed.  Defaults to the comment type name
+#    minus any unacceptable characters.  This is used to generate things like
+#    CSS class names.
+#
+# Scope: [normal|start|end|always global]
+#    How the comment affects scope.  Defaults to normal.
+#    normal        - The comment stays within the current scope.
+#    start         - The comment starts a new scope for all the comments
+#                    beneath it, like class comments.
+#    end           - The comment resets the scope back to global for all the
+#                    comments beneath it, like section comments.
+#    always global - The comment is defined as a global symbol, but does not
+#                    change the scope for any other comments.
+#
+# Flags: [flag], [flag], ...
+#    A combination of settings that apply to the comment type.
+#    Code, File, or Documentation
+#        Whether it's used to describe a code element, a file, or is a
+#        standalone documentation comment.  Defaults to Code.
+#    Variable Type
+#        Whether it describes a code element that can be used as a variable's
+#        type.
+#    Class Hierarchy or Database Hierarchy
+#        Whether it describes a code element that should be included in the
+#        class or database hierarchy.  Requires Scope: Start.
+#    Enum
+#        Whether it describes an enum.
+#
+# Keywords:
+#    [keyword]
+#    [keyword], [plural keyword]
+#    ...
+#    A list of the comment type's keywords.  Each line after the heading is
+#    the keyword and optionally its plural form for list comments.

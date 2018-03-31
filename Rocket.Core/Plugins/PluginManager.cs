@@ -34,11 +34,14 @@ namespace Rocket.Core.Plugins
             return l;
         }
 
+        IDependencyContainer parentContainer;
         IDependencyContainer container;
         ILogger logger;
 
         public PluginManager(IDependencyContainer dependencyContainer,IEventManager eventManager, ILogger logger)
         {
+            this.parentContainer = dependencyContainer;
+            this.logger = logger;
             container = dependencyContainer.CreateChildContainer();
 
             Directory.CreateDirectory(pluginsDirectory);
@@ -65,38 +68,48 @@ namespace Rocket.Core.Plugins
                 return null;
             };
 
+            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                loadPluginFromAssembly(assembly);
+            }
+
             foreach (string pluginPath in pluginAssemblies.Values)
             {
                 try
                 {
                     Assembly pluginAssembly = Assembly.LoadFrom(pluginPath);
-                    
-                    Type[] types;
-                    try
-                    {
-                        types = pluginAssembly.GetTypes();
-                    }
-                    catch (ReflectionTypeLoadException e)
-                    {
-                        types = e.Types;
-                    }
-                    foreach (Type type in types.Where(t => t != null))
-                    {
-                        if (typeof(IPlugin).IsAssignableFrom(type))
-                        {
-                            IPlugin pluginInstance = (IPlugin)dependencyContainer.Activate(type);
-                            container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
-                        }
-                    }
-                    container.TryGetAll<IPlugin>(out IEnumerable<IPlugin> plugins);
-                    foreach (IPlugin plugin in plugins)
-                    {
-                        plugin.Load();
-                    }
+                    loadPluginFromAssembly(pluginAssembly);
                 }
                 catch (Exception ex)
                 {
                     logger.Error($"Failed to load plugin assembly at {pluginPath}", ex);
+                }
+            }
+
+            container.TryGetAll<IPlugin>(out IEnumerable<IPlugin> plugins);
+            foreach (IPlugin plugin in plugins)
+            {
+                plugin.Load();
+            }
+        }
+
+        private void loadPluginFromAssembly(Assembly pluginAssembly)
+        {
+            Type[] types;
+            try
+            {
+                types = pluginAssembly.GetTypes();
+            }
+            catch (ReflectionTypeLoadException e)
+            {
+                types = e.Types;
+            }
+            foreach (Type type in types.Where(t => t != null))
+            {
+                if (typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
+                {
+                    IPlugin pluginInstance = (IPlugin)parentContainer.Activate(type);
+                    container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
                 }
             }
         }
@@ -120,17 +133,22 @@ namespace Rocket.Core.Plugins
             return container.Get<IPlugin>(name);
         }
 
-        public IPlugin GetPlugin<IPlugin>()
-        {
-            return container.Get<IPlugin>();
-        }
-
         public bool PluginExists(string name)
         {
             return container.IsRegistered<IPlugin>(name);
         }
 
-        public bool ExecutePluginDependendCode(string pluginName, ExecutePluginDependendCodeAction action)
+        public bool LoadPlugin(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool UnloadPlugin(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
         {
             if (PluginExists(pluginName))
             {

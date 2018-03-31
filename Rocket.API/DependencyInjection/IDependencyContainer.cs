@@ -3,7 +3,7 @@
     public interface IDependencyContainer : IDependencyResolver
     {
         IDependencyContainer CreateChildContainer();
-        IServiceLocator ServiceLocator { get; }
+
         void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface;
 
         void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface;

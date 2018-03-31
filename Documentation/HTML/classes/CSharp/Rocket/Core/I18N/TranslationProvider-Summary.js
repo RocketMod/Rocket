@@ -1,0 +1,1 @@
+NDFramePage.OnPageTitleLoaded("CSharpClass:Rocket.Core.I18N.TranslationProvider","TranslationProvider");NDSummary.OnSummaryLoaded("CSharpClass:Rocket.Core.I18N.TranslationProvider",[["C#","CSharp"]],[["Classes","Class"]],[[66,0,0,"<span class=\"Qualifier\">Rocket.&#8203;Core.&#8203;I18N.</span>&#8203;TranslationProvider"]]);

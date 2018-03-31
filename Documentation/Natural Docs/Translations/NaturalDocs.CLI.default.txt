@@ -1,0 +1,249 @@
+﻿#
+# Natural Docs Default Language File, English (United States)
+#
+# To create a new language file, copy this one and rename it to replace
+# "default" with the locale code in all lowercase, such as 
+# "NaturalDocs.CLI.en-us.txt".  You can also omit the extension to have it apply
+# to all locales in that language, such as "NaturalDocs.CLI.en.txt".  They
+# inherit from each other, so anything not found in NaturalDocs.CLI.en-us.txt
+# will be taken from NaturalDocs.CLI.en.txt, and if it's not in there, from 
+# NaturalDocs.CLI.default.txt.
+#
+
+# This file is part of Natural Docs, which is Copyright © 2003-2017 Code Clear LLC.
+# Natural Docs is licensed under version 3 of the GNU Affero General Public License (AGPL)
+# Refer to License.txt for the complete details
+
+
+
+#
+# Status Messages
+#______________________________________________________________________________
+
+
+Status.Start(version).multiline {{{
+Natural Docs {0}
+----------------------
+}}}
+Status.Start(version,subversion).multiline {{{
+Natural Docs {0}
+{1}
+----------------------
+}}}
+Status.End.multiline {{{
+Done.
+----------------------
+}}}
+
+Status.StartFileSearch: Searching for files...
+Status.FileSearchUpdate(files, folders): ...{0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder} so far
+Status.EndFileSearch(files, folders): Found {0:#,0} source {0s?files:file} in {1:#,0} {1s?folders:folder}.
+
+Status.RebuildEverythingByRequest: All documentation will be rebuilt.  Parsing files...
+Status.RebuildEverythingAutomatically: All documentation needs to be rebuilt.  Parsing files...
+Status.StartFileParsing(changed): {0:#,0} {0s?files:file} changed.  Parsing...
+Status.StartFileParsing(changed, deleted): {0:#,0} {0s?files:file} changed, {1:#,0} deleted.  Parsing...
+Status.StartFileParsing(deleted): {0:#,0} {0s?files:file} deleted.  Updating...
+Status.FileParsingUpdate(percent): ...{0}% complete
+Status.NoChanges: No changes detected.
+
+Status.StartLinkResolving: Resolving links...
+Status.LinkResolvingUpdate(percent): ...{0}% complete
+
+Status.StartOutputBuilding: Building documentation...
+Status.OutputBuildingUpdate(percent): ...{0}% complete
+
+Status.LongStartupOperation.StartPurgingOutputWorkingData: Deleting old working data...
+Status.LongStartupOperation.StartPurgingOutputFiles: Deleting old documentation...
+Status.CreatingProjectConfigFiles: Creating project configuration files...
+
+Status.BenchmarksSavedIn(file): Benchmarks saved in {0}.
+Status.CouldNotSaveBenchmarksIn(file): Could not save benchmarks in {0}.
+
+Status.PressAnyKeyToContinue: Press any key to continue...
+
+
+#
+# Command Line
+#______________________________________________________________________________
+
+
+CommandLine.ErrorsInFile(file): There are errors in {0}:
+CommandLine.Line: Line
+
+CommandLine.ExpectedNoValue(param): {0} cannot be followed by a value.
+CommandLine.ExpectedNumber(param): {0} must be in the form "{0} [number]".
+CommandLine.ExpectedFolder(param): {0} must be in the form "{0} [folder]".
+CommandLine.ExpectedFormatAndFolder(param): {0} must be in the form "{0} [format] [folder]".
+CommandLine.ExpectedPattern(param): {0} must be in the form "{0} [pattern]".
+CommandLine.ExpectedStyleName(param): {0} must be in the form "{0} [style name]".
+CommandLine.UnrecognizedParameter(param): {0} is not a valid parameter.
+CommandLine.UnrecognizedOutputFormat(format): {0} is not a valid output format.
+CommandLine.OnlyOneProjectConfigFolder: You may only specify one project configuration folder.
+CommandLine.OnlyOneWorkingDataFolder: You man only specify one working data folder.
+CommandLine.NoProjectConfigFolder: You must define a project configuration folder.
+CommandLine.InvalidTabWidth: The tab width must be a number greater than zero.
+CommandLine.InvalidWorkerThreadCount: The worker thread count must be a number greater than zero.
+CommandLine.HowToGetCommandLineRef: Run Natural Docs with -h to see the command line reference.
+CommandLine.NoLongerSupported(param): {0} is no longer supported.
+CommandLine.NoLongerSupported.HeadersOnly(param): {0} is no longer supported.  Use Languages.txt to exclude the source file extensions instead.
+CommandLine.NoLongerSupported.AutoGroup(param): {0} is no longer supported.  Use --no-auto-group if you want to turn off automatic grouping.
+
+
+CommandLine.SyntaxReference(version).multiline {{{
+Natural Docs, version {0}
+http://www.naturaldocs.org
+This program is licensed under the AGPL
+---------------------------------------
+
+Syntax:
+
+    NaturalDocs [project configuration folder] [additional options]
+
+    NaturalDocs -i [input (source) folder]
+                -p [project configuration folder]
+                -o [output format] [output (documentation) folder]
+                [additional options]
+
+Examples:
+
+    NaturalDocs C:\My Project\Natural Docs Config
+    
+    NaturalDocs -i /project/src
+                -p /project/ndconfig
+                -o html /project/doc
+
+
+Folder Parameters:
+------------------
+
+ -p [folder]
+--project-config [folder]
+    Specifies the folder that stores the configuration files Natural Docs will
+    use for this project.  Required.  If the folder is empty Natural Docs will
+    generate the configuration files for you.
+
+ -i [folder]
+--input [folder]
+--source [folder]
+    Specifies an input folder, which is where your source code is.  Required
+    either on the command line or in Project.txt.  Can be specified multiple
+    times.
+
+ -o [format] [folder]
+--output [format] [folder]
+    Specifies an output format and folder, which is where your generated
+    documentation will go.  Currently the only supported format is HTML.
+    Required either on the command line or in Project.txt.  Can be specified
+    multiple times.
+
+ -xi [folder]
+--exclude-input [folder]
+--exclude-source [folder]
+    Excludes an input folder.  Natural Docs will not search it or its
+    subfolders for code.  Can be specified multiple times.
+
+ -xip [pattern]
+--exclude-input-pattern [pattern]
+--exclude-source-pattern [pattern]
+    Excludes input folders by a pattern, which can include * and ? wildcards.
+    Can be specified multiple times.  The pattern must match an entire folder
+    name, so "cli" will not match "client", but "cli*" would.
+
+ -w [folder]
+--working-data [folder]
+    Specifies a folder to store temporary data.  If not specified it will be a
+    subfolder of the project configuration folder.
+
+
+Common Parameters:
+------------------
+
+ -s [style]
+--style [style]
+    Specifies the output style to use.  Can be the name of a CSS file in the
+    project configuration folder or a subfolder that contains Style.txt.  Do
+    not include ".css" if using a CSS file.
+
+ -t [width]
+--tab-width [width]
+    Specifies how many spaces a tab should be expanded to.
+
+ -do
+--documented-only
+    Only include documented code elements in the output.
+
+ -nag
+--no-auto-group
+    Turns off automatic grouping.  Topics will only be grouped in the output
+    when you manually add Group comments.
+
+ -r
+--rebuild
+    Rescans every source file and rebuilds all the output.
+
+ -ro
+--rebuild-output
+    Rebuilds all the output without rescanning the source.
+
+ -q
+--quiet
+    Suppresses all non-error output.
+
+--pause
+--pause-before-exit
+    Require keyboard input before exiting the program.  Only use this if you
+    are running Natural Docs in a pop-up console window that closes
+    automatically and you would like to see the output before that happens.
+
+--pause-on-error
+    Require keyboard input before exiting the program if there is an error.
+    Only use this if you are running Natural Docs in a pop-up console window
+    that closes automatically and you would like it to stay open if there are
+    error messages.
+
+ -v
+--version
+    Displays the current version of Natural Docs.
+
+ -?
+ -h
+--help
+    Displays this command line reference.
+
+
+Technical Parameters:
+---------------------
+
+--worker-threads
+    Sets the number of worker threads Natural Docs should use for processing.
+    By default it is calculated based on the number of cores present.
+
+--benchmark
+    Collects and displays statistics on how long it takes Natural Docs to
+    execute.
+
+--dont-shrink-files
+    Leave whitespace and comments in CSS and JavaScript output files.  Makes
+    it easier to debug JavaScript in the browser.
+}}}
+
+
+
+#
+# Crash Messages and Report
+#______________________________________________________________________________
+
+
+Crash.Exception: Natural Docs has stopped because of the following error:
+Crash.NestedException: This error was caused by the following error:
+Crash.IncludeInfoAndGetHelp: Please include this information when asking for help at naturaldocs.org.
+
+Crash.ReportAt(file).multiline {{{
+A crash report has been generated at {0}.
+Please include this file when asking for help at naturaldocs.org.
+}}}
+
+Crash.Version: Version
+Crash.Platform: Platform
+Crash.CommandLine: Command Line

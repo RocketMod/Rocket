@@ -14,5 +14,6 @@
   </metadata>
   <files>
     <file src="Rocket.API.dll" target="lib/net35" />
+    <file src="Rocket.API.xml" target="lib/net35" />
   </files>
 </package>

@@ -1,35 +1,53 @@
-﻿using Rocket.API.Logging;
+﻿using Rocket.API;
+using Rocket.API.Logging;
 using Rocket.API.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Rocket.API.DependencyInjection;
+using Rocket.API.Eventing;
+using Rocket.Core.Plugins;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Tests
 {
-    public class TestPlugin : IPlugin
+    public class TestPlugin : PluginBase
     {
-        public IEnumerable<string> Capabilities => new List<string>() { "TESTING" };
+        public override IEnumerable<string> Capabilities => new List<string>() { "TESTING" };
 
-        public string Name => "Test Plugin";
+        public override string Name => "Test Plugin";
 
-        ILogger logger;
-
-        public TestPlugin(ILogger logger)
+        public TestPlugin(IDependencyContainer container) : base(container)
         {
-            this.logger = logger;
-            logger.Info("Constructing TestPlugin (From plugin)");
+            Logger.Info("Constructing TestPlugin (From plugin)");
+
         }
 
-        public void Load()
+        public Task<bool> TestEventing()
         {
-            logger.Info("Hello World (From plugin)");
+            var promise = new TaskCompletionSource<bool>();
+
+            Subscribe("TestEvent", (IEventArguments arguments) =>
+            {
+                promise.SetResult((bool)arguments.Values[0]);
+            });
+
+            Emit("TestEvent", new EventArguments(true));
+
+            return promise.Task;
         }
 
-        public void Unload()
+
+        public override void Load()
         {
-            logger.Info("Bye World (From plugin)");
+            Logger.Info("Hello World (From plugin)");
+        }
+
+        public override void Unload()
+        {
+            Logger.Info("Bye World (From plugin)");
         }
     }
 }

@@ -1,21 +1,34 @@
 ﻿using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
-using Rocket.Core;
+using Rocket.Core.Logging;
 using Rocket.Core.DependencyInjection;
+using Rocket.API;
 
 namespace Rocket
 {
-    public static class Runtime
+    public class Runtime : IRuntime
     {
-        private static IDependencyContainer container;
 
-        public static void Bootstrap()
+        private static Runtime runtime = null;
+        public static IRuntime Bootstrap()
         {
-            container = new UnityDependencyContainer();
-            container.RegisterSingletonType<ILogger, ConsoleLogger>();
-            container.Activate(typeof(RegistrationByConvention));
+            if (runtime == null) runtime = new Runtime();
+            return runtime;
         }
 
-        public static IServiceLocator ServiceLocator => container.ServiceLocator;
+        public IDependencyContainer Container { get; private set; }
+
+        public IDependencyResolver Resolver { get; private set; }
+
+        public Runtime()
+        {
+            Container = new UnityDependencyContainer();
+            Container.RegisterInstance<IRuntime>(this);
+            Container.RegisterSingletonType<ILogger, ConsoleLogger>();
+            Container.Activate(typeof(RegistrationByConvention));
+
+            IImplementation implementation =  Container.Get<IImplementation>();
+            implementation.Load(this);
+        }
     }
 }

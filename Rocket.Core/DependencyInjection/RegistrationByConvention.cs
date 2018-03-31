@@ -34,12 +34,12 @@ namespace Rocket.Core.DependencyInjection
             {
                 return ((IEnumerable<Type>)assembly.GetTypes()).Where(t => ((IEnumerable<Type>)t.GetInterfaces()).Any(i => i == typeof(TInterface)));
             }
-            catch (ReflectionTypeLoadException ex)
+            catch (ReflectionTypeLoadException)
             {
                 // failed to load ex.Types
-                return null;
+                return new List<Type>();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 throw;
             }

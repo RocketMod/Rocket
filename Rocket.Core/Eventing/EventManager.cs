@@ -4,32 +4,48 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Rocket.API;
 
 namespace Rocket.Core.Eventing
 {
     public class EventManager : IEventManager
     {
-        public void RegisterAllEvents(IPlugin plugin)
+        public void Emit(IEventEmitter sender, IEvent @event)
         {
             throw new NotImplementedException();
         }
 
-        public void RegisterEvents(IEventListener listener, IPlugin plugin)
+        public void Emit(string emitterName, IEvent @event)
         {
             throw new NotImplementedException();
         }
 
-        public void TriggerEvent(Event @event)
+        public void Emit(IEventEmitter sender, string eventName, IEventArguments arguments)
         {
             throw new NotImplementedException();
         }
 
-        public void UnregisterAllEvents(IPlugin plugin)
+        public void Emit(string emitterName, string eventName, IEventArguments arguments)
         {
             throw new NotImplementedException();
         }
 
-        public void UnregisterEvents(IEventListener listener, IPlugin plugin)
+        public void Subscribe<T>(ILifecycleObject listener, Type @event, Action<T> callback) where T : IEventArguments
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Subscribe(ILifecycleObject listener, string eventName, Action<IEventArguments> callback)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Subscribe<T>(ILifecycleObject listener, IEventEmitter emitter, Type @event, Action<T> callback) where T : IEventArguments
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Subscribe(ILifecycleObject listener, string emitterName, string eventName, Action<IEventArguments> callback)
         {
             throw new NotImplementedException();
         }

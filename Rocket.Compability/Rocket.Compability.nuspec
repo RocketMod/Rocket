@@ -14,5 +14,6 @@
   </metadata>
   <files>
     <file src="Rocket.Compability.dll" target="lib/net35" />
+    <file src="Rocket.Compability.xml" target="lib/net35" />
   </files>
 </package>

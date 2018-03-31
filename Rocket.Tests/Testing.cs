@@ -20,34 +20,47 @@ namespace Rocket.Tests
         [AssemblyInitialize()]
         public static void Startup(TestContext testContext)
         {
-            Directory.CreateDirectory("./Plugins");
-            File.Copy(Assembly.GetExecutingAssembly().Location, "./Plugins/TestPlugin.dll", true);
+
         }
+
+        private IRuntime runtime;
 
         [TestInitialize]
         public void Bootstrap()
         {
-            Runtime.Bootstrap();
+            runtime = Runtime.Bootstrap();
         }
 
         [TestMethod]
         public void ImplementationAvailable()
         {
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IImplementation>());
+            Assert.IsNotNull(runtime.Container.Get<IImplementation>());
         }
 
         [TestMethod]
         public void CoreDependenciesAvailable()
         {
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IConfigurationProvider>());
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<ITranslationProvider>());
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IPermissionProvider>());
+            Assert.IsNotNull(runtime.Container.Get<IConfigurationProvider>());
+            Assert.IsNotNull(runtime.Container.Get<ITranslationProvider>());
+            Assert.IsNotNull(runtime.Container.Get<IPermissionProvider>());
+        }
+
+
+        [TestMethod]
+        public void PluginImplementation()
+        {
+            IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
+            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
         }
 
         [TestMethod]
-        public void PluginManager()
+        [Ignore]
+        public async Task PluginEventing()
         {
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IPluginManager>());
+            IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
+            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
+            bool eventingWorks = await plugin.TestEventing();
+            Assert.IsTrue(eventingWorks);
         }
     }
 }
