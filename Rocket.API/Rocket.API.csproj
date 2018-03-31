@@ -60,7 +60,7 @@
     <Compile Include="DependencyInjection\IDependencyContainer.cs" />
     <Compile Include="DependencyInjection\IDependencyRegistrator.cs" />
     <Compile Include="DependencyInjection\IDependencyResolver.cs" />
-    <Compile Include="DependencyInjection\IServiceLocator.cs" />
+    <Compile Include="IRuntime.cs" />
     <Compile Include="Permissions\IPermissionProvider.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Player\IPlayer.cs" />

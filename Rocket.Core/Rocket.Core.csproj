@@ -32,9 +32,6 @@
     <DocumentationFile>bin\Release\Rocket.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
@@ -55,7 +52,6 @@
     <Compile Include="DependencyInjection\RegistrationByConvention.cs" />
     <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />
     <Compile Include="DependencyInjection\OrderedParametersOverride.cs" />
-    <Compile Include="DependencyInjection\UnityServiceLocator.cs" />
     <Compile Include="I18N\TranslationProvider.cs" />
     <Compile Include="Permissions\PermissionProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,4 +1,5 @@
-﻿using Rocket.API.Logging;
+﻿using Rocket.API;
+using Rocket.API.Logging;
 using Rocket.API.Plugin;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,8 @@ namespace Rocket.Tests
         public string Name => "Test Plugin";
         public IServiceLocator Container => Runtime.ServiceLocator;
         public bool IsAsync { get; }
+
+        public State State { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         ILogger logger;
 

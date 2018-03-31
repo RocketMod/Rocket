@@ -23,16 +23,18 @@ namespace Rocket.Tests
 
         }
 
+        private IRuntime runtime;
+
         [TestInitialize]
         public void Bootstrap()
         {
-            Runtime.Bootstrap();
+            IRuntime runtime = Runtime.Bootstrap();
         }
 
         [TestMethod]
         public void ImplementationAvailable()
         {
-            Assert.IsNotNull(Runtime.ServiceLocator.GetInstance<IImplementation>());
+            Assert.IsNotNull(runtime.Container.GetInstance<IImplementation>());
         }
 
         [TestMethod]
