@@ -10,37 +10,42 @@ namespace Rocket.Core.Eventing
 {
     public class EventManager : IEventManager
     {
-        public void Subscribe(ILifecycleController @object, IEventListener listener)
+        public void Emit(IEventEmitter sender, IEvent @event)
         {
             throw new NotImplementedException();
         }
 
-        public void Unsubscribe(ILifecycleController @object, IEventListener listener)
+        public void Emit(string emitterName, IEvent @event)
         {
             throw new NotImplementedException();
         }
 
-        public void Subscribe<T>(ILifecycleController @object, Action<T> callback)
+        public void Emit(IEventEmitter sender, string eventName, IEventArguments arguments)
         {
             throw new NotImplementedException();
         }
 
-        public void Subscribe(ILifecycleController @object, string eventName, Action<object> callback)
+        public void Emit(string emitterName, string eventName, IEventArguments arguments)
         {
             throw new NotImplementedException();
         }
 
-        public void Emit(IEventEmitter emitter, IEvent @event)
+        public void Subscribe<T>(ILifecycleObject listener, Type @event, Action<T> callback) where T : IEventArguments
         {
             throw new NotImplementedException();
         }
 
-        public void UnsubcribeAllEvents(ILifecycleController @object)
+        public void Subscribe(ILifecycleObject listener, string eventName, Action<IEventArguments> callback)
         {
             throw new NotImplementedException();
         }
 
-        public void SubscribeAllEvents(ILifecycleController @object)
+        public void Subscribe<T>(ILifecycleObject listener, IEventEmitter emitter, Type @event, Action<T> callback) where T : IEventArguments
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Subscribe(ILifecycleObject listener, string emitterName, string eventName, Action<IEventArguments> callback)
         {
             throw new NotImplementedException();
         }

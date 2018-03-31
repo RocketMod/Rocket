@@ -1,9 +1,9 @@
-﻿namespace Rocket.API
-{
-    public enum State { Loaded, Unloaded };
+﻿using System;
 
-    public interface ILifecycleController
+namespace Rocket.API
+{
+
+    public interface ILifecycleObject
     {
-        State State { get; }
     }
 }

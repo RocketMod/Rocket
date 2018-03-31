@@ -4,7 +4,7 @@ namespace Rocket.API.Scheduler
 {
     public class Task
     {
-        public ILifecycleController Owner { get; }
+        public ILifecycleObject Owner { get; }
 
         public Action Action { get; }
 

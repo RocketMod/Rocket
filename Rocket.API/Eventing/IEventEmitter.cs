@@ -1,7 +1,12 @@
-﻿namespace Rocket.API.Eventing
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Rocket.API.Eventing
 {
-    public interface IEventEmitter : IEvent
+    public interface IEventEmitter
     {
-        
+        string Name { get; }
     }
 }

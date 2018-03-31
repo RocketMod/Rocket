@@ -5,7 +5,7 @@ using Rocket.API.Eventing;
 
 namespace Rocket.API.Plugin
 {
-    public interface IPlugin : ILifecycleController, IEventEmitter
+    public interface IPlugin : ILifecycleObject, IEventEmitter
     {
         IEnumerable<string> Capabilities { get; }
 

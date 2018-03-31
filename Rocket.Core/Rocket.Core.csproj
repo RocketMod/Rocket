@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Eventing\EventArgument.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="DependencyInjection\UnityInstanceNotResolvedException.cs" />
     <Compile Include="Eventing\EventManager.cs" />
@@ -54,6 +55,7 @@
     <Compile Include="DependencyInjection\OrderedParametersOverride.cs" />
     <Compile Include="I18N\TranslationProvider.cs" />
     <Compile Include="Permissions\PermissionProvider.cs" />
+    <Compile Include="Plugins\PluginBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Configuration\ConfigurationProvider.cs" />
     <Compile Include="Properties\CommonAssemblyInfo.cs" />

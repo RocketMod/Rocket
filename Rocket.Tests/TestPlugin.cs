@@ -8,41 +8,30 @@ using System.Text;
 using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
+using Rocket.Core.Plugins;
 
 namespace Rocket.Tests
 {
-    public class TestPlugin : IPlugin
+    public class TestPlugin : PluginBase
     {
-        public IEnumerable<string> Capabilities => new List<string>() { "TESTING" };
+        public override IEnumerable<string> Capabilities => new List<string>() { "TESTING" };
 
-        public IEventEmitter Sender { get; }
-        public string Name => "Test Plugin";
+        public override string Name => "Test Plugin";
 
-        public IDependencyContainer Container;
-
-        public bool IsAsync { get; }
-
-        public State State { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        ILogger logger;
-
-        public bool Loaded = false;
-
-        public TestPlugin(ILogger logger)
+        public TestPlugin(IDependencyContainer container) : base(container)
         {
-            this.logger = logger;
-            logger.Info("Constructing TestPlugin (From plugin)");
+            Logger.Info("Constructing TestPlugin (From plugin)");
+
         }
 
-        public void Load()
+        public override void Load()
         {
-            Loaded = true;
-            logger.Info("Hello World (From plugin)");
+            Logger.Info("Hello World (From plugin)");
         }
 
-        public void Unload()
+        public override void Unload()
         {
-            logger.Info("Bye World (From plugin)");
+            Logger.Info("Bye World (From plugin)");
         }
     }
 }

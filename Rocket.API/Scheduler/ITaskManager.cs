@@ -4,8 +4,8 @@ namespace Rocket.API.Scheduler
 {
     public interface ITaskManager
     {
-        void RegisterTasks(ILifecycleController plugin);
+        void RegisterTasks(ILifecycleObject plugin);
 
-        void UnregisterTasks(ILifecycleController plugin);
+        void UnregisterTasks(ILifecycleObject plugin);
     }
 }
