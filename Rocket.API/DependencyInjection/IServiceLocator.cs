@@ -5,7 +5,6 @@ namespace Rocket.API.DependencyInjection
 {
     public interface IServiceLocator
     {
-        object GetService(Type serviceType);
         IEnumerable<object> GetAllInstances(Type serviceType);
         IEnumerable<TService> GetAllInstances<TService>();
         object GetInstance(Type serviceType);
