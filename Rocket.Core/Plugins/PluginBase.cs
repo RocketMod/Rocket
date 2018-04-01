@@ -20,23 +20,42 @@ namespace Rocket.Core.Plugins
 
         public abstract string Name { get; }
 
-        public PluginBase(IDependencyContainer container)
+        protected PluginBase(IDependencyContainer container)
         {
             Container = container;
             EventManager = Container.Get<IEventManager>();
             Logger = Container.Get<ILogger>();
         }
 
-        public abstract void Load();
+        public void Load()
+        {
+            OnLoad();
+            IsAlive = true;
+        }
 
-        public abstract void Unload();
+        public void Unload()
+        {
+            Unload();
+            IsAlive = false;
+        }
 
-        public void Subscribe<T>(Type @event, Action<T> callback) where T : IEventArguments => EventManager.Subscribe<T>(this, @event, callback);
+        protected virtual void OnLoad()
+        {
 
-        public void Subscribe(string eventName, Action<IEventArguments> callback) => EventManager.Subscribe(this, eventName, callback);
-      
+        }
+
+        protected virtual void OnUnload()
+        {
+
+        }
+
+        public void Subscribe<T>(Action<T> callback) where T : IEvent =>
+            EventManager.Subscribe(this, callback);
+
+        public void Subscribe(string eventName, Action<IEvent> callback) =>
+            EventManager.Subscribe(this, eventName, callback);
+
         public void Emit(IEvent @event) => EventManager.Emit(this, @event);
-
-        public void Emit(string eventName, IEventArguments arguments) => EventManager.Emit(this, eventName, arguments);
+        public bool IsAlive { get; internal set; }
     }
 }

@@ -4,12 +4,6 @@ using Rocket.API.Configuration;
 using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Rocket.Tests
@@ -54,7 +48,6 @@ namespace Rocket.Tests
         }
 
         [TestMethod]
-        [Ignore]
         public async Task PluginEventing()
         {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();

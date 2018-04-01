@@ -1,13 +1,7 @@
-﻿using Rocket.API;
-using Rocket.API.Logging;
-using Rocket.API.Plugin;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
-using Rocket.API.Eventing;
+using Rocket.API.Scheduler;
 using Rocket.Core.Plugins;
 using Rocket.Core.Eventing;
 
@@ -25,27 +19,36 @@ namespace Rocket.Tests
 
         }
 
+        class TestEvent : Event
+        {
+            public bool Value { get; set; }
+
+            public TestEvent() : base(ExecutionTargetContext.Sync)
+            {
+
+            }
+        }
+
         public Task<bool> TestEventing()
         {
             var promise = new TaskCompletionSource<bool>();
 
-            Subscribe("TestEvent", (IEventArguments arguments) =>
+            Subscribe<TestEvent>((arguments) =>
             {
-                promise.SetResult((bool)arguments.Values[0]);
+                promise.SetResult(arguments.Value);
             });
 
-            Emit("TestEvent", new EventArguments(true));
+            Emit(new TestEvent { Value = true});
 
             return promise.Task;
         }
 
-
-        public override void Load()
+        protected override void OnLoad()
         {
             Logger.Info("Hello World (From plugin)");
         }
 
-        public override void Unload()
+        protected override void OnUnload()
         {
             Logger.Info("Bye World (From plugin)");
         }

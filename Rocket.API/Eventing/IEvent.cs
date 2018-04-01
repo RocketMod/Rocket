@@ -1,12 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Rocket.API.Scheduler;
 
 namespace Rocket.API.Eventing
 {
     public interface IEvent
     {
-        IEventArguments Arguments { get; }
+        /// <summary>
+        /// The event sender.
+        /// </summary>
+        ILifecycleObject Sender { get; }
+
+        /// <summary>
+        /// Name of the event
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        /// True if the event should be fired async
+        /// Notice: Some APIs do not work correctly async 
+        /// </summary>
+        ExecutionTargetContext ExecutionTarget { get; }
     }
 }

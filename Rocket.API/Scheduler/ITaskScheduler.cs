@@ -14,6 +14,8 @@ namespace Rocket.API.Scheduler
         /// </summary>
         Task ScheduleNextFrame(ILifecycleObject @object, Action action);
 
+        Task ScheduleAction(ILifecycleObject @object, Action action, ExecutionTargetContext target);
+        
         /// <summary>
         /// Schedule an action which includes physics interactions
         /// (e.g. apply force to object).<br/>
