@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Eventing\EventAction.cs" />
     <Compile Include="Eventing\EventComprarer.cs" />
     <Compile Include="Eventing\GenericCancellableEvent.cs" />
     <Compile Include="Eventing\GenericEvent.cs" />

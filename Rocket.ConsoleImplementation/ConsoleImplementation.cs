@@ -27,5 +27,8 @@ namespace Rocket.ConsoleImplementation
         {
 
         }
+
+        public string Name => "ConsoleHost";
+        public bool IsAlive => true;
     }
 }
