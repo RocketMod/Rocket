@@ -154,12 +154,17 @@ namespace Rocket.Core.Eventing
 
             actions.Sort(EventComprarer.Compare);
 
-            foreach (EventAction info in from info in actions
-                                             /* ignore cancelled events */
-                                         where !(@event is ICancellableEvent)
-                                               || !((ICancellableEvent)@event).IsCancelled
-                                               || info.Handler.IgnoreCancelled
-                                         select info)
+            var targetActions =
+                (from info in actions
+                     /* ignore cancelled events */
+                 where !(@event is ICancellableEvent)
+                       || !((ICancellableEvent)@event).IsCancelled
+                       || info.Handler.IgnoreCancelled
+                 select info)
+                .ToList();
+
+            int executionCount = 0;
+            foreach (EventAction info in targetActions)
             {
                 var pl = info.Owner;
                 if (!pl.IsAlive)
@@ -167,7 +172,28 @@ namespace Rocket.Core.Eventing
                     continue;
                 }
 
-                Scheduler.Schedule(pl, () => { info.Invoke(@event); }, (ExecutionTargetContext) @event.ExecutionTarget);
+                Scheduler.Schedule(pl, () =>
+                {
+                    executionCount++;
+                    info.Invoke(@event);
+
+                    //all actions called; run OnEventExecuted
+                    if (executionCount == targetActions.Count)
+                    {
+                        MulticastDelegate eventDelagate =
+                           (MulticastDelegate)@event.GetType().GetField(nameof(IEvent.OnEventExecuted),
+                               BindingFlags.Instance |
+                               BindingFlags.NonPublic)
+                               .GetValue(@event);
+
+                        Delegate[] delegates = eventDelagate.GetInvocationList();
+
+                        foreach (Delegate dlg in delegates)
+                        {
+                            dlg.Method.Invoke(dlg.Target, new[] { @event });
+                        }
+                    }
+                }, (ExecutionTargetContext)@event.ExecutionTarget);
             }
         }
 

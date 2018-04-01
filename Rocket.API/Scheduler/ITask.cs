@@ -13,7 +13,7 @@ namespace Rocket.API.Scheduler
         ExecutionTargetContext ExecutionTarget { get; }
 
         bool IsFinished { get; }
-
+        
         void Cancel();
     }
 }

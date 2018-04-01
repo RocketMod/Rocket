@@ -21,6 +21,7 @@ namespace Rocket.ConsoleImplementation
         public bool IsCancelled { get; internal set; }
         public ExecutionTargetContext ExecutionTarget { get; }
         public bool IsFinished => !_scheduler.Tasks.Contains(this);
+
         public void Cancel()
         {
             _scheduler.CancelTask(this);

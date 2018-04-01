@@ -53,6 +53,7 @@ namespace Rocket.Tests
         {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
             TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
+            Assert.IsTrue(plugin.IsAlive);
         }
 
         [TestMethod]

@@ -23,6 +23,7 @@ namespace Rocket.API.Eventing
             ExecutionTarget = executionTarget;
         }
 
+        public event EventExecutedCallback OnEventExecuted;
         public ILifecycleObject Sender { get; }
         public string Name { get; }
         public EventExecutionTargetContext ExecutionTarget { get; }

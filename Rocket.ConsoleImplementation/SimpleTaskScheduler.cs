@@ -22,69 +22,82 @@ namespace Rocket.ConsoleImplementation
         public ITask ScheduleEveryFrame(ILifecycleObject @object, Action action)
         {
             var task = new SimpleTask(this, @object, action, ExecutionTargetContext.NextFrame);
-            if(TriggerEvent(task))
-                _tasks.Add(task);
+            TriggerEvent(task);
             return task;
         }
 
         public ITask ScheduleNextFrame(ILifecycleObject @object, Action action)
         {
             var task = new SimpleTask(this, @object, action, ExecutionTargetContext.NextFrame);
-            if (TriggerEvent(task))
-                _tasks.Add(task);
+            TriggerEvent(task);
             return task;
         }
 
         public ITask Schedule(ILifecycleObject @object, Action action, ExecutionTargetContext target)
         {
             var task = new SimpleTask(this, @object, action, target);
-            if (TriggerEvent(task))
-                _tasks.Add(task);
+            TaskScheduleEvent e = TriggerEvent(task);
+
+            if (target == ExecutionTargetContext.Sync && @object.IsAlive)
+            {
+                e.OnEventExecuted += (@event) =>
+                {
+                    if (e.IsCancelled)
+                        return;
+                    action();
+                    _tasks.Remove(task);
+                };
+            }
             return task;
         }
 
         public ITask ScheduleNextPhysicUpdate(ILifecycleObject @object, Action action)
         {
             var task = new SimpleTask(this, @object, action, ExecutionTargetContext.NextPhysicsUpdate);
-            if (TriggerEvent(task))
-                _tasks.Add(task);
+            TriggerEvent(task);
             return task;
         }
 
         public ITask ScheduleEveryPhysicUpdate(ILifecycleObject @object, Action action)
         {
             var task = new SimpleTask(this, @object, action, ExecutionTargetContext.EveryPhysicsUpdate);
-            if (TriggerEvent(task))
-                _tasks.Add(task);
+            TriggerEvent(task);
             return task;
         }
 
         public ITask ScheduleEveryAsyncFrame(ILifecycleObject @object, Action action)
         {
             var task = new SimpleTask(this, @object, action, ExecutionTargetContext.EveryAsyncFrame);
-            if (TriggerEvent(task))
-                _tasks.Add(task);
+            TriggerEvent(task);
             return task;
         }
 
         public ITask ScheduleNextAsyncFrame(ILifecycleObject @object, Action action)
         {
             var task = new SimpleTask(this, @object, action, ExecutionTargetContext.NextAsyncFrame);
-            if (TriggerEvent(task))
-                _tasks.Add(task);
+            TriggerEvent(task);
             return task;
         }
 
-        private bool TriggerEvent(ITask task)
+        private TaskScheduleEvent TriggerEvent(SimpleTask task)
         {
             var e = new TaskScheduleEvent(task);
             _eventManager.Emit(task.Owner, e);
-            return !e.IsCancelled;
+
+            e.OnEventExecuted += (@event) =>
+            {
+                task.IsCancelled = e.IsCancelled;
+
+                if (!e.IsCancelled)
+                    _tasks.Add(task);
+            };
+
+            return e;
         }
 
         public bool CancelTask(ITask t)
         {
-            var task = (SimpleTask) t;
+            var task = (SimpleTask)t;
             task.IsCancelled = true;
             return _tasks.Remove(task);
         }

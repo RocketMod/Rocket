@@ -11,6 +11,6 @@ namespace Rocket.API.Scheduler
             Task = task;
         }
 
-        public bool IsCancelled { get; }
+        public bool IsCancelled { get; set; }
     }
 }

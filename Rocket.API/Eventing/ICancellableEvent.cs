@@ -2,6 +2,6 @@
 {
     public interface ICancellableEvent
     {
-        bool IsCancelled { get; }
+        bool IsCancelled { get; set; }
     }
 }
