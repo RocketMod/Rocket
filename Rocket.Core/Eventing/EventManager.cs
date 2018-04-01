@@ -11,52 +11,6 @@ using ReflectionHelper = Rocket.API.Reflection.ReflectionHelper;
 
 namespace Rocket.Core.Eventing
 {
-    public class EventAction
-    {
-        public EventAction(ILifecycleObject owner, Action<IEvent> action, EventHandler handler, string eventName)
-        {
-            Owner = owner;
-            Action = action;
-            Handler = handler;
-            TargetEventType = eventName;
-        }
-
-        public EventAction(
-            ILifecycleObject owner,
-            IEventListener listener,
-            MethodInfo method,
-            EventHandler handler)
-        {
-            Owner = owner;
-            Listener = listener;
-            Method = method;
-            Handler = handler;
-
-            if (method.GetParameters().Length != 1 || !typeof(IEvent).IsAssignableFrom(method.GetParameters()[0].ParameterType))
-                throw new Exception("Method: " + method.Name + " in type " + method.DeclaringType.FullName + " does not have correct signature for events!");
-            Type targetType = method.GetParameters()[0].ParameterType;
-            TargetEventType = targetType.Name.Replace("Event", "");
-        }
-
-        public Action<IEvent> Action { get; }
-
-        public MethodInfo Method { get; }
-
-        public EventHandler Handler { get; }
-
-        public IEventListener Listener { get; }
-
-        public ILifecycleObject Owner { get; }
-
-        public string TargetEventType { get; }
-
-        public void Invoke(IEvent @event)
-        {
-            Action?.Invoke(@event);
-            Method?.Invoke(Owner, new object[] { @event });
-        }
-    }
-
     public class EventManager : IEventManager
     {
         private readonly IDependencyContainer _container;
@@ -69,7 +23,14 @@ namespace Rocket.Core.Eventing
 
         private readonly List<EventAction> _eventListeners = new List<EventAction>();
 
-        public void Subscribe(ILifecycleObject @object, IEventListener listener)
+        public void Subscribe(ILifecycleObject @object, string emitterName = null)
+        {
+            var listeners = ReflectionHelper.FindTypes<IAutoRegisteredListener>(@object, false);
+            foreach (var listener in listeners)
+                Subscribe(@object, (IEventListener)Activator.CreateInstance(listener, true), emitterName);
+        }
+
+        public void Subscribe(ILifecycleObject @object, IEventListener listener, string emitterName = null)
         {
             if (@object == null)
                 throw new ArgumentNullException(nameof(@object));
@@ -77,53 +38,11 @@ namespace Rocket.Core.Eventing
             if (listener == null)
                 throw new ArgumentNullException(nameof(listener));
 
-            RegisterEventsInternal(@object, listener);
+            RegisterEventsInternal(@object, listener, emitterName);
         }
 
-        internal void RegisterEventsInternal(ILifecycleObject @object, IEventListener listener)
-        {
 
-            Type type = listener.GetType();
-            foreach (MethodInfo method in type.GetMethods())
-            {
-                var handler = (EventHandler)method.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault();
-
-                if (handler == null)
-                {
-                    continue;
-                }
-
-                ParameterInfo[] methodArgs = method.GetParameters();
-                if (methodArgs.Length != 1)
-                {
-                    //Listener methods should have only one argument
-                    continue;
-                }
-
-                Type t = methodArgs[0].ParameterType;
-                if (!t.IsSubclassOf(typeof(Event)))
-                {
-                    //The arg type should be instanceof Event
-                    continue;
-                }
-
-                if (_eventListeners.All(c => c.Method != method))
-                    _eventListeners.Add(new EventAction(@object, listener, method, handler));
-            }
-        }
-
-        public void Unsubscribe(ILifecycleObject @object, IEventListener listener)
-        {
-            if (@object == null)
-                throw new ArgumentNullException(nameof(@object));
-
-            if (listener == null)
-                throw new ArgumentNullException(nameof(listener));
-
-            _eventListeners.RemoveAll(c => c.Owner == @object && c.Listener == listener);
-        }
-
-        public void Subscribe<T>(ILifecycleObject @object, Action<T> callback)
+        public void Subscribe<T>(ILifecycleObject @object, Action<T> callback, string emitterName = null) where T: IEvent
         {
             var handler = (EventHandler)callback.GetType().GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault() ??
                           new EventHandler();
@@ -132,21 +51,21 @@ namespace Rocket.Core.Eventing
             EventAction action = new EventAction(@object, (@event) =>
             {
                 @callback.Invoke((T)@event);
-            }, handler, eventName);
+            }, handler, eventName, emitterName);
             _eventListeners.Add(action);
         }
 
-        public void Subscribe(ILifecycleObject @object, string eventName, Action<IEvent> callback)
+        public void Subscribe(ILifecycleObject @object, string eventName, Action<IEvent> callback, string emitterName = null)
         {
             var handler = (EventHandler)callback.GetType().GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault() ??
                           new EventHandler();
 
-            EventAction action = new EventAction(@object, callback, handler, eventName);
+            EventAction action = new EventAction(@object, callback, handler, eventName, emitterName);
 
             _eventListeners.Add(action);
         }
 
-        public void Emit(ILifecycleObject sender, IEvent @event, EventExecutedCallback cb = null)
+        public void Emit(IEventEmitter sender, IEvent @event, EventExecutedCallback cb = null, bool global = true)
         {
             List<EventAction> actions =
                 _eventListeners.Where(c => c.TargetEventType.Equals(@event.Name, StringComparison.OrdinalIgnoreCase))
@@ -160,6 +79,7 @@ namespace Rocket.Core.Eventing
                  where !(@event is ICancellableEvent)
                        || !((ICancellableEvent)@event).IsCancelled
                        || info.Handler.IgnoreCancelled
+                 where CheckEmitter(info, sender.Name)
                  select info)
                 .ToList();
 
@@ -190,16 +110,75 @@ namespace Rocket.Core.Eventing
             }
         }
 
-        public void UnsubcribeAllEvents(ILifecycleObject @object)
+        public void Emit(IEventEmitter emitter, IEventArgs args, EventExecutedCallback cb = null, bool global = true)
         {
-            _eventListeners.RemoveAll(c => c.Owner == @object);
+            throw new NotImplementedException();
         }
 
-        public void SubscribeAllEvents(ILifecycleObject @object)
+        public void Unsubscribe(ILifecycleObject @object, string emitterName = null)
         {
-            var listeners = ReflectionHelper.FindTypes<IAutoRegisteredListener>(@object, false);
-            foreach (var listener in listeners)
-                Subscribe(@object, (IEventListener)Activator.CreateInstance(listener, true));
+            _eventListeners.RemoveAll(c => c.Owner == @object && CheckEmitter(c, emitterName));
+        }
+
+        public void Unsubscribe<T>(ILifecycleObject @object, string eventEmitter = null) where T : IEvent
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Unsubscribe(ILifecycleObject @object, string @event, string eventEmitter = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Unsubscribe(ILifecycleObject @object, IEventListener listener, string emitterName = null)
+        {
+            if (@object == null)
+                throw new ArgumentNullException(nameof(@object));
+
+            if (listener == null)
+                throw new ArgumentNullException(nameof(listener));
+
+            _eventListeners.RemoveAll(c => c.Owner == @object && c.Listener == listener && CheckEmitter(c, emitterName));
+        }
+
+        private bool CheckEmitter(EventAction eventAction, string emitterName)
+        {
+            if (String.IsNullOrEmpty(emitterName))
+                return true;
+
+            return eventAction.EmitterName.Equals(emitterName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private void RegisterEventsInternal(ILifecycleObject @object, IEventListener listener, string emitterName = null)
+        {
+
+            Type type = listener.GetType();
+            foreach (MethodInfo method in type.GetMethods())
+            {
+                var handler = (EventHandler)method.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault();
+
+                if (handler == null)
+                {
+                    continue;
+                }
+
+                ParameterInfo[] methodArgs = method.GetParameters();
+                if (methodArgs.Length != 1)
+                {
+                    //Listener methods should have only one argument
+                    continue;
+                }
+
+                Type t = methodArgs[0].ParameterType;
+                if (!t.IsSubclassOf(typeof(Event)))
+                {
+                    //The arg type should be instanceof Event
+                    continue;
+                }
+
+                if (_eventListeners.All(c => c.Method != method))
+                    _eventListeners.Add(new EventAction(@object, listener, method, handler, emitterName));
+            }
         }
     }
 }

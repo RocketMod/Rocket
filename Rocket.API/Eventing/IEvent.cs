@@ -2,13 +2,8 @@
 
 namespace Rocket.API.Eventing
 {
-    public interface IEvent
+    public interface IEvent : IEventArgs
     {
-        /// <summary>
-        /// The event sender.
-        /// </summary>
-        ILifecycleObject Sender { get; }
-
         /// <summary>
         /// Name of the event
         /// </summary>

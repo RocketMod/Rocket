@@ -7,5 +7,7 @@ namespace Rocket.API.Eventing
     {
         public EventPriority Priority { get; set; } = EventPriority.Normal;
         public bool IgnoreCancelled { get; set; } = false;
+
+        public string EmitterName { get; set; }
     }
 }

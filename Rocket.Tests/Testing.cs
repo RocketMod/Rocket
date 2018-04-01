@@ -64,5 +64,14 @@ namespace Rocket.Tests
             bool eventingWorks = await plugin.TestEventing();
             Assert.IsTrue(eventingWorks);
         }
+
+        [TestMethod]
+        public async Task PluginEventing_WithName()
+        {
+            IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
+            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
+            bool eventingWorks = await plugin.TestEventing_WithName();
+            Assert.IsTrue(eventingWorks);
+        }
     }
 }

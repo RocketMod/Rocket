@@ -1,12 +1,8 @@
-﻿using System;
-using System.Linq;
-using System.Reflection;
-using Rocket.API.Eventing;
-using EventHandler = Rocket.API.Eventing.EventHandler;
+﻿using Rocket.API.Eventing;
 
 namespace Rocket.Core.Eventing
 {
-    public class EventComprarer
+    class EventComprarer
     {
         public static int Compare(EventAction a, EventAction b)
         {

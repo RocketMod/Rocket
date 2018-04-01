@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Rocket.API
 {
-    public interface IImplementation
+    public interface IImplementation : ILifecycleObject
     {
         void Load(IRuntime runtime);
         IEnumerable<string> Capabilities { get; }

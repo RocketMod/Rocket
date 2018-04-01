@@ -1,4 +1,5 @@
-﻿using Rocket.API.Scheduler;
+﻿using System.Collections.Generic;
+using System.Reflection;
 
 namespace Rocket.API.Eventing
 {
@@ -23,8 +24,26 @@ namespace Rocket.API.Eventing
             ExecutionTarget = executionTarget;
         }
 
-        public ILifecycleObject Sender { get; }
         public string Name { get; }
         public EventExecutionTargetContext ExecutionTarget { get; }
+
+        public Dictionary<string, object> Arguments
+        {
+            get
+            {
+                Dictionary<string, object> args = new Dictionary<string, object>();
+                var props = GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                foreach (var prop in props)
+                {
+                    var getter = prop.GetGetMethod(false);
+                    if (getter == null)
+                        continue;
+
+                    args.Add(prop.Name.ToLower(), this);
+                }
+
+                return args;
+            }
+        }
     }
 }

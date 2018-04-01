@@ -5,18 +5,25 @@ namespace Rocket.API.Eventing
     public delegate void EventExecutedCallback(IEvent @event);
     public interface IEventManager
     {
-        void Subscribe(ILifecycleObject @object, IEventListener listener);
+        void Emit(IEventEmitter sender, IEvent @event, EventExecutedCallback cb = null, bool global = true);
 
-        void Unsubscribe(ILifecycleObject @object, IEventListener listener);
+        void Emit(IEventEmitter emitter, IEventArgs args, EventExecutedCallback cb = null, bool global = true);
 
-        void Subscribe<T>(ILifecycleObject @object, Action<T> callback);
+        void Subscribe(ILifecycleObject @object, IEventListener listener, string eventEmitter = null);
 
-        void Subscribe(ILifecycleObject @object, string eventName, Action<IEvent> callback);
+        void Subscribe<T>(ILifecycleObject @object, Action<T> callback, string eventEmitter = null) where T: IEvent;
 
-        void Emit(ILifecycleObject sender, IEvent @event, EventExecutedCallback cb = null);
+        void Subscribe(ILifecycleObject @object, string eventName, Action<IEvent> callback, string eventEmitter = null);
+        
+        void Subscribe(ILifecycleObject @object, string eventEmitter = null);
 
-        void UnsubcribeAllEvents(ILifecycleObject @object);
+        void Unsubscribe(ILifecycleObject @object, string eventEmitter = null);
 
-        void SubscribeAllEvents(ILifecycleObject @object);
+        void Unsubscribe<T>(ILifecycleObject @object, string eventEmitter = null) where T : IEvent;
+
+        void Unsubscribe(ILifecycleObject @object, string @event, string eventEmitter = null);
+
+        void Unsubscribe(ILifecycleObject @object, IEventListener listener, string eventEmitter = null);
+
     }
 }

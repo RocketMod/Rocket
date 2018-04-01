@@ -43,6 +43,20 @@ namespace Rocket.Tests
             return promise.Task;
         }
 
+        public Task<bool> TestEventing_WithName()
+        {
+            var promise = new TaskCompletionSource<bool>();
+
+            Subscribe("test", (arguments) =>
+            {
+                promise.SetResult(((TestEvent)arguments).Value);
+            });
+
+            Emit(new TestEvent { Value = true });
+
+            return promise.Task;
+        }
+
         protected override void OnLoad()
         {
             Logger.Info("Hello World (From plugin)");
@@ -52,5 +66,6 @@ namespace Rocket.Tests
         {
             Logger.Info("Bye World (From plugin)");
         }
+
     }
 }

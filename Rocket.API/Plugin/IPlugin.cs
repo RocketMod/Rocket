@@ -8,9 +8,7 @@ namespace Rocket.API.Plugin
     public interface IPlugin : ILifecycleObject
     {
         IEnumerable<string> Capabilities { get; }
-
-        string Name { get; }
-
+        
         void Load();
 
         void Unload();
