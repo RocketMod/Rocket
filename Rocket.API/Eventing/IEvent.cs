@@ -2,11 +2,8 @@
 
 namespace Rocket.API.Eventing
 {
-    public delegate void EventExecutedCallback(IEvent @event);
     public interface IEvent
     {
-        event EventExecutedCallback OnEventExecuted;
-
         /// <summary>
         /// The event sender.
         /// </summary>

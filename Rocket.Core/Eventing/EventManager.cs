@@ -146,7 +146,7 @@ namespace Rocket.Core.Eventing
             _eventListeners.Add(action);
         }
 
-        public void Emit(ILifecycleObject sender, IEvent @event)
+        public void Emit(ILifecycleObject sender, IEvent @event, EventExecutedCallback cb = null)
         {
             List<EventAction> actions =
                 _eventListeners.Where(c => c.TargetEventType.Equals(@event.Name, StringComparison.OrdinalIgnoreCase))
@@ -162,6 +162,12 @@ namespace Rocket.Core.Eventing
                        || info.Handler.IgnoreCancelled
                  select info)
                 .ToList();
+
+            if (targetActions.Count == 0)
+            {
+                cb?.Invoke(@event);
+                return;
+            }
 
             int executionCount = 0;
             foreach (EventAction info in targetActions)
@@ -179,20 +185,7 @@ namespace Rocket.Core.Eventing
 
                     //all actions called; run OnEventExecuted
                     if (executionCount == targetActions.Count)
-                    {
-                        MulticastDelegate eventDelagate =
-                           (MulticastDelegate)@event.GetType().GetField(nameof(IEvent.OnEventExecuted),
-                               BindingFlags.Instance |
-                               BindingFlags.NonPublic)
-                               .GetValue(@event);
-
-                        Delegate[] delegates = eventDelagate.GetInvocationList();
-
-                        foreach (Delegate dlg in delegates)
-                        {
-                            dlg.Method.Invoke(dlg.Target, new[] { @event });
-                        }
-                    }
+                        cb?.Invoke(@event);
                 }, (ExecutionTargetContext)@event.ExecutionTarget);
             }
         }

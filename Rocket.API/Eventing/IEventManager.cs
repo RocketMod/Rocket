@@ -1,8 +1,8 @@
 ﻿using System;
-using Rocket.API.Plugin;
 
 namespace Rocket.API.Eventing
 {
+    public delegate void EventExecutedCallback(IEvent @event);
     public interface IEventManager
     {
         void Subscribe(ILifecycleObject @object, IEventListener listener);
@@ -13,7 +13,7 @@ namespace Rocket.API.Eventing
 
         void Subscribe(ILifecycleObject @object, string eventName, Action<IEvent> callback);
 
-        void Emit(ILifecycleObject sender, IEvent @event);
+        void Emit(ILifecycleObject sender, IEvent @event, EventExecutedCallback cb = null);
 
         void UnsubcribeAllEvents(ILifecycleObject @object);
 
