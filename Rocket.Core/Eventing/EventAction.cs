@@ -10,7 +10,7 @@ namespace Rocket.Core.Eventing
     {
         public EventAction(
             ILifecycleObject owner, 
-            Action<IEvent> action, 
+            Action<IEventEmitter, IEvent> action, 
             EventHandler handler, 
             string eventName,
             string emitterName)
@@ -21,8 +21,9 @@ namespace Rocket.Core.Eventing
             TargetEventType = eventName;
             EmitterName = emitterName;
         }
-
-        public EventAction(ILifecycleObject owner,
+        
+        public EventAction(
+            ILifecycleObject owner,
             IEventListener listener,
             MethodInfo method,
             EventHandler handler, 
@@ -39,8 +40,10 @@ namespace Rocket.Core.Eventing
             TargetEventType = targetType.Name.Replace("Event", "");
             EmitterName = emitterName;
         }
+        
+        public ILifecycleObject Owner { get; set; }
 
-        public Action<IEvent> Action { get; }
+        public Action<IEventEmitter, IEvent> Action { get; }
 
         public MethodInfo Method { get; }
 
@@ -48,15 +51,13 @@ namespace Rocket.Core.Eventing
 
         public IEventListener Listener { get; }
 
-        public ILifecycleObject Owner { get; }
-
         public string TargetEventType { get; }
         public string EmitterName { get; }
 
-        public void Invoke(IEvent @event)
+        public void Invoke(IEventEmitter owner, IEvent @event)
         {
-            Action?.Invoke(@event);
-            Method?.Invoke(Owner, new object[] { @event });
+            Action?.Invoke(owner, @event);
+            Method?.Invoke(owner, new object[] { @event });
         }
     }
 }

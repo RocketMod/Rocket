@@ -11,9 +11,9 @@ namespace Rocket.API.Eventing
 
         void Subscribe(ILifecycleObject @object, IEventListener listener, string eventEmitter = null);
 
-        void Subscribe<T>(ILifecycleObject @object, Action<T> callback, string eventEmitter = null) where T: IEvent;
+        void Subscribe<T>(ILifecycleObject @object, Action<IEventEmitter, T> callback, string eventEmitter = null) where T: IEvent;
 
-        void Subscribe(ILifecycleObject @object, string eventName, Action<IEvent> callback, string eventEmitter = null);
+        void Subscribe(ILifecycleObject @object, string eventName, Action<IEventEmitter, IEvent> callback, string eventEmitter = null);
         
         void Subscribe(ILifecycleObject @object);
 

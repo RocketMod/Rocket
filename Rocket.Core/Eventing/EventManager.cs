@@ -42,20 +42,20 @@ namespace Rocket.Core.Eventing
         }
 
 
-        public void Subscribe<T>(ILifecycleObject @object, Action<T> callback, string emitterName = null) where T: IEvent
+        public void Subscribe<T>(ILifecycleObject @object, Action<IEventEmitter, T> callback, string emitterName = null) where T: IEvent
         {
             var handler = (EventHandler)callback.GetType().GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault() ??
                           new EventHandler();
 
             var eventName = GetEventName(typeof(T));
-            EventAction action = new EventAction(@object, (@event) =>
+            EventAction action = new EventAction(@object, (sender, @event) =>
             {
-                @callback.Invoke((T)@event);
+                @callback.Invoke(sender, (T)@event);
             }, handler, eventName, emitterName);
             _eventListeners.Add(action);
         }
 
-        public void Subscribe(ILifecycleObject @object, string eventName, Action<IEvent> callback, string emitterName = null)
+        public void Subscribe(ILifecycleObject @object, string eventName, Action<IEventEmitter, IEvent> callback, string emitterName = null)
         {
             var handler = (EventHandler)callback.GetType().GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault() ??
                           new EventHandler();
@@ -102,7 +102,7 @@ namespace Rocket.Core.Eventing
                 Scheduler.Schedule(pl, () =>
                 {
                     executionCount++;
-                    info.Invoke(@event);
+                    info.Invoke(sender, @event);
 
                     //all actions called; run OnEventExecuted
                     if (executionCount == targetActions.Count)
