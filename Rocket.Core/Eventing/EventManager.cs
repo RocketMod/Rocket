@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Rocket.API;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Scheduler;
 using EventHandler = Rocket.API.Eventing.EventHandler;
@@ -58,11 +59,12 @@ namespace Rocket.Core.Eventing
 
     public class EventManager : IEventManager
     {
-        private readonly ITaskScheduler _scheduler;
+        private readonly IDependencyContainer _container;
+        private ITaskScheduler Scheduler => _container.Get<ITaskScheduler>();
 
-        public EventManager(ITaskScheduler scheduler)
+        public EventManager(IDependencyContainer container)
         {
-            _scheduler = scheduler;
+            _container = container;
         }
 
         private readonly List<EventAction> _eventListeners = new List<EventAction>();
@@ -165,7 +167,7 @@ namespace Rocket.Core.Eventing
                     continue;
                 }
 
-                _scheduler.Schedule(pl, () => { info.Invoke(@event); }, (ExecutionTargetContext) @event.ExecutionTarget);
+                Scheduler.Schedule(pl, () => { info.Invoke(@event); }, (ExecutionTargetContext) @event.ExecutionTarget);
             }
         }
 

@@ -1,5 +1,4 @@
 ﻿using Rocket.API.DependencyInjection;
-using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
 using System;
@@ -38,7 +37,7 @@ namespace Rocket.Core.Plugins
         IDependencyContainer container;
         ILogger logger;
 
-        public PluginManager(IDependencyContainer dependencyContainer,IEventManager eventManager, ILogger logger)
+        public PluginManager(IDependencyContainer dependencyContainer, ILogger logger)
         {
             this.parentContainer = dependencyContainer;
             this.logger = logger;

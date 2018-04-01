@@ -17,7 +17,6 @@ namespace Rocket.Tests
         public TestPlugin(IDependencyContainer container) : base(container)
         {
             Logger.Info("Constructing TestPlugin (From plugin)");
-
         }
 
         class TestEvent : Event

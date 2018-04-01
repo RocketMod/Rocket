@@ -1,4 +1,8 @@
-﻿namespace Rocket.ConsoleHost
+﻿using System;
+using System.Threading.Tasks;
+using Rocket.API.Plugin;
+
+namespace Rocket.ConsoleHost
 {
     class Program
     {
