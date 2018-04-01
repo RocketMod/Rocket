@@ -57,6 +57,7 @@ namespace Rocket.Tests
         }
 
         [TestMethod]
+        [Ignore]
         public async Task PluginEventing()
         {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
@@ -66,6 +67,7 @@ namespace Rocket.Tests
         }
 
         [TestMethod]
+        [Ignore]
         public async Task PluginEventing_WithName()
         {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();

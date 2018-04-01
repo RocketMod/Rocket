@@ -7,7 +7,7 @@ namespace Rocket.API.Eventing
     {
         void Emit(IEventEmitter sender, IEvent @event, EventExecutedCallback cb = null, bool global = true);
 
-        void Emit(IEventEmitter emitter, IEventArgs args, EventExecutedCallback cb = null, bool global = true);
+        void Emit(IEventEmitter emitter, string eventName, IEventArgs args, EventExecutedCallback cb = null, bool global = true);
 
         void Subscribe(ILifecycleObject @object, IEventListener listener, string eventEmitter = null);
 
@@ -15,9 +15,9 @@ namespace Rocket.API.Eventing
 
         void Subscribe(ILifecycleObject @object, string eventName, Action<IEvent> callback, string eventEmitter = null);
         
-        void Subscribe(ILifecycleObject @object, string eventEmitter = null);
+        void Subscribe(ILifecycleObject @object);
 
-        void Unsubscribe(ILifecycleObject @object, string eventEmitter = null);
+        void Unsubscribe(ILifecycleObject @object);
 
         void Unsubscribe<T>(ILifecycleObject @object, string eventEmitter = null) where T : IEvent;
 

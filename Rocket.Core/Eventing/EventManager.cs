@@ -23,11 +23,11 @@ namespace Rocket.Core.Eventing
 
         private readonly List<EventAction> _eventListeners = new List<EventAction>();
 
-        public void Subscribe(ILifecycleObject @object, string emitterName = null)
+        public void Subscribe(ILifecycleObject @object)
         {
             var listeners = ReflectionHelper.FindTypes<IAutoRegisteredListener>(@object, false);
             foreach (var listener in listeners)
-                Subscribe(@object, (IEventListener)Activator.CreateInstance(listener, true), emitterName);
+                Subscribe(@object, (IEventListener)Activator.CreateInstance(listener, true), null);
         }
 
         public void Subscribe(ILifecycleObject @object, IEventListener listener, string emitterName = null)
@@ -47,7 +47,7 @@ namespace Rocket.Core.Eventing
             var handler = (EventHandler)callback.GetType().GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault() ??
                           new EventHandler();
 
-            var eventName = typeof(T).Name.Replace("Event", "");
+            var eventName = GetEventName(typeof(T));
             EventAction action = new EventAction(@object, (@event) =>
             {
                 @callback.Invoke((T)@event);
@@ -80,6 +80,7 @@ namespace Rocket.Core.Eventing
                        || !((ICancellableEvent)@event).IsCancelled
                        || info.Handler.IgnoreCancelled
                  where CheckEmitter(info, sender.Name)
+                 where CheckEvent(info, GetEventName(@event.GetType()))
                  select info)
                 .ToList();
 
@@ -109,25 +110,25 @@ namespace Rocket.Core.Eventing
                 }, (ExecutionTargetContext)@event.ExecutionTarget);
             }
         }
-
-        public void Emit(IEventEmitter emitter, IEventArgs args, EventExecutedCallback cb = null, bool global = true)
+        
+        public void Emit(IEventEmitter emitter, string eventName, IEventArgs args, EventExecutedCallback cb = null, bool global = true)
         {
             throw new NotImplementedException();
         }
 
-        public void Unsubscribe(ILifecycleObject @object, string emitterName = null)
+        public void Unsubscribe(ILifecycleObject @object)
         {
-            _eventListeners.RemoveAll(c => c.Owner == @object && CheckEmitter(c, emitterName));
+            _eventListeners.RemoveAll(c => c.Owner == @object);
         }
 
         public void Unsubscribe<T>(ILifecycleObject @object, string eventEmitter = null) where T : IEvent
         {
-            throw new NotImplementedException();
+            _eventListeners.RemoveAll(c => c.Owner == @object && CheckEmitter(c, @eventEmitter));
         }
 
-        public void Unsubscribe(ILifecycleObject @object, string @event, string eventEmitter = null)
+        public void Unsubscribe(ILifecycleObject @object, string @event, string eventEmitter)
         {
-            throw new NotImplementedException();
+            _eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, @event) && CheckEmitter(c, @eventEmitter));
         }
 
         public void Unsubscribe(ILifecycleObject @object, IEventListener listener, string emitterName = null)
@@ -147,6 +148,17 @@ namespace Rocket.Core.Eventing
                 return true;
 
             return eventAction.EmitterName.Equals(emitterName, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private bool CheckEvent(EventAction eventAction, string @event)
+        {
+            return eventAction.TargetEventType.Equals(@event, StringComparison.OrdinalIgnoreCase);
+        }
+
+
+        private string GetEventName(Type type)
+        {
+            return type.Name.Replace("Event", "");
         }
 
         private void RegisterEventsInternal(ILifecycleObject @object, IEventListener listener, string emitterName = null)
