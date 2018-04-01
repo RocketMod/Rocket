@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Eventing;
 using Rocket.API.Scheduler;
 using Rocket.Core.Plugins;
 using Rocket.Core.Eventing;
@@ -23,7 +24,7 @@ namespace Rocket.Tests
         {
             public bool Value { get; set; }
 
-            public TestEvent() : base(ExecutionTargetContext.Sync)
+            public TestEvent() : base(EventExecutionTargetContext.Sync)
             {
 
             }

@@ -5,6 +5,8 @@ using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
 using System.Threading.Tasks;
+using Rocket.ConsoleImplementation;
+using Rocket.Core.DependencyInjection;
 
 namespace Rocket.Tests
 {
@@ -22,7 +24,13 @@ namespace Rocket.Tests
         [TestInitialize]
         public void Bootstrap()
         {
-            runtime = Runtime.Bootstrap();
+            var host = new ConsoleHost
+            {
+                IsTestEnviroment = true
+            };
+
+            host.Start();
+            runtime = host.Runtime;
         }
 
         [TestMethod]

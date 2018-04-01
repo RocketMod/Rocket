@@ -9,10 +9,17 @@
         /// <summary>
         /// Execute action asynchronously in a different thread
         /// </summary>
-        Async,
+        NextAsyncFrame,
+        /// <summary>
+        /// Execute action on next physic update
+        /// </summary>
+        NextPhysicsUpdate,
         /// <summary>
         /// Execute action on current thread (will block current thread)
         /// </summary>
-        Sync
+        Sync,
+        EveryFrame,
+        EveryAsyncFrame,
+        EveryPhysicsUpdate
     }
 }

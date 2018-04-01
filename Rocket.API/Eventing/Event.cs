@@ -1,8 +1,6 @@
-﻿using Rocket.API.Eventing;
-using Rocket.API;
-using Rocket.API.Scheduler;
+﻿using Rocket.API.Scheduler;
 
-namespace Rocket.Core.Eventing
+namespace Rocket.API.Eventing
 {
     public class Event : IEvent
     {
@@ -12,14 +10,14 @@ namespace Rocket.Core.Eventing
         }
 
         /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget"/></param>
-        protected Event(ExecutionTargetContext executionTarget = ExecutionTargetContext.NextFrame) : this(null, executionTarget)
+        protected Event(EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync) : this(null, executionTarget)
         {
             
         }
 
         /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget"/></param>
         /// <param name="name">The name of the event. Will be auto set when null.</param>
-        protected Event(string name = null, ExecutionTargetContext executionTarget = ExecutionTargetContext.NextFrame)
+        protected Event(string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync)
         {
             Name = name ?? GetType().Name.Replace("Event", "");
             ExecutionTarget = executionTarget;
@@ -27,6 +25,6 @@ namespace Rocket.Core.Eventing
 
         public ILifecycleObject Sender { get; }
         public string Name { get; }
-        public ExecutionTargetContext ExecutionTarget { get; }
+        public EventExecutionTargetContext ExecutionTarget { get; }
     }
 }

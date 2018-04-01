@@ -18,6 +18,6 @@ namespace Rocket.API.Eventing
         /// True if the event should be fired async
         /// Notice: Some APIs do not work correctly async 
         /// </summary>
-        ExecutionTargetContext ExecutionTarget { get; }
+        EventExecutionTargetContext ExecutionTarget { get; }
     }
 }

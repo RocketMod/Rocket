@@ -52,9 +52,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="Testing.cs" />
-    <Compile Include="Implementation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\DependencyRegistrator.cs" />
     <Compile Include="TestPlugin.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -68,6 +66,10 @@
     <ProjectReference Include="..\Rocket.Compability\Rocket.Compability.csproj">
       <Project>{01263b0d-9ce3-4d5a-afcb-165592ef24b5}</Project>
       <Name>Rocket.Compability</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Rocket.ConsoleImplementation\Rocket.ConsoleImplementation.csproj">
+      <Project>{174e9a9b-7c64-48c9-a5be-beb0282f52fc}</Project>
+      <Name>Rocket.ConsoleImplementation</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj">
       <Project>{a7056ab1-c5f5-493b-8e47-dc42de69961d}</Project>

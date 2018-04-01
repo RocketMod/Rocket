@@ -165,7 +165,7 @@ namespace Rocket.Core.Eventing
                     continue;
                 }
 
-                _scheduler.ScheduleAction(pl, () => { info.Invoke(@event); }, @event.ExecutionTarget);
+                _scheduler.Schedule(pl, () => { info.Invoke(@event); }, (ExecutionTargetContext) @event.ExecutionTarget);
             }
         }
 

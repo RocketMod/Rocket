@@ -13,28 +13,31 @@ namespace Rocket
 {
     public class Runtime : IRuntime
     {
-
-        private static Runtime runtime = null;
-        public static IRuntime Bootstrap()
+        public static IRuntime Bootstrap(IDependencyContainer container)
         {
-            if (runtime == null) runtime = new Runtime();
+            var runtime = new Runtime(container);
+            runtime.Init();
             return runtime;
         }
 
-        public IDependencyContainer Container { get; private set; }
+        public IDependencyContainer Container { get; }
 
         public IDependencyResolver Resolver { get; private set; }
 
-        public Runtime()
+        private Runtime(IDependencyContainer container)
         {
-            Container = new UnityDependencyContainer();
+            Container = container;
+        }
+
+        private void Init()
+        {
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, ConsoleLogger>();
             Container.RegisterSingletonType<IPluginManager, PluginManager>();
             Container.RegisterSingletonType<IEventManager, EventManager>();
             Container.Activate(typeof(RegistrationByConvention));
 
-            IImplementation implementation =  Container.Get<IImplementation>();
+            IImplementation implementation = Container.Get<IImplementation>();
             implementation.Load(this);
         }
     }
