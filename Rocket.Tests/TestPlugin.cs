@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Scheduler;
@@ -33,8 +34,9 @@ namespace Rocket.Tests
         {
             var promise = new TaskCompletionSource<bool>();
 
-            Subscribe<TestEvent>((arguments) =>
+            Subscribe<TestEvent>((sender, arguments) =>
             {
+                Assert.Equals(sender, this);
                 promise.SetResult(arguments.Value);
             });
 
@@ -47,8 +49,9 @@ namespace Rocket.Tests
         {
             var promise = new TaskCompletionSource<bool>();
 
-            Subscribe("test", (arguments) =>
+            Subscribe("test", (sender, arguments) =>
             {
+                Assert.Equals(sender, this);
                 promise.SetResult(((TestEvent)arguments).Value);
             });
 

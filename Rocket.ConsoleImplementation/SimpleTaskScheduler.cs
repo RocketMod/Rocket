@@ -80,11 +80,14 @@ namespace Rocket.ConsoleImplementation
             return task;
         }
 
-        private TaskScheduleEvent TriggerEvent(SimpleTask task, EventExecutedCallback cb = null)
+        private void TriggerEvent(SimpleTask task, EventExecutedCallback cb = null)
         {
             var e = new TaskScheduleEvent(task);
 
-            _eventManager.Emit(task.Owner, e, (@event) =>
+            if (!(task.Owner is IEventEmitter owner))
+                return;
+
+            _eventManager.Emit(owner, e, (@event) =>
             {
                 task.IsCancelled = e.IsCancelled;
 
@@ -93,8 +96,6 @@ namespace Rocket.ConsoleImplementation
 
                 cb?.Invoke(@event);
             });
-
-            return e;
         }
 
         public bool CancelTask(ITask t)

@@ -49,10 +49,10 @@ namespace Rocket.Core.Plugins
 
         }
 
-        public void Subscribe<T>(Action<T> callback) where T : IEvent =>
+        public void Subscribe<T>(Action<IEventEmitter, T> callback) where T : IEvent =>
             EventManager.Subscribe(this, callback);
 
-        public void Subscribe(string eventName, Action<IEvent> callback) =>
+        public void Subscribe(string eventName, Action<IEventEmitter, IEvent> callback) =>
             EventManager.Subscribe(this, eventName, callback);
 
         public void Emit(IEvent @event) => EventManager.Emit(this, @event);
