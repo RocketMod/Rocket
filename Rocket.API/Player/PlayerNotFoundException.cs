@@ -7,7 +7,7 @@ namespace Rocket.API.Player
         public readonly string Name;
         public readonly string ID;
 
-        public PlayerNotFoundException(string id, string name) : base("The requested plasyer couldn't be found.")
+        public PlayerNotFoundException(string id = null, string name = null) : base("The requested plasyer couldn't be found.")
         {
             ID = id;
             Name = name;
