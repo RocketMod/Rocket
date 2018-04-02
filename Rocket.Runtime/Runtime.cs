@@ -36,9 +36,8 @@ namespace Rocket
             Container.RegisterSingletonType<IEventManager, EventManager>();
             Container.RegisterSingletonType<IPluginManager, PluginManager>();
             Container.Activate(typeof(RegistrationByConvention));
-
-            IImplementation implementation = Container.Get<IImplementation>();
-            implementation.Load(this);
+            Container.Get<IImplementation>().Load(this);
+            Container.Get<IPluginManager>().Init();
         }
     }
 }
