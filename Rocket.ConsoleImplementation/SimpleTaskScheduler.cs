@@ -80,7 +80,7 @@ namespace Rocket.ConsoleImplementation
             return task;
         }
 
-        private void TriggerEvent(SimpleTask task, EventExecutedCallback cb = null)
+        private void TriggerEvent(SimpleTask task, EventCallback cb = null)
         {
             var e = new TaskScheduleEvent(task);
 

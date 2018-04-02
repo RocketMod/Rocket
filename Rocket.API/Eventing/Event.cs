@@ -45,5 +45,7 @@ namespace Rocket.API.Eventing
                 return args;
             }
         }
+
+        public bool Global { get; private set; }
     }
 }

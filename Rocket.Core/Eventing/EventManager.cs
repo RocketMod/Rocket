@@ -65,7 +65,7 @@ namespace Rocket.Core.Eventing
             _eventListeners.Add(action);
         }
 
-        public void Emit(IEventEmitter sender, IEvent @event, EventExecutedCallback cb = null, bool global = true)
+        public void Emit(IEventEmitter sender, IEvent @event, EventCallback cb = null, bool global = true)
         {
             List<EventAction> actions =
                 _eventListeners.Where(c => c.TargetEventType.Equals(@event.Name, StringComparison.OrdinalIgnoreCase))
@@ -111,7 +111,7 @@ namespace Rocket.Core.Eventing
             }
         }
         
-        public void Emit(IEventEmitter emitter, string eventName, IEventArgs args, EventExecutedCallback cb = null, bool global = true)
+        public void Emit(IEventEmitter emitter, string eventName,  EventCallback cb = null, bool global = true)
         {
             throw new NotImplementedException();
         }
