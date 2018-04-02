@@ -7,6 +7,6 @@ namespace Rocket.API.Commands
 {
     public interface ICommandHandler
     {
-        bool HandleCommand(string command);
+        bool HandleCommand(string commandLine);
     }
 }

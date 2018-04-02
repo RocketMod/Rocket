@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using Rocket.API.Eventing;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.Plugins
 {
@@ -46,7 +47,10 @@ namespace Rocket.Core.Plugins
             this.logger = logger;
             _eventManager = eventManager;
             container = dependencyContainer.CreateChildContainer();
+        }
 
+        public void Init()
+        {
             Directory.CreateDirectory(pluginsDirectory);
             pluginAssemblies = getAssembliesFromDirectory(pluginsDirectory);
 
@@ -71,7 +75,7 @@ namespace Rocket.Core.Plugins
                 return null;
             };
 
-            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 loadPluginFromAssembly(assembly);
             }
@@ -107,13 +111,36 @@ namespace Rocket.Core.Plugins
             {
                 types = e.Types;
             }
+
+            Type pluginType = null;
+            List<Type> listeners = new List<Type>();
+
             foreach (Type type in types.Where(t => t != null))
             {
-                if (typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
+                if (type.IsAbstract || type.IsInterface)
+                    continue;
+
+                if (typeof(IAutoRegisterEventListener).IsAssignableFrom(type))
                 {
-                    IPlugin pluginInstance = (IPlugin)parentContainer.Activate(type);
-                    container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
+                    listeners.Add(type);
                 }
+
+                if (pluginType == null && typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type))
+                {
+                    pluginType = type;
+                }
+            }
+
+            if (pluginType == null)
+                return;
+
+            IPlugin pluginInstance = (IPlugin)parentContainer.Activate(pluginType);
+            container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
+
+            foreach (var listener in listeners)
+            {
+                var instance = (IEventListener) Activator.CreateInstance(listener, new object[0]);
+                _eventManager.AddEventListener(pluginInstance, instance);
             }
         }
 
@@ -126,7 +153,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public bool HandleCommand(string command)
+        public bool HandleCommand(string commandLine)
         {
             return true;    
         }

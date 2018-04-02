@@ -98,13 +98,19 @@ namespace Rocket.Core.Eventing
 
         public void Unsubscribe(ILifecycleObject @object, Type eventType, Type eventEmitterType)
         {
-            eventListeners.RemoveAll(c =>
-                c.Owner == @object && CheckEvent(c, GetEventName(eventType))
+            eventListeners.RemoveAll(c => c.Owner == @object 
+                                   && CheckEvent(c, GetEventName(eventType))
                                    && CheckEmitter(c, GetEmitterName(eventEmitterType)));
         }
 
         public void AddEventListener(ILifecycleObject @object, IEventListener eventListener)
         {
+            // ReSharper disable once UseIsOperator.2
+            if (!typeof(IEventListener<>).IsInstanceOfType(eventListener))
+            {
+                throw new ArgumentException("The eventListener to register has to implement at least one IEventListener<X>!", nameof(eventListener));
+            }
+
             if(eventListeners.Any(c => c.Listener == eventListener))
                 return;
 

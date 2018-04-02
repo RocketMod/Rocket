@@ -51,6 +51,7 @@
     <Compile Include="Eventing\EventHandler.cs" />
     <Compile Include="Eventing\GenericCancellableEvent.cs" />
     <Compile Include="Eventing\GenericEvent.cs" />
+    <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="DependencyInjection\UnityInstanceNotResolvedException.cs" />
     <Compile Include="Eventing\EventManager.cs" />

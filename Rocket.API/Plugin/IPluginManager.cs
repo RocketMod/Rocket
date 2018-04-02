@@ -14,6 +14,8 @@ namespace Rocket.API.Plugin
 
         bool PluginExists(string name);
 
+        void Init();
+
         bool LoadPlugin(string name);
 
         bool UnloadPlugin(string name);
