@@ -11,8 +11,6 @@ namespace Rocket.API.Player
         {
             ID = id;
             Name = name;
-
-            new PlayerNotFoundException();
         }
     }
 }
