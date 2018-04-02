@@ -37,7 +37,7 @@ namespace Rocket.ConsoleImplementation
         {
             var task = new SimpleTask(this, @object, action, target);
 
-            TriggerEvent(task, (@event) =>
+            TriggerEvent(task, (sender, @event) =>
             {
                 if (target != ExecutionTargetContext.Sync && @object.IsAlive)
                     return;
@@ -94,7 +94,7 @@ namespace Rocket.ConsoleImplementation
                 if (!e.IsCancelled)
                     _tasks.Add(task);
 
-                cb?.Invoke(@event);
+                cb?.Invoke(owner, @event);
             });
         }
 

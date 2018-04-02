@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Rocket.API.Eventing;
 
 namespace Rocket.Core.Plugins
 {
@@ -33,14 +34,17 @@ namespace Rocket.Core.Plugins
             return l;
         }
 
-        IDependencyContainer parentContainer;
-        IDependencyContainer container;
-        ILogger logger;
+        private readonly IDependencyContainer parentContainer;
+        private readonly IDependencyContainer container;
+        private ILogger logger;
 
-        public PluginManager(IDependencyContainer dependencyContainer, ILogger logger)
+        private readonly IEventManager _eventManager;
+
+        public PluginManager(IDependencyContainer dependencyContainer, ILogger logger, IEventManager eventManager)
         {
             this.parentContainer = dependencyContainer;
             this.logger = logger;
+            _eventManager = eventManager;
             container = dependencyContainer.CreateChildContainer();
 
             Directory.CreateDirectory(pluginsDirectory);

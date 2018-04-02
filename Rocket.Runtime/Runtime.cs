@@ -33,8 +33,8 @@ namespace Rocket
         {
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, ConsoleLogger>();
-            Container.RegisterSingletonType<IPluginManager, PluginManager>();
             Container.RegisterSingletonType<IEventManager, EventManager>();
+            Container.RegisterSingletonType<IPluginManager, PluginManager>();
             Container.Activate(typeof(RegistrationByConvention));
 
             IImplementation implementation = Container.Get<IImplementation>();
