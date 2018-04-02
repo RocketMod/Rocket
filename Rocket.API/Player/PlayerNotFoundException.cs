@@ -2,8 +2,27 @@
 
 namespace Rocket.API.Player
 {
-    public class PlayerNotFoundException : Exception
+    public sealed class PlayerNotFoundException : Exception
     {
-        public PlayerNotFoundException() : base($"Could not find the requested player.") { }
+        public string Name { get; private set; } = null;
+        public string ID { get; private set; } = null;
+
+        public static PlayerNotFoundException ThrowByName(string name)
+        {
+            PlayerNotFoundException ex = new PlayerNotFoundException();
+
+            ex.Name = name;
+
+            return ex;
+        }
+
+        public static PlayerNotFoundException ThrowByID(string id)
+        {
+            PlayerNotFoundException ex = new PlayerNotFoundException();
+
+            ex.ID = id;
+
+            return ex;
+        }
     }
 }
