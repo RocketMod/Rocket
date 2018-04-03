@@ -5,14 +5,12 @@ using Rocket.API.Scheduler;
 
 namespace Rocket.ConsoleImplementation
 {
-    class ConsoleImplementation : IImplementation
+    public class ConsoleImplementation : IImplementation
     {
         public void Load(IRuntime runtime)
         {
             Console.WriteLine("Loading...");
 
-            /* Register implementations here which have dependencies on stuff registered in Runtime */
-            runtime.Container.RegisterSingletonType<ITaskScheduler, SimpleTaskScheduler>();
         }
 
         public IEnumerable<string> Capabilities => new List<string>();

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Rocket.API.Plugin;
 
-namespace Rocket.ConsoleHost
+namespace Rocket.ConsoleImplementation
 {
     class Program
     {
