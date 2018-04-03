@@ -52,6 +52,7 @@
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\EventExecutionTargetContext.cs" />
     <Compile Include="Eventing\IEventEmitter.cs" />
+    <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />
     <Compile Include="Eventing\ICancellableEvent.cs" />
     <Compile Include="Eventing\IEvent.cs" />
