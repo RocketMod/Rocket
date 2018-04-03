@@ -31,6 +31,7 @@ namespace Rocket
 
         private Runtime()
         {
+            Container = new UnityDependencyContainer();
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, ConsoleLogger>();
             Container.RegisterSingletonType<IEventManager, EventManager>();
