@@ -24,13 +24,7 @@ namespace Rocket.Tests
         [TestInitialize]
         public void Bootstrap()
         {
-            var host = new ConsoleHost
-            {
-                IsTestEnviroment = true
-            };
-
-            host.Start();
-            runtime = host.Runtime;
+            Runtime.Bootstrap();
         }
 
         [TestMethod]
