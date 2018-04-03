@@ -5,7 +5,7 @@ namespace Rocket.Core.Permissions
 {
     public class PermissionProvider : IPermissionProvider
     {
-        public bool HasPermissions(IPlayer player)
+        public bool HasPermissions(IPermissionable permissionable)
         {
             return true;
         }

@@ -2,7 +2,7 @@
 using System.Reflection;
 using Rocket.API;
 using Rocket.API.Eventing;
-using EventHandler = Rocket.API.Eventing.EventHandler;
+using EventHandler = Rocket.Core.Eventing.EventHandler;
 
 namespace Rocket.Core.Eventing
 {
@@ -10,54 +10,48 @@ namespace Rocket.Core.Eventing
     {
         public EventAction(
             ILifecycleObject owner, 
-            Action<IEventEmitter, IEvent> action, 
+            EventCallback action, 
             EventHandler handler, 
-            string eventName,
-            string emitterName)
+            string eventName)
         {
             Owner = owner;
             Action = action;
             Handler = handler;
-            TargetEventType = eventName;
-            EmitterName = emitterName;
+            TargetEventName = eventName;
         }
         
-        public EventAction(
-            ILifecycleObject owner,
+        public EventAction(ILifecycleObject owner,
             IEventListener listener,
             MethodInfo method,
-            EventHandler handler, 
-            string emitterName)
+            EventHandler handler, Type type)
         {
             Owner = owner;
             Listener = listener;
-            Method = method;
+            Action = (EventCallback) Delegate.CreateDelegate(typeof(EventCallback), listener, method);
             Handler = handler;
-
-            if (method.GetParameters().Length != 1 || !typeof(IEvent).IsAssignableFrom(method.GetParameters()[0].ParameterType))
-                throw new Exception("Method: " + method.Name + " in type " + method.DeclaringType.FullName + " does not have correct signature for events!");
-            Type targetType = method.GetParameters()[0].ParameterType;
-            TargetEventType = targetType.Name.Replace("Event", "");
-            EmitterName = emitterName;
+            TargetEventName = EventManager.GetEventName(type);
+            TargetEventType = type;
         }
-        
+
+        public EventAction(ILifecycleObject owner, EventCallback action, EventHandler handler, Type eventType)
+        {
+            Owner = owner;
+            Action = action;
+            Handler = handler;
+            TargetEventName = EventManager.GetEventName(eventType);
+            TargetEventType = eventType;
+        }
+
+        public Type TargetEventType { get; set; }
+
         public ILifecycleObject Owner { get; set; }
 
-        public Action<IEventEmitter, IEvent> Action { get; }
-
-        public MethodInfo Method { get; }
-
+        public EventCallback Action { get; }
+       
         public EventHandler Handler { get; }
 
         public IEventListener Listener { get; }
 
-        public string TargetEventType { get; }
-        public string EmitterName { get; }
-
-        public void Invoke(IEventEmitter owner, IEvent @event)
-        {
-            Action?.Invoke(owner, @event);
-            Method?.Invoke(owner, new object[] { @event });
-        }
+        public string TargetEventName { get; }
     }
 }

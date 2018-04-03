@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using Rocket.API.Handlers;
 
 namespace Rocket.API.Commands
 {
-    public interface ICommandHandler
+    public interface ICommandHandler : IHandler
     {
-        bool HandleCommand(string command);
+        /// <summary>
+        /// Handles a command
+        /// </summary>
+        /// <param name="caller">The caller</param>
+        /// <param name="commandLine">The command line</param>
+        /// <returns>true if the command was handled, false when not</returns>
+        bool HandleCommand(ICommandCaller caller, string commandLine);
     }
 }

@@ -24,7 +24,7 @@ namespace Rocket.Tests
         [TestInitialize]
         public void Bootstrap()
         {
-            Runtime.Bootstrap();
+            runtime = Runtime.Bootstrap();
         }
 
         [TestMethod]

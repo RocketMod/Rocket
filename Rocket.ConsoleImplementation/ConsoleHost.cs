@@ -10,16 +10,13 @@ namespace Rocket.ConsoleImplementation
     {
         private Thread _asyncThread;
 
-        private static IDependencyContainer _container;
         public IRuntime Runtime { get; private set; }
 
         public bool IsTestEnviroment { get; set; }
 
         public void Start()
         {
-            _container = new UnityDependencyContainer();
-            _container.RegisterSingletonType<IImplementation, ConsoleImplementation>();
-            Runtime = Rocket.Runtime.Bootstrap(_container);
+            Runtime = Rocket.Runtime.Bootstrap();
 
             if (!IsTestEnviroment)
             {

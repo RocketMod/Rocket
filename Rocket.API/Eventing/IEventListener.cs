@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Rocket.API.Eventing
+﻿namespace Rocket.API.Eventing
 {
     public interface IEventListener
     {
-        IDictionary<Type,EventCallback> Callbacks { get; }
+
+    }
+
+    public interface IEventListener<in TEvent> : IEventListener where TEvent : IEvent
+    {
+        void HandleEvent(IEventEmitter emitter, TEvent @event);
     }
 }

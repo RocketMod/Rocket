@@ -12,9 +12,9 @@ namespace Rocket.Core.Plugins
 {
     public abstract class PluginBase : IPlugin
     {
-        public IDependencyContainer Container { get; private set; }
-        public IEventManager EventManager { get; private set; }
-        public ILogger Logger { get; private set; }
+        public IDependencyContainer Container { get; }
+        public IEventManager EventManager { get; }
+        public ILogger Logger { get; }
 
         public abstract IEnumerable<string> Capabilities { get; }
 
@@ -49,13 +49,14 @@ namespace Rocket.Core.Plugins
 
         }
 
-        public void Subscribe<T>(Action<IEventEmitter, T> callback) where T : IEvent =>
+        public void Subscribe<T>(EventCallback<T> callback) where T : IEvent =>
             EventManager.Subscribe(this, callback);
 
-        public void Subscribe(string eventName, Action<IEventEmitter, IEvent> callback) =>
+        public void Subscribe(string eventName, EventCallback callback) =>
             EventManager.Subscribe(this, eventName, callback);
 
         public void Emit(IEvent @event) => EventManager.Emit(this, @event);
+
         public bool IsAlive { get; internal set; }
     }
 }

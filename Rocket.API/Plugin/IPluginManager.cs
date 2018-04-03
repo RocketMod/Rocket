@@ -8,11 +8,13 @@ using System.Text;
 
 namespace Rocket.API.Plugin
 { 
-    public interface IPluginManager : ICommandHandler
+    public interface IPluginManager
     {
         IPlugin GetPlugin(string name);
 
         bool PluginExists(string name);
+
+        void Init();
 
         bool LoadPlugin(string name);
 

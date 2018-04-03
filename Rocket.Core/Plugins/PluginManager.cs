@@ -6,16 +6,21 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Rocket.API.Commands;
+using Rocket.API.Eventing;
+using Rocket.API.Reflection;
 
 namespace Rocket.Core.Plugins
 {
-    public class PluginManager : IPluginManager
+    public class PluginManager : IPluginManager, ICommandProvider
     {
         private static readonly string pluginsDirectory = "./Plugins/";
         private Dictionary<string,string> pluginAssemblies;
 
         private static readonly string packagesDirectory = "./Packages/";
         private Dictionary<string, string> packageAssemblies;
+
+        private Dictionary<IPlugin, List<ICommand>> commands;
 
         private Dictionary<string, string> getAssembliesFromDirectory(string directory, string extension = "*.dll")
         {
@@ -33,15 +38,23 @@ namespace Rocket.Core.Plugins
             return l;
         }
 
-        IDependencyContainer parentContainer;
-        IDependencyContainer container;
-        ILogger logger;
+        private readonly IDependencyContainer parentContainer;
+        private readonly IDependencyContainer container;
+        private readonly ILogger logger;
 
-        public PluginManager(IDependencyContainer dependencyContainer, ILogger logger)
+        private readonly IEventManager _eventManager;
+
+        public PluginManager(IDependencyContainer dependencyContainer, ILogger logger, IEventManager eventManager)
         {
             this.parentContainer = dependencyContainer;
             this.logger = logger;
+            _eventManager = eventManager;
             container = dependencyContainer.CreateChildContainer();
+        }
+
+        public void Init()
+        {
+            commands = new Dictionary<IPlugin, List<ICommand>>();
 
             Directory.CreateDirectory(pluginsDirectory);
             pluginAssemblies = getAssembliesFromDirectory(pluginsDirectory);
@@ -55,19 +68,17 @@ namespace Rocket.Core.Plugins
                 {
                     return Assembly.Load(File.ReadAllBytes(pluginFile));
                 }
-                else
+
                 if (pluginAssemblies.TryGetValue(args.Name, out string packageFile))
                 {
                     return Assembly.Load(File.ReadAllBytes(packageFile));
                 }
-                else
-                {
-                    logger.Error("Could not find dependency: " + args.Name);
-                }
+
+                logger.Error("Could not find dependency: " + args.Name);
                 return null;
             };
 
-            foreach(Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 loadPluginFromAssembly(assembly);
             }
@@ -103,14 +114,48 @@ namespace Rocket.Core.Plugins
             {
                 types = e.Types;
             }
+
+            Type pluginType = null;
+
             foreach (Type type in types.Where(t => t != null))
             {
-                if (typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type) && !type.IsAbstract && !type.IsInterface)
+                if (type.IsAbstract || type.IsInterface)
+                    continue;
+                    
+                if (pluginType == null && typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type))
                 {
-                    IPlugin pluginInstance = (IPlugin)parentContainer.Activate(type);
-                    container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
+                    pluginType = type;
                 }
             }
+
+            if (pluginType == null)
+                return;
+
+            IPlugin pluginInstance = (IPlugin)parentContainer.Activate(pluginType);
+            container.RegisterInstance<IPlugin>(pluginInstance, pluginInstance.Name);
+
+
+            List<Type> listeners = pluginInstance.FindTypes<IEventListener>();
+            List<Type> commands = pluginInstance.FindTypes<ICommand>();
+
+            foreach (var listener in listeners)
+            {
+                var instance = (IEventListener) Activator.CreateInstance(listener, new object[0]);
+                _eventManager.AddEventListener(pluginInstance, instance);
+            }
+
+            var cmdInstanceList = this.commands.ContainsKey(pluginInstance)
+                                    ? this.commands[pluginInstance]
+                                    : new List<ICommand>();
+
+            this.commands.Remove(pluginInstance);
+
+            foreach (var command in commands)
+            {
+                cmdInstanceList.Add((ICommand) Activator.CreateInstance(command, new object[0]));
+            }
+
+            this.commands.Add(pluginInstance, cmdInstanceList);
         }
 
         ~PluginManager()
@@ -120,11 +165,6 @@ namespace Rocket.Core.Plugins
             {
                 plugin.Unload();
             }
-        }
-
-        public bool HandleCommand(string command)
-        {
-            return true;    
         }
 
         public IPlugin GetPlugin(string name)
@@ -156,5 +196,9 @@ namespace Rocket.Core.Plugins
             }
             return false;
         }
+
+        public IEnumerable<ICommand> Commands => commands
+            .Where(c => c.Key.IsAlive)
+            .SelectMany(c => c.Value);
     }
 }

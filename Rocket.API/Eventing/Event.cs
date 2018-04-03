@@ -5,21 +5,25 @@ namespace Rocket.API.Eventing
 {
     public class Event : IEvent
     {
-        protected Event() : this(null)
+        /// <param name="global">Defines if the event is emitted globally</param>
+        protected Event(bool global = true) : this(null, EventExecutionTargetContext.Sync, global)
         {
 
         }
 
         /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget"/></param>
-        protected Event(EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync) : this(null, executionTarget)
+        /// <param name="global">Defines if the event is emitted globally</param>
+        protected Event(EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : this(null, executionTarget, global)
         {
             
         }
 
         /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget"/></param>
         /// <param name="name">The name of the event. Will be auto set when null.</param>
-        protected Event(string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync)
+        /// /// <param name="global">Defines if the event is emitted globally</param>
+        protected Event(string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true)
         {
+            Global = global;
             Name = name ?? GetType().Name.Replace("Event", "");
             ExecutionTarget = executionTarget;
         }
@@ -46,6 +50,6 @@ namespace Rocket.API.Eventing
             }
         }
 
-        public bool Global { get; private set; }
+        public bool Global { get; }
     }
 }

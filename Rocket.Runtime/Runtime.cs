@@ -3,10 +3,15 @@ using Rocket.API.Logging;
 using Rocket.Core.Logging;
 using Rocket.Core.DependencyInjection;
 using Rocket.API;
+using Rocket.API.Commands;
 using Rocket.API.Eventing;
-using Rocket.API.Player;
+using Rocket.API.I18N;
+using Rocket.API.Permissions;
 using Rocket.API.Plugin;
+using Rocket.Core.Commands;
 using Rocket.Core.Eventing;
+using Rocket.Core.I18N;
+using Rocket.Core.Permissions;
 using Rocket.Core.Plugins;
 
 namespace Rocket
@@ -28,12 +33,14 @@ namespace Rocket
         {
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, ConsoleLogger>();
-            Container.RegisterSingletonType<IPluginManager, PluginManager>();
             Container.RegisterSingletonType<IEventManager, EventManager>();
+            Container.RegisterSingletonType<ICommandHandler, CommandHandler>();
+            Container.RegisterSingletonType<IPluginManager, PluginManager>();
+            Container.RegisterSingletonType<ITranslationProvider, TranslationProvider>();
+            Container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
             Container.Activate(typeof(RegistrationByConvention));
-
-            IImplementation implementation = Container.Get<IImplementation>();
-            implementation.Load(this);
+            Container.Get<IImplementation>().Load(this);
+            Container.Get<IPluginManager>().Init();
         }
     }
 }
