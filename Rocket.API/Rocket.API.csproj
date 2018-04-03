@@ -45,19 +45,25 @@
     </Compile>
     <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Commands\ICommand.cs" />
+    <Compile Include="Commands\ICommandCaller.cs" />
     <Compile Include="Commands\ICommandContext.cs" />
+    <Compile Include="Commands\ICommandExceptionHandler.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Configuration\IConfigurationProvider.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\EventExecutionTargetContext.cs" />
     <Compile Include="Eventing\IEventEmitter.cs" />
+    <Compile Include="Handlers\HandlerPriorityAttribute.cs" />
+    <Compile Include="Handlers\HandlerPriorityComparer.cs" />
+    <Compile Include="Handlers\IHandler.cs" />
+    <Compile Include="Permissions\IPermissionable.cs" />
     <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />
     <Compile Include="Eventing\ICancellableEvent.cs" />
     <Compile Include="Eventing\IEvent.cs" />
     <Compile Include="Eventing\IEventListener.cs" />
-    <Compile Include="Eventing\EventPriority.cs" />
+    <Compile Include="Handlers\HandlerPriority.cs" />
     <Compile Include="ILifecycleController.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslationProvider.cs" />

@@ -5,6 +5,7 @@ using System.Reflection;
 using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
+using Rocket.API.Handlers;
 using Rocket.API.Scheduler;
 
 namespace Rocket.Core.Eventing
@@ -121,7 +122,7 @@ namespace Rocket.Core.Eventing
                 foreach (MethodInfo method in @interface.GetMethods())
                 {
                     var handler = (EventHandler)method.GetCustomAttributes(typeof(EventHandler), false)
-                                      .FirstOrDefault() ?? new EventHandler { Priority = EventPriority.Normal };
+                                      .FirstOrDefault() ?? new EventHandler { Priority = HandlerPriority.Normal };
 
                     var eventType = @interface.GetGenericArguments()[0];
 
@@ -143,7 +144,7 @@ namespace Rocket.Core.Eventing
                              ?? c.TargetEventName.Equals(@event.Name, StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
-            actions.Sort(EventComprarer.Compare);
+            actions.Sort((a, b) => HandlerPriorityComparer.Compare(a.Handler.Priority, b.Handler.Priority));
 
             var targetActions =
                 (from info in actions

@@ -1,6 +1,6 @@
-﻿namespace Rocket.API.Eventing
+﻿namespace Rocket.API.Handlers
 {
-    public enum EventPriority
+    public enum HandlerPriority
     {
         Lowest,
         Low,

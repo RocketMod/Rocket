@@ -4,9 +4,9 @@ namespace Rocket.API.Commands
 {
     public interface ICommandContext
     {
-        IPlayer Caller { get; }
+        string Command { get; }
 
-        ICommand Command { get; }
+        ICommandCaller Caller { get; }
 
         string[] Parameters { get; }
     }
