@@ -11,5 +11,7 @@ namespace Rocket.API.Commands
         /// <param name="commandLine">The command line</param>
         /// <returns>true if the command was handled, false when not</returns>
         bool HandleCommand(ICommandCaller caller, string commandLine);
+
+        ICommand GetCommand(ICommandContext ctx);
     }
 }

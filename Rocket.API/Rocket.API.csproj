@@ -56,7 +56,7 @@
     <Compile Include="Handlers\HandlerPriorityAttribute.cs" />
     <Compile Include="Handlers\HandlerPriorityComparer.cs" />
     <Compile Include="Handlers\IHandler.cs" />
-    <Compile Include="Permissions\IPermissionable.cs" />
+    <Compile Include="Permissions\IIdentifiable.cs" />
     <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />
     <Compile Include="Eventing\ICancellableEvent.cs" />
@@ -88,6 +88,9 @@
     <None Include="Rocket.API.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

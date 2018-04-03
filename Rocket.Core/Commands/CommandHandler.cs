@@ -2,7 +2,7 @@
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
-using Rocket.Core.Extensions;
+using Rocket.Core.Exceptions;
 
 namespace Rocket.Core.Commands
 {
@@ -18,14 +18,13 @@ namespace Rocket.Core.Commands
         public bool HandleCommand(ICommandCaller caller, string commandLine)
         {
             commandLine = commandLine.Trim();
-            var commands = container.GetAll<ICommandProvider>().SelectMany(c => c.Commands);
             var args = commandLine.Split(' ');
 
-            ICommand target = commands.FirstOrDefault(c => c.Name.Equals(args[0], StringComparison.OrdinalIgnoreCase));
+            var context = new CommandContext(caller, args[0], args.Skip(1).ToArray());
+
+            var target = GetCommand(context);
             if (target == null)
                 return false; // only return false when the command was not found
-
-            var context = new CommandContext(caller, args[0], args.Skip(1).ToArray());
 
             try
             {
@@ -33,18 +32,22 @@ namespace Rocket.Core.Commands
             }
             catch (Exception e)
             {
-                foreach (var handler in container.GetHandlers<ICommandExceptionHandler>())
+                if (e is IFriendlyException)
                 {
-                    if (handler.HandleException(context, e))
-                    {
-                        return true;
-                    }
+                    ((IFriendlyException) e).ToFriendlyString(context);
+                    return true;
                 }
 
                 throw;
             }
 
             return true;
+        }
+
+        public ICommand GetCommand(ICommandContext ctx)
+        {
+            var commands = container.GetAll<ICommandProvider>().SelectMany(c => c.Commands);
+            return commands.FirstOrDefault(c => c.Name.Equals(ctx.Command, StringComparison.OrdinalIgnoreCase));
         }
     }
 }
