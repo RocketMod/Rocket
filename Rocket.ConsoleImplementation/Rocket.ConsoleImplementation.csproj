@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Rocket.ConsoleImplementation.Program</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,6 +49,7 @@
     <Compile Include="ConsoleImplementation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\DependencyRegistrator.cs" />
     <Compile Include="SimpleTask.cs" />
     <Compile Include="SimpleTaskScheduler.cs" />
   </ItemGroup>
@@ -70,9 +74,6 @@
       <Project>{5d260f94-bb23-4397-94df-ba4af0cd8bcb}</Project>
       <Name>Rocket.Runtime</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

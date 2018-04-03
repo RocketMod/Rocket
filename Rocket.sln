@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Core", "Rocket.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Tests", "Rocket.Tests\Rocket.Tests.csproj", "{BE1381DE-6771-4F2E-8F31-8949EDC6CFC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.ConsoleHost", "Rocket.ConsoleHost\Rocket.ConsoleHost.csproj", "{2C208038-27DA-4F7B-AA8C-276BB2531E1E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.ConsoleImplementation", "Rocket.ConsoleImplementation\Rocket.ConsoleImplementation.csproj", "{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}"
 EndProject
 Global

@@ -8,8 +8,7 @@ namespace Rocket.ConsoleImplementation
     {
         static void Main(string[] args)
         {
-            var host = new ConsoleImplementation.ConsoleHost();
-            host.Start();
+            Runtime.Bootstrap();
         }
     }
 }

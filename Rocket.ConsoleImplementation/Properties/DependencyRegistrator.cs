@@ -1,4 +1,5 @@
-﻿using Rocket.API.DependencyInjection;
+﻿using Rocket.API;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Scheduler;
 
 namespace Rocket.ConsoleImplementation
@@ -7,6 +8,7 @@ namespace Rocket.ConsoleImplementation
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
+            container.RegisterSingletonType<IImplementation, ConsoleImplementation>();
             container.RegisterSingletonType<ITaskScheduler, SimpleTaskScheduler>();
         }
     }
