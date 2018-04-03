@@ -18,21 +18,18 @@ namespace Rocket
 {
     public class Runtime : IRuntime
     {
-        public static IRuntime Bootstrap(IDependencyContainer container)
+        private static Runtime runtime = null;
+        public static IRuntime Bootstrap()
         {
-            var runtime = new Runtime(container);
-            runtime.Init();
+            if (runtime == null) runtime = new Runtime();
             return runtime;
         }
 
         public IDependencyContainer Container { get; }
 
-        private Runtime(IDependencyContainer container)
-        {
-            Container = container;
-        }
+        public IDependencyResolver Resolver { get; private set; }
 
-        private void Init()
+        private Runtime()
         {
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, ConsoleLogger>();
