@@ -1,4 +1,5 @@
 ﻿using Rocket.API.DependencyInjection;
+using Rocket.API;
 
 namespace Rocket.Tests
 {
