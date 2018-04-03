@@ -2,7 +2,7 @@
 
 namespace Rocket.API.Commands
 {
-    public interface ICommandCaller : IPermissionable
+    public interface ICommandCaller : IIdentifiable
     {
         string Name { get; }
 

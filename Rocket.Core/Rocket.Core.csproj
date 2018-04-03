@@ -48,12 +48,12 @@
   <ItemGroup>
     <Compile Include="Commands\CommandContext.cs" />
     <Compile Include="Commands\CommandHandler.cs" />
-    <Compile Include="Commands\DefaultCommandExceptionHandler.cs" />
     <Compile Include="Eventing\EventAction.cs" />
     <Compile Include="Eventing\EventHandler.cs" />
     <Compile Include="Eventing\GenericCancellableEvent.cs" />
     <Compile Include="Eventing\GenericEvent.cs" />
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
+    <Compile Include="Exceptions\IFriendlyException.cs" />
     <Compile Include="Extensions\DependencyContainerExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="DependencyInjection\UnityInstanceNotResolvedException.cs" />

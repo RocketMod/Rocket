@@ -4,6 +4,6 @@ namespace Rocket.API.Permissions
 {
     public interface IPermissionProvider
     {
-        bool HasPermissions(IPermissionable permissionable);
+        bool HasPermissions(IIdentifiable identifiable);
     }
 }
