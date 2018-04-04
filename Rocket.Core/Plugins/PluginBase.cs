@@ -35,7 +35,7 @@ namespace Rocket.Core.Plugins
 
         public void Unload()
         {
-            Unload();
+            OnLoad();
             IsAlive = false;
         }
 

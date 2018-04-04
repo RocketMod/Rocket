@@ -19,9 +19,9 @@ namespace Rocket.API.Reflection
             return filter.ToList();
         }
 
-        public static List<Type> FindAllTypes(this ILifecycleObject @object, Func<Type, bool> predicate = null)
+        public static List<Type> FindAllTypes(this ILifecycleObject @object)
         {
-            throw new NotImplementedException();
+            return @object.GetType().Assembly.GetTypes().ToList();
         }
     }
 }
