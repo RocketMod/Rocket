@@ -34,10 +34,9 @@ namespace Rocket.Core.DependencyInjection
             {
                 return ((IEnumerable<Type>)assembly.GetTypes()).Where(t => ((IEnumerable<Type>)t.GetInterfaces()).Any(i => i == typeof(TInterface)));
             }
-            catch (ReflectionTypeLoadException)
+            catch (ReflectionTypeLoadException e)
             {
-                // failed to load ex.Types
-                return new List<Type>();
+                return e.Types.Where(t => t != null);
             }
             catch (Exception)
             {
