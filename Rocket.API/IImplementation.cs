@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Rocket.API
-{
-    public interface IImplementation : ILifecycleObject
-    {
-        void Load(IRuntime runtime);
+namespace Rocket.API {
+    public interface IImplementation : ILifecycleObject {
         IEnumerable<string> Capabilities { get; }
-        void Shutdown();
         string InstanceId { get; }
+        void Load(IRuntime runtime);
+        void Shutdown();
         void Reload();
     }
 }

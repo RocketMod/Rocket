@@ -1,7 +1,5 @@
-﻿namespace Rocket.API.Handlers
-{
-    public enum HandlerPriority
-    {
+﻿namespace Rocket.API.Handlers {
+    public enum HandlerPriority {
         Lowest,
         Low,
         Normal,

@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rocket.API.Player
-{
-    public interface IPlayerManager
-    {
+namespace Rocket.API.Player {
+    public interface IPlayerManager {
+        IEnumerable<IPlayer> Players { get; }
         bool Kick(IPlayer player, string reason);
 
         bool Ban(IPlayer player, string reason, TimeSpan? timeSpan = null);
-
-        IEnumerable<IPlayer> Players { get; }
 
         IPlayer GetPlayer(string uniqueID);
 

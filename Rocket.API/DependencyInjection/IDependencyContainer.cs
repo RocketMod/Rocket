@@ -1,7 +1,5 @@
-﻿namespace Rocket.API.DependencyInjection
-{
-    public interface IDependencyContainer : IDependencyResolver
-    {
+﻿namespace Rocket.API.DependencyInjection {
+    public interface IDependencyContainer : IDependencyResolver {
         IDependencyContainer CreateChildContainer();
 
         void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface;

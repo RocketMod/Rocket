@@ -1,9 +1,5 @@
-﻿using Rocket.API.Player;
-
-namespace Rocket.API.Permissions
-{
-    public interface IPermissionProvider
-    {
+﻿namespace Rocket.API.Permissions {
+    public interface IPermissionProvider {
         bool HasPermissions(IIdentifiable identifiable);
     }
 }

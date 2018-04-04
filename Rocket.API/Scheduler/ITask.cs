@@ -1,9 +1,7 @@
 ﻿using System;
 
-namespace Rocket.API.Scheduler
-{
-    public interface ITask
-    {
+namespace Rocket.API.Scheduler {
+    public interface ITask {
         ILifecycleObject Owner { get; }
 
         Action Action { get; }
@@ -13,7 +11,7 @@ namespace Rocket.API.Scheduler
         ExecutionTargetContext ExecutionTarget { get; }
 
         bool IsFinished { get; }
-        
+
         void Cancel();
     }
 }

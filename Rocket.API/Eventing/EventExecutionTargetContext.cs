@@ -1,7 +1,5 @@
-﻿namespace Rocket.API.Eventing
-{
-    public enum EventExecutionTargetContext
-    {
+﻿namespace Rocket.API.Eventing {
+    public enum EventExecutionTargetContext {
         NextFrame,
         NextAsyncFrame,
         NextPhysicsUpdate,

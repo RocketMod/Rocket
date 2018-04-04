@@ -1,11 +1,9 @@
 ﻿using Rocket.API.Handlers;
 
-namespace Rocket.API.Commands
-{
-    public interface ICommandHandler : IHandler
-    {
+namespace Rocket.API.Commands {
+    public interface ICommandHandler : IHandler {
         /// <summary>
-        /// Handles a command
+        ///     Handles a command
         /// </summary>
         /// <param name="caller">The caller</param>
         /// <param name="commandLine">The command line</param>
