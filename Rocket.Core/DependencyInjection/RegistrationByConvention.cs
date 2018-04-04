@@ -36,7 +36,7 @@ namespace Rocket.Core.DependencyInjection
             }
             catch (ReflectionTypeLoadException e)
             {
-                return e.Types.Where(t => t != null);
+                return e.Types.Where(t => t != null && t.GetInterfaces().Contains(typeof(IDependencyRegistrator)));
             }
             catch (Exception)
             {
