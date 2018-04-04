@@ -1,5 +1,5 @@
 ﻿using Rocket.API.Configuration;
 
-namespace Rocket.Core.Properties {
+namespace Rocket.Core.Configuration {
     public class ConfigurationProvider : IConfigurationProvider { }
 }

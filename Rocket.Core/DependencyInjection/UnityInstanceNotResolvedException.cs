@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rocket.API.DependencyInjection {
+namespace Rocket.Core.DependencyInjection {
     public sealed class UnityInstanceNotResolvedException : Exception {
         public readonly string Mapping;
         public readonly Type RequestedInterface;

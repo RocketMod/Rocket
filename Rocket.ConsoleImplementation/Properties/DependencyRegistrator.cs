@@ -2,7 +2,7 @@
 using Rocket.API.DependencyInjection;
 using Rocket.API.Scheduler;
 
-namespace Rocket.ConsoleImplementation {
+namespace Rocket.ConsoleImplementation.Properties {
     public class DependencyRegistrator : IDependencyRegistrator {
         public void Register(IDependencyContainer container, IDependencyResolver resolver) {
             container.RegisterSingletonType<IImplementation, ConsoleImplementation>();

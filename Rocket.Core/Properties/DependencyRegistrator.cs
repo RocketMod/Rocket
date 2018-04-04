@@ -4,6 +4,7 @@ using Rocket.API.Eventing;
 using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
+using Rocket.Core.Configuration;
 using Rocket.Core.Eventing;
 using Rocket.Core.I18N;
 using Rocket.Core.Permissions;

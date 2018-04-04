@@ -53,7 +53,7 @@ namespace Rocket.Core.Plugins {
                 if (pluginAssemblies.TryGetValue(args.Name, out string packageFile))
                     return Assembly.Load(File.ReadAllBytes(packageFile));
 
-                logger.Error("Could not find dependency: " + args.Name);
+                logger.Debug(((AppDomain)sender).FriendlyName + " could not find dependency: " + args.Name);
                 return null;
             };
 
