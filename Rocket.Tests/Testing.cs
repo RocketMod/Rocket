@@ -26,7 +26,7 @@ namespace Rocket.Tests {
 
         [TestMethod]
         public void CoreDependenciesAvailable() {
-            Assert.IsNotNull(runtime.Container.Get<IConfigurationProvider>());
+            Assert.IsNotNull(runtime.Container.Get<IConfiguration>());
             Assert.IsNotNull(runtime.Container.Get<ITranslationProvider>());
             Assert.IsNotNull(runtime.Container.Get<IPermissionProvider>());
         }

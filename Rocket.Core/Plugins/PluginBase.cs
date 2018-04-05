@@ -16,6 +16,8 @@ namespace Rocket.Core.Plugins
         protected PluginBase(string name, IDependencyContainer container)
         {
             Name = name ?? GetType().Name;
+
+            container.RegisterInstance<IPlugin>(this, name);
             Container = container;
             EventManager = Container.Get<IEventManager>();
             Logger = Container.Get<ILogger>();

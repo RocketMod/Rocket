@@ -14,7 +14,7 @@ namespace Rocket.Core.Properties {
     public class DependencyRegistrator : IDependencyRegistrator {
         public void Register(IDependencyContainer container, IDependencyResolver resolver) {
             container.RegisterSingletonType<IEventManager, EventManager>();
-            container.RegisterSingletonType<IConfigurationProvider, ConfigurationProvider>();
+            container.RegisterSingletonType<IConfiguration, Configuration.Configuration>();
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
             container.RegisterSingletonType<ITranslationProvider, TranslationProvider>();
 
