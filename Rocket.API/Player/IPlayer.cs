@@ -3,11 +3,8 @@ using Rocket.API.Commands;
 
 namespace Rocket.API.Player
 {
-    public interface IPlayer : IComparable<IPlayer>, IComparable<string>, IEquatable<IPlayer>, IEquatable<string>,
-        ICommandCaller
+    public interface IPlayer : ICommandCaller
     {
-        string UniqueID { get; }
-        string Name { get; }
         bool IsAdmin { get; }
     }
 }
