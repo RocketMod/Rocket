@@ -8,7 +8,7 @@ namespace Rocket.Core.Configuration.Json
         public IConfigurationRoot Load(Stream stream)
         {
             JsonConfigurationRoot root = new JsonConfigurationRoot();
-            root.Reload(stream);
+            root.Load(stream);
             return root;
         }
     }

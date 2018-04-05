@@ -6,25 +6,39 @@ namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfigurationSection : JsonConfiguration, IConfigurationSection
     {
-        public JToken Token { get; protected set; }
-
-        public JsonConfigurationSection(JToken token) : base(token as JObject)
+        public JsonConfigurationSection(JToken token) : base(token)
         {
-            Token = token;
+            
         }
 
-        public string Key => (Token as JProperty)?.Name;
-        public string Path => Token.Path;
+        public string Key => (Node as JProperty)?.Name;
+        public string Path => Node.Path;
 
         public string Value
         {
-            get => Token.Value<string>();
+            get => Node.Value<string>();
             set
             {
-                if (!(Token is JProperty))
-                    throw new Exception("Can not set value of: " + Token.Path);
+                if (!(Node is JProperty))
+                    throw new Exception("Can not set value of: " + Node.Path);
 
-                ((JProperty) Token).Value = new JValue(value);
+                ((JProperty)Node).Value = new JValue(value);
+            }
+        }
+
+        public T Get<T>() => Node.ToObject<T>();
+
+        public bool TryGet<T>(out T value)
+        {
+            value = default(T);
+            try
+            {
+                value = Get<T>();
+                return true;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

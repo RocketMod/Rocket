@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Rocket.Core.Extensions
+namespace Rocket.Compability
 {
     public static class StreamExtensions
     {

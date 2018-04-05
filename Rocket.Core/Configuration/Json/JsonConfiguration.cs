@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
@@ -7,9 +6,9 @@ namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfiguration : IConfiguration
     {
-        public JObject Node { get; protected set; }
+        public JToken Node { get; protected set; }
 
-        public JsonConfiguration(JObject node)
+        public JsonConfiguration(JToken node)
         {
             Node = node;
         }
@@ -39,7 +38,7 @@ namespace Rocket.Core.Configuration.Json
             GuardLoaded();
 
             List<IConfigurationSection> sections = new List<IConfigurationSection>();
-            foreach (var node in Node.Children())
+            foreach (JToken node in Node.Children())
             {
                 sections.Add(new JsonConfigurationSection(node));
             }

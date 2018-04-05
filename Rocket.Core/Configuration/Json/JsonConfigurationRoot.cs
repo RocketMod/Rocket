@@ -16,23 +16,19 @@ namespace Rocket.Core.Configuration.Json
         {
         }
 
-        public void Reload(Stream stream)
+        public void Load(Stream stream)
         {
-            MemoryStream ms = new MemoryStream();
-            stream.CopyTo(ms);
-
-            string text = Encoding.UTF8.GetString(ms.ToArray());
-            Node = JObject.Parse(text);
+            string json = stream.ConvertToString(Encoding.UTF8);
+            Node = JObject.Parse(json, new JsonLoadSettings
+            {
+                CommentHandling = CommentHandling.Ignore,
+                LineInfoHandling = LineInfoHandling.Ignore
+            });
         }
 
         public void Save(Stream stream)
         {
-            MemoryStream ms = new MemoryStream();
-            var writer = new StreamWriter(stream);
-            writer.Write(Node.ToString(Formatting.Indented));
-            writer.Flush();
-            stream.Position = 0;
-            ms.CopyTo(stream);
+            stream.Write(Node.ToString(Formatting.Indented));
         }
     }
 }

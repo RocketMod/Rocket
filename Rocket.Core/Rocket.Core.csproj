@@ -26,7 +26,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
+    <DefineConstants>TRACE;NET35</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\Rocket.Core.xml</DocumentationFile>
@@ -61,9 +61,9 @@
     <Compile Include="Eventing\GenericEvent.cs" />
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Exceptions\IFriendlyException.cs" />
-    <Compile Include="Extensions\ConfigurationExtensions.cs" />
     <Compile Include="Extensions\DependencyContainerExtensions.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
+    <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="DependencyInjection\UnityInstanceNotResolvedException.cs" />
     <Compile Include="Eventing\EventManager.cs" />
