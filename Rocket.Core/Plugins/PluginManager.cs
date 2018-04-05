@@ -135,8 +135,7 @@ namespace Rocket.Core.Plugins {
 
             IPlugin pluginInstance = (IPlugin) parentContainer.Activate(pluginType);
             container.RegisterInstance(pluginInstance, pluginInstance.Name);
-
-
+            
             List<Type> listeners = pluginInstance.FindTypes<IEventListener>();
             List<Type> commands = pluginInstance.FindTypes<ICommand>();
 

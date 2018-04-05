@@ -8,7 +8,8 @@ using Rocket.API.Plugin;
 
 namespace Rocket.Tests {
     [TestClass]
-    public class Testing {
+    public class Testing
+    {
         private IRuntime runtime;
 
         [AssemblyInitialize]

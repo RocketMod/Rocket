@@ -51,13 +51,17 @@
   <ItemGroup>
     <Compile Include="Commands\CommandContext.cs" />
     <Compile Include="Commands\CommandHandler.cs" />
+    <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
+    <Compile Include="Configuration\Json\JsonConfigurationProvider.cs" />
     <Compile Include="Configuration\Json\JsonConfigurationRoot.cs" />
+    <Compile Include="Configuration\Json\JsonConfigurationSection.cs" />
     <Compile Include="Eventing\EventAction.cs" />
     <Compile Include="Eventing\EventHandler.cs" />
     <Compile Include="Eventing\GenericCancellableEvent.cs" />
     <Compile Include="Eventing\GenericEvent.cs" />
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Exceptions\IFriendlyException.cs" />
+    <Compile Include="Extensions\ConfigurationExtensions.cs" />
     <Compile Include="Extensions\DependencyContainerExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="DependencyInjection\UnityInstanceNotResolvedException.cs" />
