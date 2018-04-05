@@ -2,29 +2,24 @@
 using System.Reflection;
 using Rocket.API;
 using Rocket.API.Eventing;
-using EventHandler = Rocket.Core.Eventing.EventHandler;
 
-namespace Rocket.Core.Eventing
-{
-    class EventAction
-    {
+namespace Rocket.Core.Eventing {
+    internal class EventAction {
         public EventAction(
-            ILifecycleObject owner, 
-            EventCallback action, 
-            EventHandler handler, 
-            string eventName)
-        {
+            ILifecycleObject owner,
+            EventCallback action,
+            EventHandler handler,
+            string eventName) {
             Owner = owner;
             Action = action;
             Handler = handler;
             TargetEventName = eventName;
         }
-        
+
         public EventAction(ILifecycleObject owner,
             IEventListener listener,
             MethodInfo method,
-            EventHandler handler, Type type)
-        {
+            EventHandler handler, Type type) {
             Owner = owner;
             Listener = listener;
             Action = (EventCallback) Delegate.CreateDelegate(typeof(EventCallback), listener, method);
@@ -33,8 +28,7 @@ namespace Rocket.Core.Eventing
             TargetEventType = type;
         }
 
-        public EventAction(ILifecycleObject owner, EventCallback action, EventHandler handler, Type eventType)
-        {
+        public EventAction(ILifecycleObject owner, EventCallback action, EventHandler handler, Type eventType) {
             Owner = owner;
             Action = action;
             Handler = handler;
@@ -47,7 +41,7 @@ namespace Rocket.Core.Eventing
         public ILifecycleObject Owner { get; set; }
 
         public EventCallback Action { get; }
-       
+
         public EventHandler Handler { get; }
 
         public IEventListener Listener { get; }

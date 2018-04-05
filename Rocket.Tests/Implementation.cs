@@ -1,38 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API;
 using Rocket.API.Logging;
 
-namespace Rocket.Tests
-{
-    public class Implementation : IImplementation
-    {
-        ILogger logger;
-        public Implementation(ILogger logger)
-        {
+namespace Rocket.Tests {
+    public class Implementation : IImplementation {
+        private readonly ILogger logger;
+
+        public Implementation(ILogger logger) {
             this.logger = logger;
         }
 
-        public IEnumerable<string> Capabilities => new List<string>() { "TESTING" };
+        public IEnumerable<string> Capabilities => new List<string> {"TESTING"};
 
         public string InstanceId => "Test Instance";
 
         public bool IsAlive => throw new NotImplementedException();
 
-        public void Load(IRuntime runtime)
-        {
+        public void Load(IRuntime runtime) {
             logger.Info("Loading implementation");
         }
 
-        public void Reload()
-        {
+        public void Reload() {
             logger.Info("Reloading implementation");
         }
 
-        public void Shutdown()
-        {
+        public void Shutdown() {
             logger.Info("Shutting down implementation");
         }
     }

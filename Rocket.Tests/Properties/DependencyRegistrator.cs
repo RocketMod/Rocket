@@ -1,12 +1,9 @@
-﻿using Rocket.API.DependencyInjection;
-using Rocket.API;
+﻿using Rocket.API;
+using Rocket.API.DependencyInjection;
 
-namespace Rocket.Tests
-{
-    public class DependencyRegistrator : IDependencyRegistrator
-    {
-        public void Register(IDependencyContainer container, IDependencyResolver resolver)
-        {
+namespace Rocket.Tests.Properties {
+    public class DependencyRegistrator : IDependencyRegistrator {
+        public void Register(IDependencyContainer container, IDependencyResolver resolver) {
             container.RegisterSingletonType<IImplementation, Implementation>();
         }
     }

@@ -1,7 +1,5 @@
-﻿namespace Rocket.API.Eventing
-{
-    public interface ICancellableEvent
-    {
+﻿namespace Rocket.API.Eventing {
+    public interface ICancellableEvent {
         bool IsCancelled { get; set; }
     }
 }

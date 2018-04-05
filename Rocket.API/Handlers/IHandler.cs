@@ -1,7 +1,3 @@
-﻿namespace Rocket.API.Handlers
-{
-    public interface IHandler
-    {
-        
-    }
+﻿namespace Rocket.API.Handlers {
+    public interface IHandler { }
 }

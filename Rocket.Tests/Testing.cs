@@ -1,39 +1,31 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
-using System.Threading.Tasks;
 
-namespace Rocket.Tests
-{
+namespace Rocket.Tests {
     [TestClass]
-    public class Testing
-    {
-        [AssemblyInitialize()]
-        public static void Startup(TestContext testContext)
-        {
-
-        }
-
+    public class Testing {
         private IRuntime runtime;
 
+        [AssemblyInitialize]
+        public static void Startup(TestContext testContext) { }
+
         [TestInitialize]
-        public void Bootstrap()
-        {
+        public void Bootstrap() {
             runtime = Runtime.Bootstrap();
         }
 
         [TestMethod]
-        public void ImplementationAvailable()
-        {
+        public void ImplementationAvailable() {
             Assert.IsNotNull(runtime.Container.Get<IImplementation>());
         }
 
         [TestMethod]
-        public void CoreDependenciesAvailable()
-        {
+        public void CoreDependenciesAvailable() {
             Assert.IsNotNull(runtime.Container.Get<IConfigurationProvider>());
             Assert.IsNotNull(runtime.Container.Get<ITranslationProvider>());
             Assert.IsNotNull(runtime.Container.Get<IPermissionProvider>());
@@ -41,30 +33,27 @@ namespace Rocket.Tests
 
 
         [TestMethod]
-        public void PluginImplementation()
-        {
+        public void PluginImplementation() {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
-            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
+            TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("Test Plugin");
             Assert.IsTrue(plugin.IsAlive);
         }
 
         [TestMethod]
         [Ignore]
-        public async Task PluginEventing()
-        {
+        public async Task PluginEventing() {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
-            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
+            TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("Test Plugin");
             bool eventingWorks = await plugin.TestEventing();
             Assert.IsTrue(eventingWorks);
         }
 
         [TestMethod]
         [Ignore]
-        public async Task PluginEventing_WithName()
-        {
+        public async Task PluginEventingWithName() {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
-            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("Test Plugin");
-            bool eventingWorks = await plugin.TestEventing_WithName();
+            TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("Test Plugin");
+            bool eventingWorks = await plugin.TestEventingWithName();
             Assert.IsTrue(eventingWorks);
         }
     }

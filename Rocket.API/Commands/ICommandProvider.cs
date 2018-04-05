@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace Rocket.API.Commands
-{
-    public interface ICommandProvider
-    {
+namespace Rocket.API.Commands {
+    public interface ICommandProvider {
         IEnumerable<ICommand> Commands { get; }
     }
 }
