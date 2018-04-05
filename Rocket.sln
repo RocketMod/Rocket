@@ -13,7 +13,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Core", "Rocket.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Tests", "Rocket.Tests\Rocket.Tests.csproj", "{BE1381DE-6771-4F2E-8F31-8949EDC6CFC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.ConsoleImplementation", "Rocket.ConsoleImplementation\Rocket.ConsoleImplementation.csproj", "{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.ConsoleImplementation", "Rocket.ConsoleImplementation\Rocket.ConsoleImplementation.csproj", "{2C208038-27DA-4F7B-AA8C-276BB2531E1E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "Examples\HelloWorldPlugin\HelloWorldPlugin.csproj", "{31BA2AC3-EF06-430F-8008-61D16FD567B5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,24 +99,24 @@ Global
 		{2C208038-27DA-4F7B-AA8C-276BB2531E1E}.Release|x64.Build.0 = Release|Any CPU
 		{2C208038-27DA-4F7B-AA8C-276BB2531E1E}.Release|x86.ActiveCfg = Release|Any CPU
 		{2C208038-27DA-4F7B-AA8C-276BB2531E1E}.Release|x86.Build.0 = Release|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Debug|x64.Build.0 = Debug|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Debug|x86.Build.0 = Debug|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Release|x64.ActiveCfg = Release|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Release|x64.Build.0 = Release|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Release|x86.ActiveCfg = Release|Any CPU
-		{174E9A9B-7C64-48C9-A5BE-BEB0282F52FC}.Release|x86.Build.0 = Release|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Debug|x64.Build.0 = Debug|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Debug|x86.Build.0 = Debug|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Release|x64.ActiveCfg = Release|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Release|x64.Build.0 = Release|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Release|x86.ActiveCfg = Release|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 		SolutionGuid = {44CEEF5D-7AE2-4DF9-91E1-E4B4B0C9EAC1}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 	EndGlobalSection
 EndGlobal
