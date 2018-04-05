@@ -18,10 +18,16 @@ namespace Rocket.Core.Plugins
 
         public abstract IEnumerable<string> Capabilities { get; }
 
-        public abstract string Name { get; }
+        public string Name { get; }
 
-        protected PluginBase(IDependencyContainer container)
+        protected PluginBase(IDependencyContainer container) : this(null, container)
         {
+
+        }
+
+        protected PluginBase(string name, IDependencyContainer container)
+        {
+            Name = name ?? GetType().Name;
             Container = container;
             EventManager = Container.Get<IEventManager>();
             Logger = Container.Get<ILogger>();
