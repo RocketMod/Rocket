@@ -22,7 +22,6 @@ namespace Rocket.Core.Properties
         {
             container.RegisterSingletonType<IEventManager, EventManager>();
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
-            container.RegisterSingletonType<IEventManager, EventManager>();
             container.RegisterSingletonType<ICommandHandler, CommandHandler>();
             container.RegisterSingletonType<IPluginManager, PluginManager>();
             container.RegisterSingletonType<ITranslationProvider, TranslationProvider>();

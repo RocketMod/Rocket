@@ -55,7 +55,7 @@ namespace Rocket.Tests
         [TestMethod]
         public void TestJsonConfig()
         {
-            JsonConfigurationProvider provider = new JsonConfigurationProvider();
+            JsonConfigurationProvider provider = runtime.Container.Get<JsonConfigurationProvider>();
             MemoryStream ms = new MemoryStream();
             ms.Write(
                 @"{

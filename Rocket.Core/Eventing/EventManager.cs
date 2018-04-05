@@ -12,12 +12,12 @@ namespace Rocket.Core.Eventing
 {
     public class EventManager : IEventManager
     {
-        private readonly ITaskScheduler scheduler;
+        private readonly IDependencyContainer container;
         private readonly List<EventAction> eventListeners = new List<EventAction>();
 
-        public EventManager(ITaskScheduler scheduler)
+        public EventManager(IDependencyContainer container)
         {
-            this.scheduler = scheduler;
+            this.container = container;
         }
 
         public void Subscribe(ILifecycleObject @object, string eventName, EventCallback callback)
@@ -164,11 +164,21 @@ namespace Rocket.Core.Eventing
                 return;
             }
 
+            var scheduler = container.Get<ITaskScheduler>();
+            if (scheduler == null && @event.ExecutionTarget != EventExecutionTargetContext.Sync)
+                return;
+
             int executionCount = 0;
             foreach (EventAction info in targetActions)
             {
                 ILifecycleObject pl = info.Owner;
                 if (!pl.IsAlive) continue;
+
+                if (scheduler == null)
+                {
+                    info.Action.Invoke(sender, @event);
+                    continue;
+                }
 
                 scheduler.Schedule(pl, () =>
                 {
@@ -179,6 +189,8 @@ namespace Rocket.Core.Eventing
                     if (executionCount == targetActions.Count) callback?.Invoke(@event);
                 }, (ExecutionTargetContext)@event.ExecutionTarget);
             }
+
+            callback?.Invoke(@event);
         }
 
         public static string GetEmitterName(Type type) => type.Name;
