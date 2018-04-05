@@ -12,16 +12,13 @@ namespace Rocket.Core.Eventing
 {
     public class EventManager : IEventManager
     {
-        private readonly IDependencyContainer container;
-
+        private readonly ITaskScheduler scheduler;
         private readonly List<EventAction> eventListeners = new List<EventAction>();
 
-        public EventManager(IDependencyContainer container)
+        public EventManager(ITaskScheduler scheduler)
         {
-            this.container = container;
+            this.scheduler = scheduler;
         }
-
-        public ITaskScheduler Scheduler => container.Get<ITaskScheduler>();
 
         public void Subscribe(ILifecycleObject @object, string eventName, EventCallback callback)
         {
@@ -34,7 +31,7 @@ namespace Rocket.Core.Eventing
         {
             EventHandler handler = GetEventHandler(callback.GetType(), emitterName);
             eventListeners.Add(new EventAction(@object,
-                (sender, @event) => { callback.Invoke(sender, (TEvent) @event); }, handler, typeof(TEvent)));
+                (sender, @event) => { callback.Invoke(sender, (TEvent)@event); }, handler, typeof(TEvent)));
         }
 
         public void Subscribe(ILifecycleObject @object, Type eventType, EventCallback callback,
@@ -55,7 +52,7 @@ namespace Rocket.Core.Eventing
         {
             EventHandler handler = GetEventHandler(callback.GetType(), GetEmitterName(typeof(TEmitter)));
             eventListeners.Add(new EventAction(@object,
-                (sender, @event) => { callback.Invoke(sender, (TEvent) @event); }, handler, typeof(TEvent)));
+                (sender, @event) => { callback.Invoke(sender, (TEvent)@event); }, handler, typeof(TEvent)));
         }
 
         public void Subscribe(ILifecycleObject @object, EventCallback callback, Type eventType, Type eventEmitterType)
@@ -122,7 +119,7 @@ namespace Rocket.Core.Eventing
             foreach (Type @interface in type.GetInterfaces().Where(c => c == typeof(IEventListener<>)))
                 foreach (MethodInfo method in @interface.GetMethods())
                 {
-                    EventHandler handler = (EventHandler) method.GetCustomAttributes(typeof(EventHandler), false)
+                    EventHandler handler = (EventHandler)method.GetCustomAttributes(typeof(EventHandler), false)
                                                                 .FirstOrDefault()
                         ?? new EventHandler
                         {
@@ -152,9 +149,9 @@ namespace Rocket.Core.Eventing
 
             List<EventAction> targetActions =
                 (from info in actions
-                 /* ignore cancelled events */
+                     /* ignore cancelled events */
                  where !(@event is ICancellableEvent)
-                     || !((ICancellableEvent) @event).IsCancelled
+                     || !((ICancellableEvent)@event).IsCancelled
                      || info.Handler.IgnoreCancelled
                  where CheckEmitter(info, sender.Name)
                  where CheckEvent(info, GetEventName(@event.GetType()))
@@ -173,14 +170,14 @@ namespace Rocket.Core.Eventing
                 ILifecycleObject pl = info.Owner;
                 if (!pl.IsAlive) continue;
 
-                Scheduler.Schedule(pl, () =>
+                scheduler.Schedule(pl, () =>
                 {
                     executionCount++;
                     info.Action.Invoke(sender, @event);
 
                     //all actions called; run OnEventExecuted
                     if (executionCount == targetActions.Count) callback?.Invoke(@event);
-                }, (ExecutionTargetContext) @event.ExecutionTarget);
+                }, (ExecutionTargetContext)@event.ExecutionTarget);
             }
         }
 
@@ -191,7 +188,7 @@ namespace Rocket.Core.Eventing
         private EventHandler GetEventHandler(Type target, string emitterName)
         {
             EventHandler handler =
-                (EventHandler) target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
+                (EventHandler)target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
                 ?? new EventHandler();
             handler.EmitterName = emitterName ?? handler.EmitterName;
             return handler;
@@ -206,6 +203,7 @@ namespace Rocket.Core.Eventing
 
         private bool CheckEvent(EventAction eventAction, string eventName) => (eventAction.TargetEventType != null
             ? GetEventName(eventAction.TargetEventType)
-            : eventAction.TargetEventName).Equals(eventName, StringComparison.OrdinalIgnoreCase);
+            : eventAction.TargetEventName)
+                .Equals(eventName, StringComparison.OrdinalIgnoreCase);
     }
 }

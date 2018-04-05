@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Rocket.API;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Scheduler;
 
@@ -9,12 +10,12 @@ namespace Rocket.ConsoleImplementation
 {
     public class SimpleTaskScheduler : ITaskScheduler
     {
-        private readonly IEventManager eventManager;
+        private readonly IDependencyContainer container;
         private readonly List<ITask> tasks = new List<ITask>();
 
-        public SimpleTaskScheduler(IEventManager eventManager)
+        public SimpleTaskScheduler(IDependencyContainer container)
         {
-            this.eventManager = eventManager;
+            this.container = container;
         }
 
         public ReadOnlyCollection<ITask> Tasks => tasks.AsReadOnly();
@@ -91,7 +92,9 @@ namespace Rocket.ConsoleImplementation
 
             if (!(task.Owner is IEventEmitter owner)) return;
 
-            eventManager.Emit(owner, e, @event =>
+            var eventManager = container.Get<IEventManager>();
+
+            eventManager?.Emit(owner, e, @event =>
             {
                 task.IsCancelled = e.IsCancelled;
 
