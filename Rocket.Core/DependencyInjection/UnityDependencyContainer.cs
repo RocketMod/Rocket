@@ -6,17 +6,21 @@ using System.Reflection;
 using Microsoft.Practices.Unity;
 using Rocket.API.DependencyInjection;
 
-namespace Rocket.Core.DependencyInjection {
-    public class UnityDependencyContainer : IDependencyContainer {
+namespace Rocket.Core.DependencyInjection
+{
+    public class UnityDependencyContainer : IDependencyContainer
+    {
         internal readonly IUnityContainer container;
 
-        public UnityDependencyContainer() {
+        public UnityDependencyContainer()
+        {
             container = new UnityContainer();
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
         }
 
-        private UnityDependencyContainer(UnityDependencyContainer parent) {
+        private UnityDependencyContainer(UnityDependencyContainer parent)
+        {
             container = parent.container.CreateChildContainer();
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
@@ -25,23 +29,28 @@ namespace Rocket.Core.DependencyInjection {
 
         #region IDependencyContainer Implementation
 
-        public IDependencyContainer CreateChildContainer() {
+        public IDependencyContainer CreateChildContainer()
+        {
             return new UnityDependencyContainer(this);
         }
 
-        public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface {
+        public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
+        {
             container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager());
         }
 
-        public void RegisterSingletonInstance<TInterface>(TInterface value, string mappingName = null) {
+        public void RegisterSingletonInstance<TInterface>(TInterface value, string mappingName = null)
+        {
             container.RegisterInstance(mappingName, value, new ContainerControlledLifetimeManager());
         }
 
-        public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface {
+        public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
+        {
             container.RegisterType<TInterface, TClass>(mappingName);
         }
 
-        public void RegisterInstance<TInterface>(TInterface value, string mappingName = null) {
+        public void RegisterInstance<TInterface>(TInterface value, string mappingName = null)
+        {
             container.RegisterInstance(mappingName, value);
         }
 
@@ -51,11 +60,13 @@ namespace Rocket.Core.DependencyInjection {
 
         #region IsRegistered Methods
 
-        public bool IsRegistered<T>(string mappingName = null) {
+        public bool IsRegistered<T>(string mappingName = null)
+        {
             return container.IsRegistered<T>(mappingName);
         }
 
-        public bool IsRegistered(Type type, string mappingName = null) {
+        public bool IsRegistered(Type type, string mappingName = null)
+        {
             return container.IsRegistered(type, mappingName);
         }
 
@@ -63,19 +74,23 @@ namespace Rocket.Core.DependencyInjection {
 
         #region Activate Methods
 
-        public T Activate<T>() {
-            return (T) Activate(typeof(T));
+        public T Activate<T>()
+        {
+            return (T)Activate(typeof(T));
         }
 
         [DebuggerStepThrough]
-        public object Activate(Type type) {
-            foreach (ConstructorInfo constructor in type.GetConstructors()) {
+        public object Activate(Type type)
+        {
+            foreach (ConstructorInfo constructor in type.GetConstructors())
+            {
                 ParameterInfo[] parameters = constructor.GetParameters();
                 if (parameters.Length <= 0)
                     return Activator.CreateInstance(type);
 
                 List<object> objectList = new List<object>();
-                foreach (ParameterInfo parameterInfo in parameters) {
+                foreach (ParameterInfo parameterInfo in parameters)
+                {
                     Type parameterType = parameterInfo.ParameterType;
                     if (!container.IsRegistered(parameterType)) return null;
                     objectList.Add(Get(parameterType));
@@ -95,7 +110,8 @@ namespace Rocket.Core.DependencyInjection {
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
-        public T Get<T>(string mappingName = null) {
+        public T Get<T>(string mappingName = null)
+        {
             if (IsRegistered<T>(mappingName))
                 return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
 
@@ -106,7 +122,8 @@ namespace Rocket.Core.DependencyInjection {
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
-        public T Get<T>(string mappingName, params object[] parameters) {
+        public T Get<T>(string mappingName, params object[] parameters)
+        {
             if (IsRegistered<T>(mappingName))
                 return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
 
@@ -117,7 +134,8 @@ namespace Rocket.Core.DependencyInjection {
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
-        public object Get(Type serviceType, string mappingName = null) {
+        public object Get(Type serviceType, string mappingName = null)
+        {
             if (IsRegistered(serviceType, mappingName))
                 return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
 
@@ -128,7 +146,8 @@ namespace Rocket.Core.DependencyInjection {
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
-        public object Get(Type serviceType, string mappingName, params object[] parameters) {
+        public object Get(Type serviceType, string mappingName, params object[] parameters)
+        {
             if (IsRegistered(serviceType, mappingName))
                 return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
 
@@ -136,7 +155,8 @@ namespace Rocket.Core.DependencyInjection {
         }
 
         /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
-        public IEnumerable<T> GetAll<T>() {
+        public IEnumerable<T> GetAll<T>()
+        {
             IEnumerable<T> instances = container.ResolveAll<T>();
 
             if (instances.Count() != 0) return instances;
@@ -145,7 +165,8 @@ namespace Rocket.Core.DependencyInjection {
         }
 
         /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
-        public IEnumerable<T> GetAll<T>(params object[] parameters) {
+        public IEnumerable<T> GetAll<T>(params object[] parameters)
+        {
             IEnumerable<T> instances = container.ResolveAll<T>(new OrderedParametersOverride(parameters));
 
             if (instances.Count() != 0) return instances;
@@ -154,7 +175,8 @@ namespace Rocket.Core.DependencyInjection {
         }
 
         /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
-        public IEnumerable<object> GetAll(Type type) {
+        public IEnumerable<object> GetAll(Type type)
+        {
             IEnumerable<object> instances = container.ResolveAll(type);
 
             if (instances.Count() != 0) return instances;
@@ -163,7 +185,8 @@ namespace Rocket.Core.DependencyInjection {
         }
 
         /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
-        public IEnumerable<object> GetAll(Type type, params object[] parameters) {
+        public IEnumerable<object> GetAll(Type type, params object[] parameters)
+        {
             IEnumerable<object> instances = container.ResolveAll(type, new OrderedParametersOverride(parameters));
 
             if (instances.Count() != 0) return instances;
@@ -179,8 +202,10 @@ namespace Rocket.Core.DependencyInjection {
         ///     <value>true</value>
         ///     when an instance is resolved.
         /// </returns>
-        public bool TryGet<T>(string mappingName, out T output) {
-            if (IsRegistered<T>(mappingName)) {
+        public bool TryGet<T>(string mappingName, out T output)
+        {
+            if (IsRegistered<T>(mappingName))
+            {
                 output = container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
 
                 return true;
@@ -195,8 +220,10 @@ namespace Rocket.Core.DependencyInjection {
         ///     <value>true</value>
         ///     when an instance is resolved.
         /// </returns>
-        public bool TryGet<T>(string mappingName, out T output, params object[] parameters) {
-            if (IsRegistered<T>(mappingName)) {
+        public bool TryGet<T>(string mappingName, out T output, params object[] parameters)
+        {
+            if (IsRegistered<T>(mappingName))
+            {
                 output = container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
 
                 return true;
@@ -211,8 +238,10 @@ namespace Rocket.Core.DependencyInjection {
         ///     <value>true</value>
         ///     when an instance is resolved.
         /// </returns>
-        public bool TryGet(Type serviceType, string mappingName, out object output) {
-            if (IsRegistered(serviceType, mappingName)) {
+        public bool TryGet(Type serviceType, string mappingName, out object output)
+        {
+            if (IsRegistered(serviceType, mappingName))
+            {
                 output = container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
 
                 return true;
@@ -230,8 +259,10 @@ namespace Rocket.Core.DependencyInjection {
         ///     <value>true</value>
         ///     when an instance is resolved.
         /// </returns>
-        public bool TryGet(Type serviceType, string mappingName, out object output, params object[] parameters) {
-            if (IsRegistered(serviceType, mappingName)) {
+        public bool TryGet(Type serviceType, string mappingName, out object output, params object[] parameters)
+        {
+            if (IsRegistered(serviceType, mappingName))
+            {
                 output = container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
 
                 return true;
@@ -249,7 +280,8 @@ namespace Rocket.Core.DependencyInjection {
         ///     <value>true</value>
         ///     when at least one instance is resolved.
         /// </returns>
-        public bool TryGetAll<T>(out IEnumerable<T> output) {
+        public bool TryGetAll<T>(out IEnumerable<T> output)
+        {
             output = container.ResolveAll<T>();
 
             if (output.Count() != 0) return true;
@@ -262,7 +294,8 @@ namespace Rocket.Core.DependencyInjection {
         ///     <value>true</value>
         ///     when at least one instance is resolved.
         /// </returns>
-        public bool TryGetAll<T>(out IEnumerable<T> output, params object[] parameters) {
+        public bool TryGetAll<T>(out IEnumerable<T> output, params object[] parameters)
+        {
             output = container.ResolveAll<T>(new OrderedParametersOverride(parameters));
 
             if (output.Count() != 0) return true;
@@ -275,7 +308,8 @@ namespace Rocket.Core.DependencyInjection {
         ///     <value>true</value>
         ///     when at least one instance is resolved.
         /// </returns>
-        public bool TryGetAll(Type serviceType, out IEnumerable<object> output) {
+        public bool TryGetAll(Type serviceType, out IEnumerable<object> output)
+        {
             output = container.ResolveAll(serviceType);
 
             if (output.Count() != 0) return true;
@@ -288,7 +322,8 @@ namespace Rocket.Core.DependencyInjection {
         ///     <value>true</value>
         ///     when at least one instance is resolved.
         /// </returns>
-        public bool TryGetAll(Type serviceType, out IEnumerable<object> output, params object[] parameters) {
+        public bool TryGetAll(Type serviceType, out IEnumerable<object> output, params object[] parameters)
+        {
             output = container.ResolveAll(serviceType, new OrderedParametersOverride(parameters));
 
             if (output.Count() != 0) return true;

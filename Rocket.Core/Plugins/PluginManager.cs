@@ -8,7 +8,7 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
-using Rocket.API.Reflection;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Plugins {
     public class PluginManager : IPluginManager, ICommandProvider {
@@ -136,8 +136,8 @@ namespace Rocket.Core.Plugins {
             IPlugin pluginInstance = (IPlugin) parentContainer.Activate(pluginType);
             container.RegisterInstance(pluginInstance, pluginInstance.Name);
             
-            List<Type> listeners = pluginInstance.FindTypes<IEventListener>();
-            List<Type> commands = pluginInstance.FindTypes<ICommand>();
+            IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>();
+            IEnumerable<Type> commands = pluginInstance.FindTypes<ICommand>();
 
             foreach (Type listener in listeners) {
                 IEventListener instance = (IEventListener) Activator.CreateInstance(listener, new object[0]);

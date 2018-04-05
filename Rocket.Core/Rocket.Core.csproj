@@ -63,6 +63,7 @@
     <Compile Include="Exceptions\IFriendlyException.cs" />
     <Compile Include="Extensions\ConfigurationExtensions.cs" />
     <Compile Include="Extensions\DependencyContainerExtensions.cs" />
+    <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="DependencyInjection\UnityInstanceNotResolvedException.cs" />
     <Compile Include="Eventing\EventManager.cs" />
