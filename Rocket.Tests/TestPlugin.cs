@@ -14,7 +14,10 @@ namespace Rocket.Tests
             Logger.Info("Constructing TestPlugin (From plugin)");
         }
 
-        public override IEnumerable<string> Capabilities => new List<string> { "TESTING" };
+        public override IEnumerable<string> Capabilities => new List<string>
+        {
+            "TESTING"
+        };
 
         public Task<bool> TestEventing()
         {
@@ -26,7 +29,10 @@ namespace Rocket.Tests
                 promise.SetResult(arguments.Value);
             });
 
-            Emit(new TestEvent { Value = true });
+            Emit(new TestEvent
+            {
+                Value = true
+            });
 
             return promise.Task;
         }
@@ -38,10 +44,13 @@ namespace Rocket.Tests
             Subscribe("test", (sender, arguments) =>
             {
                 Assert.Equals(sender, this);
-                promise.SetResult(((TestEvent)arguments).Value);
+                promise.SetResult(((TestEvent) arguments).Value);
             });
 
-            Emit(new TestEvent { Value = true });
+            Emit(new TestEvent
+            {
+                Value = true
+            });
 
             return promise.Task;
         }

@@ -1,3 +1,4 @@
-﻿namespace Rocket.Core.Eventing {
+﻿namespace Rocket.Core.Eventing
+{
     public interface IAutoRegisterEventListener { }
 }

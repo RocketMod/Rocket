@@ -1,5 +1,7 @@
-﻿namespace Rocket.API.Eventing {
-    public interface IEvent {
+﻿namespace Rocket.API.Eventing
+{
+    public interface IEvent
+    {
         /// <summary>
         ///     Name of the event
         /// </summary>

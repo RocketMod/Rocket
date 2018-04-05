@@ -2,17 +2,21 @@
 using System.Collections.Generic;
 using Rocket.API;
 
-namespace Rocket.ConsoleImplementation {
-    public class ConsoleImplementation : IImplementation {
+namespace Rocket.ConsoleImplementation
+{
+    public class ConsoleImplementation : IImplementation
+    {
         public string Name => "ConsoleHost";
 
-        public void Load(IRuntime runtime) {
+        public void Load(IRuntime runtime)
+        {
             Console.WriteLine("Loading...");
         }
 
         public IEnumerable<string> Capabilities => new List<string>();
 
-        public void Shutdown() {
+        public void Shutdown()
+        {
             Environment.Exit(0);
         }
 

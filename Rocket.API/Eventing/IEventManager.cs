@@ -1,13 +1,15 @@
 ﻿using System;
 
-namespace Rocket.API.Eventing {
+namespace Rocket.API.Eventing
+{
     public delegate void EventCallback<TEvent>(IEventEmitter sender, TEvent arguments) where TEvent : IEvent;
 
     public delegate void EventCallback(IEventEmitter sender, IEvent @event);
 
     public delegate void EventExecutedCallback(IEvent @event);
 
-    public interface IEventManager {
+    public interface IEventManager
+    {
         /// <summary>
         ///     Global subscription by name
         /// </summary>

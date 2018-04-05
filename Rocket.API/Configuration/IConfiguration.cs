@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
-namespace Rocket.API.Configuration {
+namespace Rocket.API.Configuration
+{
     public interface IConfiguration
     {
         /// <summary>Gets or sets a configuration value.</summary>

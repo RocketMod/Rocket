@@ -1,5 +1,7 @@
-﻿namespace Rocket.API.Scheduler {
-    public enum ExecutionTargetContext {
+﻿namespace Rocket.API.Scheduler
+{
+    public enum ExecutionTargetContext
+    {
         /// <summary>
         ///     Execute action on the main thread on the next frame
         /// </summary>

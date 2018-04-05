@@ -1,8 +1,11 @@
 ﻿using Rocket.API.Commands;
 
-namespace Rocket.Core.Commands {
-    public class CommandContext : ICommandContext {
-        public CommandContext(ICommandCaller caller, string command, string[] parameters) {
+namespace Rocket.Core.Commands
+{
+    public class CommandContext : ICommandContext
+    {
+        public CommandContext(ICommandCaller caller, string command, string[] parameters)
+        {
             Caller = caller;
             Command = command;
             Parameters = parameters;

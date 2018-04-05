@@ -1,6 +1,5 @@
 ﻿using System.IO;
 using System.Text;
-
 #if NET35
 using Rocket.Compability; //backport Stream.CopyTo(...)
 #endif
@@ -24,10 +23,7 @@ namespace Rocket.Core.Extensions
             ms.CopyTo(stream);
         }
 
-        public static string ConvertToString(this Stream stream)
-        {
-            return stream.ConvertToString(Encoding.UTF8);
-        }
+        public static string ConvertToString(this Stream stream) => stream.ConvertToString(Encoding.UTF8);
 
         public static string ConvertToString(this Stream stream, Encoding encoding)
         {

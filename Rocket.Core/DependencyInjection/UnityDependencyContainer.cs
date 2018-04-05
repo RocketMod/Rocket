@@ -26,13 +26,9 @@ namespace Rocket.Core.DependencyInjection
             container.RegisterInstance<IDependencyResolver>(this);
         }
 
-
         #region IDependencyContainer Implementation
 
-        public IDependencyContainer CreateChildContainer()
-        {
-            return new UnityDependencyContainer(this);
-        }
+        public IDependencyContainer CreateChildContainer() => new UnityDependencyContainer(this);
 
         public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
         {
@@ -60,24 +56,15 @@ namespace Rocket.Core.DependencyInjection
 
         #region IsRegistered Methods
 
-        public bool IsRegistered<T>(string mappingName = null)
-        {
-            return container.IsRegistered<T>(mappingName);
-        }
+        public bool IsRegistered<T>(string mappingName = null) => container.IsRegistered<T>(mappingName);
 
-        public bool IsRegistered(Type type, string mappingName = null)
-        {
-            return container.IsRegistered(type, mappingName);
-        }
+        public bool IsRegistered(Type type, string mappingName = null) => container.IsRegistered(type, mappingName);
 
         #endregion
 
         #region Activate Methods
 
-        public T Activate<T>()
-        {
-            return (T)Activate(typeof(T));
-        }
+        public T Activate<T>() => (T) Activate(typeof(T));
 
         [DebuggerStepThrough]
         public object Activate(Type type)
@@ -85,8 +72,7 @@ namespace Rocket.Core.DependencyInjection
             foreach (ConstructorInfo constructor in type.GetConstructors())
             {
                 ParameterInfo[] parameters = constructor.GetParameters();
-                if (parameters.Length <= 0)
-                    return Activator.CreateInstance(type);
+                if (parameters.Length <= 0) return Activator.CreateInstance(type);
 
                 List<object> objectList = new List<object>();
                 foreach (ParameterInfo parameterInfo in parameters)

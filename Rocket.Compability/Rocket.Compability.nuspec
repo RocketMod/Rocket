@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package >
+
+<package>
   <metadata>
     <id>Rocket.Compability</id>
     <version>$version$</version>

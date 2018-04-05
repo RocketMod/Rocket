@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace Rocket.API.Logging {
-    public interface ILogger {
+namespace Rocket.API.Logging
+{
+    public interface ILogger
+    {
         bool IsTraceEnabled { get; }
         bool IsDebugEnabled { get; }
         bool IsInfoEnabled { get; }

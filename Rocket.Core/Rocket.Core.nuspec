@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package >
+
+<package>
   <metadata>
     <id>Rocket.Core</id>
     <version>$version$</version>
@@ -13,7 +14,7 @@
     <tags>Rocket Mod Unity3D</tags>
     <dependencies>
       <dependency id="Unity" version="2.1.505.2" />
-      <dependency id="Rocket.API" version="$version$"/>
+      <dependency id="Rocket.API" version="$version$" />
     </dependencies>
   </metadata>
   <files>

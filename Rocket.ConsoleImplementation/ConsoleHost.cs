@@ -1,18 +1,22 @@
 ﻿using System.Threading;
 using Rocket.API;
 
-namespace Rocket.ConsoleImplementation {
-    public class ConsoleHost {
+namespace Rocket.ConsoleImplementation
+{
+    public class ConsoleHost
+    {
         private Thread asyncThread;
 
         public IRuntime Runtime { get; private set; }
 
         public bool IsTestEnviroment { get; set; }
 
-        public void Start() {
+        public void Start()
+        {
             Runtime = Rocket.Runtime.Bootstrap();
 
-            if (!IsTestEnviroment) {
+            if (!IsTestEnviroment)
+            {
                 asyncThread = new Thread(AsyncLoop);
                 asyncThread.Start();
 
@@ -20,11 +24,13 @@ namespace Rocket.ConsoleImplementation {
             }
         }
 
-        private void SyncLoop() {
+        private void SyncLoop()
+        {
             while (true) Thread.Sleep(20);
         }
 
-        private void AsyncLoop() {
+        private void AsyncLoop()
+        {
             while (true) Thread.Sleep(20);
         }
     }

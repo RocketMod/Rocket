@@ -1,5 +1,7 @@
-﻿namespace Rocket.API {
-    public interface ILifecycleObject {
+﻿namespace Rocket.API
+{
+    public interface ILifecycleObject
+    {
         bool IsAlive { get; }
     }
 }

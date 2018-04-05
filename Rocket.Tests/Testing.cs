@@ -44,12 +44,11 @@ namespace Rocket.Tests
             Assert.IsNotNull(runtime.Container.Get<IConfigurationProvider>());
         }
 
-
         [TestMethod]
         public void PluginImplementation()
         {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
-            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("TestPlugin");
+            TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
         }
 
@@ -59,7 +58,7 @@ namespace Rocket.Tests
             JsonConfigurationProvider provider = new JsonConfigurationProvider();
             MemoryStream ms = new MemoryStream();
             ms.Write(
-            @"{
+                @"{
 	            ""Test1"": ""A""
                 ""NestedObjectTest"": {
                    ""NestedStringValue"": ""B"",

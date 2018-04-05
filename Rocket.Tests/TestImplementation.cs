@@ -14,7 +14,10 @@ namespace Rocket.Tests
             this.logger = logger;
         }
 
-        public IEnumerable<string> Capabilities => new List<string> { "TESTING" };
+        public IEnumerable<string> Capabilities => new List<string>
+        {
+            "TESTING"
+        };
 
         public string InstanceId => "Test Instance";
 

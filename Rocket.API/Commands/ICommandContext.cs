@@ -1,5 +1,7 @@
-﻿namespace Rocket.API.Commands {
-    public interface ICommandContext {
+﻿namespace Rocket.API.Commands
+{
+    public interface ICommandContext
+    {
         string Command { get; }
 
         ICommandCaller Caller { get; }

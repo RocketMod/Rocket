@@ -38,18 +38,14 @@ namespace Rocket.Core.Configuration.Json
             GuardLoaded();
 
             List<IConfigurationSection> sections = new List<IConfigurationSection>();
-            foreach (JToken node in Node.Children())
-            {
-                sections.Add(new JsonConfigurationSection(node));
-            }
+            foreach (JToken node in Node.Children()) sections.Add(new JsonConfigurationSection(node));
 
             return sections;
         }
 
         public void GuardLoaded()
         {
-            if(Node == null)
-                throw new ConfigurationNotLoadedException();
+            if (Node == null) throw new ConfigurationNotLoadedException();
         }
     }
 }

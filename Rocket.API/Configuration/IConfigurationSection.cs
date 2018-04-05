@@ -14,7 +14,7 @@
         string Value { get; set; }
 
         T Get<T>();
-        
+
         bool TryGet<T>(out T value);
     }
 }

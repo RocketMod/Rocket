@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rocket.API.Player {
-    public interface IPlayerManager {
+namespace Rocket.API.Player
+{
+    public interface IPlayerManager
+    {
         IEnumerable<IPlayer> Players { get; }
         bool Kick(IPlayer player, string reason);
 

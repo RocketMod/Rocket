@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 
-namespace Rocket.API.Scheduler {
-    public interface ITaskScheduler {
+namespace Rocket.API.Scheduler
+{
+    public interface ITaskScheduler
+    {
         /// <summary>
         ///     Current registered tasks
         /// </summary>

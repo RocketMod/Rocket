@@ -8,10 +8,7 @@ namespace Rocket.Core.Plugins
 {
     public abstract class PluginBase : IPlugin
     {
-        protected PluginBase(IDependencyContainer container) : this(null, container)
-        {
-
-        }
+        protected PluginBase(IDependencyContainer container) : this(null, container) { }
 
         protected PluginBase(string name, IDependencyContainer container)
         {
@@ -36,7 +33,8 @@ namespace Rocket.Core.Plugins
             IsAlive = true;
         }
 
-        public void Unload() {
+        public void Unload()
+        {
             OnUnload();
             IsAlive = false;
         }
@@ -47,15 +45,18 @@ namespace Rocket.Core.Plugins
 
         protected virtual void OnUnload() { }
 
-        public void Subscribe<T>(EventCallback<T> callback) where T : IEvent {
+        public void Subscribe<T>(EventCallback<T> callback) where T : IEvent
+        {
             EventManager.Subscribe(this, callback);
         }
 
-        public void Subscribe(string eventName, EventCallback callback) {
+        public void Subscribe(string eventName, EventCallback callback)
+        {
             EventManager.Subscribe(this, eventName, callback);
         }
 
-        public void Emit(IEvent @event) {
+        public void Emit(IEvent @event)
+        {
             EventManager.Emit(this, @event);
         }
     }

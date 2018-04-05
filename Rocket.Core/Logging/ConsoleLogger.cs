@@ -1,8 +1,10 @@
 ﻿using System;
 using Rocket.API.Logging;
 
-namespace Rocket.Core.Logging {
-    public class ConsoleLogger : ILogger {
+namespace Rocket.Core.Logging
+{
+    public class ConsoleLogger : ILogger
+    {
         private readonly string debugPrefix = "[DEBUG]";
         private readonly string errorPrefix = "[ERROR]";
         private readonly string fatalPrefix = "[FATAL]";
@@ -10,8 +12,10 @@ namespace Rocket.Core.Logging {
         private readonly string tracePrefix = "[TRACE]";
         private readonly string warnPrefix = "[WARN]";
 
-        public bool IsTraceEnabled {
-            get {
+        public bool IsTraceEnabled
+        {
+            get
+            {
 #if DEBUG
                 return true;
 #else
@@ -20,8 +24,10 @@ namespace Rocket.Core.Logging {
             }
         }
 
-        public bool IsDebugEnabled {
-            get {
+        public bool IsDebugEnabled
+        {
+            get
+            {
 #if DEBUG
                 return true;
 #else
@@ -38,79 +44,92 @@ namespace Rocket.Core.Logging {
 
         public bool IsFatalEnabled => true;
 
-        public void Debug(string message, params object[] arguments) {
+        public void Debug(string message, params object[] arguments)
+        {
             setColor(ConsoleColor.Cyan);
             Console.WriteLine($"{debugPrefix} {message}", arguments);
         }
 
-        public void Debug(string message, Exception exception, params object[] arguments) {
+        public void Debug(string message, Exception exception, params object[] arguments)
+        {
             setColor(ConsoleColor.Cyan);
             Console.WriteLine($"{debugPrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(exception);
         }
 
-        public void Error(string message, params object[] arguments) {
+        public void Error(string message, params object[] arguments)
+        {
             setColor(ConsoleColor.Red);
             Console.WriteLine($"{errorPrefix} {message}", arguments);
         }
 
-        public void Error(string message, Exception exception, params object[] arguments) {
+        public void Error(string message, Exception exception, params object[] arguments)
+        {
             setColor(ConsoleColor.Red);
             Console.WriteLine($"{errorPrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(exception);
         }
 
-        public void Fatal(string message, params object[] arguments) {
+        public void Fatal(string message, params object[] arguments)
+        {
             setColor(ConsoleColor.Red);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
         }
 
-        public void Fatal(string message, Exception exception, params object[] arguments) {
+        public void Fatal(string message, Exception exception, params object[] arguments)
+        {
             setColor(ConsoleColor.Red);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(exception);
         }
 
-        public void Info(string message, params object[] arguments) {
+        public void Info(string message, params object[] arguments)
+        {
             setColor(ConsoleColor.White);
             Console.WriteLine($"{infoPrefix} {message}", arguments);
         }
 
-        public void Info(string message, Exception exception, params object[] arguments) {
+        public void Info(string message, Exception exception, params object[] arguments)
+        {
             setColor(ConsoleColor.White);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(infoPrefix);
         }
 
-        public void Trace(string message, params object[] arguments) {
+        public void Trace(string message, params object[] arguments)
+        {
             setColor(ConsoleColor.Cyan);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
         }
 
-        public void Trace(string message, Exception exception, params object[] arguments) {
+        public void Trace(string message, Exception exception, params object[] arguments)
+        {
             setColor(ConsoleColor.Cyan);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(exception);
         }
 
-        public void Warning(string message, params object[] arguments) {
+        public void Warning(string message, params object[] arguments)
+        {
             setColor(ConsoleColor.Yellow);
             Console.WriteLine($"{warnPrefix} {message}", arguments);
         }
 
-        public void Warning(string message, Exception exception, params object[] arguments) {
+        public void Warning(string message, Exception exception, params object[] arguments)
+        {
             setColor(ConsoleColor.Yellow);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
             setColor(ConsoleColor.Red);
             Console.WriteLine(warnPrefix);
         }
 
-        private void setColor(ConsoleColor color) {
+        private void setColor(ConsoleColor color)
+        {
             if (Console.ForegroundColor != color) Console.ForegroundColor = color;
         }
     }

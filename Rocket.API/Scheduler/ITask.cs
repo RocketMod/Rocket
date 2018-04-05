@@ -1,7 +1,9 @@
 ﻿using System;
 
-namespace Rocket.API.Scheduler {
-    public interface ITask {
+namespace Rocket.API.Scheduler
+{
+    public interface ITask
+    {
         ILifecycleObject Owner { get; }
 
         Action Action { get; }

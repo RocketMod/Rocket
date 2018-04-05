@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Rocket.API.DependencyInjection {
-    public interface IDependencyResolver {
+namespace Rocket.API.DependencyInjection
+{
+    public interface IDependencyResolver
+    {
         bool IsRegistered<T>(string mappingName = null);
         bool IsRegistered(Type type, string mappingName = null);
 

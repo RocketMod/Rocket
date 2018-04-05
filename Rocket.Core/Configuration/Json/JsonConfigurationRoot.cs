@@ -3,7 +3,6 @@ using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
-
 #if NET35
 using Rocket.Core.Extensions; //backport Stream.CopyTo(...)
 #endif
@@ -12,9 +11,7 @@ namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfigurationRoot : JsonConfiguration, IConfigurationRoot
     {
-        public JsonConfigurationRoot() : base(null)
-        {
-        }
+        public JsonConfigurationRoot() : base(null) { }
 
         public void Load(Stream stream)
         {

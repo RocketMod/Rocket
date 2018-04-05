@@ -1,7 +1,9 @@
 using System;
 
-namespace Rocket.API.Plugin {
-    public interface IPluginManager {
+namespace Rocket.API.Plugin
+{
+    public interface IPluginManager
+    {
         IPlugin GetPlugin(string name);
 
         bool PluginExists(string name);

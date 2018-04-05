@@ -9,7 +9,8 @@ namespace HelloWorldPlugin
     {
         private readonly ILogger _logger;
 
-        public HelloWorldPluginMain(IDependencyContainer container, ILogger logger) : base("HelloWorldPlugin", container)
+        public HelloWorldPluginMain(IDependencyContainer container, ILogger logger) : base("HelloWorldPlugin",
+            container)
         {
             _logger = logger;
         }
@@ -19,10 +20,7 @@ namespace HelloWorldPlugin
             _logger.Info("Hello world!");
         }
 
-        protected override void OnUnload()
-        {
-
-        }
+        protected override void OnUnload() { }
 
         public override IEnumerable<string> Capabilities => new List<string>();
     }

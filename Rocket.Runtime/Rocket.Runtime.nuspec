@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package >
+
+<package>
   <metadata>
     <id>Rocket.Runtime</id>
     <version>$version$</version>
@@ -14,7 +15,7 @@
     <dependencies>
       <dependency id="Rocket.API" version="$version$" />
       <dependency id="Rocket.Core" version="$version$" />
-      <dependency id="Rocket.Compability" version="$version$"/>
+      <dependency id="Rocket.Compability" version="$version$" />
     </dependencies>
   </metadata>
   <files>

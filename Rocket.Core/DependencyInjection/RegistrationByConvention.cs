@@ -13,13 +13,13 @@ namespace Rocket.Core.DependencyInjection
             AppDomain.CurrentDomain.AssemblyLoad += (sender, args) =>
             {
                 foreach (Type type in args.LoadedAssembly.GetTypesWithInterface<IDependencyRegistrator>())
-                    ((IDependencyRegistrator)Activator.CreateInstance(type)).Register(container, resolver);
+                    ((IDependencyRegistrator) Activator.CreateInstance(type)).Register(container, resolver);
             };
 
             Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
             foreach (Assembly assembly in assemblies)
                 foreach (Type type in assembly.GetTypesWithInterface<IDependencyRegistrator>())
-                    ((IDependencyRegistrator)Activator.CreateInstance(type)).Register(container, resolver);
+                    ((IDependencyRegistrator) Activator.CreateInstance(type)).Register(container, resolver);
         }
     }
 }
