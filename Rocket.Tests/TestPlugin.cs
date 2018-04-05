@@ -13,8 +13,6 @@ namespace Rocket.Tests {
 
         public override IEnumerable<string> Capabilities => new List<string> {"TESTING"};
 
-        public override string Name => "Test Plugin";
-
         public Task<bool> TestEventing() {
             TaskCompletionSource<bool> promise = new TaskCompletionSource<bool>();
 
