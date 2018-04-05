@@ -1,5 +1,6 @@
 ﻿using Rocket.API;
 using Rocket.API.Commands;
+using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.I18N;
@@ -7,6 +8,7 @@ using Rocket.API.Logging;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
 using Rocket.Core.Commands;
+using Rocket.Core.Configuration.Json;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Eventing;
 using Rocket.Core.I18N;
@@ -27,6 +29,8 @@ namespace Rocket {
             Container.RegisterSingletonType<IPluginManager, PluginManager>();
             Container.RegisterSingletonType<ITranslationProvider, TranslationProvider>();
             Container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
+            Container.RegisterSingletonType<IConfigurationProvider, JsonConfigurationProvider>();
+
             Container.Activate(typeof(RegistrationByConvention));
             Container.Get<IImplementation>().Load(this);
             Container.Get<IPluginManager>().Init();
