@@ -44,91 +44,115 @@ namespace Rocket.Core.Logging
 
         public bool IsFatalEnabled => true;
 
-        public void Debug(string message, params object[] arguments)
+        public void LogDebug(string message, params object[] arguments)
         {
-            setColor(ConsoleColor.Cyan);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Cyan);
             Console.WriteLine($"{debugPrefix} {message}", arguments);
+            SetColor(orgCol);
         }
 
-        public void Debug(string message, Exception exception, params object[] arguments)
+        public void LogDebug(string message, Exception exception, params object[] arguments)
         {
-            setColor(ConsoleColor.Cyan);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Cyan);
             Console.WriteLine($"{debugPrefix} {message}", arguments);
-            setColor(ConsoleColor.Red);
+            SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
+            SetColor(orgCol);
         }
 
-        public void Error(string message, params object[] arguments)
+        public void LogError(string message, params object[] arguments)
         {
-            setColor(ConsoleColor.Red);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Red);
             Console.WriteLine($"{errorPrefix} {message}", arguments);
+            SetColor(orgCol);
         }
 
-        public void Error(string message, Exception exception, params object[] arguments)
+        public void LogError(string message, Exception exception, params object[] arguments)
         {
-            setColor(ConsoleColor.Red);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Red);
             Console.WriteLine($"{errorPrefix} {message}", arguments);
-            setColor(ConsoleColor.Red);
+            SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
+            SetColor(orgCol);
         }
 
-        public void Fatal(string message, params object[] arguments)
+        public void LogFatal(string message, params object[] arguments)
         {
-            setColor(ConsoleColor.Red);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Red);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
+            SetColor(orgCol);
         }
 
-        public void Fatal(string message, Exception exception, params object[] arguments)
+        public void LogFatal(string message, Exception exception, params object[] arguments)
         {
-            setColor(ConsoleColor.Red);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Red);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
-            setColor(ConsoleColor.Red);
+            SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
+            SetColor(orgCol);
         }
 
-        public void Info(string message, params object[] arguments)
+        public void LogInformation(string message, params object[] arguments)
         {
-            setColor(ConsoleColor.White);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.White);
             Console.WriteLine($"{infoPrefix} {message}", arguments);
+            SetColor(orgCol);
         }
 
-        public void Info(string message, Exception exception, params object[] arguments)
+        public void LogInformation(string message, Exception exception, params object[] arguments)
         {
-            setColor(ConsoleColor.White);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.White);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
-            setColor(ConsoleColor.Red);
+            SetColor(ConsoleColor.Red);
             Console.WriteLine(infoPrefix);
+            SetColor(orgCol);
         }
 
-        public void Trace(string message, params object[] arguments)
+        public void LogTrace(string message, params object[] arguments)
         {
-            setColor(ConsoleColor.Cyan);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Cyan);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
+            SetColor(orgCol);
         }
 
-        public void Trace(string message, Exception exception, params object[] arguments)
+        public void LogTrace(string message, Exception exception, params object[] arguments)
         {
-            setColor(ConsoleColor.Cyan);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Cyan);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
-            setColor(ConsoleColor.Red);
+            SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
+            SetColor(orgCol);
         }
 
-        public void Warning(string message, params object[] arguments)
+        public void LogWarning(string message, params object[] arguments)
         {
-            setColor(ConsoleColor.Yellow);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Yellow);
             Console.WriteLine($"{warnPrefix} {message}", arguments);
+            SetColor(orgCol);
         }
 
-        public void Warning(string message, Exception exception, params object[] arguments)
+        public void LogWarning(string message, Exception exception, params object[] arguments)
         {
-            setColor(ConsoleColor.Yellow);
+            var orgCol = Console.ForegroundColor;
+            SetColor(ConsoleColor.Yellow);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
-            setColor(ConsoleColor.Red);
+            SetColor(ConsoleColor.Red);
             Console.WriteLine(warnPrefix);
+            SetColor(orgCol);
         }
 
-        private void setColor(ConsoleColor color)
+        private void SetColor(ConsoleColor color)
         {
             if (Console.ForegroundColor != color) Console.ForegroundColor = color;
         }

@@ -17,7 +17,7 @@ namespace HelloWorldPlugin
 
         protected override void OnLoad()
         {
-            _logger.Info("Hello world!");
+            _logger.LogInformation("Hello world!");
         }
 
         protected override void OnUnload() { }

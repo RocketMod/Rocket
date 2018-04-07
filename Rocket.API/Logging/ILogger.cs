@@ -10,17 +10,17 @@ namespace Rocket.API.Logging
         bool IsWarnEnabled { get; }
         bool IsErrorEnabled { get; }
         bool IsFatalEnabled { get; }
-        void Trace(string message, params object[] arguments);
-        void Trace(string message, Exception exception, params object[] arguments);
-        void Debug(string message, params object[] arguments);
-        void Debug(string message, Exception exception, params object[] arguments);
-        void Info(string message, params object[] arguments);
-        void Info(string message, Exception exception, params object[] arguments);
-        void Warning(string message, params object[] arguments);
-        void Warning(string message, Exception exception, params object[] arguments);
-        void Error(string message, params object[] arguments);
-        void Error(string message, Exception exception, params object[] arguments);
-        void Fatal(string message, params object[] arguments);
-        void Fatal(string message, Exception exception, params object[] arguments);
+        void LogTrace(string message, params object[] arguments);
+        void LogTrace(string message, Exception exception, params object[] arguments);
+        void LogDebug(string message, params object[] arguments);
+        void LogDebug(string message, Exception exception, params object[] arguments);
+        void LogInformation(string message, params object[] arguments);
+        void LogInformation(string message, Exception exception, params object[] arguments);
+        void LogWarning(string message, params object[] arguments);
+        void LogWarning(string message, Exception exception, params object[] arguments);
+        void LogError(string message, params object[] arguments);
+        void LogError(string message, Exception exception, params object[] arguments);
+        void LogFatal(string message, params object[] arguments);
+        void LogFatal(string message, Exception exception, params object[] arguments);
     }
 }

@@ -25,17 +25,17 @@ namespace Rocket.Tests
 
         public void Load(IRuntime runtime)
         {
-            logger.Info("Loading implementation");
+            logger.LogInformation("Loading implementation");
         }
 
         public void Reload()
         {
-            logger.Info("Reloading implementation");
+            logger.LogInformation("Reloading implementation");
         }
 
         public void Shutdown()
         {
-            logger.Info("Shutting down implementation");
+            logger.LogInformation("Shutting down implementation");
         }
     }
 }

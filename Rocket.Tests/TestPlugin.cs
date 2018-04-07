@@ -11,7 +11,7 @@ namespace Rocket.Tests
     {
         public TestPlugin(IDependencyContainer container) : base(container)
         {
-            Logger.Info("Constructing TestPlugin (From plugin)");
+            Logger.LogInformation("Constructing TestPlugin (From plugin)");
         }
 
         public override IEnumerable<string> Capabilities => new List<string>
@@ -57,12 +57,12 @@ namespace Rocket.Tests
 
         protected override void OnLoad()
         {
-            Logger.Info("Hello World (From plugin)");
+            Logger.LogInformation("Hello World (From plugin)");
         }
 
         protected override void OnUnload()
         {
-            Logger.Info("Bye World (From plugin)");
+            Logger.LogInformation("Bye World (From plugin)");
         }
 
         private class TestEvent : Event

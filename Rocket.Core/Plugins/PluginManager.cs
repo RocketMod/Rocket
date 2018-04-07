@@ -64,7 +64,7 @@ namespace Rocket.Core.Plugins
                 if (pluginAssemblies.TryGetValue(args.Name, out string packageFile))
                     return Assembly.Load(File.ReadAllBytes(packageFile));
 
-                logger.Debug(((AppDomain) sender).FriendlyName + " could not find dependency: " + args.Name);
+                logger.LogDebug(((AppDomain) sender).FriendlyName + " could not find dependency: " + args.Name);
                 return null;
             };
 
@@ -78,7 +78,7 @@ namespace Rocket.Core.Plugins
                 }
                 catch (Exception ex)
                 {
-                    logger.Error($"Failed to load plugin assembly at {pluginPath}", ex);
+                    logger.LogError($"Failed to load plugin assembly at {pluginPath}", ex);
                 }
 
             container.TryGetAll(out IEnumerable<IPlugin> plugins);
