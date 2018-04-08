@@ -24,10 +24,10 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<ICommandHandler, CommandHandler>();
             container.RegisterSingletonType<IPluginManager, PluginManager>();
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
-            
+
             // Transient
-            container.RegisterType<ITranslations, Translations>();
             container.RegisterType<IConfiguration, JsonConfiguration>(null, "defaultjson");
+            container.RegisterType<ITranslations, Translations>();
         }
     }
 }

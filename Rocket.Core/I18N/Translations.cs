@@ -1,29 +1,42 @@
-﻿using System.IO;
-using Rocket.API;
+﻿using Rocket.API;
+using Rocket.API.Configuration;
 using Rocket.API.I18N;
 
 namespace Rocket.Core.I18N
 {
     public class Translations : ITranslations
     {
-        public string GetLocalizedMessage(string translationKey, params object[] bindings)
+        private readonly IConfiguration config;
+
+        public Translations(IConfiguration config)
         {
-            throw new System.NotImplementedException();
+            this.config = config;
         }
 
-        public string SetLocalizedMessage(string translationKey, string message)
+        public string GetLocalizedMessage(string translationKey, params object[] bindings)
         {
-            throw new System.NotImplementedException();
+            return string.Format(config[translationKey], bindings);
+        }
+
+        public void SetLocalizedMessage(string translationKey, string message)
+        {
+            config[translationKey] = message;
         }
 
         public void Load(IEnvironmentContext context)
         {
-            throw new System.NotImplementedException();
+            config.Load(context);
+            
         }
 
         public void Reload()
         {
-            throw new System.NotImplementedException();
+            config.Reload();
+        }
+
+        public void Save()
+        {
+            config.Save();
         }
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
     <Compile Include="Configuration\Json\JsonConfiguration.cs" />
     <Compile Include="Configuration\Json\JsonConfigurationSection.cs" />
+    <Compile Include="EnvironmentContext.cs" />
     <Compile Include="Eventing\EventAction.cs" />
     <Compile Include="Eventing\EventHandler.cs" />
     <Compile Include="Eventing\GenericCancellableEvent.cs" />
