@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API;
 using Rocket.API.Commands;
@@ -8,7 +8,6 @@ using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
 using Rocket.Core.Configuration.Json;
-using Rocket.Core.Extensions;
 
 namespace Rocket.Tests
 {
@@ -42,36 +41,38 @@ namespace Rocket.Tests
             Assert.IsNotNull(runtime.Container.Get<IPluginManager>());
             Assert.IsNotNull(runtime.Container.Get<ITranslations>());
             Assert.IsNotNull(runtime.Container.Get<IConfiguration>());
+            Assert.IsNotNull(runtime.Container.Get<IConfiguration>("defaultjson"));
         }
 
         [TestMethod]
         public void PluginImplementation()
         {
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
-            TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("TestPlugin");
+            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
         }
 
         [TestMethod]
         public void TestJsonConfig()
         {
-            JsonConfiguration config = (JsonConfiguration) runtime.Container.Get<IConfiguration>("json");
-            MemoryStream ms = new MemoryStream();
-            ms.Write(
-                @"{
-	            ""Test1"": ""A""
-                ""NestedObjectTest"": {
-                   ""NestedStringValue"": ""B"",
-                   ""NestedNumberValue"": 4
-                }
-              }");
+            JsonConfiguration config = (JsonConfiguration)runtime.Container.Get<IConfiguration>("defaultjson");
 
-            ms.Position = 0;
-            config.Load(ms);
+            string json =
+            "{" +
+                "\"Test1\": \"A\"," +
+                "\"NestedObjectTest\": {" +
+                   "\"NestedStringValue\": \"B\"," +
+                   "\"NestedNumberValue\": 4" +
+                "}" +
+              "}";
 
-            Assert.Equals(config.GetSection("Test1").Value, "B");
-            Assert.Equals(config.GetSection("NestedObjectTest").GetSection("NestedStringValue").Value, "B");
-            Assert.Equals(config.GetSection("NestedObjectTest").GetSection("NestedNumberValue").Get<int>(), 4);
+            config.LoadFromJson(json);
+
+            Assert.AreEqual(config.GetSection("Test1").Value, "A");
+            Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedStringValue").Value, "B");
+            Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedNumberValue").Get<int>(), 4);
+
+            Assert.ThrowsException<NotSupportedException>(() => config.Save());
         }
 
         /*

@@ -4,8 +4,10 @@ namespace Rocket.API.Configuration
 {
     public interface IConfiguration : IConfigurationBase
     {
-        void Load(Stream stream);
+        void Load(IEnvironmentContext context);
 
-        void Save(Stream stream);
+        void Reload();
+
+        void Save();
     }
 }

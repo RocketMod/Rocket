@@ -1,21 +1,29 @@
-﻿using System.IO;
-using System.Text;
+﻿using System;
+using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Rocket.API;
 using Rocket.API.Configuration;
-#if NET35
-using Rocket.Core.Extensions; //backport Stream.CopyTo(...)
-#endif
 
 namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfiguration : JsonConfigurationBase, IConfiguration
     {
+        private string file;
         public JsonConfiguration() : base(null) { }
 
-        public void Load(Stream stream)
+        public void Load(IEnvironmentContext context)
         {
-            string json = stream.ConvertToString(Encoding.UTF8);
+            file = Path.Combine(context.WorkingDirectory, context.Name + "config.json");
+            if(!File.Exists(file))
+                File.WriteAllText(file, "");
+
+            string json = File.ReadAllText(file);
+            LoadFromJson(json);
+        }
+
+        public void LoadFromJson(string json)
+        {
             Node = JObject.Parse(json, new JsonLoadSettings
             {
                 CommentHandling = CommentHandling.Ignore,
@@ -23,9 +31,20 @@ namespace Rocket.Core.Configuration.Json
             });
         }
 
-        public void Save(Stream stream)
+        public void Reload()
         {
-            stream.Write(Node.ToString(Formatting.Indented));
+            if (file == null)
+                return;
+
+            LoadFromJson(File.ReadAllText(file));
+        }
+
+        public void Save()
+        {
+            if(file == null)
+                throw new NotSupportedException("This configuration was not loaded from a file; so it can not be saved!");
+
+            File.WriteAllText(file, Node.ToString(Formatting.Indented));
         }
     }
 }

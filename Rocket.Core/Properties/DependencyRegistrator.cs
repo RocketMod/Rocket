@@ -27,7 +27,7 @@ namespace Rocket.Core.Properties
             
             // Transient
             container.RegisterType<ITranslations, Translations>();
-            container.RegisterType<IConfiguration, JsonConfiguration>(null, "json");
+            container.RegisterType<IConfiguration, JsonConfiguration>(null, "defaultjson");
         }
     }
 }

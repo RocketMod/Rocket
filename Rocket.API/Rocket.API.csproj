@@ -59,6 +59,7 @@
     <Compile Include="Handlers\HandlerPriorityAttribute.cs" />
     <Compile Include="Handlers\HandlerPriorityComparer.cs" />
     <Compile Include="Handlers\IHandler.cs" />
+    <Compile Include="IEnvironmentContext.cs" />
     <Compile Include="Permissions\IIdentifiable.cs" />
     <Compile Include="Permissions\IPermissionGroup.cs" />
     <Compile Include="Player\PlayerNotFoundException.cs" />
