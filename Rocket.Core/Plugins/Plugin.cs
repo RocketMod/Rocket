@@ -19,7 +19,7 @@ namespace Rocket.Core.Plugins
             public const string NoTranslations = "NoTranslations";
 
             public const string CustomConfig = "CustomConfig";
-            public const string CustomTranslations = "CustomTranslations":
+            public const string CustomTranslations = "CustomTranslations";
         }
 
         public IConfiguration Configuration { get; protected set; }
