@@ -107,7 +107,7 @@ namespace Rocket.Core.Eventing
         public void AddEventListener(ILifecycleObject @object, IEventListener eventListener)
         {
             // ReSharper disable once UseIsOperator.2
-            if (!typeof(IEventListener<>).IsInstanceOfType(eventListener))
+            if (!typeof(IEventListener).IsInstanceOfType(eventListener))
                 throw new ArgumentException(
                     "The eventListener to register has to implement at least one IEventListener<X>!",
                     nameof(eventListener));
@@ -116,7 +116,7 @@ namespace Rocket.Core.Eventing
 
             Type type = eventListener.GetType();
 
-            foreach (Type @interface in type.GetInterfaces().Where(c => c == typeof(IEventListener<>)))
+            foreach (Type @interface in type.GetInterfaces().Where(c => typeof(IEventListener).IsAssignableFrom(c) && c.GetGenericArguments().Length > 0))
                 foreach (MethodInfo method in @interface.GetMethods())
                 {
                     EventHandler handler = (EventHandler)method.GetCustomAttributes(typeof(EventHandler), false)
