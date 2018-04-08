@@ -60,6 +60,7 @@
     <Compile Include="Handlers\HandlerPriorityComparer.cs" />
     <Compile Include="Handlers\IHandler.cs" />
     <Compile Include="Permissions\IIdentifiable.cs" />
+    <Compile Include="Permissions\IPermissionGroup.cs" />
     <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />
     <Compile Include="Eventing\ICancellableEvent.cs" />
