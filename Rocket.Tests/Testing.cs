@@ -50,6 +50,9 @@ namespace Rocket.Tests
             IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
             TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
+
+            Assert.IsNull(plugin.Configuration); //NoConfig capability
+            Assert.IsNull(plugin.Translations); //NoTranslations capability
         }
 
         [TestMethod]

@@ -16,7 +16,8 @@ namespace Rocket.Tests
 
         public override IEnumerable<string> Capabilities => new List<string>
         {
-            "TESTING"
+            CapabilityOptions.NoTranslations,
+            CapabilityOptions.NoConfig
         };
 
         public Task<bool> TestEventing()
