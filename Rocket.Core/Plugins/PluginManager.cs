@@ -98,7 +98,7 @@ namespace Rocket.Core.Plugins
             foreach (IPlugin plugin in container.GetAll<IPlugin>())
             {
                 Type type = plugin.GetType();
-                string location = type.Assembly.Location;
+                string location = GetAssemblyLocationSafe(type.Assembly);
                 if (string.IsNullOrEmpty(location))
                     continue;
 
@@ -169,11 +169,26 @@ namespace Rocket.Core.Plugins
             return asm;
         }
 
+        private string GetAssemblyLocationSafe(Assembly asm)
+        {
+            try
+            {
+                string location = asm.Location;
+                return string.IsNullOrEmpty(location) ? null : location;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         public IPlugin LoadPluginFromAssembly(Assembly pluginAssembly)
         {
-            if (!string.IsNullOrEmpty(pluginAssembly.Location)
-                && !cachedAssemblies.ContainsKey(pluginAssembly.Location))
-                cachedAssemblies.Add(pluginAssembly.Location, pluginAssembly);
+            var loc = GetAssemblyLocationSafe(pluginAssembly);
+
+            if (!string.IsNullOrEmpty(loc)
+                && !cachedAssemblies.ContainsKey(loc))
+                cachedAssemblies.Add(loc, pluginAssembly);
 
             Type[] types;
             try

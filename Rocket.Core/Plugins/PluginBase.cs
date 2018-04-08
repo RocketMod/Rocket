@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
@@ -8,13 +11,15 @@ namespace Rocket.Core.Plugins
 {
     public abstract class PluginBase : IPlugin
     {
+        public IConfiguration Configuration { get; protected set; }
+
         protected PluginBase(IDependencyContainer container) : this(null, container) { }
 
         protected PluginBase(string name, IDependencyContainer container)
         {
             Name = name ?? GetType().Name;
 
-            Container = container;
+            Container = container.CreateChildContainer();
             EventManager = Container.Get<IEventManager>();
             Logger = Container.Get<ILogger>();
         }
@@ -29,6 +34,12 @@ namespace Rocket.Core.Plugins
 
         public void Load()
         {
+            if (!Capabilities.Any(c => c.Equals("CustomConfig", StringComparison.OrdinalIgnoreCase)))
+            {
+                Configuration = Container.Get<IConfiguration>();
+                //todo: load config
+            }
+
             OnLoad();
             IsAlive = true;
         }

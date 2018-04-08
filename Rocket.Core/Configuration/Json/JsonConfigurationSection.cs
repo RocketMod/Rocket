@@ -4,7 +4,7 @@ using Rocket.API.Configuration;
 
 namespace Rocket.Core.Configuration.Json
 {
-    public class JsonConfigurationSection : JsonConfiguration, IConfigurationSection
+    public class JsonConfigurationSection : JsonConfigurationBase, IConfigurationSection
     {
         public JsonConfigurationSection(JToken token) : base(token) { }
 

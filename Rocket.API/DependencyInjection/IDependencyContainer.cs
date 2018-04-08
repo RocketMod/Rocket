@@ -4,12 +4,12 @@
     {
         IDependencyContainer CreateChildContainer();
 
-        void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface;
+        void RegisterType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface;
 
-        void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface;
+        void RegisterSingletonType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface;
 
-        void RegisterInstance<TInterface>(TInterface value, string mappingName = null);
+        void RegisterInstance<TInterface>(TInterface value, params string[] mappingNames);
 
-        void RegisterSingletonInstance<TInterface>(TInterface value, string mappingName = null);
+        void RegisterSingletonInstance<TInterface>(TInterface value, params string[] mappingNames);
     }
 }

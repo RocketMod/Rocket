@@ -1,51 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System.IO;
+using System.Text;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
+#if NET35
+using Rocket.Core.Extensions; //backport Stream.CopyTo(...)
+#endif
 
 namespace Rocket.Core.Configuration.Json
 {
-    public class JsonConfiguration : IConfiguration
+    public class JsonConfiguration : JsonConfigurationBase, IConfiguration
     {
-        public JToken Node { get; protected set; }
+        public JsonConfiguration() : base(null) { }
 
-        public JsonConfiguration(JToken node)
+        public void Load(Stream stream)
         {
-            Node = node;
-        }
-
-        public string this[string key]
-        {
-            get
+            string json = stream.ConvertToString(Encoding.UTF8);
+            Node = JObject.Parse(json, new JsonLoadSettings
             {
-                GuardLoaded();
-                return Node[key].Value<string>();
-            }
-            set
-            {
-                GuardLoaded();
-                Node[key] = value;
-            }
+                CommentHandling = CommentHandling.Ignore,
+                LineInfoHandling = LineInfoHandling.Ignore
+            });
         }
 
-        public IConfigurationSection GetSection(string key)
+        public void Save(Stream stream)
         {
-            GuardLoaded();
-            return new JsonConfigurationSection(Node[key]);
-        }
-
-        public IEnumerable<IConfigurationSection> GetChildren()
-        {
-            GuardLoaded();
-
-            List<IConfigurationSection> sections = new List<IConfigurationSection>();
-            foreach (JToken node in Node.Children()) sections.Add(new JsonConfigurationSection(node));
-
-            return sections;
-        }
-
-        public void GuardLoaded()
-        {
-            if (Node == null) throw new ConfigurationNotLoadedException();
+            stream.Write(Node.ToString(Formatting.Indented));
         }
     }
 }

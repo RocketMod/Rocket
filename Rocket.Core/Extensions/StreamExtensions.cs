@@ -15,12 +15,9 @@ namespace Rocket.Core.Extensions
 
         public static void Write(this Stream stream, string s, Encoding encoding)
         {
-            MemoryStream ms = new MemoryStream();
-            StreamWriter writer = new StreamWriter(ms, encoding);
+            StreamWriter writer = new StreamWriter(stream, encoding);
             writer.Write(s);
             writer.Flush();
-            ms.Position = 0;
-            ms.CopyTo(stream);
         }
 
         public static string ConvertToString(this Stream stream) => stream.ConvertToString(Encoding.UTF8);

@@ -30,24 +30,40 @@ namespace Rocket.Core.DependencyInjection
 
         public IDependencyContainer CreateChildContainer() => new UnityDependencyContainer(this);
 
-        public void RegisterSingletonType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
+        public void RegisterSingletonType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
-            container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager());
+            if (mappingNames == null || mappingNames.Length == 0)
+                mappingNames = new string[] { null };
+
+            foreach (var mappingName in mappingNames)
+                container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager());
         }
 
-        public void RegisterSingletonInstance<TInterface>(TInterface value, string mappingName = null)
+        public void RegisterSingletonInstance<TInterface>(TInterface value, params string[] mappingNames)
         {
-            container.RegisterInstance(mappingName, value, new ContainerControlledLifetimeManager());
+            if (mappingNames == null || mappingNames.Length == 0)
+                mappingNames = new string[] { null };
+
+            foreach (var mappingName in mappingNames)
+                container.RegisterInstance(mappingName, value, new ContainerControlledLifetimeManager());
         }
 
-        public void RegisterType<TInterface, TClass>(string mappingName = null) where TClass : TInterface
+        public void RegisterType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
-            container.RegisterType<TInterface, TClass>(mappingName);
+            if (mappingNames == null || mappingNames.Length == 0)
+                mappingNames = new string[] { null };
+
+            foreach (var mappingName in mappingNames)
+                container.RegisterType<TInterface, TClass>(mappingName);
         }
 
-        public void RegisterInstance<TInterface>(TInterface value, string mappingName = null)
+        public void RegisterInstance<TInterface>(TInterface value, params string[] mappingNames)
         {
-            container.RegisterInstance(mappingName, value);
+            if (mappingNames == null || mappingNames.Length == 0)
+                mappingNames = new string[] { null };
+
+            foreach (var mappingName in mappingNames)
+                container.RegisterInstance(mappingName, value);
         }
 
         #endregion
@@ -64,7 +80,7 @@ namespace Rocket.Core.DependencyInjection
 
         #region Activate Methods
 
-        public T Activate<T>() => (T) Activate(typeof(T));
+        public T Activate<T>() => (T)Activate(typeof(T));
 
         [DebuggerStepThrough]
         public object Activate(Type type)

@@ -41,7 +41,7 @@ namespace Rocket.Tests
             Assert.IsNotNull(runtime.Container.Get<ICommandHandler>());
             Assert.IsNotNull(runtime.Container.Get<IPluginManager>());
             Assert.IsNotNull(runtime.Container.Get<ITranslationProvider>());
-            Assert.IsNotNull(runtime.Container.Get<IConfigurationProvider>());
+            Assert.IsNotNull(runtime.Container.Get<IConfiguration>());
         }
 
         [TestMethod]
@@ -55,7 +55,7 @@ namespace Rocket.Tests
         [TestMethod]
         public void TestJsonConfig()
         {
-            JsonConfigurationProvider provider = (JsonConfigurationProvider) runtime.Container.Get<IConfigurationProvider>("json");
+            JsonConfiguration config = (JsonConfiguration) runtime.Container.Get<IConfiguration>("json");
             MemoryStream ms = new MemoryStream();
             ms.Write(
                 @"{
@@ -67,7 +67,7 @@ namespace Rocket.Tests
               }");
 
             ms.Position = 0;
-            IConfigurationRoot config = provider.Load(ms);
+            config.Load(ms);
 
             Assert.Equals(config.GetSection("Test1").Value, "B");
             Assert.Equals(config.GetSection("NestedObjectTest").GetSection("NestedStringValue").Value, "B");
