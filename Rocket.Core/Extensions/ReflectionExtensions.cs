@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Rocket.API;
@@ -40,6 +41,22 @@ namespace Rocket.Core.Extensions
         public static IEnumerable<Type> GetTypesWithInterface<TInterface>(this Assembly assembly)
         {
             return assembly.FindAllTypes().Where(t => typeof(TInterface).IsAssignableFrom(t));
+        }
+
+        public static Dictionary<string, string> GetAssembliesFromDirectory(string directory, string extension = "*.dll")
+        {
+            Dictionary<string, string> l = new Dictionary<string, string>();
+            IEnumerable<FileInfo> libraries =
+                new DirectoryInfo(directory).GetFiles(extension, SearchOption.AllDirectories);
+            foreach (FileInfo library in libraries)
+                try
+                {
+                    AssemblyName name = AssemblyName.GetAssemblyName(library.FullName);
+                    l.Add(name.FullName, library.FullName);
+                }
+                catch { }
+
+            return l;
         }
     }
 }

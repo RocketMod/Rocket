@@ -23,6 +23,7 @@ namespace Rocket.Core.Plugins
         private readonly ILogger logger;
 
         private readonly IDependencyContainer parentContainer;
+        private readonly Dictionary<string, Assembly> cachedAssemblies;
 
         private Dictionary<IPlugin, List<ICommand>> commands;
         private Dictionary<string, string> packageAssemblies;
@@ -34,6 +35,7 @@ namespace Rocket.Core.Plugins
             this.logger = logger;
             this.eventManager = eventManager;
             container = dependencyContainer.CreateChildContainer();
+            cachedAssemblies = new Dictionary<string, Assembly>();
         }
 
         public IEnumerable<ICommand> Commands
@@ -51,30 +53,31 @@ namespace Rocket.Core.Plugins
             commands = new Dictionary<IPlugin, List<ICommand>>();
 
             Directory.CreateDirectory(pluginsDirectory);
-            pluginAssemblies = getAssembliesFromDirectory(pluginsDirectory);
+            pluginAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(pluginsDirectory);
 
             Directory.CreateDirectory(packagesDirectory);
-            packageAssemblies = getAssembliesFromDirectory(packagesDirectory);
+            packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(packagesDirectory);
 
             AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs args)
             {
                 if (pluginAssemblies.TryGetValue(args.Name, out string pluginFile))
-                    return Assembly.Load(File.ReadAllBytes(pluginFile));
+                    return LoadAssembly(pluginFile);
 
                 if (pluginAssemblies.TryGetValue(args.Name, out string packageFile))
-                    return Assembly.Load(File.ReadAllBytes(packageFile));
+                    return LoadAssembly(packageFile);
 
                 logger.LogDebug(((AppDomain) sender).FriendlyName + " could not find dependency: " + args.Name);
                 return null;
             };
 
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies()) loadPluginFromAssembly(assembly);
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+                LoadPluginFromAssembly(assembly);
 
             foreach (string pluginPath in pluginAssemblies.Values)
                 try
                 {
-                    Assembly pluginAssembly = Assembly.LoadFrom(pluginPath);
-                    loadPluginFromAssembly(pluginAssembly);
+                    Assembly pluginAssembly = LoadAssembly(pluginPath);
+                    LoadPluginFromAssembly(pluginAssembly);
                 }
                 catch (Exception ex)
                 {
@@ -85,13 +88,63 @@ namespace Rocket.Core.Plugins
             foreach (IPlugin plugin in plugins) plugin.Load();
         }
 
-        public IPlugin GetPlugin(string name) => container.Get<IPlugin>(name);
+        public IPlugin GetPlugin(string name)
+        {
+            IPlugin pl = container.Get<IPlugin>(name);
+            if (pl != null)
+                return pl;
+
+            //name may also be path or file name
+            foreach (IPlugin plugin in container.GetAll<IPlugin>())
+            {
+                Type type = plugin.GetType();
+                string location = type.Assembly.Location;
+                if (string.IsNullOrEmpty(location))
+                    continue;
+
+                if (location.Equals(name, StringComparison.OrdinalIgnoreCase)
+                    || Path.GetFileNameWithoutExtension(location).Equals(name, StringComparison.OrdinalIgnoreCase))
+                    return plugin;
+            }
+
+            return null;
+        }
 
         public bool PluginExists(string name) => container.IsRegistered<IPlugin>(name);
 
-        public bool LoadPlugin(string name) => throw new NotImplementedException();
+        public bool LoadPlugin(string name)
+        {
+            IPlugin plugin = GetPlugin(name);
+            if (plugin != null && !plugin.IsAlive)
+            {
+                plugin.Load();
+                return plugin.IsAlive;
+            }
 
-        public bool UnloadPlugin(string name) => throw new NotImplementedException();
+            if (File.Exists(name))
+            {
+                Assembly asm = LoadAssembly(name);
+                plugin = LoadPluginFromAssembly(asm);
+                if (plugin == null)
+                    return false;
+
+                if (!plugin.IsAlive)
+                    plugin.Load();
+                return true;
+            }
+
+            return true;
+        }
+
+        public bool UnloadPlugin(string name)
+        {
+            IPlugin plugin = GetPlugin(name);
+            if (plugin == null || !plugin.IsAlive)
+                return false;
+
+            plugin.Unload();
+            return !plugin.IsAlive;
+        }
 
         public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
         {
@@ -104,24 +157,24 @@ namespace Rocket.Core.Plugins
             return false;
         }
 
-        private Dictionary<string, string> getAssembliesFromDirectory(string directory, string extension = "*.dll")
+        private Assembly LoadAssembly(string path)
         {
-            Dictionary<string, string> l = new Dictionary<string, string>();
-            IEnumerable<FileInfo> libraries =
-                new DirectoryInfo(directory).GetFiles(extension, SearchOption.AllDirectories);
-            foreach (FileInfo library in libraries)
-                try
-                {
-                    AssemblyName name = AssemblyName.GetAssemblyName(library.FullName);
-                    l.Add(name.FullName, library.FullName);
-                }
-                catch { }
+            path = path.Trim();
 
-            return l;
+            if (cachedAssemblies.ContainsKey(path))
+                return cachedAssemblies[path];
+
+            Assembly asm = Assembly.LoadFile(path);
+            cachedAssemblies.Add(path, asm);
+            return asm;
         }
 
-        private void loadPluginFromAssembly(Assembly pluginAssembly)
+        public IPlugin LoadPluginFromAssembly(Assembly pluginAssembly)
         {
+            if (!string.IsNullOrEmpty(pluginAssembly.Location)
+                && !cachedAssemblies.ContainsKey(pluginAssembly.Location))
+                cachedAssemblies.Add(pluginAssembly.Location, pluginAssembly);
+
             Type[] types;
             try
             {
@@ -142,7 +195,8 @@ namespace Rocket.Core.Plugins
                     pluginType = type;
             }
 
-            if (pluginType == null) return;
+            if (pluginType == null)
+                return null;
 
             IPlugin pluginInstance = (IPlugin) parentContainer.Activate(pluginType);
             container.RegisterInstance(pluginInstance, pluginInstance.Name);
@@ -166,6 +220,7 @@ namespace Rocket.Core.Plugins
                 cmdInstanceList.Add((ICommand) Activator.CreateInstance(command, new object[0]));
 
             this.commands.Add(pluginInstance, cmdInstanceList);
+            return pluginInstance;
         }
 
         ~PluginManager()
