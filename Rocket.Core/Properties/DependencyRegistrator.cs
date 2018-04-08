@@ -26,7 +26,8 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPluginManager, PluginManager>();
             container.RegisterSingletonType<ITranslationProvider, TranslationProvider>();
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
-            container.RegisterSingletonType<IConfigurationProvider, JsonConfigurationProvider>("json");
+            container.RegisterType<IConfigurationProvider, JsonConfigurationProvider>();
+            container.RegisterType<IConfigurationProvider, JsonConfigurationProvider>("json");
         }
     }
 }
