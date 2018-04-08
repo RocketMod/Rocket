@@ -28,5 +28,12 @@ namespace Rocket.API.Chat
         /// <param name="message">The message to broadcast</param>
         /// <param name="bindings">The bindings for the message</param> 
         void Broadcast(string message, params object[] bindings);
+
+        /// <summary>
+        /// Broadcasts a localized message to all players
+        /// </summary>
+        /// <param name="translationKey">The key of the translated message to send</param>
+        /// <param name="bindings">The bindings for the message</param> 
+        void BroadcastLocalized(string translationKey, params object[] bindings);
     }
 }

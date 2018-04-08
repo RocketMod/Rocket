@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Rocket.API;
 using Rocket.API.I18N;
 
 namespace Rocket.Core.I18N
@@ -15,12 +16,12 @@ namespace Rocket.Core.I18N
             throw new System.NotImplementedException();
         }
 
-        public void Load(Stream stream)
+        public void Load(IEnvironmentContext context)
         {
             throw new System.NotImplementedException();
         }
 
-        public void Save(Stream stream)
+        public void Reload()
         {
             throw new System.NotImplementedException();
         }

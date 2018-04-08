@@ -20,16 +20,8 @@ namespace Rocket.API.I18N
         /// <returns></returns>
         string SetLocalizedMessage(string translationKey, string message);
 
-        /// <summary>
-        /// Load the translation
-        /// </summary>
-        /// <param name="stream"></param>
-        void Load(Stream stream);
+        void Load(IEnvironmentContext context);
 
-        /// <summary>
-        /// Save the translation
-        /// </summary>
-        /// <param name="stream"></param>
-        void Save(Stream stream);
+        void Reload();
     }
 }
