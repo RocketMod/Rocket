@@ -18,12 +18,15 @@ namespace Rocket.Core.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
+            // Singleton
             container.RegisterSingletonType<IEventManager, EventManager>();
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
             container.RegisterSingletonType<ICommandHandler, CommandHandler>();
             container.RegisterSingletonType<IPluginManager, PluginManager>();
-            container.RegisterSingletonType<ITranslationProvider, TranslationProvider>();
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
+            
+            // Transient
+            container.RegisterType<ITranslation, TranslationConfiguration>();
             container.RegisterType<IConfiguration, JsonConfiguration>(null, "json");
         }
     }

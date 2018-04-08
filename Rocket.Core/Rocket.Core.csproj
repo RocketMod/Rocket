@@ -69,7 +69,7 @@
     <Compile Include="DependencyInjection\RegistrationByConvention.cs" />
     <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />
     <Compile Include="DependencyInjection\OrderedParametersOverride.cs" />
-    <Compile Include="I18N\TranslationProvider.cs" />
+    <Compile Include="I18N\TranslationConfiguration.cs" />
     <Compile Include="Permissions\PermissionProvider.cs" />
     <Compile Include="Plugins\PluginBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
