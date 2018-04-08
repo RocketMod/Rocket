@@ -68,7 +68,7 @@
     <Compile Include="Handlers\HandlerPriority.cs" />
     <Compile Include="ILifecycleController.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
-    <Compile Include="I18N\ITranslationConfiguration.cs" />
+    <Compile Include="I18N\ITranslations.cs" />
     <Compile Include="IImplementation.cs" />
     <Compile Include="DependencyInjection\IDependencyContainer.cs" />
     <Compile Include="DependencyInjection\IDependencyRegistrator.cs" />

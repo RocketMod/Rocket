@@ -3,7 +3,7 @@ using Rocket.API.I18N;
 
 namespace Rocket.Core.I18N
 {
-    public class TranslationConfiguration : ITranslation
+    public class Translations : ITranslations
     {
         public string GetLocalizedMessage(string translationKey, params object[] bindings)
         {

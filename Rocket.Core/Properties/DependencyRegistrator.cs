@@ -26,7 +26,7 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
             
             // Transient
-            container.RegisterType<ITranslation, TranslationConfiguration>();
+            container.RegisterType<ITranslations, Translations>();
             container.RegisterType<IConfiguration, JsonConfiguration>(null, "json");
         }
     }

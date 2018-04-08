@@ -4,18 +4,31 @@ using System.Linq;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
+using Rocket.API.I18N;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
+using Rocket.Core.I18N;
 
 namespace Rocket.Core.Plugins
 {
-    public abstract class PluginBase : IPlugin
+    public abstract class Plugin : IPlugin
     {
+        public class CapabilityOptions
+        {
+            public const string NoConfig = "NoConfig";
+            public const string NoTranslations = "NoTranslations";
+
+            public const string CustomConfig = "CustomConfig";
+            public const string CustomTranslations = "CustomTranslations":
+        }
+
         public IConfiguration Configuration { get; protected set; }
+        public ITranslations Translations { get; protected set; }
 
-        protected PluginBase(IDependencyContainer container) : this(null, container) { }
 
-        protected PluginBase(string name, IDependencyContainer container)
+        protected Plugin(IDependencyContainer container) : this(null, container) { }
+
+        protected Plugin(string name, IDependencyContainer container)
         {
             Name = name ?? GetType().Name;
 
@@ -34,9 +47,17 @@ namespace Rocket.Core.Plugins
 
         public void Load()
         {
-            if (!Capabilities.Any(c => c.Equals("CustomConfig", StringComparison.OrdinalIgnoreCase)))
+            if (!Capabilities.Any(c => c.Equals(CapabilityOptions.CustomConfig, StringComparison.OrdinalIgnoreCase))
+             && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoConfig, StringComparison.OrdinalIgnoreCase)))
             {
                 Configuration = Container.Get<IConfiguration>();
+                //todo: load config
+            }
+
+            if (!Capabilities.Any(c => c.Equals(CapabilityOptions.CustomTranslations, StringComparison.OrdinalIgnoreCase))
+                && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoTranslations, StringComparison.OrdinalIgnoreCase)))
+            {
+                Translations = Container.Get<ITranslations>();
                 //todo: load config
             }
 

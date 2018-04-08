@@ -2,7 +2,7 @@
 
 namespace Rocket.API.I18N
 {
-    public interface ITranslation
+    public interface ITranslations
     {
         /// <summary>
         /// 

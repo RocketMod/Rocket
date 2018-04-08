@@ -5,7 +5,7 @@ using Rocket.Core.Plugins;
 
 namespace HelloWorldPlugin
 {
-    public class HelloWorldPluginMain : PluginBase
+    public class HelloWorldPluginMain : Plugin
     {
         private readonly ILogger _logger;
 

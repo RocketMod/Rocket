@@ -7,7 +7,7 @@ using Rocket.Core.Plugins;
 
 namespace Rocket.Tests
 {
-    public class TestPlugin : PluginBase
+    public class TestPlugin : Plugin
     {
         public TestPlugin(IDependencyContainer container) : base(container)
         {
