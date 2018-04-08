@@ -40,7 +40,7 @@ namespace Rocket.Tests
             Assert.IsNotNull(runtime.Container.Get<IEventManager>());
             Assert.IsNotNull(runtime.Container.Get<ICommandHandler>());
             Assert.IsNotNull(runtime.Container.Get<IPluginManager>());
-            Assert.IsNotNull(runtime.Container.Get<ITranslationConfiguration>());
+            Assert.IsNotNull(runtime.Container.Get<ITranslations>());
             Assert.IsNotNull(runtime.Container.Get<IConfiguration>());
         }
 

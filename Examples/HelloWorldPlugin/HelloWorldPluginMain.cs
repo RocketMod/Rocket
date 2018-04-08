@@ -7,17 +7,17 @@ namespace HelloWorldPlugin
 {
     public class HelloWorldPluginMain : Plugin
     {
-        private readonly ILogger _logger;
+        private readonly ILogger logger;
 
         public HelloWorldPluginMain(IDependencyContainer container, ILogger logger) : base("HelloWorldPlugin",
             container)
         {
-            _logger = logger;
+            this.logger = logger;
         }
 
         protected override void OnLoad()
         {
-            _logger.LogInformation("Hello world!");
+            logger.LogInformation("Hello world!");
         }
 
         protected override void OnUnload() { }
