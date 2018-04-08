@@ -14,7 +14,7 @@ namespace Rocket.Core.Configuration.Json
 
         public void Load(IEnvironmentContext context)
         {
-            file = Path.Combine(context.WorkingDirectory, context.Name + "config.json");
+            file = Path.Combine(context.WorkingDirectory, context.Name + ".json");
             if(!File.Exists(file))
                 File.WriteAllText(file, "");
 

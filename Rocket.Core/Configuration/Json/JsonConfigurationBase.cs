@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
@@ -17,8 +18,16 @@ namespace Rocket.Core.Configuration.Json
         {
             get
             {
+                JsonConfigurationBase current = this;
+                var parts = key.Split(new []{ '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+                foreach (var part in parts)
+                {
+                    current = (JsonConfigurationBase) current.GetSection(part);
+                }
+
                 GuardLoaded();
-                return Node[key].Value<string>();
+                return current.Node.Value<string>();
             }
             set
             {
@@ -29,8 +38,19 @@ namespace Rocket.Core.Configuration.Json
 
         public IConfigurationSection GetSection(string key)
         {
+            JsonConfigurationBase currentNode = this;
+            var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length == 1)
+                return new JsonConfigurationSection(Node[key]);
+
+            foreach (var part in parts)
+            {
+                currentNode = (JsonConfigurationSection) currentNode.GetSection(part);
+            }
+
             GuardLoaded();
-            return new JsonConfigurationSection(Node[key]);
+            return (IConfigurationSection) currentNode;
         }
 
         public IEnumerable<IConfigurationSection> GetChildren()

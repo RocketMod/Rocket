@@ -71,11 +71,23 @@ namespace Rocket.Tests
 
             config.LoadFromJson(json);
 
+            TestConfig(config);
+
+            Assert.ThrowsException<NotSupportedException>(() => config.Save());
+        }
+
+        public void TestConfig(IConfiguration config)
+        {
             Assert.AreEqual(config.GetSection("Test1").Value, "A");
             Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedStringValue").Value, "B");
             Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedNumberValue").Get<int>(), 4);
 
-            Assert.ThrowsException<NotSupportedException>(() => config.Save());
+            Assert.AreEqual(config["Test1"], "A");
+            Assert.AreEqual(config["NestedObjectTest.NestedStringValue"], "B");
+            Assert.AreEqual(config["NestedObjectTest.NestedNumberValue"], "4");
+
+            Assert.AreEqual(config.GetSection("NestedObjectTest.NestedStringValue").Value, "B");
+            Assert.AreEqual(config.GetSection("NestedObjectTest.NestedNumberValue").Get<int>(), 4);
         }
 
         /*
