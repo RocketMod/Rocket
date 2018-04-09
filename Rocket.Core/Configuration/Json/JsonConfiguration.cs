@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,7 +18,7 @@ namespace Rocket.Core.Configuration.Json
         public void Load(IEnvironmentContext context)
         {
             file = Path.Combine(context.WorkingDirectory, context.Name + ".json");
-            if(!File.Exists(file))
+            if (!File.Exists(file))
                 File.WriteAllText(file, "");
 
             string json = File.ReadAllText(file);
@@ -53,7 +55,7 @@ namespace Rocket.Core.Configuration.Json
 
         public void Save()
         {
-            if(file == null)
+            if (file == null)
                 throw new NotSupportedException("This configuration was not loaded from a file; so it can not be saved!");
 
             File.WriteAllText(file, Node.ToString(Formatting.Indented));

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
@@ -53,6 +54,17 @@ namespace Rocket.Core.Configuration.Json
             return (IConfigurationSection) currentNode;
         }
 
+        public IConfigurationSection CreateSection(string key)
+        {
+            return GetSection(key);
+        }
+
+        public bool RemoveSection(string key)
+        {
+            Node[key].Remove();
+            return true;
+        }
+
         public IEnumerable<IConfigurationSection> GetChildren()
         {
             GuardLoaded();
@@ -70,6 +82,15 @@ namespace Rocket.Core.Configuration.Json
 
 
         public virtual T Get<T>() => Node.ToObject<T>();
+        public T Get<T>(T defaultValue)
+        {
+            if (!TryGet(out T val))
+            {
+                val = defaultValue;
+            }
+
+            return val;
+        }
 
         public virtual void Set(object o)
         {
@@ -90,6 +111,16 @@ namespace Rocket.Core.Configuration.Json
             {
                 return false;
             }
+        }
+
+        public IEnumerator<IConfigurationSection> GetEnumerator()
+        {
+            return GetChildren().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

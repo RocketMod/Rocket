@@ -2,7 +2,7 @@
 
 namespace Rocket.API.Configuration
 {
-    public interface IConfigurationBase
+    public interface IConfigurationBase : IEnumerable<IConfigurationSection>
     {
         /// <summary>Gets or sets a configuration value.</summary>
         /// <param name="key">The configuration key.</param>
@@ -20,6 +20,10 @@ namespace Rocket.API.Configuration
         /// </remarks>
         IConfigurationSection GetSection(string key);
 
+        IConfigurationSection CreateSection(string key);
+
+        bool RemoveSection(string key);
+
         /// <summary>
         /// Gets the immediate descendant configuration sub-sections.
         /// </summary>
@@ -29,6 +33,8 @@ namespace Rocket.API.Configuration
         void Set(object o);
 
         T Get<T>();
+
+        T Get<T>(T defaultValue);
 
         bool TryGet<T>(out T value);
     }
