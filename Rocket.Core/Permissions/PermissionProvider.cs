@@ -102,13 +102,21 @@ namespace Rocket.Core.Permissions
         public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
         {
             GuardLoaded();
-            throw new NotImplementedException();
+            IConfigurationSection groupsSection = PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
+            List<string> groups = groupsSection.Get<string[]>().ToList();
+            if (!groups.Any(c => c.Equals(@group.Id, StringComparison.OrdinalIgnoreCase)))
+                groups.Add(@group.Id);
+            groupsSection.Set(groups.ToArray());
         }
 
-        public void RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
+        public bool RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
         {
             GuardLoaded();
-            throw new NotImplementedException();
+            IConfigurationSection groupsSection = PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
+            List<string> groups = groupsSection.Get<string[]>().ToList();
+            int i = groups.RemoveAll(c => c.Equals(@group.Id, StringComparison.OrdinalIgnoreCase));
+            groupsSection.Set(groups.ToArray());
+            return i > 0;
         }
 
         public void CreateGroup(IPermissionGroup @group)

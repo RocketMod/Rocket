@@ -5,9 +5,13 @@ namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfigurationSection : JsonConfigurationBase, IConfigurationSection
     {
-        public JsonConfigurationSection(JToken token) : base(token) { }
+        private readonly string key;
+        public JsonConfigurationSection(JToken token, string key) : base(token)
+        {
+            this.key = key;
+        }
 
-        public string Key => (Node as JProperty)?.Name;
+        public string Key => key;
 
         public string Path => Node.Path;
     }

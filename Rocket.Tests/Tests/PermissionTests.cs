@@ -46,7 +46,7 @@ namespace Rocket.Tests.Tests
                         TestPlayerId = new
                         {
                             LastDisplayName = "Trojaner",
-                            Groups = new[] { "TestGroup3", "TestGroup2", "TestGroup4" /* doesn't exist */ }
+                            Groups = new[] { "TestGroup3", "TestGroup2" /* doesn't exist */ }
                         }
                     }
                 }
@@ -73,7 +73,7 @@ namespace Rocket.Tests.Tests
             var groups = permissionProvider.GetGroups(player).ToArray();
             Assert.AreEqual(groups.Length, 2);
             Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup3"));
-            Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup4"));
+            Assert.IsFalse(groups.Select(c => c.Id).Contains("TestGroup4"));
         }
     }
 }

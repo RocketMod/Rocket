@@ -19,19 +19,7 @@ namespace Rocket.Core.Configuration.Json
         {
             get
             {
-                GuardPath(path);
-                GuardLoaded();
-
-                JsonConfigurationBase current = this;
-                var parts = path.Split(new []{ '.' }, StringSplitOptions.RemoveEmptyEntries);
-
-                foreach (var part in parts)
-                {
-                    //if(M)
-                    current = (JsonConfigurationBase) current.GetSection(part);
-                }
-
-                return (IConfigurationSection) current;
+                return GetSection(path);
             }
         }
 
@@ -44,14 +32,9 @@ namespace Rocket.Core.Configuration.Json
             var parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length == 1)
-                try
-                {
-                    return new JsonConfigurationSection(Node[path]);
-                }
-                catch (Exception e)
-                {
-                    throw;
-                }
+            {
+                return new JsonConfigurationSection(Node[parts[0]], parts[0]);
+            }
 
             foreach (var part in parts)
             {
@@ -79,7 +62,11 @@ namespace Rocket.Core.Configuration.Json
             GuardLoaded();
 
             List<IConfigurationSection> sections = new List<IConfigurationSection>();
-            foreach (JToken node in Node.Children()) sections.Add(new JsonConfigurationSection(node));
+            foreach (JToken node in Node.Children())
+            {
+                var childPath = node.Path.Replace(Node.Path + ".", "");
+                sections.Add(GetSection(childPath));
+            }
 
             return sections;
         }

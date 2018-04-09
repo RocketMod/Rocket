@@ -28,7 +28,7 @@ namespace Rocket.API.Permissions
 
         void AddGroup(ICommandCaller caller, IPermissionGroup group);
 
-        void RemoveGroup(ICommandCaller caller, IPermissionGroup group);
+        bool RemoveGroup(ICommandCaller caller, IPermissionGroup group);
 
         void CreateGroup(IPermissionGroup @group);
 

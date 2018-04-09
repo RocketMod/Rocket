@@ -54,15 +54,19 @@ namespace Rocket.Tests.Tests
             "{" +
                 "\"Test1\": \"A\"," +
                 "\"NestedObjectTest\": {" +
-                   "\"NestedStringValue\": \"B\"," +
-                   "\"NestedNumberValue\": 4" +
+                    "\"NestedStringValue\": \"B\"," +
+                    "\"NestedNumberValue\": 4," +
+                    "\"VeryNestedObject\": {" +
+                        "\"Value\": \"3\"" +
+                    "}" + 
                 "}" +
-              "}";
+            "}";
 
             config.LoadFromJson(json);
 
             TestConfig(config);
 
+            //Config has not been loaded from a file so it can not be saved
             Assert.ThrowsException<NotSupportedException>(() => config.Save());
         }
 
@@ -79,34 +83,54 @@ namespace Rocket.Tests.Tests
                 NestedObjectTest = new
                 {
                     NestedStringValue = "B",
-                    NestedNumberValue = 4
+                    NestedNumberValue = 4,
+                    VeryNestedObject  = new
+                    {
+                        Value = "3"
+                    }
                 }
             };
 
             config.Set(@object);
             TestConfig(config);
 
+            //Config has not been loaded from a file so it can not be saved
             Assert.ThrowsException<NotSupportedException>(() => config.Save());
         }
 
         public void TestConfig(IConfiguration config)
         {
             Assert.AreEqual(config.GetSection("Test1").Get<string>(), "A");
-            Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedStringValue").Get<string>(), "B");
-            Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedNumberValue").Get<int>(), 4);
+            Assert.AreEqual(config.GetSection("NestedObjectTest")
+                                  .GetSection("NestedStringValue")
+                                  .Get<string>(), "B");
+
+            Assert.AreEqual(config.GetSection("NestedObjectTest")
+                                  .GetSection("NestedNumberValue")
+                                  .Get<int>(), 4);
+
+            Assert.AreEqual(config.GetSection("NestedObjectTest")
+                                  .GetSection("VeryNestedObject")
+                                  .GetSection("Value")
+                                  .Get<string>(), "3");
 
             Assert.AreEqual(config["Test1"].Get<string>(), "A");
             Assert.AreEqual(config["NestedObjectTest.NestedStringValue"].Get<string>(), "B");
             Assert.AreEqual(config["NestedObjectTest.NestedNumberValue"].Get<int>(), 4);
+            Assert.AreEqual(config["NestedObjectTest.VeryNestedObject.Value"].Get<string>(), "3");
 
-            Assert.AreEqual(config["NestedObjectTest.NestedNumberValue"].Key, "NestedNumberValue");
-            Assert.AreEqual(config["NestedObjectTest.NestedNumberValue"].Path, "NestedObjectTest.NestedNumberValue");
+            Assert.AreEqual(config["NestedObjectTest.VeryNestedObject.Value"].Key, "Value");
+            Assert.AreEqual(config["NestedObjectTest.VeryNestedObject.Value"].Path, "NestedObjectTest.VeryNestedObject.Value");
 
             Assert.AreEqual(config["NestedObjectTest"]["NestedStringValue"].Get<string>(), "B");
             Assert.AreEqual(config["NestedObjectTest"]["NestedNumberValue"].Get<int>(), 4);
+            Assert.AreEqual(config["NestedObjectTest"]["VeryNestedObject"]["Value"].Get<string>(), "3");
+
+            Assert.AreEqual(config["NestedObjectTest"]["VeryNestedObject"].GetSection("Value").Get<string>(), "3");
 
             Assert.AreEqual(config.GetSection("NestedObjectTest.NestedStringValue").Get<string>(), "B");
             Assert.AreEqual(config.GetSection("NestedObjectTest.NestedNumberValue").Get<int>(), 4);
+            Assert.AreEqual(config.GetSection("NestedObjectTest.VeryNestedObject.Value").Get<string>(), "3");
         }
 
         /*
