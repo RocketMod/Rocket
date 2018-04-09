@@ -9,7 +9,7 @@ namespace Rocket.Tests.Tests
     public class ConfigTests : RocketTestBase
     {
         protected object TestConfigObject { get; private set; }
-        
+
         [TestInitialize]
         public void BootstrapConfigTest()
         {
@@ -31,19 +31,19 @@ namespace Rocket.Tests.Tests
         [TestMethod]
         public void TestJsonConfig()
         {
-            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
+            JsonConfiguration config = (JsonConfiguration) Runtime.Container.Get<IConfiguration>("defaultjson");
 
             string json =
-            "{" +
-                "\"Test1\": \"A\"," +
-                "\"NestedObjectTest\": {" +
-                    "\"NestedStringValue\": \"B\"," +
-                    "\"NestedNumberValue\": 4," +
-                    "\"VeryNestedObject\": {" +
-                        "\"Value\": \"3\"" +
-                    "}" +
-                "}" +
-            "}";
+                "{"
+                + "\"Test1\": \"A\","
+                + "\"NestedObjectTest\": {"
+                + "\"NestedStringValue\": \"B\","
+                + "\"NestedNumberValue\": 4,"
+                + "\"VeryNestedObject\": {"
+                + "\"Value\": \"3\""
+                + "}"
+                + "}"
+                + "}";
 
             config.LoadFromJson(json);
 
@@ -56,7 +56,7 @@ namespace Rocket.Tests.Tests
         [TestMethod]
         public void TestJsonSetObjectConfig()
         {
-            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
+            JsonConfiguration config = (JsonConfiguration) Runtime.Container.Get<IConfiguration>("defaultjson");
             config.LoadEmpty();
 
             config.Set(TestConfigObject);
@@ -69,7 +69,7 @@ namespace Rocket.Tests.Tests
         [TestMethod]
         public void TestJsonLoadFromObjectConfig()
         {
-            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
+            JsonConfiguration config = (JsonConfiguration) Runtime.Container.Get<IConfiguration>("defaultjson");
             config.LoadFromObject(TestConfigObject);
 
             TestConfig(config);
@@ -100,7 +100,8 @@ namespace Rocket.Tests.Tests
             Assert.AreEqual(config["NestedObjectTest.VeryNestedObject.Value"].Get<string>(), "3");
 
             Assert.AreEqual(config["NestedObjectTest.VeryNestedObject.Value"].Key, "Value");
-            Assert.AreEqual(config["NestedObjectTest.VeryNestedObject.Value"].Path, "NestedObjectTest.VeryNestedObject.Value");
+            Assert.AreEqual(config["NestedObjectTest.VeryNestedObject.Value"].Path,
+                "NestedObjectTest.VeryNestedObject.Value");
 
             Assert.AreEqual(config["NestedObjectTest"]["NestedStringValue"].Get<string>(), "B");
             Assert.AreEqual(config["NestedObjectTest"]["NestedNumberValue"].Get<int>(), 4);

@@ -30,7 +30,8 @@ namespace Rocket.Core.Plugins
         private Dictionary<string, string> packageAssemblies;
         private Dictionary<string, string> pluginAssemblies;
 
-        public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger, IEventManager eventManager)
+        public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger,
+                             IEventManager eventManager)
         {
             parentContainer = dependencyContainer;
             this.resolver = resolver;
@@ -77,7 +78,6 @@ namespace Rocket.Core.Plugins
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
                 assemblies.Add(assembly);
 
-
             foreach (string pluginPath in pluginAssemblies.Values)
                 try
                 {
@@ -89,7 +89,7 @@ namespace Rocket.Core.Plugins
                     logger.LogError($"Failed to load plugin assembly at {pluginPath}", ex);
                 }
 
-            foreach (var assembly in assemblies)
+            foreach (Assembly assembly in assemblies)
                 LoadPluginFromAssembly(assembly);
 
             container.TryGetAll(out IEnumerable<IPlugin> plugins);
@@ -193,7 +193,7 @@ namespace Rocket.Core.Plugins
 
         public IPlugin LoadPluginFromAssembly(Assembly pluginAssembly)
         {
-            var loc = GetAssemblyLocationSafe(pluginAssembly);
+            string loc = GetAssemblyLocationSafe(pluginAssembly);
 
             if (!string.IsNullOrEmpty(loc)
                 && !cachedAssemblies.ContainsKey(loc))
@@ -229,10 +229,7 @@ namespace Rocket.Core.Plugins
             IEnumerable<Type> commands = pluginInstance.FindTypes<ICommand>();
             IEnumerable<Type> dependcyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>();
 
-            foreach (Type registrator in dependcyRegistrators)
-            {
-                ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(container, resolver);
-            }
+            foreach (Type registrator in dependcyRegistrators) ((IDependencyRegistrator) Activator.CreateInstance(registrator)).Register(container, resolver);
 
             foreach (Type listener in listeners)
             {

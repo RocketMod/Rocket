@@ -15,17 +15,24 @@ namespace Rocket.Core.Events.Player
             Reason = reason;
         }
 
-        public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason, bool global = true) : base(player, global)
+        public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason, bool global = true) : base(player,
+            global)
         {
             Kicker = kicker;
             Reason = reason;
         }
-        public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, executionTarget, global)
+
+        public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason,
+                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                               bool global = true) : base(player, executionTarget, global)
         {
             Kicker = kicker;
             Reason = reason;
         }
-        public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, name, executionTarget, global)
+
+        public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason, string name = null,
+                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                               bool global = true) : base(player, name, executionTarget, global)
         {
             Kicker = kicker;
             Reason = reason;
@@ -35,11 +42,17 @@ namespace Rocket.Core.Events.Player
         {
             Reason = reason;
         }
-        public PlayerKickEvent(IPlayer player, string reason, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, executionTarget, global)
+
+        public PlayerKickEvent(IPlayer player, string reason,
+                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                               bool global = true) : base(player, executionTarget, global)
         {
             Reason = reason;
         }
-        public PlayerKickEvent(IPlayer player, string reason, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, name, executionTarget, global)
+
+        public PlayerKickEvent(IPlayer player, string reason, string name = null,
+                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                               bool global = true) : base(player, name, executionTarget, global)
         {
             Reason = reason;
         }

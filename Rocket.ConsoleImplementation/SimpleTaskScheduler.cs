@@ -92,7 +92,7 @@ namespace Rocket.ConsoleImplementation
 
             if (!(task.Owner is IEventEmitter owner)) return;
 
-            var eventManager = container.Get<IEventManager>();
+            IEventManager eventManager = container.Get<IEventManager>();
 
             eventManager?.Emit(owner, e, @event =>
             {

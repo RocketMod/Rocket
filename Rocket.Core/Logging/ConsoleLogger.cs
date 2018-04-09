@@ -46,7 +46,7 @@ namespace Rocket.Core.Logging
 
         public void LogDebug(string message, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Cyan);
             Console.WriteLine($"{debugPrefix} {message}", arguments);
             SetColor(orgCol);
@@ -54,7 +54,7 @@ namespace Rocket.Core.Logging
 
         public void LogDebug(string message, Exception exception, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Cyan);
             Console.WriteLine($"{debugPrefix} {message}", arguments);
             SetColor(ConsoleColor.Red);
@@ -64,7 +64,7 @@ namespace Rocket.Core.Logging
 
         public void LogError(string message, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Red);
             Console.WriteLine($"{errorPrefix} {message}", arguments);
             SetColor(orgCol);
@@ -72,7 +72,7 @@ namespace Rocket.Core.Logging
 
         public void LogError(string message, Exception exception, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Red);
             Console.WriteLine($"{errorPrefix} {message}", arguments);
             SetColor(ConsoleColor.Red);
@@ -82,7 +82,7 @@ namespace Rocket.Core.Logging
 
         public void LogFatal(string message, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Red);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
             SetColor(orgCol);
@@ -90,7 +90,7 @@ namespace Rocket.Core.Logging
 
         public void LogFatal(string message, Exception exception, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Red);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
             SetColor(ConsoleColor.Red);
@@ -100,7 +100,7 @@ namespace Rocket.Core.Logging
 
         public void LogInformation(string message, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.White);
             Console.WriteLine($"{infoPrefix} {message}", arguments);
             SetColor(orgCol);
@@ -108,7 +108,7 @@ namespace Rocket.Core.Logging
 
         public void LogInformation(string message, Exception exception, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.White);
             Console.WriteLine($"{fatalPrefix} {message}", arguments);
             SetColor(ConsoleColor.Red);
@@ -118,7 +118,7 @@ namespace Rocket.Core.Logging
 
         public void LogTrace(string message, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Cyan);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
             SetColor(orgCol);
@@ -126,7 +126,7 @@ namespace Rocket.Core.Logging
 
         public void LogTrace(string message, Exception exception, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Cyan);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
             SetColor(ConsoleColor.Red);
@@ -136,7 +136,7 @@ namespace Rocket.Core.Logging
 
         public void LogWarning(string message, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Yellow);
             Console.WriteLine($"{warnPrefix} {message}", arguments);
             SetColor(orgCol);
@@ -144,7 +144,7 @@ namespace Rocket.Core.Logging
 
         public void LogWarning(string message, Exception exception, params object[] arguments)
         {
-            var orgCol = Console.ForegroundColor;
+            ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(ConsoleColor.Yellow);
             Console.WriteLine($"{tracePrefix} {message}", arguments);
             SetColor(ConsoleColor.Red);

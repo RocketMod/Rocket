@@ -27,7 +27,6 @@ namespace Rocket.Core.Plugins
         public IConfiguration Configuration { get; protected set; }
         public ITranslations Translations { get; protected set; }
 
-
         protected Plugin(IDependencyContainer container) : this(null, container) { }
 
         protected Plugin(string name, IDependencyContainer container)
@@ -49,8 +48,8 @@ namespace Rocket.Core.Plugins
 
         public void Load()
         {
-            var eventManager = Container.Get<IEventManager>();
-            var runtime = Container.Get<IRuntime>();
+            IEventManager eventManager = Container.Get<IEventManager>();
+            IRuntime runtime = Container.Get<IRuntime>();
 
             if (eventManager != null)
             {
@@ -62,19 +61,13 @@ namespace Rocket.Core.Plugins
 
             if (!Capabilities.Any(c => c.Equals(CapabilityOptions.CustomConfig, StringComparison.OrdinalIgnoreCase))
                 && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoConfig, StringComparison.OrdinalIgnoreCase)))
-            {
                 Configuration = Container.Get<IConfiguration>();
-                //todo: load config
-            }
 
             if (!Capabilities.Any(c
                     => c.Equals(CapabilityOptions.CustomTranslations, StringComparison.OrdinalIgnoreCase))
                 && !Capabilities.Any(
                     c => c.Equals(CapabilityOptions.NoTranslations, StringComparison.OrdinalIgnoreCase)))
-            {
                 Translations = Container.Get<ITranslations>();
-                //todo: load config
-            }
 
             OnLoad();
             IsAlive = true;
@@ -88,8 +81,8 @@ namespace Rocket.Core.Plugins
 
         public void Unload()
         {
-            var eventManager = Container.Get<IEventManager>();
-            var runtime = Container.Get<IRuntime>();
+            IEventManager eventManager = Container.Get<IEventManager>();
+            IRuntime runtime = Container.Get<IRuntime>();
 
             if (eventManager != null)
             {

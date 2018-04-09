@@ -47,7 +47,11 @@ namespace Rocket.Tests.Tests
                         TestPlayerId = new
                         {
                             LastDisplayName = "Trojaner",
-                            Groups = new[] { "TestGroup3", "TestGroup2", "TestGroup4" /* doesn't exist, shouldn't be exposed by GetGroups */ }
+                            Groups = new[]
+                            {
+                                "TestGroup3", "TestGroup2",
+                                "TestGroup4" /* doesn't exist, shouldn't be exposed by GetGroups */
+                            }
                         }
                     }
                 }
@@ -65,10 +69,7 @@ namespace Rocket.Tests.Tests
             };
         }
 
-        public virtual IConfiguration GetConfigurationProvider()
-        {
-            return Runtime.Container.Get<IConfiguration>();
-        }
+        public virtual IConfiguration GetConfigurationProvider() => Runtime.Container.Get<IConfiguration>();
 
         [TestMethod]
         public void TestGroups()
@@ -76,7 +77,7 @@ namespace Rocket.Tests.Tests
             IPermissionProvider permissionProvider = Runtime.Container.Get<IPermissionProvider>();
             permissionProvider.Load(GroupsConfig, PlayersConfig);
 
-            var groups = permissionProvider.GetGroups(TestPlayer).ToArray();
+            IPermissionGroup[] groups = permissionProvider.GetGroups(TestPlayer).ToArray();
             Assert.AreEqual(groups.Length, 2);
             Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup2"));
             Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup3"));

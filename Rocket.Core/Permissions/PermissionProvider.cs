@@ -61,7 +61,8 @@ namespace Rocket.Core.Permissions
         public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
         {
             GuardLoaded();
-            IConfigurationSection groupsSection = PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
+            IConfigurationSection groupsSection =
+                PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
             string[] groups = groupsSection.Get<string[]>();
             return groups
                    .Select(GetGroup)
@@ -102,7 +103,8 @@ namespace Rocket.Core.Permissions
         public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
         {
             GuardLoaded();
-            IConfigurationSection groupsSection = PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
+            IConfigurationSection groupsSection =
+                PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
             List<string> groups = groupsSection.Get<string[]>().ToList();
             if (!groups.Any(c => c.Equals(@group.Id, StringComparison.OrdinalIgnoreCase)))
                 groups.Add(@group.Id);
@@ -112,7 +114,8 @@ namespace Rocket.Core.Permissions
         public bool RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
         {
             GuardLoaded();
-            IConfigurationSection groupsSection = PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
+            IConfigurationSection groupsSection =
+                PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
             List<string> groups = groupsSection.Get<string[]>().ToList();
             int i = groups.RemoveAll(c => c.Equals(@group.Id, StringComparison.OrdinalIgnoreCase));
             groupsSection.Set(groups.ToArray());

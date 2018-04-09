@@ -60,7 +60,8 @@ namespace Rocket.Core.Configuration.Json
             GuardLoaded();
 
             if (file == null)
-                throw new NotSupportedException("This configuration was not loaded from a file; so it can not be saved!");
+                throw new NotSupportedException(
+                    "This configuration was not loaded from a file; so it can not be saved!");
 
             File.WriteAllText(file, Node.ToString(Formatting.Indented));
         }

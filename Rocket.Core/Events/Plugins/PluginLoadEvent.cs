@@ -7,8 +7,15 @@ namespace Rocket.Core.Events.Plugins
     {
         public PluginLoadEvent(IPlugin plugin) : base(plugin) { }
         public PluginLoadEvent(IPlugin plugin, bool global = true) : base(plugin, global) { }
-        public PluginLoadEvent(IPlugin plugin, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(plugin, executionTarget, global) { }
-        public PluginLoadEvent(IPlugin plugin, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(plugin, name, executionTarget, global) { }
+
+        public PluginLoadEvent(IPlugin plugin,
+                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                               bool global = true) : base(plugin, executionTarget, global) { }
+
+        public PluginLoadEvent(IPlugin plugin, string name = null,
+                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                               bool global = true) : base(plugin, name, executionTarget, global) { }
+
         public bool IsCancelled { get; set; }
     }
 }

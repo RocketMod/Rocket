@@ -22,7 +22,8 @@ namespace Rocket.API.Chat
         /// <param name="player">The receiver of the message</param>
         /// <param name="translationKey">The key of the translated message to send</param>
         /// <param name="bindings">The bindings for the message</param>
-        void SendLocalizedMessage(ITranslations translations, IPlayer player, string translationKey, params object[] bindings);
+        void SendLocalizedMessage(ITranslations translations, IPlayer player, string translationKey,
+                                  params object[] bindings);
 
         /// <summary>
         /// Broadcasts a message to all players

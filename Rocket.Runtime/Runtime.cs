@@ -26,10 +26,7 @@ namespace Rocket
 
         public IDependencyContainer Container { get; }
 
-        public static IRuntime Bootstrap()
-        {
-            return runtime ?? (runtime = new Runtime());
-        }
+        public static IRuntime Bootstrap() => runtime ?? (runtime = new Runtime());
 
         public bool IsAlive => runtime != null;
         public string Name => "Rocket.Runtime";

@@ -23,7 +23,8 @@ namespace Rocket.Core.Extensions
         }
 
         public static IEnumerable<Type> FindAllTypes(this ILifecycleObject @object,
-                                                     bool includeAbstractAndInterfaces = false) => @object.GetType().Assembly.FindAllTypes(includeAbstractAndInterfaces);
+                                                     bool includeAbstractAndInterfaces = false)
+            => @object.GetType().Assembly.FindAllTypes(includeAbstractAndInterfaces);
 
         public static IEnumerable<Type> FindAllTypes(this Assembly @object, bool includeAbstractAndInterfaces = false)
         {
@@ -43,7 +44,8 @@ namespace Rocket.Core.Extensions
             return assembly.FindAllTypes().Where(t => typeof(TInterface).IsAssignableFrom(t));
         }
 
-        public static Dictionary<string, string> GetAssembliesFromDirectory(string directory, string extension = "*.dll")
+        public static Dictionary<string, string> GetAssembliesFromDirectory(
+            string directory, string extension = "*.dll")
         {
             Dictionary<string, string> l = new Dictionary<string, string>();
             IEnumerable<FileInfo> libraries =

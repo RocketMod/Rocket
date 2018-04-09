@@ -14,7 +14,6 @@ namespace Rocket.Tests.Tests
     [TestClass]
     public class CoreTests : RocketTestBase
     {
-
         [TestMethod]
         public void ImplementationAvailable()
         {
@@ -38,11 +37,11 @@ namespace Rocket.Tests.Tests
         public void PluginImplementation()
         {
             IPluginManager pluginManager = Runtime.Container.Get<IPluginManager>();
-            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("TestPlugin");
+            TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
 
             Assert.IsNull(plugin.Configuration); //NoConfig capability
-            Assert.IsNull(plugin.Translations); //NoTranslations capability
+            Assert.IsNull(plugin.Translations);  //NoTranslations capability
         }
 
         /*

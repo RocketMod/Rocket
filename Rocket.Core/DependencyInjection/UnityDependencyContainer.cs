@@ -33,36 +33,36 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterSingletonType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
             if (mappingNames == null || mappingNames.Length == 0)
-                mappingNames = new string[] { null };
+                mappingNames = new string[] {null};
 
-            foreach (var mappingName in mappingNames)
+            foreach (string mappingName in mappingNames)
                 container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager());
         }
 
         public void RegisterSingletonInstance<TInterface>(TInterface value, params string[] mappingNames)
         {
             if (mappingNames == null || mappingNames.Length == 0)
-                mappingNames = new string[] { null };
+                mappingNames = new string[] {null};
 
-            foreach (var mappingName in mappingNames)
+            foreach (string mappingName in mappingNames)
                 container.RegisterInstance(mappingName, value, new ContainerControlledLifetimeManager());
         }
 
         public void RegisterType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
             if (mappingNames == null || mappingNames.Length == 0)
-                mappingNames = new string[] { null };
+                mappingNames = new string[] {null};
 
-            foreach (var mappingName in mappingNames)
+            foreach (string mappingName in mappingNames)
                 container.RegisterType<TInterface, TClass>(mappingName);
         }
 
         public void RegisterInstance<TInterface>(TInterface value, params string[] mappingNames)
         {
             if (mappingNames == null || mappingNames.Length == 0)
-                mappingNames = new string[] { null };
+                mappingNames = new string[] {null};
 
-            foreach (var mappingName in mappingNames)
+            foreach (string mappingName in mappingNames)
                 container.RegisterInstance(mappingName, value);
         }
 
@@ -80,7 +80,7 @@ namespace Rocket.Core.DependencyInjection
 
         #region Activate Methods
 
-        public T Activate<T>() => (T)Activate(typeof(T));
+        public T Activate<T>() => (T) Activate(typeof(T));
 
         [DebuggerStepThrough]
         public object Activate(Type type)

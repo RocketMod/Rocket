@@ -20,12 +20,18 @@ namespace Rocket.Core.Events.Player
             Message = message;
             ChatFormat = format;
         }
-        public PlayerChatEvent(IPlayer player, string format, string message, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, executionTarget, global)
+
+        public PlayerChatEvent(IPlayer player, string format, string message,
+                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                               bool global = true) : base(player, executionTarget, global)
         {
             Message = message;
             ChatFormat = format;
         }
-        public PlayerChatEvent(IPlayer player, string format, string message, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, name, executionTarget, global)
+
+        public PlayerChatEvent(IPlayer player, string format, string message, string name = null,
+                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                               bool global = true) : base(player, name, executionTarget, global)
         {
             Message = message;
             ChatFormat = format;

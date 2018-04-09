@@ -14,10 +14,7 @@ namespace Rocket.Core.I18N
             this.config = config;
         }
 
-        public string GetLocalizedMessage(string translationKey, params object[] bindings)
-        {
-            return string.Format(config[translationKey].Get<string>(), bindings);
-        }
+        public string GetLocalizedMessage(string translationKey, params object[] bindings) => string.Format(config[translationKey].Get<string>(), bindings);
 
         public void SetLocalizedMessage(string translationKey, string message)
         {

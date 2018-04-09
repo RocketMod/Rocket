@@ -15,13 +15,7 @@ namespace Rocket.Core.Configuration.Json
             Node = node;
         }
 
-        public IConfigurationSection this[string path]
-        {
-            get
-            {
-                return GetSection(path);
-            }
-        }
+        public IConfigurationSection this[string path] => GetSection(path);
 
         public IConfigurationSection GetSection(string path)
         {
@@ -29,17 +23,11 @@ namespace Rocket.Core.Configuration.Json
             GuardPath(path);
 
             JsonConfigurationBase currentNode = this;
-            var parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = path.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries);
 
-            if (parts.Length == 1)
-            {
-                return new JsonConfigurationSection(Node[parts[0]], parts[0]);
-            }
+            if (parts.Length == 1) return new JsonConfigurationSection(Node[parts[0]], parts[0]);
 
-            foreach (var part in parts)
-            {
-                currentNode = (JsonConfigurationSection) currentNode.GetSection(part);
-            }
+            foreach (string part in parts) currentNode = (JsonConfigurationSection) currentNode.GetSection(part);
 
             return (IConfigurationSection) currentNode;
         }
@@ -64,7 +52,7 @@ namespace Rocket.Core.Configuration.Json
             List<IConfigurationSection> sections = new List<IConfigurationSection>();
             foreach (JToken node in Node.Children())
             {
-                var childPath = node.Path.Replace(Node.Path + ".", "");
+                string childPath = node.Path.Replace(Node.Path + ".", "");
                 sections.Add(GetSection(childPath));
             }
 
@@ -88,20 +76,14 @@ namespace Rocket.Core.Configuration.Json
 
         public T Get<T>(T defaultValue)
         {
-            if (!TryGet(out T val))
-            {
-                val = defaultValue;
-            }
+            if (!TryGet(out T val)) val = defaultValue;
 
             return val;
         }
 
         public object Get(Type t, object defaultValue)
         {
-            if (!TryGet(t, out object val))
-            {
-                val = defaultValue;
-            }
+            if (!TryGet(t, out object val)) val = defaultValue;
 
             return val;
         }
@@ -110,7 +92,7 @@ namespace Rocket.Core.Configuration.Json
         {
             if (!(Node is JProperty)) throw new Exception("Can not set value of: " + Node.Path);
 
-            ((JProperty)Node).Value = new JValue(o);
+            ((JProperty) Node).Value = new JValue(o);
         }
 
         public bool TryGet<T>(out T value)
@@ -141,14 +123,8 @@ namespace Rocket.Core.Configuration.Json
             }
         }
 
-        public IEnumerator<IConfigurationSection> GetEnumerator()
-        {
-            return GetChildren().GetEnumerator();
-        }
+        public IEnumerator<IConfigurationSection> GetEnumerator() => GetChildren().GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
