@@ -43,7 +43,6 @@
     <Compile Include="..\Rocket.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Assets\IAsset.cs" />
     <Compile Include="Chat\IChatManager.cs" />
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandCaller.cs" />

@@ -21,7 +21,7 @@ namespace Rocket.Tests
 
         public string InstanceId => "Test Instance";
 
-        public bool IsAlive => throw new NotImplementedException();
+        public bool IsAlive => true;
 
         public void Load(IRuntime runtime)
         {
