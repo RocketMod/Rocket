@@ -83,6 +83,7 @@
     <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />
     <Compile Include="DependencyInjection\OrderedParametersOverride.cs" />
     <Compile Include="I18N\Translations.cs" />
+    <Compile Include="Permissions\PermissionGroup.cs" />
     <Compile Include="Permissions\PermissionProvider.cs" />
     <Compile Include="Plugins\Plugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

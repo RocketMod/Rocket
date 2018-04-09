@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Commands;
+using Rocket.API.Configuration;
 
 namespace Rocket.API.Permissions
 {
     public interface IPermissionProvider
     {
+        // do not add something like GetPermissions()!
+
         bool HasPermission(IPermissionGroup group, string permission);
         bool HasPermission(ICommandCaller caller, string permission);
 
@@ -20,9 +23,11 @@ namespace Rocket.API.Permissions
 
         void UpdateGroup(IPermissionGroup group);
 
-        void SetGroup(ICommandCaller caller, IPermissionGroup group);
+        void AddGroup(ICommandCaller caller, IPermissionGroup group);
 
-        void Load();
+        void RemoveGroup(ICommandCaller caller, IPermissionGroup group);
+
+        void Load(IConfiguration groups, IConfiguration players);
         void Reload();
         void Save();
     }

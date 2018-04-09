@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
@@ -8,87 +9,130 @@ namespace Rocket.Core.Permissions
 {
     public class PermissionProvider : IPermissionProvider
     {
-        private IConfiguration config;
-        public PermissionProvider(IConfiguration config)
-        {
-            this.config = config;
-        }
+        public IConfiguration GroupsConfig { get; protected set; }
+        public IConfiguration PlayersConfig { get; protected set; }
 
         public bool HasPermission(IPermissionGroup @group, string permission)
         {
-            throw new System.NotImplementedException();
+            GuardLoaded();
+
+            string[] groupPermissions = GroupsConfig.GetSection("Groups." + group.Id + ".Permissions").Get<string[]>();
+            return groupPermissions.Any(c => c.Trim().Equals(permission.Trim(), StringComparison.OrdinalIgnoreCase));
         }
 
         public bool HasPermission(ICommandCaller caller, string permission)
         {
-            throw new System.NotImplementedException();
+            GuardLoaded();
+            //todo: force remove permissions with ! prefix
+            IEnumerable<IPermissionGroup> groups = GetGroups(caller);
+            return groups.Any(c => HasPermission(c, permission));
         }
 
         public bool HasAllPermissions(IPermissionGroup @group, params string[] permissions)
         {
-            throw new System.NotImplementedException();
+            GuardLoaded();
+            return permissions.All(c => HasPermission(group, c));
         }
 
         public bool HasAllPermissions(ICommandCaller caller, params string[] permissions)
         {
-            throw new System.NotImplementedException();
+            GuardLoaded();
+            return permissions.All(c => HasPermission(caller, c));
         }
 
         public bool HasAnyPermissions(IPermissionGroup @group, params string[] permissions)
         {
-            throw new System.NotImplementedException();
+            GuardLoaded();
+            return permissions.Any(c => HasPermission(group, c));
         }
 
         public bool HasAnyPermissions(ICommandCaller caller, params string[] permissions)
         {
-            throw new System.NotImplementedException();
+            GuardLoaded();
+            return permissions.Any(c => HasPermission(caller, c));
         }
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
-            throw new System.NotImplementedException();
+            GuardLoaded();
+            return GetGroups(caller).OrderByDescending(c => c.Priority).FirstOrDefault();
         }
 
         public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
         {
-            throw new System.NotImplementedException();
+            GuardLoaded();
+            IConfigurationSection groupsSection = PlayersConfig.GetSection($"Players.{caller.GetType().Name}.{caller.Id}.Groups");
+            PermissionGroup[] groups = groupsSection.Get<PermissionGroup[]>();
+            return (groups ?? new PermissionGroup[0]).Where(c
+                                                         => GetGroups()
+                                                             .Any(d => c.Id.Equals(d.Id,
+                                                                 StringComparison.OrdinalIgnoreCase)))
+                                                     .Cast<IPermissionGroup>();
         }
 
         public IEnumerable<IPermissionGroup> GetGroups()
         {
-            throw new NotImplementedException();
+            GuardLoaded();
+            IConfigurationSection section = GroupsConfig.GetSection("Groups");
+
+            List<IPermissionGroup> groups = new List<IPermissionGroup>();
+            foreach (IConfigurationSection child in section)
+            {
+                PermissionGroup group = new PermissionGroup();
+                group.Id = child.Key;
+                group.Name = child["Name"];
+                group.Priority = child.Get(0);
+                groups.Add(group);
+            }
+
+            return groups;
         }
 
         public void UpdateGroup(IPermissionGroup @group)
         {
-            throw new NotImplementedException();
+            GuardLoaded();
+            IConfigurationSection section = GroupsConfig.GetSection($"Groups.{@group.Id}");
+            section["Name"] = @group.Name;
+            section.GetSection("Priority").Set(@group.Priority);
         }
 
-        public void SetGroup(ICommandCaller caller, IPermissionGroup @group)
+        public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
         {
-            throw new NotImplementedException();
+            GuardLoaded();
+            IConfigurationSection section = GroupsConfig.CreateSection($"Groups.{@group.Id}");
+            section["Name"] = @group.Name;
+            section.GetSection("Priority").Set(@group.Priority);
         }
 
-        public void Load()
+        public void RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
         {
-            if(config.IsLoaded)
-                throw new Exception("Permission provider is already loaded");
+            GuardLoaded();
+            GroupsConfig.RemoveSection($"Groups.{@group.Id}");
+        }
 
-            config.Load(new EnvironmentContext
-            {
-                WorkingDirectory = Environment.CurrentDirectory,
-                Name = "Rocket.Permissions"
-            });
+        public void Load(IConfiguration groupsConfig, IConfiguration playersConfig)
+        {
+            GroupsConfig = groupsConfig;
+            PlayersConfig = playersConfig;
         }
 
         public void Reload()
         {
-            config.Reload();
+            GroupsConfig.Reload();
         }
 
         public void Save()
         {
-            config.Save();
+            GroupsConfig.Save();
+        }
+
+        private void GuardLoaded()
+        {
+            if (GroupsConfig == null || !GroupsConfig.IsLoaded)
+                throw new Exception("Groups config not loaded!");
+
+            if (PlayersConfig == null || !PlayersConfig.IsLoaded)
+                throw new Exception("Players config has not been loaded");
         }
     }
 }
