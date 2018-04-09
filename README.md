@@ -1,4 +1,4 @@
-# RocketMod [![Build status](https://ci.appveyor.com/api/projects/status/aprg0tagb5t4m6dc?svg=true)](https://ci.appveyor.com/project/RocketMod/rocket)
+# RocketMod [![Build status](https://ci.appveyor.com/api/projects/status/aprg0tagb5t4m6dc/branch/rework?svg=true)](https://ci.appveyor.com/project/RocketMod/rocket/branch/rework)(https://ci.appveyor.com/project/RocketMod/rocket)
 
 This repository contains the core components, the central issue tracker and wiki for the Rocket Plugin Framework.
 									
