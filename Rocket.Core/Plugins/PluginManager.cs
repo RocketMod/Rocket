@@ -23,15 +23,17 @@ namespace Rocket.Core.Plugins
         private readonly ILogger logger;
 
         private readonly IDependencyContainer parentContainer;
+        private readonly IDependencyResolver resolver;
         private readonly Dictionary<string, Assembly> cachedAssemblies;
 
         private Dictionary<IPlugin, List<ICommand>> commands;
         private Dictionary<string, string> packageAssemblies;
         private Dictionary<string, string> pluginAssemblies;
 
-        public PluginManager(IDependencyContainer dependencyContainer, ILogger logger, IEventManager eventManager)
+        public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger, IEventManager eventManager)
         {
             parentContainer = dependencyContainer;
+            this.resolver = resolver;
             this.logger = logger;
             this.eventManager = eventManager;
             container = dependencyContainer.CreateChildContainer();
@@ -70,22 +72,29 @@ namespace Rocket.Core.Plugins
                 return null;
             };
 
+            List<Assembly> assemblies = new List<Assembly>();
+
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-                LoadPluginFromAssembly(assembly);
+                assemblies.Add(assembly);
+
 
             foreach (string pluginPath in pluginAssemblies.Values)
                 try
                 {
                     Assembly pluginAssembly = LoadAssembly(pluginPath);
-                    LoadPluginFromAssembly(pluginAssembly);
+                    assemblies.Add(pluginAssembly);
                 }
                 catch (Exception ex)
                 {
                     logger.LogError($"Failed to load plugin assembly at {pluginPath}", ex);
                 }
 
+            foreach (var assembly in assemblies)
+                LoadPluginFromAssembly(assembly);
+
             container.TryGetAll(out IEnumerable<IPlugin> plugins);
-            foreach (IPlugin plugin in plugins) plugin.Load();
+            foreach (IPlugin plugin in plugins)
+                plugin.Load();
         }
 
         public IPlugin GetPlugin(string name)
@@ -218,6 +227,12 @@ namespace Rocket.Core.Plugins
 
             IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>();
             IEnumerable<Type> commands = pluginInstance.FindTypes<ICommand>();
+            IEnumerable<Type> dependcyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>();
+
+            foreach (Type registrator in dependcyRegistrators)
+            {
+                ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(container, resolver);
+            }
 
             foreach (Type listener in listeners)
             {
