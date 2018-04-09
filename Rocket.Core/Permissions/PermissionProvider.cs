@@ -61,13 +61,16 @@ namespace Rocket.Core.Permissions
         public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
         {
             GuardLoaded();
-            IConfigurationSection groupsSection = PlayersConfig.GetSection($"Players.{caller.GetType().Name}.{caller.Id}.Groups");
-            PermissionGroup[] groups = groupsSection.Get<PermissionGroup[]>();
-            return (groups ?? new PermissionGroup[0]).Where(c
-                                                         => GetGroups()
-                                                             .Any(d => c.Id.Equals(d.Id,
-                                                                 StringComparison.OrdinalIgnoreCase)))
-                                                     .Cast<IPermissionGroup>();
+            IConfigurationSection groupsSection = PlayersConfig.GetSection($"Players.{caller.PlayerType.Name}.{caller.Id}.Groups");
+            string[] groups = groupsSection.Get<string[]>();
+            return groups
+                   .Select(GetGroup)
+                   .Where(c => c != null);
+        }
+
+        public IPermissionGroup GetGroup(string id)
+        {
+            return GetGroups().FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
         public IEnumerable<IPermissionGroup> GetGroups()
@@ -80,7 +83,7 @@ namespace Rocket.Core.Permissions
             {
                 PermissionGroup group = new PermissionGroup();
                 group.Id = child.Key;
-                group.Name = child["Name"];
+                group.Name = child["Name"].Get<string>();
                 group.Priority = child.Get(0);
                 groups.Add(group);
             }
@@ -92,19 +95,31 @@ namespace Rocket.Core.Permissions
         {
             GuardLoaded();
             IConfigurationSection section = GroupsConfig.GetSection($"Groups.{@group.Id}");
-            section["Name"] = @group.Name;
+            section["Name"].Set(@group.Name);
             section.GetSection("Priority").Set(@group.Priority);
         }
 
         public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
         {
             GuardLoaded();
-            IConfigurationSection section = GroupsConfig.CreateSection($"Groups.{@group.Id}");
-            section["Name"] = @group.Name;
-            section.GetSection("Priority").Set(@group.Priority);
+            throw new NotImplementedException();
         }
 
         public void RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
+        {
+            GuardLoaded();
+            throw new NotImplementedException();
+        }
+
+        public void CreateGroup(IPermissionGroup @group)
+        {
+            GuardLoaded();
+            IConfigurationSection section = GroupsConfig.CreateSection($"Groups.{@group.Id}");
+            section["Name"].Set(@group.Name);
+            section.GetSection("Priority").Set(@group.Priority);
+        }
+
+        public void DeleteGroup(IPermissionGroup @group)
         {
             GuardLoaded();
             GroupsConfig.RemoveSection($"Groups.{@group.Id}");

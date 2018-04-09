@@ -6,6 +6,10 @@ namespace Rocket.API.Configuration
     {
         void Load(IEnvironmentContext context);
 
+        void LoadEmpty();
+
+        void LoadFromObject(object o);
+
         void Reload();
 
         void Save();

@@ -18,6 +18,9 @@ namespace Rocket.API.Permissions
         bool HasAnyPermissions(ICommandCaller caller, params string[] permissions);
 
         IPermissionGroup GetPrimaryGroup(ICommandCaller caller);
+
+        IPermissionGroup GetGroup(string id);
+
         IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller);
         IEnumerable<IPermissionGroup> GetGroups();
 
@@ -26,6 +29,10 @@ namespace Rocket.API.Permissions
         void AddGroup(ICommandCaller caller, IPermissionGroup group);
 
         void RemoveGroup(ICommandCaller caller, IPermissionGroup group);
+
+        void CreateGroup(IPermissionGroup @group);
+
+        void DeleteGroup(IPermissionGroup @group);
 
         void Load(IConfiguration groups, IConfiguration players);
         void Reload();

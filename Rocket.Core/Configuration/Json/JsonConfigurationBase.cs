@@ -15,53 +15,62 @@ namespace Rocket.Core.Configuration.Json
             Node = node;
         }
 
-        public string this[string key]
+        public IConfigurationSection this[string path]
         {
             get
             {
+                GuardPath(path);
+                GuardLoaded();
+
                 JsonConfigurationBase current = this;
-                var parts = key.Split(new []{ '.' }, StringSplitOptions.RemoveEmptyEntries);
+                var parts = path.Split(new []{ '.' }, StringSplitOptions.RemoveEmptyEntries);
 
                 foreach (var part in parts)
                 {
+                    //if(M)
                     current = (JsonConfigurationBase) current.GetSection(part);
                 }
 
-                GuardLoaded();
-                return current.Node.Value<string>();
-            }
-            set
-            {
-                GuardLoaded();
-                Node[key] = value;
+                return (IConfigurationSection) current;
             }
         }
 
-        public IConfigurationSection GetSection(string key)
+        public IConfigurationSection GetSection(string path)
         {
+            GuardLoaded();
+            GuardPath(path);
+
             JsonConfigurationBase currentNode = this;
-            var parts = key.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            var parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length == 1)
-                return new JsonConfigurationSection(Node[key]);
+                try
+                {
+                    return new JsonConfigurationSection(Node[path]);
+                }
+                catch (Exception e)
+                {
+                    throw;
+                }
 
             foreach (var part in parts)
             {
                 currentNode = (JsonConfigurationSection) currentNode.GetSection(part);
             }
 
-            GuardLoaded();
             return (IConfigurationSection) currentNode;
         }
 
-        public IConfigurationSection CreateSection(string key)
+        public IConfigurationSection CreateSection(string path)
         {
-            return GetSection(key);
+            GuardPath(path);
+            return GetSection(path);
         }
 
-        public bool RemoveSection(string key)
+        public bool RemoveSection(string path)
         {
-            Node[key].Remove();
+            GuardPath(path);
+            Node[path].Remove();
             return true;
         }
 
@@ -77,14 +86,32 @@ namespace Rocket.Core.Configuration.Json
 
         public void GuardLoaded()
         {
-            if (Node == null) throw new ConfigurationNotLoadedException();
+            if (Node == null)
+                throw new ConfigurationNotLoadedException();
         }
 
+        public void GuardPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException("Configuration paths can not be null or empty");
+        }
 
         public virtual T Get<T>() => Node.ToObject<T>();
+        public object Get(Type t) => Node.ToObject(t);
+
         public T Get<T>(T defaultValue)
         {
             if (!TryGet(out T val))
+            {
+                val = defaultValue;
+            }
+
+            return val;
+        }
+
+        public object Get(Type t, object defaultValue)
+        {
+            if (!TryGet(t, out object val))
             {
                 val = defaultValue;
             }
@@ -105,6 +132,20 @@ namespace Rocket.Core.Configuration.Json
             try
             {
                 value = Get<T>();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool TryGet(Type t, out object value)
+        {
+            value = null;
+            try
+            {
+                value = Get(t);
                 return true;
             }
             catch

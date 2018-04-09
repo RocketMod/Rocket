@@ -9,45 +9,35 @@ using Rocket.API.Permissions;
 using Rocket.API.Plugin;
 using Rocket.Core.Configuration.Json;
 
-namespace Rocket.Tests
+namespace Rocket.Tests.Tests
 {
     [TestClass]
-    public class Testing
+    public class CoreTests : RocketTestBase
     {
-        private IRuntime runtime;
-
-        [AssemblyInitialize]
-        public static void Startup(TestContext testContext) { }
-
-        [TestInitialize]
-        public void Bootstrap()
-        {
-            runtime = Runtime.Bootstrap();
-        }
 
         [TestMethod]
         public void ImplementationAvailable()
         {
-            Assert.IsNotNull(runtime.Container.Get<IImplementation>());
+            Assert.IsNotNull(Runtime.Container.Get<IImplementation>());
         }
 
         [TestMethod]
         public void CoreDependenciesAvailable()
         {
-            Assert.IsNotNull(runtime.Container.Get<IEventManager>());
-            Assert.IsNotNull(runtime.Container.Get<IPermissionProvider>());
-            Assert.IsNotNull(runtime.Container.Get<IEventManager>());
-            Assert.IsNotNull(runtime.Container.Get<ICommandHandler>());
-            Assert.IsNotNull(runtime.Container.Get<IPluginManager>());
-            Assert.IsNotNull(runtime.Container.Get<ITranslations>());
-            Assert.IsNotNull(runtime.Container.Get<IConfiguration>());
-            Assert.IsNotNull(runtime.Container.Get<IConfiguration>("defaultjson"));
+            Assert.IsNotNull(Runtime.Container.Get<IEventManager>());
+            Assert.IsNotNull(Runtime.Container.Get<IPermissionProvider>());
+            Assert.IsNotNull(Runtime.Container.Get<IEventManager>());
+            Assert.IsNotNull(Runtime.Container.Get<ICommandHandler>());
+            Assert.IsNotNull(Runtime.Container.Get<IPluginManager>());
+            Assert.IsNotNull(Runtime.Container.Get<ITranslations>());
+            Assert.IsNotNull(Runtime.Container.Get<IConfiguration>());
+            Assert.IsNotNull(Runtime.Container.Get<IConfiguration>("defaultjson"));
         }
 
         [TestMethod]
         public void PluginImplementation()
         {
-            IPluginManager pluginManager = runtime.Container.Get<IPluginManager>();
+            IPluginManager pluginManager = Runtime.Container.Get<IPluginManager>();
             TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
 
@@ -58,7 +48,7 @@ namespace Rocket.Tests
         [TestMethod]
         public void TestJsonConfig()
         {
-            JsonConfiguration config = (JsonConfiguration)runtime.Container.Get<IConfiguration>("defaultjson");
+            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
 
             string json =
             "{" +
@@ -79,7 +69,7 @@ namespace Rocket.Tests
         [TestMethod]
         public void TestJsonSetObjectConfig()
         {
-            JsonConfiguration config = (JsonConfiguration)runtime.Container.Get<IConfiguration>("defaultjson");
+            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
 
             config.LoadEmpty();
 
@@ -101,15 +91,21 @@ namespace Rocket.Tests
 
         public void TestConfig(IConfiguration config)
         {
-            Assert.AreEqual(config.GetSection("Test1").Value, "A");
-            Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedStringValue").Value, "B");
+            Assert.AreEqual(config.GetSection("Test1").Get<string>(), "A");
+            Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedStringValue").Get<string>(), "B");
             Assert.AreEqual(config.GetSection("NestedObjectTest").GetSection("NestedNumberValue").Get<int>(), 4);
 
-            Assert.AreEqual(config["Test1"], "A");
-            Assert.AreEqual(config["NestedObjectTest.NestedStringValue"], "B");
-            Assert.AreEqual(config["NestedObjectTest.NestedNumberValue"], "4");
+            Assert.AreEqual(config["Test1"].Get<string>(), "A");
+            Assert.AreEqual(config["NestedObjectTest.NestedStringValue"].Get<string>(), "B");
+            Assert.AreEqual(config["NestedObjectTest.NestedNumberValue"].Get<int>(), 4);
 
-            Assert.AreEqual(config.GetSection("NestedObjectTest.NestedStringValue").Value, "B");
+            Assert.AreEqual(config["NestedObjectTest.NestedNumberValue"].Key, "NestedNumberValue");
+            Assert.AreEqual(config["NestedObjectTest.NestedNumberValue"].Path, "NestedObjectTest.NestedNumberValue");
+
+            Assert.AreEqual(config["NestedObjectTest"]["NestedStringValue"].Get<string>(), "B");
+            Assert.AreEqual(config["NestedObjectTest"]["NestedNumberValue"].Get<int>(), 4);
+
+            Assert.AreEqual(config.GetSection("NestedObjectTest.NestedStringValue").Get<string>(), "B");
             Assert.AreEqual(config.GetSection("NestedObjectTest.NestedNumberValue").Get<int>(), 4);
         }
 

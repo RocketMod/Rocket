@@ -11,7 +11,6 @@ namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfiguration : JsonConfigurationBase, IConfiguration
     {
-        private bool isLoaded;
         private string file;
         public JsonConfiguration() : base(null) { }
 
@@ -32,21 +31,24 @@ namespace Rocket.Core.Configuration.Json
                 CommentHandling = CommentHandling.Ignore,
                 LineInfoHandling = LineInfoHandling.Ignore
             });
-            isLoaded = true;
+            IsLoaded = true;
         }
 
         public void LoadFromObject(object o)
         {
             Node = JObject.FromObject(o);
+            IsLoaded = true;
         }
 
         public void LoadEmpty()
         {
             Node = new JObject();
+            IsLoaded = true;
         }
 
         public void Reload()
         {
+            GuardLoaded();
             if (file == null)
                 return;
 
@@ -55,16 +57,19 @@ namespace Rocket.Core.Configuration.Json
 
         public void Save()
         {
+            GuardLoaded();
+
             if (file == null)
                 throw new NotSupportedException("This configuration was not loaded from a file; so it can not be saved!");
 
             File.WriteAllText(file, Node.ToString(Formatting.Indented));
         }
 
-        public bool IsLoaded => isLoaded;
+        public bool IsLoaded { get; protected set; }
 
         public override void Set(object o)
         {
+            GuardLoaded();
             Node = JObject.FromObject(o);
         }
     }

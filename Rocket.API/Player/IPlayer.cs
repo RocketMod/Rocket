@@ -5,6 +5,6 @@ namespace Rocket.API.Player
 {
     public interface IPlayer : ICommandCaller
     {
-        bool IsAdmin { get; }
+
     }
 }
