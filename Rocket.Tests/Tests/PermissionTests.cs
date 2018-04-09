@@ -1,16 +1,17 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
-using Rocket.Core.Configuration.Json;
 
 namespace Rocket.Tests.Tests
 {
     [TestClass]
     public class PermissionTests : RocketTestBase
     {
-        private IConfiguration playersConfig;
-        private IConfiguration groupsConfig;
+        protected IConfiguration PlayersConfig { get; private set; }
+        protected IConfiguration GroupsConfig { get; private set; }
+        protected TestPlayer TestPlayer { get; private set; }
 
         [TestInitialize]
         public void BootstrapPermissionTest()
@@ -46,34 +47,42 @@ namespace Rocket.Tests.Tests
                         TestPlayerId = new
                         {
                             LastDisplayName = "Trojaner",
-                            Groups = new[] { "TestGroup3", "TestGroup2" /* doesn't exist */ }
+                            Groups = new[] { "TestGroup3", "TestGroup2", "TestGroup4" /* doesn't exist, shouldn't be exposed by GetGroups */ }
                         }
                     }
                 }
             };
 
-            playersConfig = Runtime.Container.Get<IConfiguration>();
-            playersConfig.LoadFromObject(samplePlayers);
+            PlayersConfig = GetConfigurationProvider();
+            PlayersConfig.LoadFromObject(samplePlayers);
 
-            groupsConfig = Runtime.Container.Get<IConfiguration>();
-            groupsConfig.LoadFromObject(sampleGroupsPermissions);
+            GroupsConfig = GetConfigurationProvider();
+            GroupsConfig.LoadFromObject(sampleGroupsPermissions);
+
+            TestPlayer = new TestPlayer
+            {
+                Id = "TestPlayerId"
+            };
+        }
+
+        public virtual IConfiguration GetConfigurationProvider()
+        {
+            return Runtime.Container.Get<IConfiguration>();
         }
 
         [TestMethod]
         public void TestGroups()
         {
-            TestPlayer player = new TestPlayer
-            {
-                Id = "TestPlayerId"
-            };
-
             IPermissionProvider permissionProvider = Runtime.Container.Get<IPermissionProvider>();
-            permissionProvider.Load(groupsConfig, playersConfig);
+            permissionProvider.Load(GroupsConfig, PlayersConfig);
 
-            var groups = permissionProvider.GetGroups(player).ToArray();
+            var groups = permissionProvider.GetGroups(TestPlayer).ToArray();
             Assert.AreEqual(groups.Length, 2);
+            Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup2"));
             Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup3"));
-            Assert.IsFalse(groups.Select(c => c.Id).Contains("TestGroup4"));
+
+            // Config has not been loaded from a file so it can not be saved
+            Assert.ThrowsException<NotSupportedException>(() => permissionProvider.Save());
         }
     }
 }

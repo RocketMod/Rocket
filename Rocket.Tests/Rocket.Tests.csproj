@@ -56,6 +56,7 @@
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="TestPlayer.cs" />
+    <Compile Include="Tests\ConfigTests.cs" />
     <Compile Include="Tests\PermissionTests.cs" />
     <Compile Include="RocketTestBase.cs" />
     <Compile Include="TestImplementation.cs" />
