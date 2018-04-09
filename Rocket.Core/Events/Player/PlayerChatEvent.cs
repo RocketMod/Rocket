@@ -9,6 +9,12 @@ namespace Rocket.Core.Events.Player
 
         public string ChatFormat { get; set; }
 
+        public PlayerChatEvent(IPlayer player, string format, string message) : base(player)
+        {
+            Message = message;
+            ChatFormat = format;
+        }
+
         public PlayerChatEvent(IPlayer player, string format, string message, bool global = true) : base(player, global)
         {
             Message = message;

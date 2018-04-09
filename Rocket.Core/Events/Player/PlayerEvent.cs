@@ -7,6 +7,8 @@ namespace Rocket.Core.Events.Player
     {
         public IPlayer Player { get; }
 
+        protected PlayerEvent(IPlayer player) : this(player, true) { }
+
         /// <param name="global">Defines if the event is emitted globally</param>
         protected PlayerEvent(IPlayer player, bool global = true) : base(global)
         {

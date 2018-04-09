@@ -67,6 +67,11 @@
     <Compile Include="Events\Player\PlayerEvent.cs" />
     <Compile Include="Events\Player\PlayerKickEvent.cs" />
     <Compile Include="Events\Player\PlayerPreConnectEvent.cs" />
+    <Compile Include="Events\Plugins\PluginEvent.cs" />
+    <Compile Include="Events\Plugins\PluginLoadedEvent.cs" />
+    <Compile Include="Events\Plugins\PluginLoadEvent.cs" />
+    <Compile Include="Events\Plugins\PluginUnloadedEvent.cs" />
+    <Compile Include="Events\Plugins\PluginUnloadEvent.cs" />
     <Compile Include="Exceptions\IFriendlyException.cs" />
     <Compile Include="Extensions\DependencyContainerExtensions.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />

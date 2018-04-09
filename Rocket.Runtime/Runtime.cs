@@ -28,8 +28,10 @@ namespace Rocket
 
         public static IRuntime Bootstrap()
         {
-            if (runtime == null) runtime = new Runtime();
-            return runtime;
+            return runtime ?? (runtime = new Runtime());
         }
+
+        public bool IsAlive => runtime != null;
+        public string Name => "Rocket.Runtime";
     }
 }

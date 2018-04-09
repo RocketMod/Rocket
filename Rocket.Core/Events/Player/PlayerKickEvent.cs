@@ -9,6 +9,12 @@ namespace Rocket.Core.Events.Player
         public ICommandCaller Kicker { get; }
         public virtual string Reason { get; set; }
 
+        public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason) : base(player)
+        {
+            Kicker = kicker;
+            Reason = reason;
+        }
+
         public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason, bool global = true) : base(player, global)
         {
             Kicker = kicker;

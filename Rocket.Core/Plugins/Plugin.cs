@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.I18N;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
+using Rocket.Core.Events.Plugins;
 using Rocket.Core.I18N;
 
 namespace Rocket.Core.Plugins
@@ -47,15 +49,28 @@ namespace Rocket.Core.Plugins
 
         public void Load()
         {
+            var eventManager = Container.Get<IEventManager>();
+            var runtime = Container.Get<IRuntime>();
+
+            if (eventManager != null)
+            {
+                PluginLoadEvent loadEvent = new PluginLoadEvent(this);
+                eventManager.Emit(runtime, loadEvent);
+                if (loadEvent.IsCancelled)
+                    return;
+            }
+
             if (!Capabilities.Any(c => c.Equals(CapabilityOptions.CustomConfig, StringComparison.OrdinalIgnoreCase))
-             && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoConfig, StringComparison.OrdinalIgnoreCase)))
+                && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoConfig, StringComparison.OrdinalIgnoreCase)))
             {
                 Configuration = Container.Get<IConfiguration>();
                 //todo: load config
             }
 
-            if (!Capabilities.Any(c => c.Equals(CapabilityOptions.CustomTranslations, StringComparison.OrdinalIgnoreCase))
-                && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoTranslations, StringComparison.OrdinalIgnoreCase)))
+            if (!Capabilities.Any(c
+                    => c.Equals(CapabilityOptions.CustomTranslations, StringComparison.OrdinalIgnoreCase))
+                && !Capabilities.Any(
+                    c => c.Equals(CapabilityOptions.NoTranslations, StringComparison.OrdinalIgnoreCase)))
             {
                 Translations = Container.Get<ITranslations>();
                 //todo: load config
@@ -63,12 +78,33 @@ namespace Rocket.Core.Plugins
 
             OnLoad();
             IsAlive = true;
+
+            if (eventManager != null)
+            {
+                PluginLoadedEvent loadedEvent = new PluginLoadedEvent(this);
+                eventManager.Emit(runtime, loadedEvent);
+            }
         }
 
         public void Unload()
         {
+            var eventManager = Container.Get<IEventManager>();
+            var runtime = Container.Get<IRuntime>();
+
+            if (eventManager != null)
+            {
+                PluginUnloadEvent loadedEvent = new PluginUnloadEvent(this);
+                eventManager.Emit(runtime, loadedEvent);
+            }
+
             OnUnload();
             IsAlive = false;
+
+            if (eventManager != null)
+            {
+                PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(this);
+                eventManager.Emit(runtime, loadedEvent);
+            }
         }
 
         public bool IsAlive { get; internal set; }

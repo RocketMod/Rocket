@@ -6,7 +6,10 @@ namespace Rocket.Core.Events.Player
     public class PlayerDisconnectEvent : PlayerEvent
     {
         public string Reason { get; }
-
+        public PlayerDisconnectEvent(IPlayer player, string reason) : base(player)
+        {
+            Reason = reason;
+        }
         public PlayerDisconnectEvent(IPlayer player, string reason, bool global = true) : base(player, global)
         {
             Reason = reason;
