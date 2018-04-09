@@ -13,7 +13,7 @@ using Rocket.Core.I18N;
 
 namespace Rocket.Core.Plugins
 {
-    public abstract class Plugin : IPlugin
+    public abstract class Plugin : IPlugin, ITranslatable, IConfigurable
     {
         public class CapabilityOptions
         {

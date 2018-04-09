@@ -49,6 +49,7 @@
     <Compile Include="Commands\ICommandContext.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
+    <Compile Include="Configuration\IConfigurable.cs" />
     <Compile Include="Configuration\IConfigurationBase.cs" />
     <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Configuration\IConfigurationSection.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Handlers\HandlerPriorityAttribute.cs" />
     <Compile Include="Handlers\HandlerPriorityComparer.cs" />
     <Compile Include="Handlers\IHandler.cs" />
+    <Compile Include="I18N\ITranslatable.cs" />
     <Compile Include="IEnvironmentContext.cs" />
     <Compile Include="Permissions\IIdentifiable.cs" />
     <Compile Include="Permissions\IPermissionGroup.cs" />
