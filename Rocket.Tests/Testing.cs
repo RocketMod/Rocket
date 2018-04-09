@@ -76,6 +76,29 @@ namespace Rocket.Tests
             Assert.ThrowsException<NotSupportedException>(() => config.Save());
         }
 
+        [TestMethod]
+        public void TestJsonSetObjectConfig()
+        {
+            JsonConfiguration config = (JsonConfiguration)runtime.Container.Get<IConfiguration>("defaultjson");
+
+            config.LoadEmpty();
+
+            var @object = new
+            {
+                Test1 = "A",
+                NestedObjectTest = new
+                {
+                    NestedStringValue = "B",
+                    NestedNumberValue = 4
+                }
+            };
+
+            config.Set(@object);
+            TestConfig(config);
+
+            Assert.ThrowsException<NotSupportedException>(() => config.Save());
+        }
+
         public void TestConfig(IConfiguration config)
         {
             Assert.AreEqual(config.GetSection("Test1").Value, "A");

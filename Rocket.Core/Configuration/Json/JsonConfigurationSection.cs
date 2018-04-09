@@ -22,21 +22,5 @@ namespace Rocket.Core.Configuration.Json
                 ((JProperty) Node).Value = new JValue(value);
             }
         }
-
-        public T Get<T>() => Node.ToObject<T>();
-
-        public bool TryGet<T>(out T value)
-        {
-            value = default(T);
-            try
-            {
-                value = Get<T>();
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
     }
 }

@@ -12,9 +12,5 @@
 
         /// <summary>Gets or sets the section value.</summary>
         string Value { get; set; }
-
-        T Get<T>();
-
-        bool TryGet<T>(out T value);
     }
 }

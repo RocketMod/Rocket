@@ -67,5 +67,29 @@ namespace Rocket.Core.Configuration.Json
         {
             if (Node == null) throw new ConfigurationNotLoadedException();
         }
+
+
+        public virtual T Get<T>() => Node.ToObject<T>();
+
+        public virtual void Set(object o)
+        {
+            if (!(Node is JProperty)) throw new Exception("Can not set value of: " + Node.Path);
+
+            ((JProperty)Node).Value = new JValue(o);
+        }
+
+        public bool TryGet<T>(out T value)
+        {
+            value = default(T);
+            try
+            {
+                value = Get<T>();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

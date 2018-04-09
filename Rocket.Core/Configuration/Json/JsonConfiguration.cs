@@ -33,6 +33,16 @@ namespace Rocket.Core.Configuration.Json
             isLoaded = true;
         }
 
+        public void LoadFromObject(object o)
+        {
+            Node = JObject.FromObject(o);
+        }
+
+        public void LoadEmpty()
+        {
+            Node = new JObject();
+        }
+
         public void Reload()
         {
             if (file == null)
@@ -50,5 +60,10 @@ namespace Rocket.Core.Configuration.Json
         }
 
         public bool IsLoaded => isLoaded;
+
+        public override void Set(object o)
+        {
+            Node = JObject.FromObject(o);
+        }
     }
 }

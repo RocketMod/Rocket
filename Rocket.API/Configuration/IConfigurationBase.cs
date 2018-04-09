@@ -25,5 +25,11 @@ namespace Rocket.API.Configuration
         /// </summary>
         /// <returns>The configuration sub-sections.</returns>
         IEnumerable<IConfigurationSection> GetChildren();
+
+        void Set(object o);
+
+        T Get<T>();
+
+        bool TryGet<T>(out T value);
     }
 }
