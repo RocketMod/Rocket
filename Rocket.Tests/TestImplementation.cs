@@ -37,5 +37,7 @@ namespace Rocket.Tests
         {
             logger.LogInformation("Shutting down implementation");
         }
+
+        public string Name => "TestImplementation";
     }
 }

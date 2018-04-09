@@ -1,4 +1,5 @@
-﻿using Rocket.API.Player;
+﻿using Rocket.API.I18N;
+using Rocket.API.Player;
 
 namespace Rocket.API.Chat
 {
@@ -17,10 +18,11 @@ namespace Rocket.API.Chat
         /// <summary>
         /// Sends a localized message to the given player
         /// </summary>
+        /// <param name="translations">The translation source</param>
         /// <param name="player">The receiver of the message</param>
         /// <param name="translationKey">The key of the translated message to send</param>
         /// <param name="bindings">The bindings for the message</param>
-        void SendLocalizedMessage(IPlayer player, string translationKey, params object[] bindings);
+        void SendLocalizedMessage(ITranslations translations, IPlayer player, string translationKey, params object[] bindings);
 
         /// <summary>
         /// Broadcasts a message to all players
@@ -32,8 +34,9 @@ namespace Rocket.API.Chat
         /// <summary>
         /// Broadcasts a localized message to all players
         /// </summary>
+        /// <param name="translations">The translation soruce</param>
         /// <param name="translationKey">The key of the translated message to send</param>
         /// <param name="bindings">The bindings for the message</param> 
-        void BroadcastLocalized(string translationKey, params object[] bindings);
+        void BroadcastLocalized(ITranslations translations, string translationKey, params object[] bindings);
     }
 }
