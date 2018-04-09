@@ -1,11 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Rocket.API.Commands;
+using Rocket.API.Configuration;
 using Rocket.API.Permissions;
 
 namespace Rocket.Core.Permissions
 {
     public class PermissionProvider : IPermissionProvider
     {
+        private IConfiguration config;
+        public PermissionProvider(IConfiguration config)
+        {
+            this.config = config;
+        }
+
         public bool HasPermission(IPermissionGroup @group, string permission)
         {
             throw new System.NotImplementedException();
@@ -44,6 +52,43 @@ namespace Rocket.Core.Permissions
         public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
         {
             throw new System.NotImplementedException();
+        }
+
+        public IEnumerable<IPermissionGroup> GetGroups()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateGroup(IPermissionGroup @group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetGroup(ICommandCaller caller, IPermissionGroup @group)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Load()
+        {
+            if(config.IsLoaded)
+                throw new Exception("Permission provider is already loaded");
+
+            config.Load(new EnvironmentContext
+            {
+                WorkingDirectory = Environment.CurrentDirectory,
+                Name = "Rocket.Permissions"
+            });
+        }
+
+        public void Reload()
+        {
+            config.Reload();
+        }
+
+        public void Save()
+        {
+            config.Save();
         }
     }
 }

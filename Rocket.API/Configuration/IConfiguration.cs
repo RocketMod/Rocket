@@ -9,5 +9,7 @@ namespace Rocket.API.Configuration
         void Reload();
 
         void Save();
+
+        bool IsLoaded { get; }
     }
 }

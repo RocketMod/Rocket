@@ -1,4 +1,5 @@
-﻿using Rocket.API;
+﻿using System;
+using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.I18N;
 
@@ -25,8 +26,10 @@ namespace Rocket.Core.I18N
 
         public void Load(IEnvironmentContext context)
         {
+            if (config.IsLoaded)
+                throw new Exception("Permission provider is already loaded");
+
             config.Load(context);
-            
         }
 
         public void Reload()

@@ -2,6 +2,7 @@
 {
     public interface IPermissionGroup
     {
+        string Id { get; }
         string Name { get; }
     }
 }

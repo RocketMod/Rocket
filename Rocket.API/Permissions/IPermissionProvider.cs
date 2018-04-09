@@ -16,5 +16,14 @@ namespace Rocket.API.Permissions
 
         IPermissionGroup GetPrimaryGroup(ICommandCaller caller);
         IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller);
+        IEnumerable<IPermissionGroup> GetGroups();
+
+        void UpdateGroup(IPermissionGroup group);
+
+        void SetGroup(ICommandCaller caller, IPermissionGroup group);
+
+        void Load();
+        void Reload();
+        void Save();
     }
 }

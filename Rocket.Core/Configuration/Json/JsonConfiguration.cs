@@ -9,6 +9,7 @@ namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfiguration : JsonConfigurationBase, IConfiguration
     {
+        private bool isLoaded;
         private string file;
         public JsonConfiguration() : base(null) { }
 
@@ -29,6 +30,7 @@ namespace Rocket.Core.Configuration.Json
                 CommentHandling = CommentHandling.Ignore,
                 LineInfoHandling = LineInfoHandling.Ignore
             });
+            isLoaded = true;
         }
 
         public void Reload()
@@ -46,5 +48,7 @@ namespace Rocket.Core.Configuration.Json
 
             File.WriteAllText(file, Node.ToString(Formatting.Indented));
         }
+
+        public bool IsLoaded => isLoaded;
     }
 }
