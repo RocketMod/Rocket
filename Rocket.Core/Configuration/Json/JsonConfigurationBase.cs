@@ -13,17 +13,21 @@ namespace Rocket.Core.Configuration.Json
     {
         public JToken Node { get; protected set; }
 
-        protected JsonConfigurationBase(JToken node)
+        protected JsonConfigurationBase(IConfiguration root, IConfigurationBase parent, JToken node)
         {
+            Root = root;
+            Parent = parent;
             Node = node ?? throw new ArgumentNullException(nameof(node));
         }
 
-        protected JsonConfigurationBase()
+        protected JsonConfigurationBase(IConfiguration root)
         {
-
+            Root = root;
         }
 
         public IConfigurationSection this[string path] => GetSection(path);
+        public IConfigurationBase Parent { get; }
+        public IConfiguration Root { get; protected set; }
 
         public IConfigurationSection GetSection(string path)
         {
@@ -37,14 +41,17 @@ namespace Rocket.Core.Configuration.Json
             {
                 string key = parts[0];
 
+                //Path == "" on Root
+                var parentPath = string.IsNullOrEmpty(Path) ? "" : Path + ".";
+
                 if (Node is JObject o && !o.ContainsKey(key))
-                    throw new ArgumentException($"Path \"{Path}.{path}\" doesn\'t exist!", nameof(path));
+                    throw new ArgumentException($"Path \"{parentPath}{path}\" doesn\'t exist!", nameof(path));
 
                 var childNode = Node[key];
                 if (childNode is JValue)
                     childNode = childNode.Parent;
 
-                return new JsonConfigurationSection(childNode, key);
+                return new JsonConfigurationSection(Root, this, childNode, key);
             }
 
             foreach (string part in parts)
@@ -55,7 +62,7 @@ namespace Rocket.Core.Configuration.Json
             return (IConfigurationSection)currentNode;
         }
 
-        public IConfigurationSection CreateSection(string path, bool isValue)
+        public IConfigurationSection CreateSection(string path, SectionType type)
         {
             GuardLoaded();
             GuardPath(path);
@@ -74,9 +81,19 @@ namespace Rocket.Core.Configuration.Json
                     continue;
                 }
 
-                if (i == (parts.Length - 1) && isValue)
+                if (i == (parts.Length - 1))
                 {
-                    o.Add(new JProperty(part, (string)null));
+                    switch (type) {
+                        case SectionType.Value:
+                            o.Add(new JProperty(part, (string)null));
+                            break;
+                        case SectionType.Array:
+                            o.Add(part, new JArray());
+                            break;
+                        case SectionType.Object:
+                            o.Add(part, new JObject());
+                            break;
+                    }
                 }
                 else
                 {
@@ -151,13 +168,24 @@ namespace Rocket.Core.Configuration.Json
         {
             var node = Node;
 
-            if (node is JArray)
-                node = node.Parent;
+            if (node is JArray array)
+            {
+                if (value is IEnumerable enumerable)
+                {
+                    foreach (var child in enumerable)
+                    {
+                        array.Add(new JValue(child));
+                    }
+                    return;
+                }
 
-            if (node is JObject)
+                node = node.Parent;
+            }
+
+            if (node is JObject @object)
             {
                 var obj = JObject.FromObject(value);
-                DeepCopy(obj, node);
+                DeepCopy(obj, @object);
                 return;
             }
 
@@ -170,7 +198,7 @@ namespace Rocket.Core.Configuration.Json
             throw new NotSupportedException("Can not set values of non-properties");
         }
 
-        public void DeepCopy(JToken from, JToken to)
+        public static void DeepCopy(JToken from, JToken to)
         {
             if (from.Type != to.Type)
                 return;
@@ -214,6 +242,19 @@ namespace Rocket.Core.Configuration.Json
             try
             {
                 value = Get(t);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public bool ChildExists(string path)
+        {
+            try
+            {
+                GetSection(path);
                 return true;
             }
             catch

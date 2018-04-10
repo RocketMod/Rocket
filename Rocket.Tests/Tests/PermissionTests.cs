@@ -19,40 +19,34 @@ namespace Rocket.Tests.Tests
         {
             object sampleGroupsPermissions = new
             {
-                Groups = new
+                TestGroup1 = new
                 {
-                    TestGroup1 = new
-                    {
-                        Name = "TestGroup",
-                        Priority = 2
-                    },
-                    TestGroup2 = new
-                    {
-                        Name = "TestGroup2",
-                        Priority = 1
-                    },
-                    TestGroup3 = new
-                    {
-                        Name = "PrimaryGroup",
-                        Priority = 3
-                    }
+                    Name = "TestGroup",
+                    Priority = 2
+                },
+                TestGroup2 = new
+                {
+                    Name = "TestGroup2",
+                    Priority = 1
+                },
+                TestGroup3 = new
+                {
+                    Name = "PrimaryGroup",
+                    Priority = 3
                 }
             };
 
             object samplePlayers = new
             {
-                Players = new
+                TestPlayer = new
                 {
-                    TestPlayer = new
+                    TestPlayerId = new
                     {
-                        TestPlayerId = new
+                        LastDisplayName = "Trojaner",
+                        Groups = new[]
                         {
-                            LastDisplayName = "Trojaner",
-                            Groups = new[]
-                            {
-                                "TestGroup3", "TestGroup2",
-                                "TestGroup4" /* doesn't exist, shouldn't be exposed by GetGroups */
-                            }
+                            "TestGroup3", "TestGroup2",
+                            "TestGroup4" /* doesn't exist, shouldn't be exposed by GetGroups */
                         }
                     }
                 }

@@ -9,6 +9,11 @@ namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfiguration : JsonConfigurationBase, IConfiguration
     {
+        public JsonConfiguration() : base(null)
+        {
+            Root = this;
+        }
+
         private string file;
 
         public void Load(IEnvironmentContext context)

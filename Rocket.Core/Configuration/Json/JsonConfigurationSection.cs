@@ -8,7 +8,7 @@ namespace Rocket.Core.Configuration.Json
     {
         private readonly string key;
 
-        public JsonConfigurationSection(JToken node, string key) : base(node)
+        public JsonConfigurationSection(IConfiguration root, IConfigurationBase parent, JToken node, string key) : base(root, parent, node)
         {
             this.key = key;
         }

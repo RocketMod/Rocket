@@ -10,6 +10,11 @@ namespace Rocket.API.Configuration
         /// <returns>The configuration section.</returns>
         IConfigurationSection this[string path] { get; }
 
+        IConfigurationBase Parent { get; }
+
+        IConfiguration Root { get; }
+
+
         /// <summary>
         /// Gets a configuration sub-section with the specified path.
         /// </summary>
@@ -21,7 +26,7 @@ namespace Rocket.API.Configuration
         /// </remarks>
         IConfigurationSection GetSection(string path);
 
-        IConfigurationSection CreateSection(string path, bool isValue);
+        IConfigurationSection CreateSection(string path, SectionType type);
 
         bool RemoveSection(string path);
 
@@ -47,5 +52,7 @@ namespace Rocket.API.Configuration
 
         bool TryGet<T>(out T value);
         bool TryGet(Type t, out object value);
+
+        bool ChildExists(string path);
     }
 }
