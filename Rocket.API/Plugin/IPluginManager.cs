@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 
 namespace Rocket.API.Plugin
 {
-    public interface IPluginManager
+    public interface IPluginManager : IEnumerable<IPlugin>
     {
         IPlugin GetPlugin(string name);
 
@@ -13,6 +14,8 @@ namespace Rocket.API.Plugin
         bool LoadPlugin(string name);
 
         bool UnloadPlugin(string name);
+
+        IEnumerable<IPlugin> Plugins { get; }
 
         /// <summary>
         ///     Executes code that depends on another plugin being available.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +17,6 @@ namespace Rocket.Core.Plugins
 {
     public class PluginManager : IPluginManager, ICommandProvider
     {
-
         private static readonly string pluginsDirectory = "./Plugins/";
         private static readonly string packagesDirectory = "./Packages/";
 
@@ -162,6 +162,8 @@ namespace Rocket.Core.Plugins
             return !plugin.IsAlive;
         }
 
+        public IEnumerable<IPlugin> Plugins => container.GetAll<IPlugin>();
+
         public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
         {
             if (PluginExists(pluginName))
@@ -257,10 +259,20 @@ namespace Rocket.Core.Plugins
             return pluginInstance;
         }
 
+        public IEnumerator<IPlugin> GetEnumerator()
+        {
+            return Plugins.GetEnumerator();
+        }
+
         ~PluginManager()
         {
             container.TryGetAll(out IEnumerable<IPlugin> plugins);
             foreach (IPlugin plugin in plugins) plugin.Unload();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
