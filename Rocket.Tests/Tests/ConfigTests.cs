@@ -31,18 +31,18 @@ namespace Rocket.Tests.Tests
         [TestMethod]
         public void TestJsonConfig()
         {
-            JsonConfiguration config = (JsonConfiguration) Runtime.Container.Get<IConfiguration>("defaultjson");
+            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
 
             string json =
                 "{"
-                + "\"Test1\": \"A\","
-                + "\"NestedObjectTest\": {"
-                + "\"NestedStringValue\": \"B\","
-                + "\"NestedNumberValue\": 4,"
-                + "\"VeryNestedObject\": {"
-                + "\"Value\": \"3\""
-                + "}"
-                + "}"
+                    + "\"Test1\": \"A\","
+                    + "\"NestedObjectTest\": {"
+                        + "\"NestedStringValue\": \"B\","
+                        + "\"NestedNumberValue\": 4,"
+                        + "\"VeryNestedObject\": {"
+                            + "\"Value\": \"3\""
+                        + "}"
+                    + "}"
                 + "}";
 
             config.LoadFromJson(json);
@@ -54,7 +54,7 @@ namespace Rocket.Tests.Tests
         [TestMethod]
         public void TestJsonSetObjectConfig()
         {
-            JsonConfiguration config = (JsonConfiguration) Runtime.Container.Get<IConfiguration>("defaultjson");
+            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
             config.LoadEmpty();
 
             config.Set(TestConfigObject);
@@ -81,11 +81,34 @@ namespace Rocket.Tests.Tests
         {
             return Runtime.Container.Get<IConfiguration>();
         }
-        
+
         public void TestSaveException(IConfiguration config)
         {
             // Config has not been loaded from a file so it can not be saved
             Assert.ThrowsException<NotSupportedException>(() => config.Save());
+        }
+
+        [TestMethod]
+        public void TestConfigSectionCreation()
+        {
+            var config = LoadConfig();
+            var section = config.CreateSection("test1.test2", false);
+            Assert.IsNotNull(section);
+            Assert.IsTrue(section.IsNull);
+
+            //section.Set(new { test4 = false });
+            section.CreateSection("test4", true);
+            section["test4"].Set(false);
+
+            Assert.IsFalse(section.IsNull);
+            Assert.IsFalse(section["test4"].Get<bool>());
+
+            var childSection = config.CreateSection("test1.test2.test3", true);
+            Assert.IsNotNull(childSection);
+            Assert.IsTrue(childSection.IsNull);
+            childSection.Set(true);
+            Assert.IsFalse(childSection.IsNull);
+            Assert.IsTrue(childSection.Get<bool>());
         }
 
         public void TestConfig(IConfiguration config)

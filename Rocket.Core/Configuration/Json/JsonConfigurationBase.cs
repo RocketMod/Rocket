@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
 namespace Rocket.Core.Configuration.Json
 {
-    public class JsonConfigurationBase : IConfigurationBase
+    public abstract class JsonConfigurationBase : IConfigurationBase
     {
         public JToken Node { get; protected set; }
 
-        public JsonConfigurationBase(JToken node)
+        protected JsonConfigurationBase(JToken node)
         {
             Node = node ?? throw new ArgumentNullException(nameof(node));
         }
@@ -33,15 +35,17 @@ namespace Rocket.Core.Configuration.Json
             if (parts.Length == 1)
             {
                 string key = parts[0];
-                if (Node is JObject o && !o.ContainsKey(key))
-                {
-                    o.Add(new JObject(key, null));
-                }
+
+                if(Node is JObject o && !o.ContainsKey(key))
+                    throw new ArgumentException($"Path \"{Path}.{path}\" doesn\'t exist!", nameof(path));
 
                 return new JsonConfigurationSection(Node[key], key);
             }
 
-            foreach (string part in parts) currentNode = (JsonConfigurationSection)currentNode.GetSection(part);
+            foreach (string part in parts)
+            {
+                currentNode = (JsonConfigurationSection)currentNode.GetSection(part);
+            }
 
             return (IConfigurationSection)currentNode;
         }
@@ -67,7 +71,7 @@ namespace Rocket.Core.Configuration.Json
 
                 if (i == (parts.Length - 1) && isValue)
                 {
-                    o.Add(new JProperty(part, ""));
+                    o.Add(new JProperty(part, null));
                 }
                 else
                 {
@@ -103,6 +107,8 @@ namespace Rocket.Core.Configuration.Json
             return sections;
         }
 
+        public abstract string Path { get; }
+
         public void GuardLoaded()
         {
             if (Node == null)
@@ -136,18 +142,19 @@ namespace Rocket.Core.Configuration.Json
             return val;
         }
 
-        public virtual void Set(object o)
+        public virtual void Set(object value)
         {
-            GuardLoaded();
             var node = Node;
-
-            if (node is JValue)
+            if (Node is JValue)
                 node = node.Parent;
 
-            if (!(node is JProperty p))
-                throw new Exception("Can not set value of non-property: " + Node.Path);
+            if (node is JProperty property)
+            {
+                property.Value = new JValue(value);
+                return;
+            }
 
-            p.Value = new JValue(o);
+            throw new NotSupportedException("Can not set values of non-properties");
         }
 
         public bool TryGet<T>(out T value)

@@ -1,5 +1,4 @@
-﻿using System.Runtime.Remoting.Channels;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
 namespace Rocket.Core.Configuration.Json
@@ -15,6 +14,20 @@ namespace Rocket.Core.Configuration.Json
 
         public string Key => key;
 
-        public string Path => Node.Path;
+        public override string Path => Node.Path;
+
+        public bool IsNull
+        {
+            get
+            {
+                var node = Node;
+                if (node is JValue)
+                    node = Node.Parent;
+
+                return node is JProperty property
+                    ? property.Value == null
+                    : !node.HasValues;
+            }
+        }
     }
 }

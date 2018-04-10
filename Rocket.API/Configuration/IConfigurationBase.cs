@@ -31,6 +31,12 @@ namespace Rocket.API.Configuration
         /// <returns>The configuration sub-sections.</returns>
         IEnumerable<IConfigurationSection> GetChildren();
 
+
+        /// <summary>
+        /// Gets the path of the config section
+        /// </summary>
+        string Path { get; }
+
         void Set(object o);
 
         T Get<T>();
