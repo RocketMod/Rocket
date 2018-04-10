@@ -1,1 +1,0 @@
-NDContentPage.OnToolTipsLoaded({70:"<div class=\"NDToolTip TClass LCSharp\"><div class=\"NDClassPrototype\" id=\"NDClassPrototype70\"><div class=\"CPEntry TClass Current\"><div class=\"CPModifiers\"><span class=\"SHKeyword\">public</span></div><div class=\"CPName\"><span class=\"Qualifier\">Rocket.&#8203;Core.&#8203;Plugins.</span>&#8203;PluginManager</div></div></div></div>"});

@@ -1,0 +1,22 @@
+site_name: RocketMod
+copyright: 'RocketMod is licensed under <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/">CC BY-NC-ND 4.0</a><br>This documentation and the wiki is licensed under <a href="http://creativecommons.org/licenses/by-sa/3.0/">CC BY-SA 3.0</a>'
+theme:
+  name: 'material'
+  palette:
+    primary: 'cyan'
+    accent: 'light blue'
+  font:
+    text: 'Ubuntu'
+    code: 'Ubuntu Mono'
+  logo: 'images/rocket.svg' 
+  language: 'en'
+  repo_name: 'RocketMod/Rocket'
+  repo_url: 'https://github.com/RocketMod/Rocket'
+  feature:
+    tabs: true
+markdown_extensions:
+  - admonition
+  - codehilite:
+      guess_lang: true
+  - toc:
+      permalink: true

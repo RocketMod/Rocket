@@ -1,1 +1,0 @@
-NDFramePage.OnPageTitleLoaded("CSharpClass:Rocket.Core.IPluginManager","IPluginManager");NDSummary.OnSummaryLoaded("CSharpClass:Rocket.Core.IPluginManager",[["C#","CSharp"]],[["Interfaces","Interface"]],[[1,0,0,"<span class=\"Qualifier\">Rocket.&#8203;Core.</span>&#8203;IPluginManager"]]);
