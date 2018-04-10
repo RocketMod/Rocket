@@ -8,6 +8,8 @@ namespace Rocket.ConsoleImplementation
     {
         public string Name => "ConsoleHost";
 
+        public string WorkingDirectory => Environment.CurrentDirectory;
+
         public void Load(IRuntime runtime)
         {
             Console.WriteLine("Loading...");

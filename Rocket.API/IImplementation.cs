@@ -7,6 +7,7 @@ namespace Rocket.API
     {
         IEnumerable<string> Capabilities { get; }
         string InstanceId { get; }
+        string WorkingDirectory { get; }
         void Load(IRuntime runtime);
         void Shutdown();
         void Reload();

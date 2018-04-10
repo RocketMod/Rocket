@@ -17,8 +17,8 @@ namespace Rocket.Core.Plugins
 {
     public class PluginManager : IPluginManager, ICommandProvider
     {
-        private static readonly string pluginsDirectory = "./Plugins/";
-        private static readonly string packagesDirectory = "./Packages/";
+        private string pluginsDirectory;
+        private string packagesDirectory;
 
         private readonly IEventManager eventManager;
         private readonly IDependencyContainer container;
@@ -26,6 +26,7 @@ namespace Rocket.Core.Plugins
         private readonly IRuntime runtime;
         private readonly IDependencyContainer parentContainer;
         private readonly IDependencyResolver resolver;
+        private readonly IImplementation implementation;
 
         private readonly Dictionary<string, Assembly> cachedAssemblies;
 
@@ -34,13 +35,14 @@ namespace Rocket.Core.Plugins
         private Dictionary<string, string> pluginAssemblies;
 
         public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger,
-                             IEventManager eventManager, IRuntime runtime)
+                             IEventManager eventManager, IRuntime runtime, IImplementation implementation)
         {
             this.runtime = runtime;
-            parentContainer = dependencyContainer;
+            this.implementation = implementation;
             this.resolver = resolver;
             this.logger = logger;
             this.eventManager = eventManager;
+            parentContainer = dependencyContainer;
             container = dependencyContainer.CreateChildContainer();
             cachedAssemblies = new Dictionary<string, Assembly>();
         }
@@ -55,8 +57,11 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public void Init()
+        public void Init(string pluginsDirectory = null, string packagesDirectory = null)
         {
+            this.pluginsDirectory = pluginsDirectory ?? Path.Combine(implementation.WorkingDirectory, "./Plugins/");
+            this.packagesDirectory = packagesDirectory ?? Path.Combine(implementation.WorkingDirectory, "./Packages/");
+
             commands = new Dictionary<IPlugin, List<ICommand>>();
 
             Directory.CreateDirectory(pluginsDirectory);

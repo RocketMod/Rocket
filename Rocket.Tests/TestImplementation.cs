@@ -20,6 +20,7 @@ namespace Rocket.Tests
         };
 
         public string InstanceId => "Test Instance";
+        public string WorkingDirectory => Environment.CurrentDirectory;
 
         public bool IsAlive => true;
 

@@ -9,7 +9,7 @@ namespace Rocket.API.Plugin
 
         bool PluginExists(string name);
 
-        void Init();
+        void Init(string pluginsDirectory = null, string packagesDirectory = null);
 
         bool LoadPlugin(string name);
 

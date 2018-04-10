@@ -84,7 +84,7 @@ namespace Rocket.Core.Plugins
                 {
                     WorkingDirectory = Path.Combine("Plugins", ""),
                     Name = Name + ".Translations"
-                }, DefaultConfiguration);
+                }, DefaultTranslations);
             }
 
             OnLoad();
