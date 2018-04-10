@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Rocket.API;
 using Rocket.API.Configuration;
@@ -25,7 +26,10 @@ namespace Rocket.Core.Plugins
         }
 
         public IConfiguration Configuration { get; protected set; }
+        public virtual object DefaultConfiguration => throw new NotImplementedException("Default configuration has not been set up.");
+
         public ITranslations Translations { get; protected set; }
+        public Dictionary<string, string> DefaultTranslations => throw new NotImplementedException("Default translations have not been set up.");
 
         protected Plugin(IDependencyContainer container) : this(null, container) { }
 
@@ -61,13 +65,27 @@ namespace Rocket.Core.Plugins
 
             if (!Capabilities.Any(c => c.Equals(CapabilityOptions.CustomConfig, StringComparison.OrdinalIgnoreCase))
                 && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoConfig, StringComparison.OrdinalIgnoreCase)))
+            {
                 Configuration = Container.Get<IConfiguration>();
+                Configuration.Load(new EnvironmentContext()
+                {
+                    WorkingDirectory = Path.Combine("Plugins", ""),
+                    Name = Name + ".Configuration"
+                }, DefaultConfiguration);
+            }
 
             if (!Capabilities.Any(c
                     => c.Equals(CapabilityOptions.CustomTranslations, StringComparison.OrdinalIgnoreCase))
                 && !Capabilities.Any(
                     c => c.Equals(CapabilityOptions.NoTranslations, StringComparison.OrdinalIgnoreCase)))
+            {
                 Translations = Container.Get<ITranslations>();
+                Translations.Load(new EnvironmentContext()
+                {
+                    WorkingDirectory = Path.Combine("Plugins", ""),
+                    Name = Name + ".Translations"
+                }, DefaultConfiguration);
+            }
 
             OnLoad();
             IsAlive = true;

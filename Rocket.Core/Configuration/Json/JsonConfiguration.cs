@@ -16,11 +16,21 @@ namespace Rocket.Core.Configuration.Json
 
         private string file;
 
-        public void Load(IEnvironmentContext context)
+        public bool Exist(IEnvironmentContext context)
+        {
+            return File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.Name + ".json"));
+        }
+
+        public void Load(IEnvironmentContext context, object defaultConfiguration)
         {
             file = System.IO.Path.Combine(context.WorkingDirectory, context.Name + ".json");
+
             if (!File.Exists(file))
-                File.WriteAllText(file, "");
+            {
+                LoadFromObject(defaultConfiguration);
+                Save();
+                return;
+            }
 
             string json = File.ReadAllText(file);
             LoadFromJson(json);

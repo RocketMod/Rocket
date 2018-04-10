@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.I18N;
@@ -21,12 +22,22 @@ namespace Rocket.Core.I18N
             config[translationKey].Set(message);
         }
 
-        public void Load(IEnvironmentContext context)
+        public void Load(IEnvironmentContext context, Dictionary<string, string> defaultConfiguration)
         {
             if (config.IsLoaded)
                 throw new Exception("Permission provider is already loaded");
 
-            config.Load(context);
+            bool isNew = config.Exist(context);
+            config.Load(context, new {});
+
+            if (isNew)
+            {
+                foreach (var pair in defaultConfiguration)
+                {
+                    config.CreateSection(pair.Key, SectionType.Value);
+                    config[pair.Key].Set(pair.Value);
+                }
+            }
         }
 
         public void Reload()

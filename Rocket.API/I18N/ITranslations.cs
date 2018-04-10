@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Rocket.API.I18N
 {
@@ -19,7 +20,7 @@ namespace Rocket.API.I18N
         /// <param name="message"></param>ß
         void SetLocalizedMessage(string translationKey, string message);
 
-        void Load(IEnvironmentContext context);
+        void Load(IEnvironmentContext context, Dictionary<string, string> defaultConfiguration);
 
         void Reload();
 

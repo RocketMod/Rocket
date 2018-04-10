@@ -4,7 +4,9 @@ namespace Rocket.API.Configuration
 {
     public interface IConfiguration : IConfigurationBase
     {
-        void Load(IEnvironmentContext context);
+        bool Exist(IEnvironmentContext context);
+
+        void Load(IEnvironmentContext context, object defaultConfiguration);
 
         void LoadEmpty();
 
