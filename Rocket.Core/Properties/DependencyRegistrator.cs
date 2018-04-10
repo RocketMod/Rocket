@@ -39,7 +39,7 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>("defaultpermissions");
 
             if (!container.IsRegistered<IConfiguration>())
-                container.RegisterSingletonType<IConfiguration, JsonConfiguration>();
+                container.RegisterType<IConfiguration, JsonConfiguration>();
 
             container.RegisterType<IConfiguration, JsonConfiguration>("defaultjson");
         }

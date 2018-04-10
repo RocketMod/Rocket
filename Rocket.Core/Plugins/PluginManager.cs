@@ -64,11 +64,11 @@ namespace Rocket.Core.Plugins
 
             commands = new Dictionary<IPlugin, List<ICommand>>();
 
-            Directory.CreateDirectory(pluginsDirectory);
-            pluginAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(pluginsDirectory);
+            Directory.CreateDirectory(this.pluginsDirectory);
+            pluginAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(this.pluginsDirectory);
 
-            Directory.CreateDirectory(packagesDirectory);
-            packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(packagesDirectory);
+            Directory.CreateDirectory(this.packagesDirectory);
+            packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(this.packagesDirectory);
 
             AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs args)
             {

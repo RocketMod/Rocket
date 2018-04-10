@@ -83,7 +83,8 @@ namespace Rocket.Core.Configuration.Json
 
                 if (i == (parts.Length - 1))
                 {
-                    switch (type) {
+                    switch (type)
+                    {
                         case SectionType.Value:
                             o.Add(new JProperty(part, (string)null));
                             break;
@@ -111,7 +112,10 @@ namespace Rocket.Core.Configuration.Json
         {
             GuardLoaded();
             GuardPath(path);
-            ((JsonConfigurationSection)GetSection(path)).Node.Remove();
+
+            var node = ((JsonConfigurationBase)GetSection(path)).Node;
+            var parent = (JObject)((JsonConfigurationBase)GetSection(path).Parent).Node;
+            parent.Remove(node.Path.Replace(parent.Path + ".", ""));
             return true;
         }
 

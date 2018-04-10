@@ -47,6 +47,10 @@ namespace Rocket.Tests.Tests
                         {
                             "TestGroup3", "TestGroup2",
                             "TestGroup4" /* doesn't exist, shouldn't be exposed by GetGroups */
+                        },
+                        Permissions = new []
+                        {
+                            "TestPermission"
                         }
                     }
                 }
