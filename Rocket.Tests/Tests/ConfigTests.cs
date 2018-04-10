@@ -92,23 +92,22 @@ namespace Rocket.Tests.Tests
         public void TestConfigSectionCreation()
         {
             var config = LoadConfig();
-            var section = config.CreateSection("test1.test2", false);
+            var section = config.CreateSection("dynamictest.test2", false);
             Assert.IsNotNull(section);
             Assert.IsTrue(section.IsNull);
 
-            //section.Set(new { test4 = false });
-            section.CreateSection("test4", true);
-            section["test4"].Set(false);
-
-            Assert.IsFalse(section.IsNull);
+            section.Set(new { test4 = false });
             Assert.IsFalse(section["test4"].Get<bool>());
+            Assert.IsFalse(section.IsNull);
 
-            var childSection = config.CreateSection("test1.test2.test3", true);
+            var childSection = config.CreateSection("dynamictest.test2.test3", true);
             Assert.IsNotNull(childSection);
             Assert.IsTrue(childSection.IsNull);
             childSection.Set(true);
             Assert.IsFalse(childSection.IsNull);
             Assert.IsTrue(childSection.Get<bool>());
+
+            Assert.IsFalse(section.IsNull);
         }
 
         public void TestConfig(IConfiguration config)

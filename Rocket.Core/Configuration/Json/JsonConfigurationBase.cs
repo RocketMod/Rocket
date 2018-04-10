@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
@@ -36,10 +37,14 @@ namespace Rocket.Core.Configuration.Json
             {
                 string key = parts[0];
 
-                if(Node is JObject o && !o.ContainsKey(key))
+                if (Node is JObject o && !o.ContainsKey(key))
                     throw new ArgumentException($"Path \"{Path}.{path}\" doesn\'t exist!", nameof(path));
 
-                return new JsonConfigurationSection(Node[key], key);
+                var childNode = Node[key];
+                if (childNode is JValue)
+                    childNode = childNode.Parent;
+
+                return new JsonConfigurationSection(childNode, key);
             }
 
             foreach (string part in parts)
@@ -71,7 +76,7 @@ namespace Rocket.Core.Configuration.Json
 
                 if (i == (parts.Length - 1) && isValue)
                 {
-                    o.Add(new JProperty(part, null));
+                    o.Add(new JProperty(part, (string)null));
                 }
                 else
                 {
@@ -145,8 +150,16 @@ namespace Rocket.Core.Configuration.Json
         public virtual void Set(object value)
         {
             var node = Node;
-            if (Node is JValue)
+
+            if (node is JArray)
                 node = node.Parent;
+
+            if (node is JObject)
+            {
+                var obj = JObject.FromObject(value);
+                DeepCopy(obj, node);
+                return;
+            }
 
             if (node is JProperty property)
             {
@@ -155,6 +168,26 @@ namespace Rocket.Core.Configuration.Json
             }
 
             throw new NotSupportedException("Can not set values of non-properties");
+        }
+
+        public void DeepCopy(JToken from, JToken to)
+        {
+            if (from.Type != to.Type)
+                return;
+
+            foreach (var child in from)
+            {
+                string path = child.Path.Replace(from.Path + ".", "");
+                if (to is JObject o)
+                {
+                    if (!o.ContainsKey(path))
+                        o.Add(child);
+                    else
+                        o[path] = child;
+                }
+
+                DeepCopy(child, to[path]);
+            }
         }
 
         public bool TryGet<T>(out T value)
