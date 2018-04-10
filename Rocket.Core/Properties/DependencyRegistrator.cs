@@ -29,6 +29,7 @@ namespace Rocket.Core.Properties
             if (!container.IsRegistered<IPluginManager>())
                 container.RegisterSingletonType<IPluginManager, PluginManager>();
             container.RegisterSingletonType<IPluginManager, PluginManager>("defaultpluginmanager");
+            container.RegisterSingletonType<ICommandProvider, PluginManager>("defaultpluginmanager_commandprovider");
 
             if (!container.IsRegistered<ITranslations>())
                 container.RegisterType<ITranslations, Translations>();
