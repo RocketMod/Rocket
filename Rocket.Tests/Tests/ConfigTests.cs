@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration.Json;
@@ -86,6 +87,15 @@ namespace Rocket.Tests.Tests
         {
             // Config has not been loaded from a file so it can not be saved
             Assert.ThrowsException<NotSupportedException>(() => config.Save());
+        }
+
+        [TestMethod]
+        public void TestConfigSectionDeletion()
+        {
+            var config = LoadConfig();
+            Assert.IsNotNull(config.GetSection("Test1"));
+            Assert.IsTrue(config.RemoveSection("Test1"));
+            Assert.ThrowsException<KeyNotFoundException>(() => config.GetSection("Test1"));
         }
 
         [TestMethod]

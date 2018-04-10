@@ -45,7 +45,7 @@ namespace Rocket.Core.Configuration.Json
                 var parentPath = string.IsNullOrEmpty(Path) ? "" : Path + ".";
 
                 if (Node is JObject o && !o.ContainsKey(key))
-                    throw new ArgumentException($"Path \"{parentPath}{path}\" doesn\'t exist!", nameof(path));
+                    throw new KeyNotFoundException($"Path \"{parentPath}{path}\" doesn\'t exist!");
 
                 var childNode = Node[key];
                 if (childNode is JValue)
@@ -111,7 +111,7 @@ namespace Rocket.Core.Configuration.Json
         {
             GuardLoaded();
             GuardPath(path);
-            ((JsonConfigurationSection)GetSection(path)).Node.Parent.Remove();
+            ((JsonConfigurationSection)GetSection(path)).Node.Remove();
             return true;
         }
 
