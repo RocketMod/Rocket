@@ -18,13 +18,30 @@ namespace Rocket.Core.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
-            if (!container.IsRegistered<IEventManager>()) container.RegisterSingletonType<IEventManager, EventManager>();
-            if (!container.IsRegistered<ICommandHandler>()) container.RegisterSingletonType<ICommandHandler, CommandHandler>();
-            if (!container.IsRegistered<IPluginManager>()) container.RegisterSingletonType<IPluginManager, PluginManager>();
-            if (!container.IsRegistered<ITranslations>()) container.RegisterType<ITranslations, Translations>();
-            if (!container.IsRegistered<IPermissionProvider>()) container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
+            if (!container.IsRegistered<IEventManager>())
+                container.RegisterSingletonType<IEventManager, EventManager>();
+            container.RegisterSingletonType<IEventManager, EventManager>("defaulteventmanager");
 
-            container.RegisterType<IConfiguration, JsonConfiguration>(null, "defaultjson");
+            if (!container.IsRegistered<ICommandHandler>())
+                container.RegisterSingletonType<ICommandHandler, CommandHandler>();
+            container.RegisterSingletonType<ICommandHandler, CommandHandler>("defaultcommandhandler");
+
+            if (!container.IsRegistered<IPluginManager>())
+                container.RegisterSingletonType<IPluginManager, PluginManager>();
+            container.RegisterSingletonType<IPluginManager, PluginManager>("defaultpluginmanager");
+
+            if (!container.IsRegistered<ITranslations>())
+                container.RegisterType<ITranslations, Translations>();
+            container.RegisterType<ITranslations, Translations>("defaultranslations");
+
+            if (!container.IsRegistered<IPermissionProvider>())
+                container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
+            container.RegisterSingletonType<IPermissionProvider, PermissionProvider>("defaultpermissions");
+
+            if (!container.IsRegistered<IConfiguration>())
+                container.RegisterSingletonType<IConfiguration, JsonConfiguration>();
+
+            container.RegisterType<IConfiguration, JsonConfiguration>("defaultjson");
         }
     }
 }
