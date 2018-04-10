@@ -48,9 +48,7 @@ namespace Rocket.Tests.Tests
             config.LoadFromJson(json);
 
             TestConfig(config);
-
-            // Config has not been loaded from a file so it can not be saved
-            Assert.ThrowsException<NotSupportedException>(() => config.Save());
+            TestSaveException(config);
         }
 
         [TestMethod]
@@ -61,19 +59,31 @@ namespace Rocket.Tests.Tests
 
             config.Set(TestConfigObject);
             TestConfig(config);
-
-            // Config has not been loaded from a file so it can not be saved
-            Assert.ThrowsException<NotSupportedException>(() => config.Save());
+            TestSaveException(config);
         }
 
         [TestMethod]
         public void TestJsonLoadFromObjectConfig()
         {
-            JsonConfiguration config = (JsonConfiguration) Runtime.Container.Get<IConfiguration>("defaultjson");
-            config.LoadFromObject(TestConfigObject);
-
+            IConfiguration config = LoadConfig();
             TestConfig(config);
+            TestSaveException(config);
+        }
 
+        protected IConfiguration LoadConfig()
+        {
+            IConfiguration config = GetConfig();
+            config.LoadFromObject(TestConfigObject);
+            return config;
+        }
+
+        protected virtual IConfiguration GetConfig()
+        {
+            return Runtime.Container.Get<IConfiguration>();
+        }
+        
+        public void TestSaveException(IConfiguration config)
+        {
             // Config has not been loaded from a file so it can not be saved
             Assert.ThrowsException<NotSupportedException>(() => config.Save());
         }

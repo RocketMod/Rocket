@@ -21,7 +21,7 @@ namespace Rocket.API.Configuration
         /// </remarks>
         IConfigurationSection GetSection(string path);
 
-        IConfigurationSection CreateSection(string path);
+        IConfigurationSection CreateSection(string path, bool isValue);
 
         bool RemoveSection(string path);
 

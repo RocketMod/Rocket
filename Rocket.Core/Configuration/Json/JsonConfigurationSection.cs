@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Runtime.Remoting.Channels;
+using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
 namespace Rocket.Core.Configuration.Json
@@ -7,7 +8,7 @@ namespace Rocket.Core.Configuration.Json
     {
         private readonly string key;
 
-        public JsonConfigurationSection(JToken token, string key) : base(token)
+        public JsonConfigurationSection(JToken node, string key) : base(node)
         {
             this.key = key;
         }

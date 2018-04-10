@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,7 +10,6 @@ namespace Rocket.Core.Configuration.Json
     public class JsonConfiguration : JsonConfigurationBase, IConfiguration
     {
         private string file;
-        public JsonConfiguration() : base(null) { }
 
         public void Load(IEnvironmentContext context)
         {

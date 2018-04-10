@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
+using Rocket.Core.Permissions;
 
 namespace Rocket.Tests.Tests
 {
@@ -72,18 +73,60 @@ namespace Rocket.Tests.Tests
         public virtual IConfiguration GetConfigurationProvider() => Runtime.Container.Get<IConfiguration>();
 
         [TestMethod]
-        public void TestGroups()
+        public void TestGetGroups()
         {
-            IPermissionProvider permissionProvider = Runtime.Container.Get<IPermissionProvider>();
-            permissionProvider.Load(GroupsConfig, PlayersConfig);
-
+            IPermissionProvider permissionProvider = LoadProvider();
             IPermissionGroup[] groups = permissionProvider.GetGroups(TestPlayer).ToArray();
             Assert.AreEqual(groups.Length, 2);
             Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup2"));
             Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup3"));
+        }
 
-            // Config has not been loaded from a file so it can not be saved
+        [TestMethod]
+        public void TestSaveException()
+        {
+            // Config of permission provider has not been loaded from a file so it can not be saved
+            
+            IPermissionProvider permissionProvider = LoadProvider();
             Assert.ThrowsException<NotSupportedException>(() => permissionProvider.Save());
+        }
+
+        [TestMethod]
+        public void TestDeleteGroup()
+        {
+            IPermissionProvider permissionProvider = LoadProvider();
+
+            permissionProvider.DeleteGroup(permissionProvider.GetGroup("TestGroup3"));
+
+            IPermissionGroup[] groups = permissionProvider.GetGroups(TestPlayer).ToArray();
+            Assert.AreEqual(groups.Length, 1);
+            Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup2"));
+        }
+
+        [TestMethod]
+        public void TestCreateGroup()
+        {
+            IPermissionProvider permissionProvider = LoadProvider();
+
+            permissionProvider.CreateGroup(new PermissionGroup { Id = "TestGroup4", Name = "DynamicAddedGroup", Priority = 0});
+
+            IPermissionGroup[] groups = permissionProvider.GetGroups(TestPlayer).ToArray();
+            Assert.AreEqual(groups.Length, 3);
+            Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup2"));
+            Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup3"));
+            Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup4"));
+        }
+
+        protected IPermissionProvider LoadProvider()
+        {
+            var provider = GetPermissionProvider();
+            provider.Load(GroupsConfig, PlayersConfig);
+            return provider;
+        }
+
+        protected virtual IPermissionProvider GetPermissionProvider()
+        {
+            return Runtime.Container.Get<IPermissionProvider>();
         }
     }
 }

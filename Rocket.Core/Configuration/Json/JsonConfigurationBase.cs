@@ -12,7 +12,12 @@ namespace Rocket.Core.Configuration.Json
 
         public JsonConfigurationBase(JToken node)
         {
-            Node = node;
+            Node = node ?? throw new ArgumentNullException(nameof(node));
+        }
+
+        protected JsonConfigurationBase()
+        {
+
         }
 
         public IConfigurationSection this[string path] => GetSection(path);
@@ -23,25 +28,64 @@ namespace Rocket.Core.Configuration.Json
             GuardPath(path);
 
             JsonConfigurationBase currentNode = this;
-            string[] parts = path.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
-            if (parts.Length == 1) return new JsonConfigurationSection(Node[parts[0]], parts[0]);
+            if (parts.Length == 1)
+            {
+                string key = parts[0];
+                if (Node is JObject o && !o.ContainsKey(key))
+                {
+                    o.Add(new JObject(key, null));
+                }
 
-            foreach (string part in parts) currentNode = (JsonConfigurationSection) currentNode.GetSection(part);
+                return new JsonConfigurationSection(Node[key], key);
+            }
 
-            return (IConfigurationSection) currentNode;
+            foreach (string part in parts) currentNode = (JsonConfigurationSection)currentNode.GetSection(part);
+
+            return (IConfigurationSection)currentNode;
         }
 
-        public IConfigurationSection CreateSection(string path)
+        public IConfigurationSection CreateSection(string path, bool isValue)
         {
+            GuardLoaded();
             GuardPath(path);
+
+            JToken current = Node;
+
+            string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+
+            int i = 0;
+            foreach (string part in parts)
+            {
+                if (!(current is JObject o) || o.ContainsKey(part))
+                {
+                    current = current[part];
+                    i++;
+                    continue;
+                }
+
+                if (i == (parts.Length - 1) && isValue)
+                {
+                    o.Add(new JProperty(part, ""));
+                }
+                else
+                {
+                    o.Add(part, new JObject());
+                }
+
+                current = current[part];
+                i++;
+            }
+
             return GetSection(path);
         }
 
         public bool RemoveSection(string path)
         {
+            GuardLoaded();
             GuardPath(path);
-            Node[path].Remove();
+            ((JsonConfigurationSection)GetSection(path)).Node.Parent.Remove();
             return true;
         }
 
@@ -76,6 +120,8 @@ namespace Rocket.Core.Configuration.Json
 
         public T Get<T>(T defaultValue)
         {
+            GuardLoaded();
+
             if (!TryGet(out T val)) val = defaultValue;
 
             return val;
@@ -83,6 +129,8 @@ namespace Rocket.Core.Configuration.Json
 
         public object Get(Type t, object defaultValue)
         {
+            GuardLoaded();
+
             if (!TryGet(t, out object val)) val = defaultValue;
 
             return val;
@@ -90,13 +138,22 @@ namespace Rocket.Core.Configuration.Json
 
         public virtual void Set(object o)
         {
-            if (!(Node is JProperty)) throw new Exception("Can not set value of: " + Node.Path);
+            GuardLoaded();
+            var node = Node;
 
-            ((JProperty) Node).Value = new JValue(o);
+            if (node is JValue)
+                node = node.Parent;
+
+            if (!(node is JProperty p))
+                throw new Exception("Can not set value of non-property: " + Node.Path);
+
+            p.Value = new JValue(o);
         }
 
         public bool TryGet<T>(out T value)
         {
+            GuardLoaded();
+
             value = default(T);
             try
             {
@@ -111,6 +168,8 @@ namespace Rocket.Core.Configuration.Json
 
         public bool TryGet(Type t, out object value)
         {
+            GuardLoaded();
+
             value = null;
             try
             {

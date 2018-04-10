@@ -125,9 +125,9 @@ namespace Rocket.Core.Permissions
         public void CreateGroup(IPermissionGroup @group)
         {
             GuardLoaded();
-            IConfigurationSection section = GroupsConfig.CreateSection($"Groups.{@group.Id}");
-            section["Name"].Set(@group.Name);
-            section.GetSection("Priority").Set(@group.Priority);
+            IConfigurationSection section = GroupsConfig.CreateSection($"Groups.{@group.Id}", false);
+            section.CreateSection("Name", true).Set(@group.Name);
+            section.CreateSection("Priority", true).Set(@group.Priority);
         }
 
         public void DeleteGroup(IPermissionGroup @group)
