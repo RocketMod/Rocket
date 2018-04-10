@@ -70,6 +70,7 @@
     <Compile Include="Events\Plugins\PluginEvent.cs" />
     <Compile Include="Events\Plugins\PluginLoadedEvent.cs" />
     <Compile Include="Events\Plugins\PluginLoadEvent.cs" />
+    <Compile Include="Events\Plugins\PluginManagerLoadEvent.cs" />
     <Compile Include="Events\Plugins\PluginUnloadedEvent.cs" />
     <Compile Include="Events\Plugins\PluginUnloadEvent.cs" />
     <Compile Include="Exceptions\IFriendlyException.cs" />

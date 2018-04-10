@@ -3,27 +3,30 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
+using Rocket.Core.Events.Plugins;
 using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Plugins
 {
     public class PluginManager : IPluginManager, ICommandProvider
     {
-        private static readonly string pluginsDirectory = "./Plugins/";
 
+        private static readonly string pluginsDirectory = "./Plugins/";
         private static readonly string packagesDirectory = "./Packages/";
 
         private readonly IEventManager eventManager;
         private readonly IDependencyContainer container;
         private readonly ILogger logger;
-
+        private readonly IRuntime runtime;
         private readonly IDependencyContainer parentContainer;
         private readonly IDependencyResolver resolver;
+
         private readonly Dictionary<string, Assembly> cachedAssemblies;
 
         private Dictionary<IPlugin, List<ICommand>> commands;
@@ -31,8 +34,9 @@ namespace Rocket.Core.Plugins
         private Dictionary<string, string> pluginAssemblies;
 
         public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger,
-                             IEventManager eventManager)
+                             IEventManager eventManager, IRuntime runtime)
         {
+            this.runtime = runtime;
             parentContainer = dependencyContainer;
             this.resolver = resolver;
             this.logger = logger;
@@ -91,6 +95,9 @@ namespace Rocket.Core.Plugins
 
             foreach (Assembly assembly in assemblies)
                 LoadPluginFromAssembly(assembly);
+
+            PluginManagerLoadEvent @event = new PluginManagerLoadEvent(this, EventExecutionTargetContext.Sync);
+            eventManager.Emit(runtime, @event);
 
             container.TryGetAll(out IEnumerable<IPlugin> plugins);
             foreach (IPlugin plugin in plugins)

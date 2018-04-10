@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-[assembly: AssemblyTitle("Rocket.Runtime")]
+[assembly: AssemblyTitle("Rocket.runtime")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("Rocket.Runtime")]
+[assembly: AssemblyProduct("Rocket.runtime")]
