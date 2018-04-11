@@ -5,16 +5,16 @@ namespace Rocket.Core.Events.Plugins
 {
     public class PluginUnloadedEvent : PluginEvent
     {
-        public PluginUnloadedEvent(IPlugin plugin, bool global = true) : base(plugin, global) { }
+        public PluginUnloadedEvent(IPluginManager pluginManager, IPlugin plugin, bool global = true) : base(pluginManager, plugin, global) { }
 
-        public PluginUnloadedEvent(IPlugin plugin,
+        public PluginUnloadedEvent(IPluginManager pluginManager, IPlugin plugin,
                                    EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                   bool global = true) : base(plugin, executionTarget, global) { }
+                                   bool global = true) : base(pluginManager, plugin, executionTarget, global) { }
 
-        public PluginUnloadedEvent(IPlugin plugin, string name = null,
+        public PluginUnloadedEvent(IPluginManager pluginManager, IPlugin plugin, string name = null,
                                    EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                   bool global = true) : base(plugin, name, executionTarget, global) { }
+                                   bool global = true) : base(pluginManager, plugin, name, executionTarget, global) { }
 
-        public PluginUnloadedEvent(IPlugin plugin) : base(plugin) { }
+        public PluginUnloadedEvent(IPluginManager pluginManager, IPlugin plugin) : base(pluginManager, plugin) { }
     }
 }

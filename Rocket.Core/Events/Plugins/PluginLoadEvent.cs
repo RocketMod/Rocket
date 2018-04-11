@@ -5,16 +5,16 @@ namespace Rocket.Core.Events.Plugins
 {
     public class PluginLoadEvent : PluginEvent, ICancellableEvent
     {
-        public PluginLoadEvent(IPlugin plugin) : base(plugin) { }
-        public PluginLoadEvent(IPlugin plugin, bool global = true) : base(plugin, global) { }
+        public PluginLoadEvent(IPluginManager pluginManager, IPlugin plugin) : base(pluginManager, plugin) { }
+        public PluginLoadEvent(IPluginManager pluginManager, IPlugin plugin, bool global = true) : base(pluginManager, plugin, global) { }
 
-        public PluginLoadEvent(IPlugin plugin,
+        public PluginLoadEvent(IPluginManager pluginManager, IPlugin plugin,
                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                               bool global = true) : base(plugin, executionTarget, global) { }
+                               bool global = true) : base(pluginManager, plugin, executionTarget, global) { }
 
-        public PluginLoadEvent(IPlugin plugin, string name = null,
+        public PluginLoadEvent(IPluginManager pluginManager, IPlugin plugin, string name = null,
                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                               bool global = true) : base(plugin, name, executionTarget, global) { }
+                               bool global = true) : base(pluginManager, plugin, name, executionTarget, global) { }
 
         public bool IsCancelled { get; set; }
     }

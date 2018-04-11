@@ -46,18 +46,23 @@ namespace Rocket.Core.Plugins
         public IEventManager EventManager { get; }
         public ILogger Logger { get; }
 
+        public IPluginManager PluginManager { get; private set; }
+
         public abstract IEnumerable<string> Capabilities { get; }
 
         public string Name { get; }
 
         public void Load()
         {
+            if (PluginManager == null)
+                PluginManager = Container.Get<IPluginManager>();
+
             IEventManager eventManager = Container.Get<IEventManager>();
             IRuntime runtime = Container.Get<IRuntime>();
 
             if (eventManager != null)
             {
-                PluginLoadEvent loadEvent = new PluginLoadEvent(this);
+                PluginLoadEvent loadEvent = new PluginLoadEvent(PluginManager, this);
                 eventManager.Emit(runtime, loadEvent);
                 if (loadEvent.IsCancelled)
                     return;
@@ -92,7 +97,7 @@ namespace Rocket.Core.Plugins
 
             if (eventManager != null)
             {
-                PluginLoadedEvent loadedEvent = new PluginLoadedEvent(this);
+                PluginLoadedEvent loadedEvent = new PluginLoadedEvent(PluginManager, this);
                 eventManager.Emit(runtime, loadedEvent);
             }
         }
@@ -104,7 +109,7 @@ namespace Rocket.Core.Plugins
 
             if (eventManager != null)
             {
-                PluginUnloadEvent loadedEvent = new PluginUnloadEvent(this);
+                PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
                 eventManager.Emit(runtime, loadedEvent);
             }
 
@@ -113,7 +118,7 @@ namespace Rocket.Core.Plugins
 
             if (eventManager != null)
             {
-                PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(this);
+                PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
                 eventManager.Emit(runtime, loadedEvent);
             }
         }
