@@ -5,18 +5,17 @@ using Rocket.API.Commands;
 using Rocket.API.Ioc;
 using Rocket.API.Permissions;
 using Rocket.Core.Exceptions;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Commands
 {
     public class CommandHandler : ICommandHandler
     {
         private readonly IDependencyContainer container;
-        private readonly IPermissionProvider provider;
-        
-        public CommandHandler(IDependencyContainer container, IPermissionProvider provider)
+
+        public CommandHandler(IDependencyContainer container)
         {
             this.container = container;
-            this.provider = provider;
         }
 
         public bool HandleCommand(ICommandCaller caller, string commandLine)
@@ -30,9 +29,22 @@ namespace Rocket.Core.Commands
             if (target == null)
                 return false; // only return false when the command was not found
 
-            var perms = new[] {target.Permission, target.Name};
+            var perms = new[] { target.Permission, target.Name };
 
-            if (!provider.HasAnyPermissions(caller, perms))
+            var permProviders = container.GetHandlers<IPermissionProvider>();
+            permProviders.Reverse(); //usually Lowest gets called first, so we need to reverse order
+
+            bool hasPermission = false;
+            foreach (var provider in permProviders)
+            {
+                if (provider.HasAnyPermissions(caller, perms))
+                {
+                    hasPermission = true;
+                    break;
+                }
+            }
+
+            if(!hasPermission)
                 throw new NotEnoughPermissionsException(caller, perms);
 
             try
@@ -43,7 +55,7 @@ namespace Rocket.Core.Commands
             {
                 if (e is IFriendlyException)
                 {
-                    ((IFriendlyException) e).ToFriendlyString(context);
+                    ((IFriendlyException)e).ToFriendlyString(context);
                     return true;
                 }
 
@@ -87,7 +99,7 @@ namespace Rocket.Core.Commands
         }
 
         public NotEnoughPermissionsException(ICommandCaller caller, string permission) : this(caller,
-            new[] {permission})
+            new[] { permission })
         {
 
         }

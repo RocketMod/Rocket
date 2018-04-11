@@ -3,14 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
+using Rocket.API.Handlers;
 using Rocket.API.Permissions;
 
 namespace Rocket.Core.Permissions
 {
+    [HandlerPriority(Priority = HandlerPriority.Lowest)]
     public class PermissionProvider : IPermissionProvider
     {
         public IConfigurationBase GroupsConfig { get; protected set; }
         public IConfigurationBase PlayersConfig { get; protected set; }
+
+        public bool CanHandle(ICommandCaller caller)
+        {
+            return true;
+        }
 
         public bool HasPermission(IPermissionGroup @group, string permission)
         {

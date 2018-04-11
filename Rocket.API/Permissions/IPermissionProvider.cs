@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
+using Rocket.API.Handlers;
 
 namespace Rocket.API.Permissions
 {
-    public interface IPermissionProvider
+    public interface IPermissionProvider : IHandler
     {
         // do not add something like GetPermissions()!
+
+        bool CanHandle(ICommandCaller caller);
 
         bool HasPermission(IPermissionGroup group, string permission);
         bool HasPermission(ICommandCaller caller, string permission);
