@@ -22,12 +22,20 @@ namespace Rocket.Tests.Tests
                 TestGroup1 = new
                 {
                     Name = "TestGroup",
-                    Priority = 2
+                    Priority = 2,
+                    Permissions = new[]
+                    {
+                        "GroupPermission1"
+                    }
                 },
                 TestGroup2 = new
                 {
                     Name = "TestGroup2",
-                    Priority = 1
+                    Priority = 1,
+                    Permissions = new[]
+                    {
+                        "GroupPermission2"
+                    }
                 },
                 TestGroup3 = new
                 {
@@ -50,7 +58,8 @@ namespace Rocket.Tests.Tests
                         },
                         Permissions = new []
                         {
-                            "TestPermission"
+                            "PlayerPermission.Test",
+                            "PlayerPermission.Test2.*"
                         }
                     }
                 }
@@ -70,6 +79,105 @@ namespace Rocket.Tests.Tests
 
         public virtual IConfiguration GetConfigurationProvider() => Runtime.Container.Get<IConfiguration>();
 
+        [TestMethod]
+        public void TestUpdateGroup()
+        {
+            var provider = LoadProvider();
+            var group = new PermissionGroup();
+            group.Id = "TestGroup1";
+            group.Name = "UpdatedGroupName";
+            group.Priority = -1;
+
+            provider.UpdateGroup(group);
+            Assert.AreEqual(group.Name, "UpdatedGroupName");
+            Assert.AreEqual(group.Priority, -1);
+        }
+
+        [TestMethod]
+        public void TestGroupPermissions()
+        {
+            var provider = LoadProvider();
+            Assert.IsFalse(provider.HasPermission(TestPlayer, "GroupPermission1"));
+            Assert.IsTrue(provider.HasPermission(TestPlayer, "GroupPermission2"));
+        }
+
+        [TestMethod]
+        public void TestPlayerPermissions()
+        {
+            var provider = LoadProvider();
+            Assert.IsTrue(provider.HasPermission(TestPlayer, "PlayerPermission.Test"));
+        }
+
+        [TestMethod]
+        public void TestChildPermissions()
+        {
+            var provider = LoadProvider();
+            //should not be inherited
+            Assert.IsFalse(provider.HasPermission(TestPlayer, "PlayerPermission.Test.ChildNode"));
+
+            //should be inherited from PlayerPermission.Test2.*
+            Assert.IsTrue(provider.HasPermission(TestPlayer, "PlayerPermission.Test2.ChildNode"));
+            
+            //only has permission to the childs; not to the node itself
+            Assert.IsFalse(provider.HasPermission(TestPlayer, "PlayerPermission.Test2"));
+        }
+
+        [TestMethod]
+        public void TestAddPermissionToGroup()
+        {
+            var provider = LoadProvider();
+            var group = provider.GetGroup("TestGroup2");
+            provider.AddPermission(group, "DynamicGroupPermission");
+
+            Assert.IsTrue(provider.HasPermission(group, "DynamicGroupPermission"));
+            Assert.IsTrue(provider.HasPermission(TestPlayer, "DynamicGroupPermission"));
+        }
+
+        [TestMethod]
+        public void TestRemovePermissionFromGroup()
+        {
+            var provider = LoadProvider();
+            var group = provider.GetGroup("TestGroup2");
+            provider.RemovePermission(group, "GroupPermission2");
+
+            Assert.IsFalse(provider.HasPermission(group, "GroupPermission2"));
+            Assert.IsFalse(provider.HasPermission(TestPlayer, "GroupPermission2"));
+        }
+
+        [TestMethod]
+        public void TestHasAllPermissions()
+        {
+            var provider = LoadProvider();
+            var group = provider.GetGroup("TestGroup2");
+
+            var perms = new[] { "PlayerPermission.Test", "GroupPermission2" };
+
+            Assert.IsTrue(provider.HasAllPermissions(group, perms));
+            Assert.IsTrue(provider.HasAllPermissions(TestPlayer, perms));
+
+            perms = new[] { "PlayerPermission.Test", "GroupPermission2", "NonExistantPermission" };
+
+            Assert.IsFalse(provider.HasAllPermissions(group, perms));
+            Assert.IsFalse(provider.HasAllPermissions(TestPlayer, perms));
+        }
+
+        [TestMethod]
+        public void TestHasAnyPermissions()
+        {
+            var provider = LoadProvider();
+            var group = provider.GetGroup("TestGroup2");
+
+            var perms = new[] { "PlayerPermission.Test", "NonExistantPermission" };
+
+            Assert.IsTrue(provider.HasAnyPermissions(group, perms));
+            Assert.IsTrue(provider.HasAnyPermissions(TestPlayer, perms));
+
+            perms = new[] { "NonExistantPermission", "NonExistantPermission2" };
+
+            Assert.IsFalse(provider.HasAnyPermissions(group, perms));
+            Assert.IsFalse(provider.HasAnyPermissions(TestPlayer, perms));
+        }
+        
         [TestMethod]
         public void TestGetGroups()
         {
