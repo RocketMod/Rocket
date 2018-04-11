@@ -1,5 +1,5 @@
 ﻿using Rocket.API;
-using Rocket.API.DependencyInjection;
+using Rocket.API.Ioc;
 
 namespace Rocket.Tests.Properties
 {

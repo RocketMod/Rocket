@@ -74,9 +74,9 @@
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslations.cs" />
     <Compile Include="IImplementation.cs" />
-    <Compile Include="DependencyInjection\IDependencyContainer.cs" />
-    <Compile Include="DependencyInjection\IDependencyRegistrator.cs" />
-    <Compile Include="DependencyInjection\IDependencyResolver.cs" />
+    <Compile Include="Ioc\IDependencyContainer.cs" />
+    <Compile Include="Ioc\IDependencyRegistrator.cs" />
+    <Compile Include="Ioc\IDependencyResolver.cs" />
     <Compile Include="IRuntime.cs" />
     <Compile Include="Permissions\IPermissionProvider.cs" />
     <Compile Include="Logging\ILogger.cs" />

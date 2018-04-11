@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
-using Rocket.API.DependencyInjection;
+using Rocket.API.Ioc;
 using Rocket.API.Logging;
 using Rocket.Core.Extensions;
 
-namespace Rocket.Core.DependencyInjection
+namespace Rocket.Core.Ioc
 {
     public class RegistrationByConvention
     {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rocket.API.Commands;
-using Rocket.API.DependencyInjection;
+using Rocket.API.Ioc;
 using Rocket.API.Permissions;
 using Rocket.Core.Exceptions;
 

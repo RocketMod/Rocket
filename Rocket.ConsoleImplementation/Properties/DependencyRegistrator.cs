@@ -1,5 +1,5 @@
 ﻿using Rocket.API;
-using Rocket.API.DependencyInjection;
+using Rocket.API.Ioc;
 using Rocket.API.Scheduler;
 
 namespace Rocket.ConsoleImplementation.Properties

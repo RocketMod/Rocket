@@ -1,4 +1,4 @@
-﻿namespace Rocket.API.DependencyInjection
+﻿namespace Rocket.API.Ioc
 {
     public interface IDependencyContainer : IDependencyResolver
     {
