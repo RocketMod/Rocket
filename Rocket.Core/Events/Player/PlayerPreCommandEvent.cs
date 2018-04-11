@@ -3,7 +3,7 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Events.Player
 {
-    public class PlayerPreCommandEvent : PlayerEvent
+    public class PlayerPreCommandEvent : PlayerEvent, ICancellableEvent
     {
         public string CommandLine { get; }
         public PlayerPreCommandEvent(IPlayer player, string commandLine) : base(player)
@@ -22,5 +22,7 @@ namespace Rocket.Core.Events.Player
         {
             CommandLine = commandLine;
         }
+
+        public bool IsCancelled { get; set; }
     }
 }
