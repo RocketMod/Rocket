@@ -29,7 +29,11 @@ namespace Rocket.Core.Commands
             if (target == null)
                 return false; // only return false when the command was not found
 
-            var perms = new[] { target.Permission, target.Name };
+            var tmp = new List<string>{ target.Name };
+            if(target.Permission != null)
+                tmp.Add(target.Permission);
+
+            var perms = tmp.ToArray();
 
             var permProviders = container.GetHandlers<IPermissionProvider>();
             permProviders.Reverse(); //usually Lowest gets called first, so we need to reverse order
