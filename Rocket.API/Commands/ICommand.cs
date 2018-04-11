@@ -4,7 +4,7 @@
     {
         string Name { get; }
 
-        string[] Permissions { get; }
+        string Permission { get; }
 
         void Execute(ICommandContext context);
     }
