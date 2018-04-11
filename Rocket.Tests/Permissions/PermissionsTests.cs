@@ -5,7 +5,7 @@ using Rocket.API.Configuration;
 using Rocket.API.Permissions;
 using Rocket.Core.Permissions;
 
-namespace Rocket.Tests.Tests
+namespace Rocket.Tests.Permissions
 {
     [TestClass]
     [TestCategory("Permissions")]

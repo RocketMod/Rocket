@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration.Json;
 
-namespace Rocket.Tests.Tests
+namespace Rocket.Tests.Configuration
 {
     [TestClass]
     [TestCategory("Configs")]
