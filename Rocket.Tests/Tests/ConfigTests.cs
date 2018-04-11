@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration.Json;
@@ -7,6 +8,7 @@ using Rocket.Core.Configuration.Json;
 namespace Rocket.Tests.Tests
 {
     [TestClass]
+    [TestCategory("Configs")]
     public class ConfigTests : RocketTestBase
     {
         protected object TestConfigObject { get; private set; }
@@ -48,51 +50,51 @@ namespace Rocket.Tests.Tests
 
             config.LoadFromJson(json);
 
-            TestConfig(config);
-            TestSaveException(config);
+            AssertConfigEquality(config);
+            AssertSaveException(config);
         }
 
         [TestMethod]
-        public void TestJsonSetObjectConfig()
+        public void TestObjectConfig()
         {
-            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
+            IConfiguration config = GetUnloadedConfig();
             config.LoadEmpty();
 
             config.Set(TestConfigObject);
-            TestConfig(config);
-            TestSaveException(config);
+            AssertConfigEquality(config);
+            AssertSaveException(config);
         }
 
         [TestMethod]
-        public void TestJsonLoadFromObjectConfig()
+        public void TestArrays()
         {
-            IConfiguration config = LoadConfig();
-            TestConfig(config);
-            TestSaveException(config);
+            var config = GetUnloadedConfig();
+            config.LoadEmpty();
+
+            var arraySection = config.CreateSection("ArrayTest", SectionType.Array);
+            arraySection.Set(new[] { "Test1", "Test2"});
+            var value = arraySection.Get(new string[0]);
+            Assert.AreEqual(value.Length, 2);
+            Assert.IsTrue(value.Contains("Test1"));
+            Assert.IsTrue(value.Contains("Test2"));
+
+            arraySection.Set(new string[0]);
+            value = arraySection.Get(new string[0]);
+            Assert.AreEqual(value.Length, 0);
         }
 
-        protected IConfiguration LoadConfig()
+        [TestMethod]
+        public void TestLoadFromObject()
         {
-            IConfiguration config = GetConfig();
-            config.LoadFromObject(TestConfigObject);
-            return config;
-        }
-
-        protected virtual IConfiguration GetConfig()
-        {
-            return Runtime.Container.Get<IConfiguration>();
-        }
-
-        public void TestSaveException(IConfiguration config)
-        {
-            // Config has not been loaded from a file so it can not be saved
-            Assert.ThrowsException<NotSupportedException>(() => config.Save());
+            IConfiguration config = LoadConfigFromObject();
+            AssertConfigEquality(config);
+            AssertSaveException(config);
         }
 
         [TestMethod]
         public void TestConfigSectionDeletion()
         {
-            var config = LoadConfig();
+            var config = LoadConfigFromObject();
             Assert.IsNotNull(config.GetSection("Test1"));
             Assert.IsTrue(config.RemoveSection("Test1"));
             Assert.ThrowsException<KeyNotFoundException>(() => config.GetSection("Test1"));
@@ -101,7 +103,7 @@ namespace Rocket.Tests.Tests
         [TestMethod]
         public void TestConfigSectionCreation()
         {
-            var config = LoadConfig();
+            var config = LoadConfigFromObject();
             var section = config.CreateSection("dynamictest.test2", SectionType.Object);
             Assert.IsNotNull(section);
             Assert.IsTrue(section.IsNull);
@@ -120,7 +122,7 @@ namespace Rocket.Tests.Tests
             Assert.IsFalse(section.IsNull);
         }
 
-        public void TestConfig(IConfiguration config)
+        public void AssertConfigEquality(IConfiguration config)
         {
             Assert.AreEqual(config.GetSection("Test1").Get<string>(), "A");
             Assert.AreEqual(config.GetSection("NestedObjectTest")
@@ -155,5 +157,24 @@ namespace Rocket.Tests.Tests
             Assert.AreEqual(config.GetSection("NestedObjectTest.NestedNumberValue").Get<int>(), 4);
             Assert.AreEqual(config.GetSection("NestedObjectTest.VeryNestedObject.Value").Get<string>(), "3");
         }
+
+        public void AssertSaveException(IConfiguration config)
+        {
+            // Config has not been loaded from a file so it can not be saved
+            Assert.ThrowsException<NotSupportedException>(() => config.Save());
+        }
+        
+        protected IConfiguration LoadConfigFromObject()
+        {
+            IConfiguration config = GetUnloadedConfig();
+            config.LoadFromObject(TestConfigObject);
+            return config;
+        }
+
+        protected virtual IConfiguration GetUnloadedConfig()
+        {
+            return Runtime.Container.Get<IConfiguration>();
+        }
+
     }
 }

@@ -20,20 +20,11 @@ namespace Rocket.Core.Permissions
             if (!permission.StartsWith("!") && HasPermission(@group, "!" + permission))
                 return false;
 
-            List<string> permissions = new List<string>
-            {
-                permission
-            };
-
-            foreach (var part in permission.Split('.'))
-                permissions.Add(part + ".*");
-
-            permissions.Remove(permission + ".*");
-
-            foreach (var perm in permissions)
+            var permissionTree = BuildPermissionTree(permission);
+            foreach (var permissionNode in permissionTree)
             {
                 string[] groupPermissions = GetConfigSection(@group)["Permissions"].Get(new string[0]);
-                if (groupPermissions.Any(c => c.Trim().Equals(perm, StringComparison.OrdinalIgnoreCase)))
+                if (groupPermissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
                     return true;
             }
 
@@ -48,20 +39,11 @@ namespace Rocket.Core.Permissions
             if (!permission.StartsWith("!") && HasPermission(caller, "!" + permission))
                 return false;
 
-            List<string> permissions = new List<string>
+            var permissionTree = BuildPermissionTree(permission);
+            foreach (var permissionNode in permissionTree)
             {
-                permission
-            };
-
-            foreach (var part in permission.Split('.'))
-                permissions.Add(part + ".*");
-
-            permissions.Remove(permission + ".*");
-
-            foreach (var perm in permissions)
-            {
-                string[] groupPermissions = GetConfigSection(caller)["Permissions"].Get(new string[0]);
-                if (groupPermissions.Any(c => c.Trim().Equals(perm, StringComparison.OrdinalIgnoreCase)))
+                string[] playerPermissions = GetConfigSection(caller)["Permissions"].Get(new string[0]);
+                if (playerPermissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
                     return true;
             }
 
@@ -270,12 +252,30 @@ namespace Rocket.Core.Permissions
             PlayersConfig.Root?.Save();
         }
 
+        public List<string> BuildPermissionTree(string permission)
+        {
+            List<string> permissions = new List<string>
+            {
+                permission
+            };
+
+            string parentPath = "";
+            foreach (var childPath in permission.Split('.'))
+            {
+                permissions.Add(parentPath + childPath + ".*");
+                parentPath += childPath + ".";
+            }
+
+            return permissions.GetRange(0, permissions.Count - 1);
+        }
+
         private void GuardPermission(ref string permission)
         {
             if (string.IsNullOrEmpty(permission))
                 throw new ArgumentException("Argument can not be null or empty", nameof(permission));
 
-            permission = permission.ToLower().Trim();
+            //permission = permission.ToLower().Trim();
+            permission = permission.Trim();
         }
 
         private void GuardPermissions(string[] permissions)

@@ -8,6 +8,7 @@ using Rocket.Core.Permissions;
 namespace Rocket.Tests.Tests
 {
     [TestClass]
+    [TestCategory("Permissions")]
     public class PermissionTests : RocketTestBase
     {
         protected IConfiguration PlayersConfig { get; private set; }
@@ -34,7 +35,8 @@ namespace Rocket.Tests.Tests
                     Priority = 1,
                     Permissions = new[]
                     {
-                        "GroupPermission2"
+                        "GroupPermission2",
+                        "GroupPermission2.Child"
                     }
                 },
                 TestGroup3 = new
@@ -56,7 +58,7 @@ namespace Rocket.Tests.Tests
                             "TestGroup3", "TestGroup2",
                             "TestGroup4" /* doesn't exist, shouldn't be exposed by GetGroups */
                         },
-                        Permissions = new []
+                        Permissions = new[]
                         {
                             "PlayerPermission.Test",
                             "PlayerPermission.Test2.*"
@@ -117,7 +119,7 @@ namespace Rocket.Tests.Tests
 
             //should be inherited from PlayerPermission.Test2.*
             Assert.IsTrue(provider.HasPermission(TestPlayer, "PlayerPermission.Test2.ChildNode"));
-            
+
             //only has permission to the childs; not to the node itself
             Assert.IsFalse(provider.HasPermission(TestPlayer, "PlayerPermission.Test2"));
         }
@@ -138,10 +140,26 @@ namespace Rocket.Tests.Tests
         {
             var provider = LoadProvider();
             var group = provider.GetGroup("TestGroup2");
-            provider.RemovePermission(group, "GroupPermission2");
+            Assert.IsTrue(provider.RemovePermission(group, "GroupPermission2"));
 
             Assert.IsFalse(provider.HasPermission(group, "GroupPermission2"));
             Assert.IsFalse(provider.HasPermission(TestPlayer, "GroupPermission2"));
+        }
+
+        [TestMethod]
+        public void TestAddPermissionToPlayer()
+        {
+            var provider = LoadProvider();
+            provider.AddPermission(TestPlayer, "DynamicGroupPermission");
+            Assert.IsTrue(provider.HasPermission(TestPlayer, "DynamicGroupPermission"));
+        }
+
+        [TestMethod]
+        public void TestRemovePermissionFromPlayer()
+        {
+            var provider = LoadProvider();
+            Assert.IsTrue(provider.RemovePermission(TestPlayer, "PlayerPermission.Test"));
+            Assert.IsFalse(provider.HasPermission(TestPlayer, "PlayerPermission.Test"));
         }
 
         [TestMethod]
@@ -150,15 +168,15 @@ namespace Rocket.Tests.Tests
             var provider = LoadProvider();
             var group = provider.GetGroup("TestGroup2");
 
-            var perms = new[] { "PlayerPermission.Test", "GroupPermission2" };
+            Assert.IsTrue(provider.HasAllPermissions(group, "GroupPermission2", "GroupPermission2.Child"));
+            Assert.IsTrue(provider.HasAllPermissions(TestPlayer,
+                "PlayerPermission.Test", "PlayerPermission.Test2.ChildNode",
+                "GroupPermission2", "GroupPermission2.Child"));
 
-            Assert.IsTrue(provider.HasAllPermissions(group, perms));
-            Assert.IsTrue(provider.HasAllPermissions(TestPlayer, perms));
+            var failPerms = new[] { "PlayerPermission.Test", "GroupPermission2", "NonExistantPermission" };
 
-            perms = new[] { "PlayerPermission.Test", "GroupPermission2", "NonExistantPermission" };
-
-            Assert.IsFalse(provider.HasAllPermissions(group, perms));
-            Assert.IsFalse(provider.HasAllPermissions(TestPlayer, perms));
+            Assert.IsFalse(provider.HasAllPermissions(group, failPerms));
+            Assert.IsFalse(provider.HasAllPermissions(TestPlayer, failPerms));
         }
 
         [TestMethod]
@@ -167,17 +185,15 @@ namespace Rocket.Tests.Tests
             var provider = LoadProvider();
             var group = provider.GetGroup("TestGroup2");
 
-            var perms = new[] { "PlayerPermission.Test", "NonExistantPermission" };
+            Assert.IsTrue(provider.HasAnyPermissions(group, "GroupPermission2", "NonExistantPermission"));
+            Assert.IsTrue(provider.HasAnyPermissions(TestPlayer, "PlayerPermission.Test", "NonExistantPermission"));
 
-            Assert.IsTrue(provider.HasAnyPermissions(group, perms));
-            Assert.IsTrue(provider.HasAnyPermissions(TestPlayer, perms));
-
-            perms = new[] { "NonExistantPermission", "NonExistantPermission2" };
+            var perms = new[] { "NonExistantPermission", "NonExistantPermission2" };
 
             Assert.IsFalse(provider.HasAnyPermissions(group, perms));
             Assert.IsFalse(provider.HasAnyPermissions(TestPlayer, perms));
         }
-        
+
         [TestMethod]
         public void TestGetGroups()
         {
@@ -192,7 +208,7 @@ namespace Rocket.Tests.Tests
         public void TestSaveException()
         {
             // Config of permission provider has not been loaded from a file so it can not be saved
-            
+
             IPermissionProvider permissionProvider = LoadProvider();
             Assert.ThrowsException<NotSupportedException>(() => permissionProvider.Save());
         }
@@ -214,7 +230,7 @@ namespace Rocket.Tests.Tests
         {
             IPermissionProvider permissionProvider = LoadProvider();
 
-            permissionProvider.CreateGroup(new PermissionGroup { Id = "TestGroup4", Name = "DynamicAddedGroup", Priority = 0});
+            permissionProvider.CreateGroup(new PermissionGroup { Id = "TestGroup4", Name = "DynamicAddedGroup", Priority = 0 });
 
             IPermissionGroup[] groups = permissionProvider.GetGroups(TestPlayer).ToArray();
             Assert.AreEqual(groups.Length, 3);

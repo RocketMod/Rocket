@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using Newtonsoft.Json.Linq;
@@ -174,6 +175,11 @@ namespace Rocket.Core.Configuration.Json
 
             if (node is JArray array)
             {
+                foreach (var child in array.ToList() /* ToList() to make a simple clone */)
+                {
+                    child.Remove();
+                }
+
                 if (value is IEnumerable enumerable)
                 {
                     foreach (var child in enumerable)
