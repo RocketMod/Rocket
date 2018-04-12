@@ -29,30 +29,27 @@ namespace Rocket.Core.Commands
             if (target == null)
                 return false; // only return false when the command was not found
 
-            if (!(caller is IConsoleCommandCaller))
+            var tmp = new List<string>{ target.Name };
+            if(target.Permission != null)
+                tmp.Add(target.Permission);
+
+            var perms = tmp.ToArray();
+
+            var permProviders = container.GetHandlers<IPermissionProvider>();
+            permProviders.Reverse(); //usually Lowest gets called first, so we need to reverse order
+
+            bool hasPermission = false;
+            foreach (var provider in permProviders)
             {
-                var tmp = new List<string> { target.Name };
-                if (target.Permission != null)
-                    tmp.Add(target.Permission);
-
-                var perms = tmp.ToArray();
-
-                var permProviders = container.GetHandlers<IPermissionProvider>();
-                permProviders.Reverse(); //usually Lowest gets called first, so we need to reverse order
-
-                bool hasPermission = false;
-                foreach (var provider in permProviders)
+                if (provider.HasAnyPermissions(caller, perms))
                 {
-                    if (provider.HasAnyPermissions(caller, perms))
-                    {
-                        hasPermission = true;
-                        break;
-                    }
+                    hasPermission = true;
+                    break;
                 }
-
-                if (!hasPermission)
-                    throw new NotEnoughPermissionsException(caller, perms);
             }
+
+            if(!hasPermission)
+                throw new NotEnoughPermissionsException(caller, perms);
 
             try
             {
