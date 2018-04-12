@@ -40,6 +40,9 @@ namespace Rocket.Core.Permissions
 
         public bool HasPermission(ICommandCaller caller, string permission)
         {
+            if (caller is IConsoleCommandCaller)
+                return true;
+
             GuardLoaded();
             GuardPermission(ref permission);
 
@@ -68,6 +71,9 @@ namespace Rocket.Core.Permissions
 
         public bool HasAllPermissions(ICommandCaller caller, params string[] permissions)
         {
+            if (caller is IConsoleCommandCaller)
+                return true;
+
             GuardLoaded();
             GuardPermissions(permissions);
 
@@ -84,6 +90,9 @@ namespace Rocket.Core.Permissions
 
         public bool HasAnyPermissions(ICommandCaller caller, params string[] permissions)
         {
+            if (caller is IConsoleCommandCaller)
+                return true;
+
             GuardLoaded();
             GuardPermissions(permissions);
 
@@ -108,6 +117,9 @@ namespace Rocket.Core.Permissions
 
         public bool AddPermission(ICommandCaller caller, string permission)
         {
+            if (caller is IConsoleCommandCaller)
+                return false;
+
             GuardPermission(ref permission);
             var permsSection = GetConfigSection(caller)["Permissions"];
             List<string> groupPermissions = permsSection.Get(defaultValue: new string[0]).ToList();
@@ -117,6 +129,9 @@ namespace Rocket.Core.Permissions
         }
         public bool AddInvertedPermission(ICommandCaller caller, string permission)
         {
+            if (caller is IConsoleCommandCaller)
+                return false;
+
             GuardPermission(ref permission);
             return AddPermission(caller, "!" + permission);
         }
@@ -139,6 +154,9 @@ namespace Rocket.Core.Permissions
 
         public bool RemovePermission(ICommandCaller caller, string permission)
         {
+            if (caller is IConsoleCommandCaller)
+                return false;
+
             GuardPermission(ref permission);
             var permsSection = GetConfigSection(caller)["Permissions"];
             List<string> groupPermissions = permsSection.Get(defaultValue: new string[0]).ToList();
@@ -149,18 +167,27 @@ namespace Rocket.Core.Permissions
 
         public bool RemoveInvertedPermission(ICommandCaller caller, string permission)
         {
+            if (caller is IConsoleCommandCaller)
+                return false;
+
             GuardPermission(ref permission);
             return RemovePermission(caller, "!" + permission);
         }
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
+            if (caller is IConsoleCommandCaller)
+                return new PermissionGroup();
+
             GuardLoaded();
             return GetGroups(caller).OrderByDescending(c => c.Priority).FirstOrDefault();
         }
 
         public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
         {
+            if (caller is IConsoleCommandCaller)
+                return new PermissionGroup[0];
+
             GuardLoaded();
             IConfigurationSection groupsSection = GetConfigSection(caller)["Groups"];
             string[] groups = groupsSection.Get(defaultValue: new string[0]);
@@ -209,6 +236,9 @@ namespace Rocket.Core.Permissions
 
         public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
         {
+            if (caller is IConsoleCommandCaller)
+                return;
+
             GuardLoaded();
             IConfigurationSection groupsSection = GetConfigSection(caller)["Groups"];
             List<string> groups = groupsSection.Get(defaultValue: new string[0]).ToList();
@@ -219,6 +249,9 @@ namespace Rocket.Core.Permissions
 
         public bool RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
         {
+            if (caller is IConsoleCommandCaller)
+                return false;
+
             GuardLoaded();
             IConfigurationSection groupsSection = GetConfigSection(caller)["Groups"];
             List<string> groups = groupsSection.Get(defaultValue: new string[0]).ToList();
