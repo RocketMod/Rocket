@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
-using Rocket.API.Ioc;
 using Rocket.Core.Plugins;
 
 namespace Rocket.Tests

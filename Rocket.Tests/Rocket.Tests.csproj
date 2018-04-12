@@ -55,11 +55,11 @@
     <Compile Include="..\Rocket.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Ioc\IocTests.cs" />
+    <Compile Include="DI\DITests.cs" />
     <Compile Include="Plugins\PluginTests.cs" />
     <Compile Include="TestPlayer.cs" />
     <Compile Include="Configuration\ConfigurationTests.cs" />
-    <Compile Include="Permissions\PermissionTests.cs" />
+    <Compile Include="Permissions\PermissionsTests.cs" />
     <Compile Include="RocketTestBase.cs" />
     <Compile Include="TestImplementation.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />

@@ -1,4 +1,4 @@
-﻿namespace Rocket.Compability.System
+﻿namespace System
 {
     /// <summary>
     /// </summary>

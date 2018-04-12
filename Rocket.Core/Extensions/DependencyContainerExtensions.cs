@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Handlers;
-using Rocket.API.Ioc;
 
 namespace Rocket.Core.Extensions
 {

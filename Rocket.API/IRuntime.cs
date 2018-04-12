@@ -1,5 +1,5 @@
-﻿using Rocket.API.Eventing;
-using Rocket.API.Ioc;
+﻿using Rocket.API.DependencyInjection;
+using Rocket.API.Eventing;
 
 namespace Rocket.API
 {

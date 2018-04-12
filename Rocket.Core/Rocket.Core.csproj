@@ -80,11 +80,11 @@
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Ioc\UnityInstanceNotResolvedException.cs" />
+    <Compile Include="DependencyInjection\UnityInstanceNotResolvedException.cs" />
     <Compile Include="Eventing\EventManager.cs" />
-    <Compile Include="Ioc\RegistrationByConvention.cs" />
-    <Compile Include="Ioc\UnityDependencyContainer.cs" />
-    <Compile Include="Ioc\OrderedParametersOverride.cs" />
+    <Compile Include="DependencyInjection\RegistrationByConvention.cs" />
+    <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />
+    <Compile Include="DependencyInjection\OrderedParametersOverride.cs" />
     <Compile Include="I18N\Translations.cs" />
     <Compile Include="Permissions\PermissionGroup.cs" />
     <Compile Include="Permissions\PermissionProvider.cs" />

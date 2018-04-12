@@ -1,4 +1,4 @@
-﻿namespace Rocket.API.Ioc
+﻿namespace Rocket.API.DependencyInjection
 {
     public interface IDependencyRegistrator
     {
