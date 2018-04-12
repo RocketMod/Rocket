@@ -177,7 +177,7 @@ namespace Rocket.Core.Permissions
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
             if (caller is IConsoleCommandCaller)
-                return new PermissionGroup();
+                return null;
 
             GuardLoaded();
             return GetGroups(caller).OrderByDescending(c => c.Priority).FirstOrDefault();
