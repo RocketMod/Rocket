@@ -6,9 +6,9 @@ namespace Rocket.API.Player
     public interface IPlayerManager
     {
         IEnumerable<IPlayer> Players { get; }
-        bool Kick(IPlayer player, string reason);
+        bool Kick(IPlayer player, IPlayer kicker = null, string reason = null);
 
-        bool Ban(IPlayer player, string reason, TimeSpan? timeSpan = null);
+        bool Ban(IPlayer player, IPlayer banner = null, string reason = null, TimeSpan? timeSpan = null);
 
         IPlayer GetPlayer(string uniqueID);
 
