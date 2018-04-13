@@ -5,7 +5,7 @@ namespace Rocket.Core.Events.Player
 {
     public class PlayerPreConnectEvent : PlayerEvent, ICancellableEvent
     {
-        public virtual string RejectReason { get; set; }
+        public virtual string RejectionReason { get; set; }
 
         public PlayerPreConnectEvent(IPlayer player) : base(player, true) { }
         public PlayerPreConnectEvent(IPlayer player, bool global = true) : base(player, global) { }
