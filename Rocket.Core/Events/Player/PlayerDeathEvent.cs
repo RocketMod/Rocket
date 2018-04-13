@@ -5,30 +5,30 @@ namespace Rocket.Core.Events.Player
 {
     public class PlayerDeathEvent : PlayerEvent
     {
-        public string DeathReason { get; }
+        public IPlayer Killer { get; }
 
-        public PlayerDeathEvent(IPlayer player, string deathReason) : base(player)
+        public PlayerDeathEvent(IPlayer player, IPlayer killer = null) : base(player)
         {
-            DeathReason = deathReason;
+            Killer = killer;
         }
 
-        public PlayerDeathEvent(IPlayer player, string deathReason, bool global = true) : base(player, global)
+        public PlayerDeathEvent(IPlayer player, IPlayer killer = null, bool global = true) : base(player, global)
         {
-            DeathReason = deathReason;
+            Killer = killer;
         }
 
-        public PlayerDeathEvent(IPlayer player, string deathReason,
+        public PlayerDeathEvent(IPlayer player, IPlayer killer = null,
                                 EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                 bool global = true) : base(player, executionTarget, global)
         {
-            DeathReason = deathReason;
+            Killer = killer;
         }
 
-        public PlayerDeathEvent(IPlayer player, string deathReason, string name = null,
+        public PlayerDeathEvent(IPlayer player, IPlayer killer = null, string name = null,
                                 EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                 bool global = true) : base(player, name, executionTarget, global)
         {
-            DeathReason = deathReason;
+            Killer = killer;
         }
     }
 }
