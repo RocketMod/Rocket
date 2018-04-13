@@ -29,7 +29,7 @@ namespace Rocket.Tests.DI
             Assert.IsNotNull(Runtime.Container.Get<IPluginManager>());
             Assert.IsNotNull(Runtime.Container.Get<ITranslations>());
             Assert.IsNotNull(Runtime.Container.Get<IConfiguration>());
-            Assert.IsNotNull(Runtime.Container.Get<IConfiguration>("defaultjson"));
+            Assert.IsNotNull(Runtime.Container.Get<IConfiguration>("json"));
         }
     }
 }

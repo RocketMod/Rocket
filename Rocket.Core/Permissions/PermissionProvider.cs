@@ -217,7 +217,7 @@ namespace Rocket.Core.Permissions
         public void UpdateGroup(IPermissionGroup @group)
         {
             GuardLoaded();
-            if(GetGroup(@group.Id) == null)
+            if (GetGroup(@group.Id) == null)
                 throw new Exception("Can't update group that does not exist: " + @group.Id);
 
             IConfigurationSection section = GroupsConfig.GetSection($"{@group.Id}");
@@ -289,12 +289,30 @@ namespace Rocket.Core.Permissions
             PlayersConfig.Root?.Save();
         }
 
-        public List<string> BuildPermissionTree(string permission)
+        /// <summary>
+        /// Builds a permission tree for the given permission <br/>
+        /// Will 
+        /// <b>Example Input:</b>
+        /// <code>
+        /// "player.test.sub"
+        /// </code>
+        /// <b>Example output:</b>
+        /// <code>
+        /// {
+        ///     "*",
+        ///     "player.*",
+        ///     "player.test.*",
+        ///     "player.test.sub"
+        /// }
+        /// </code>
+        /// </summary>
+        /// <param name="permission"></param>
+        /// <returns>A collection of all permission nodes</returns>
+        public IEnumerable<string> BuildPermissionTree(string permission)
         {
             List<string> permissions = new List<string>
             {
-                "*",
-                permission
+                "*"
             };
 
             string parentPath = "";
@@ -304,9 +322,12 @@ namespace Rocket.Core.Permissions
                 parentPath += childPath + ".";
             }
 
-            //return without last element because it should not contain "<permission>.*"
+            //remove last element because it should not contain "<permission>.*"
             //If someone has "permission.x.*" they should not have "permission.x" too
-            return permissions.GetRange(0, permissions.Count - 1);
+            permissions.RemoveAt(permissions.Count - 1);
+
+            permissions.Add(permission);
+            return permissions;
         }
 
         private void GuardPermission(ref string permission)

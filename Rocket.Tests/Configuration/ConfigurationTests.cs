@@ -34,7 +34,7 @@ namespace Rocket.Tests.Configuration
         [TestMethod]
         public void TestJsonConfig()
         {
-            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("defaultjson");
+            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("json");
 
             string json =
                 "{"
