@@ -10,7 +10,7 @@ using Rocket.API.Plugin;
 namespace Rocket.Tests.DI
 {
     [TestClass]
-    [TestCategory("DI")]
+    [TestCategory("Dependency Injection")]
     public class DITests : RocketTestBase
     {
         [TestMethod]

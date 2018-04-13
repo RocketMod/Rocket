@@ -9,7 +9,7 @@ namespace Rocket.Tests.Permissions
 {
     [TestClass]
     [TestCategory("Permissions")]
-    public class PermissionTests : RocketTestBase
+    public class PermissionsTests : RocketTestBase
     {
         protected IConfiguration PlayersConfig { get; private set; }
         protected IConfiguration GroupsConfig { get; private set; }
