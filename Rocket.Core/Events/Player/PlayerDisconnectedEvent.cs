@@ -3,28 +3,33 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Events.Player
 {
-    public class PlayerDisconnectEvent : PlayerEvent
+    public class PlayerDisconnectedEvent : PlayerEvent
     {
         public string Reason { get; }
 
-        public PlayerDisconnectEvent(IPlayer player, string reason) : base(player)
+        public PlayerDisconnectedEvent(IPlayer player) : base(player)
+        {
+            Reason = null;
+        }
+
+        public PlayerDisconnectedEvent(IPlayer player, string reason = null) : base(player)
         {
             Reason = reason;
         }
 
-        public PlayerDisconnectEvent(IPlayer player, string reason, bool global = true) : base(player, global)
+        public PlayerDisconnectedEvent(IPlayer player, string reason = null, bool global = true) : base(player, global)
         {
             Reason = reason;
         }
 
-        public PlayerDisconnectEvent(IPlayer player, string reason,
+        public PlayerDisconnectedEvent(IPlayer player, string reason = null,
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                      bool global = true) : base(player, executionTarget, global)
         {
             Reason = reason;
         }
 
-        public PlayerDisconnectEvent(IPlayer player, string reason, string name = null,
+        public PlayerDisconnectedEvent(IPlayer player, string reason = null, string name = null,
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                      bool global = true) : base(player, name, executionTarget, global)
         {

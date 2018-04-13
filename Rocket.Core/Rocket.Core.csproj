@@ -63,9 +63,9 @@
     <Compile Include="Events\Implementation\ImplementationReadyEvent.cs" />
     <Compile Include="Events\Player\PlayerBanEvent.cs" />
     <Compile Include="Events\Player\PlayerChatEvent.cs" />
-    <Compile Include="Events\Player\PlayerConnectEvent.cs" />
+    <Compile Include="Events\Player\PlayerConnectedEvent.cs" />
     <Compile Include="Events\Player\PlayerDeathEvent.cs" />
-    <Compile Include="Events\Player\PlayerDisconnectEvent.cs" />
+    <Compile Include="Events\Player\PlayerDisconnectedEvent.cs" />
     <Compile Include="Events\Player\PlayerEvent.cs" />
     <Compile Include="Events\Player\PlayerKickEvent.cs" />
     <Compile Include="Events\Commands\PreCommandExecutionEvent.cs" />
