@@ -24,14 +24,14 @@ namespace Rocket.Core.Eventing
 
         public void Subscribe(ILifecycleObject @object, string eventName, EventCallback callback)
         {
-            EventHandler handler = GetEventHandler(callback.GetType(), null);
+            EventHandler handler = GetEventHandler(callback.Method, null);
             eventListeners.Add(new EventAction(@object, callback.Invoke, handler, eventName));
         }
 
         public void Subscribe<TEvent>(ILifecycleObject @object, EventCallback<TEvent> callback,
                                       string emitterName = null) where TEvent : IEvent
         {
-            EventHandler handler = GetEventHandler(callback.GetType(), emitterName);
+            EventHandler handler = GetEventHandler(callback.Method, emitterName);
             eventListeners.Add(new EventAction(@object,
                 (sender, @event) => callback.Invoke(sender, (TEvent)@event), handler, typeof(TEvent)));
         }
@@ -39,27 +39,27 @@ namespace Rocket.Core.Eventing
         public void Subscribe(ILifecycleObject @object, Type eventType, EventCallback callback,
                               string emitterName = null)
         {
-            EventHandler handler = GetEventHandler(callback.GetType(), emitterName);
+            EventHandler handler = GetEventHandler(callback.Method, emitterName);
             eventListeners.Add(new EventAction(@object, callback.Invoke, handler, eventType));
         }
 
         public void Subscribe(ILifecycleObject @object, string emitterName, string eventName, EventCallback callback)
         {
-            EventHandler handler = GetEventHandler(callback.GetType(), emitterName);
+            EventHandler handler = GetEventHandler(callback.Method, emitterName);
             eventListeners.Add(new EventAction(@object, callback, handler, eventName));
         }
 
         public void Subscribe<TEvent, TEmitter>(ILifecycleObject @object, EventCallback<TEvent> callback)
             where TEvent : IEvent where TEmitter : IEventEmitter
         {
-            EventHandler handler = GetEventHandler(callback.GetType(), GetEmitterName(typeof(TEmitter)));
+            EventHandler handler = GetEventHandler(callback.Method, GetEmitterName(typeof(TEmitter)));
             eventListeners.Add(new EventAction(@object,
                 (sender, @event) => callback.Invoke(sender, (TEvent)@event), handler, typeof(TEvent)));
         }
 
         public void Subscribe(ILifecycleObject @object, EventCallback callback, Type eventType, Type eventEmitterType)
         {
-            EventHandler handler = GetEventHandler(callback.GetType(), GetEmitterName(eventEmitterType));
+            EventHandler handler = GetEventHandler(callback.Method, GetEmitterName(eventEmitterType));
             eventListeners.Add(new EventAction(@object, callback.Invoke, handler, eventType));
         }
 
@@ -220,12 +220,22 @@ namespace Rocket.Core.Eventing
         public static string GetEmitterName(Type type) => type.Name;
 
         public static string GetEventName(Type type) => type.Name.Replace("Event", "");
-
+        
         private EventHandler GetEventHandler(Type target, string emitterName)
         {
             EventHandler handler =
                 (EventHandler)target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
                 ?? new EventHandler();
+            handler.EmitterName = emitterName ?? handler.EmitterName;
+            return handler;
+        }
+
+        private EventHandler GetEventHandler(MethodInfo target, string emitterName)
+        {
+            EventHandler handler =
+                (EventHandler) target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
+                ?? GetEventHandler(target.DeclaringType, emitterName);
+
             handler.EmitterName = emitterName ?? handler.EmitterName;
             return handler;
         }

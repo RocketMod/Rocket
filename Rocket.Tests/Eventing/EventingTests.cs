@@ -18,7 +18,7 @@ namespace Rocket.Tests.Eventing
             var e = new TestEvent(EventExecutionTargetContext.Sync);
             EmitTestEvent(manager, e);
 
-            Assert.AreEqual(true, e.ValueChanged);
+            Assert.AreEqual(true, e.ValueChanged, "The subscription callback did not get called");
         }
 
         [TestMethod]
@@ -30,7 +30,7 @@ namespace Rocket.Tests.Eventing
             var e = new TestEvent(EventExecutionTargetContext.Sync);
             EmitTestEvent(manager, e);
 
-            Assert.AreEqual(true, e.ValueChanged);
+            Assert.AreEqual(true, e.ValueChanged, "The subscription callback did not get called");
         }
 
         [TestMethod]
@@ -42,7 +42,7 @@ namespace Rocket.Tests.Eventing
             var e = new TestEvent(EventExecutionTargetContext.Sync) { IsCancelled = true };
             EmitTestEvent(manager, e);
 
-            Assert.AreEqual(false, e.ValueChanged);
+            Assert.AreEqual(false, e.ValueChanged, "The subscription callback was called on a cancelled event when it shouldn't be");
         }
 
         [TestMethod]
@@ -54,7 +54,7 @@ namespace Rocket.Tests.Eventing
             var e = new TestEvent(EventExecutionTargetContext.Sync) { IsCancelled = true };
             EmitTestEvent(manager, e);
 
-            Assert.AreEqual(true, e.ValueChanged);
+            Assert.AreEqual(true, e.ValueChanged, "The subscription callback was not called on a cancelled event but it has IgnoreCancelled set to true");
         }
 
         [EventHandler(IgnoreCancelled = true)]
