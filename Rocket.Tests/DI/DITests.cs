@@ -7,11 +7,11 @@ using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
 
-namespace Rocket.Tests.Ioc
+namespace Rocket.Tests.DI
 {
     [TestClass]
-    [TestCategory("Ioc")]
-    public class IocTests : RocketTestBase
+    [TestCategory("DI")]
+    public class DITests : RocketTestBase
     {
         [TestMethod]
         public void ImplementationAvailable()

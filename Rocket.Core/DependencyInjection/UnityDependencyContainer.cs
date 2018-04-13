@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Practices.Unity;
-using Rocket.API.Ioc;
+using Rocket.API.DependencyInjection;
 
-namespace Rocket.Core.Ioc
+namespace Rocket.Core.DependencyInjection
 {
     public class UnityDependencyContainer : IDependencyContainer
     {

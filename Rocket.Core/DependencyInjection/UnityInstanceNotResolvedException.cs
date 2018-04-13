@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rocket.Core.Ioc
+namespace Rocket.Core.DependencyInjection
 {
     public sealed class UnityInstanceNotResolvedException : Exception
     {

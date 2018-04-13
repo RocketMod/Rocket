@@ -1,8 +1,8 @@
 ﻿using Rocket.API.Commands;
 using Rocket.API.Configuration;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.I18N;
-using Rocket.API.Ioc;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
 using Rocket.Core.Commands;

@@ -8,8 +8,8 @@ using Rocket.Core.Configuration.Json;
 namespace Rocket.Tests.Configuration
 {
     [TestClass]
-    [TestCategory("Configurations")]
-    public class ConfigurationTests : RocketTestBase
+    [TestCategory("Configs")]
+    public class ConfigTests : RocketTestBase
     {
         protected object TestConfigObject { get; private set; }
 

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Rocket.API;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
-using Rocket.API.Ioc;
 using Rocket.API.Scheduler;
 
 namespace Rocket.ConsoleImplementation

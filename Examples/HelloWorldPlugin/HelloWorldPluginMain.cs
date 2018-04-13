@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rocket.API.Ioc;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core.Plugins;
 

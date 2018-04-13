@@ -57,7 +57,7 @@
     </Compile>
     <Compile Include="Eventing\EventingTests.cs" />
     <Compile Include="Eventing\TestEvent.cs" />
-    <Compile Include="Ioc\IocTests.cs" />
+    <Compile Include="DI\DITests.cs" />
     <Compile Include="Plugins\PluginTests.cs" />
     <Compile Include="TestPlayer.cs" />
     <Compile Include="Configuration\ConfigurationTests.cs" />
