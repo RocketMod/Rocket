@@ -21,7 +21,7 @@ namespace Rocket.API.Eventing
                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                         bool global = true)
         {
-            Global = global;
+            IsGlobal = global;
             Name = name ?? GetType().Name.Replace("Event", "");
             ExecutionTarget = executionTarget;
         }
@@ -47,6 +47,6 @@ namespace Rocket.API.Eventing
         public string Name { get; }
         public EventExecutionTargetContext ExecutionTarget { get; }
 
-        public bool Global { get; }
+        public bool IsGlobal { get; }
     }
 }

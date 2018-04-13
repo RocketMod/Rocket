@@ -96,14 +96,14 @@ namespace Rocket.Core.Eventing
         {
             eventListeners.RemoveAll(c => c.Owner == @object
                 && CheckEvent(c, GetEventName(typeof(TEvent)))
-                && CheckEmitter(c, GetEmitterName(typeof(TEmitter))));
+                && CheckEmitter(c, GetEmitterName(typeof(TEmitter)), false));
         }
 
         public void Unsubscribe(ILifecycleObject @object, Type eventType, Type eventEmitterType)
         {
             eventListeners.RemoveAll(c => c.Owner == @object
                 && CheckEvent(c, GetEventName(eventType))
-                && CheckEmitter(c, GetEmitterName(eventEmitterType)));
+                && CheckEmitter(c, GetEmitterName(eventEmitterType), false));
         }
 
         public void AddEventListener(ILifecycleObject @object, IEventListener eventListener)
@@ -159,7 +159,7 @@ namespace Rocket.Core.Eventing
                  where !(@event is ICancellableEvent)
                      || !((ICancellableEvent)@event).IsCancelled
                      || info.Handler.IgnoreCancelled
-                 where CheckEmitter(info, sender.Name)
+                 where CheckEmitter(info, sender.Name, @event.IsGlobal)
                  where CheckEvent(info, GetEventName(@event.GetType()))
                  select info)
                 .ToList();
@@ -171,7 +171,7 @@ namespace Rocket.Core.Eventing
                 return;
             }
 
-            ITaskScheduler scheduler = container.Get<ITaskScheduler>();
+            container.TryGet<ITaskScheduler>(null, out var scheduler);
             if (scheduler == null && @event.ExecutionTarget != EventExecutionTargetContext.Sync)
             {
                 inProgress.Remove(@event);
@@ -230,11 +230,15 @@ namespace Rocket.Core.Eventing
             return handler;
         }
 
-        private bool CheckEmitter(EventAction eventAction, string emitterName)
+        private bool CheckEmitter(EventAction eventAction, string emitterName, bool isGlobal)
         {
-            if (string.IsNullOrEmpty(emitterName)) return true;
+            if (string.IsNullOrEmpty(emitterName))
+                return true;
 
-            return eventAction.Handler.EmitterName.Equals(emitterName, StringComparison.OrdinalIgnoreCase);
+            if (isGlobal && string.IsNullOrEmpty(eventAction.Handler.EmitterName))
+                return true;
+
+            return eventAction.Handler.EmitterName?.Equals(emitterName, StringComparison.OrdinalIgnoreCase) ?? true;
         }
 
         private bool CheckEvent(EventAction eventAction, string eventName) => (eventAction.TargetEventType != null

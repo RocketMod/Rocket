@@ -7,7 +7,7 @@
         /// </summary>
         string Name { get; }
 
-        bool Global { get; }
+        bool IsGlobal { get; }
 
         /// <summary>
         ///     True if the event should be fired async

@@ -34,12 +34,12 @@ namespace Rocket.Tests.Eventing
         }
 
         [TestMethod]
-        public void TestCancellationNoIgnore()
+        public void TestCancellationWithoutIgnore()
         {
             var manager = GetEventManager();
             manager.Subscribe<TestEvent>(GetListener(), (@sender, @event) => @event.ValueChanged = true);
 
-            var e = new TestEvent(EventExecutionTargetContext.Sync);
+            var e = new TestEvent(EventExecutionTargetContext.Sync) { IsCancelled = true };
             EmitTestEvent(manager, e);
 
             Assert.AreEqual(false, e.ValueChanged);
@@ -49,7 +49,7 @@ namespace Rocket.Tests.Eventing
         public void TestCancellationWithIgnore()
         {
             var manager = GetEventManager();
-            manager.Subscribe(GetListener(), "testevent", CancelIgnoreEventHandler);
+            manager.Subscribe<TestEvent>(GetListener(), CancelIgnoreEventHandler);
 
             var e = new TestEvent(EventExecutionTargetContext.Sync) { IsCancelled = true };
             EmitTestEvent(manager, e);
@@ -60,7 +60,7 @@ namespace Rocket.Tests.Eventing
         [EventHandler(IgnoreCancelled = true)]
         private void CancelIgnoreEventHandler(IEventEmitter sender, IEvent @event)
         {
-            ((TestEvent) @event).ValueChanged = true;
+            ((TestEvent)@event).ValueChanged = true;
         }
 
         private void EmitTestEvent(IEventManager manager, TestEvent @event)
