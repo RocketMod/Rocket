@@ -71,9 +71,6 @@ namespace Rocket.Core.Permissions
 
         public bool HasAllPermissions(ICommandCaller caller, params string[] permissions)
         {
-            if (caller is IConsoleCommandCaller)
-                return true;
-
             GuardLoaded();
             GuardPermissions(permissions);
 
@@ -296,6 +293,7 @@ namespace Rocket.Core.Permissions
         {
             List<string> permissions = new List<string>
             {
+                "*",
                 permission
             };
 
@@ -306,6 +304,8 @@ namespace Rocket.Core.Permissions
                 parentPath += childPath + ".";
             }
 
+            //return without last element because it should not contain "<permission>.*"
+            //If someone has "permission.x.*" they should not have "permission.x" too
             return permissions.GetRange(0, permissions.Count - 1);
         }
 
