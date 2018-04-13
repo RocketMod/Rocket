@@ -111,7 +111,7 @@ namespace Rocket.Core.Eventing
             // ReSharper disable once UseIsOperator.2
             if (!typeof(IEventListener).IsInstanceOfType(eventListener))
                 throw new ArgumentException(
-                    "The eventListener to register has to implement at least one IEventListener<X>!",
+                    "The eventListener to register has to implement IEventListener!",
                     nameof(eventListener));
 
             if (eventListeners.Any(c => c.Listener == eventListener)) return;
