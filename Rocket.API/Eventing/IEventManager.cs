@@ -81,5 +81,12 @@ namespace Rocket.API.Eventing
         ///     Emits an event and optionally handles the result
         /// </summary>
         void Emit(IEventEmitter sender, IEvent @event, EventExecutedCallback callback = null);
+
+        /// <summary>
+        ///     Check if the event has finished execution and all callbacks were called
+        /// </summary>
+        /// <param name="@event">The event to check</param>
+        /// <returns></returns>
+        bool HasFinished(IEvent @event);
     }
 }

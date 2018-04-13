@@ -55,6 +55,8 @@
     <Compile Include="..\Rocket.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Eventing\EventingTests.cs" />
+    <Compile Include="Eventing\TestEvent.cs" />
     <Compile Include="Ioc\IocTests.cs" />
     <Compile Include="Plugins\PluginTests.cs" />
     <Compile Include="TestPlayer.cs" />
