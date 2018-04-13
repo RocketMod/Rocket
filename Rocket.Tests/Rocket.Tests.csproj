@@ -58,10 +58,10 @@
     <Compile Include="Eventing\EventingTests.cs" />
     <Compile Include="Eventing\TestEvent.cs" />
     <Compile Include="DI\DITests.cs" />
+    <Compile Include="Permissions\PermissionsTests.cs" />
     <Compile Include="Plugins\PluginTests.cs" />
     <Compile Include="TestPlayer.cs" />
     <Compile Include="Configuration\ConfigurationTests.cs" />
-    <Compile Include="Permissions\PermissionTests.cs" />
     <Compile Include="RocketTestBase.cs" />
     <Compile Include="TestImplementation.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
