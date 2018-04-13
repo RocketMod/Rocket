@@ -42,7 +42,7 @@ namespace Rocket.Core.Properties
             if (!container.IsRegistered<IConfiguration>())
                 container.RegisterType<IConfiguration, JsonConfiguration>();
 
-            container.RegisterType<IConfiguration, JsonConfiguration>("defaultjson");
+            container.RegisterType<IConfiguration, JsonConfiguration>("json", "defaultconfig");
         }
     }
 }
