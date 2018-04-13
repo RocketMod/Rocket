@@ -61,6 +61,7 @@
     <Compile Include="Eventing\GenericEvent.cs" />
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Events\Implementation\ImplementationReadyEvent.cs" />
+    <Compile Include="Events\Player\PlayerBanEvent.cs" />
     <Compile Include="Events\Player\PlayerChatEvent.cs" />
     <Compile Include="Events\Player\PlayerConnectEvent.cs" />
     <Compile Include="Events\Player\PlayerDeathEvent.cs" />

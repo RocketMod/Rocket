@@ -7,34 +7,28 @@ namespace Rocket.Core.Events.Player
     {
         public string Message { get; set; }
 
-        public string ChatFormat { get; set; }
-
-        public PlayerChatEvent(IPlayer player, string format, string message) : base(player)
+        public PlayerChatEvent(IPlayer player, string message) : base(player)
         {
             Message = message;
-            ChatFormat = format;
         }
 
-        public PlayerChatEvent(IPlayer player, string format, string message, bool global = true) : base(player, global)
+        public PlayerChatEvent(IPlayer player, string message, bool global = true) : base(player, global)
         {
             Message = message;
-            ChatFormat = format;
         }
 
-        public PlayerChatEvent(IPlayer player, string format, string message,
+        public PlayerChatEvent(IPlayer player, string message,
                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                bool global = true) : base(player, executionTarget, global)
         {
             Message = message;
-            ChatFormat = format;
         }
 
-        public PlayerChatEvent(IPlayer player, string format, string message, string name = null,
+        public PlayerChatEvent(IPlayer player, string message, string name = null,
                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                bool global = true) : base(player, name, executionTarget, global)
         {
             Message = message;
-            ChatFormat = format;
         }
 
         public bool IsCancelled { get; set; }

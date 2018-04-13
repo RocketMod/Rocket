@@ -4,10 +4,10 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Events.Player
 {
-    public class PlayerKickEvent : PlayerEvent
+    public class PlayerKickEvent : PlayerEvent, ICancellableEvent
     {
         public ICommandCaller Kicker { get; }
-        public virtual string Reason { get; set; }
+        public string Reason { get; set; }
 
         public PlayerKickEvent(IPlayer player, ICommandCaller kicker, string reason) : base(player)
         {
@@ -56,5 +56,7 @@ namespace Rocket.Core.Events.Player
         {
             Reason = reason;
         }
+
+        public bool IsCancelled { get; set; }
     }
 }
