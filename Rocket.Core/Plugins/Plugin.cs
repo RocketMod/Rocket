@@ -26,55 +26,61 @@ namespace Rocket.Core.Plugins
         }
 
         public IConfiguration Configuration { get; protected set; }
-        public virtual object DefaultConfiguration => throw new NotImplementedException("Default configuration has not been set up.");
+        public virtual object DefaultConfiguration 
+            => null;
 
         public ITranslations Translations { get; protected set; }
-        public Dictionary<string, string> DefaultTranslations => throw new NotImplementedException("Default translations have not been set up.");
+        public Dictionary<string, string> DefaultTranslations 
+            => null;
+        
+        public abstract IEnumerable<string> Capabilities { get; }
+
+        public string Name { get; }
+
+        public virtual string WorkingDirectory { get; set; }
 
         protected Plugin(IDependencyContainer container) : this(null, container) { }
 
         protected Plugin(string name, IDependencyContainer container)
         {
             Name = name ?? GetType().Name;
-
             Container = container.CreateChildContainer();
-            EventManager = Container.Get<IEventManager>();
-            Logger = Container.Get<ILogger>();
         }
 
         public IDependencyContainer Container { get; }
-        public IEventManager EventManager { get; }
-        public ILogger Logger { get; }
+        public IEventManager EventManager => Container.Get<IEventManager>();
+        public ILogger Logger => Container.Get<ILogger>();
 
-        public IPluginManager PluginManager { get; private set; }
 
-        public abstract IEnumerable<string> Capabilities { get; }
+        public IPluginManager PluginManager => Container.Get<IPluginManager>();
 
-        public string Name { get; }
+        public IRuntime Runtime => Container.Get<IRuntime>();
+
+        public IImplementation Implementation => Container.Get<IImplementation>();
 
         public void Load()
         {
-            if (PluginManager == null)
-                PluginManager = Container.Get<IPluginManager>();
+            WorkingDirectory = Path.Combine(Path.Combine(Implementation.WorkingDirectory, "Plugins"), Name);
 
-            IEventManager eventManager = Container.Get<IEventManager>();
-            IRuntime runtime = Container.Get<IRuntime>();
-
-            if (eventManager != null)
+            if (EventManager != null)
             {
                 PluginLoadEvent loadEvent = new PluginLoadEvent(PluginManager, this);
-                eventManager.Emit(runtime, loadEvent);
+                EventManager.Emit(Runtime, loadEvent);
                 if (loadEvent.IsCancelled)
                     return;
             }
 
+            if (!Directory.Exists(WorkingDirectory))
+                Directory.CreateDirectory(WorkingDirectory);
+
             if (!Capabilities.Any(c => c.Equals(CapabilityOptions.CustomConfig, StringComparison.OrdinalIgnoreCase))
-                && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoConfig, StringComparison.OrdinalIgnoreCase)))
+                && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoConfig, StringComparison.OrdinalIgnoreCase))
+                && DefaultConfiguration != null)
             {
                 Configuration = Container.Get<IConfiguration>();
                 Configuration.Load(new EnvironmentContext()
                 {
-                    WorkingDirectory = Path.Combine("Plugins", ""),
+                    WorkingDirectory = WorkingDirectory,
                     Name = Name + ".Configuration"
                 }, DefaultConfiguration);
             }
@@ -82,12 +88,13 @@ namespace Rocket.Core.Plugins
             if (!Capabilities.Any(c
                     => c.Equals(CapabilityOptions.CustomTranslations, StringComparison.OrdinalIgnoreCase))
                 && !Capabilities.Any(
-                    c => c.Equals(CapabilityOptions.NoTranslations, StringComparison.OrdinalIgnoreCase)))
+                    c => c.Equals(CapabilityOptions.NoTranslations, StringComparison.OrdinalIgnoreCase)) 
+                && DefaultTranslations != null)
             {
                 Translations = Container.Get<ITranslations>();
                 Translations.Load(new EnvironmentContext()
                 {
-                    WorkingDirectory = Path.Combine("Plugins", ""),
+                    WorkingDirectory = WorkingDirectory,
                     Name = Name + ".Translations"
                 }, DefaultTranslations);
             }
@@ -95,31 +102,28 @@ namespace Rocket.Core.Plugins
             OnLoad();
             IsAlive = true;
 
-            if (eventManager != null)
+            if (EventManager != null)
             {
                 PluginLoadedEvent loadedEvent = new PluginLoadedEvent(PluginManager, this);
-                eventManager.Emit(runtime, loadedEvent);
+                EventManager.Emit(Runtime, loadedEvent);
             }
         }
 
         public void Unload()
         {
-            IEventManager eventManager = Container.Get<IEventManager>();
-            IRuntime runtime = Container.Get<IRuntime>();
-
-            if (eventManager != null)
+            if (EventManager != null)
             {
                 PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
-                eventManager.Emit(runtime, loadedEvent);
+                EventManager.Emit(Runtime, loadedEvent);
             }
 
             OnUnload();
             IsAlive = false;
 
-            if (eventManager != null)
+            if (EventManager != null)
             {
                 PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
-                eventManager.Emit(runtime, loadedEvent);
+                EventManager.Emit(Runtime, loadedEvent);
             }
         }
 
