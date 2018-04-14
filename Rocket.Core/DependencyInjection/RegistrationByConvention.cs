@@ -30,6 +30,5 @@ namespace Rocket.Core.DependencyInjection
                 }
             }
         }
-
     }
 }
