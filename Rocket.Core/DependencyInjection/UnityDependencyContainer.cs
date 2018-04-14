@@ -42,7 +42,7 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterSingletonType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
             if (!(typeof(ILogger).IsAssignableFrom(typeof(TInterface))))
-                logger?.LogDebug("Registering singleton: <" + typeof(TInterface).Name + ", " + typeof(TClass).Name + ">; mappings: [" + string.Join(", ", mappingNames) + "]");
+                logger?.LogDebug("\t\tRegistering singleton: <" + typeof(TInterface).Name + ", " + typeof(TClass).Name + ">; mappings: [" + string.Join(", ", mappingNames) + "]");
 
             if (mappingNames == null || mappingNames.Length == 0)
                 mappingNames = new string[] { null };
@@ -54,7 +54,7 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterSingletonInstance<TInterface>(TInterface value, params string[] mappingNames)
         {
             if (!(typeof(ILogger).IsAssignableFrom(typeof(TInterface))))
-                logger?.LogDebug("Registering singleton instance: <" + typeof(TInterface).Name + ", " + value.GetType().Name + ">; mappings: [" + string.Join(", ", mappingNames) + "]");
+                logger?.LogDebug("\t\tRegistering singleton instance: <" + typeof(TInterface).Name + ", " + value.GetType().Name + ">; mappings: [" + string.Join(", ", mappingNames) + "]");
 
             if (mappingNames == null || mappingNames.Length == 0)
                 mappingNames = new string[] { null };
@@ -66,7 +66,7 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
             if (!(typeof(ILogger).IsAssignableFrom(typeof(TInterface))))
-                logger?.LogDebug("Registering type: <" + typeof(TInterface).Name + ", " + typeof(TClass).Name + ">; mappings: [" + string.Join(", ", mappingNames) + "]");
+                logger?.LogDebug("\t\tRegistering type: <" + typeof(TInterface).Name + ", " + typeof(TClass).Name + ">; mappings: [" + string.Join(", ", mappingNames) + "]");
 
             if (mappingNames == null || mappingNames.Length == 0)
                 mappingNames = new string[] { null };
@@ -78,7 +78,7 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterInstance<TInterface>(TInterface value, params string[] mappingNames)
         {
             if (!(typeof(ILogger).IsAssignableFrom(typeof(TInterface))))
-                logger?.LogDebug("Registering type instance: <" + typeof(TInterface).Name + ", " + value.GetType().Name + ">; mappings: [" + string.Join(", ", mappingNames) + "]");
+                logger?.LogDebug("\t\tRegistering type instance: <" + typeof(TInterface).Name + ", " + value.GetType().Name + ">; mappings: [" + string.Join(", ", mappingNames) + "]");
 
             if (mappingNames == null || mappingNames.Length == 0)
                 mappingNames = new string[] { null };

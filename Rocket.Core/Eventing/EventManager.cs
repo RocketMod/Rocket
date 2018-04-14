@@ -6,6 +6,7 @@ using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Handlers;
+using Rocket.API.Logging;
 using Rocket.API.Scheduler;
 
 namespace Rocket.Core.Eventing
@@ -143,6 +144,15 @@ namespace Rocket.Core.Eventing
 
         public void Emit(IEventEmitter sender, IEvent @event, EventExecutedCallback callback = null)
         {
+            if(sender == null)
+                throw new ArgumentNullException(nameof(sender));
+
+            if(@event == null)
+                throw new ArgumentNullException(nameof(@event));
+
+            container.TryGet(null, out ILogger logger);
+            logger?.LogDebug("Emitting event: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
+
             inProgress.Add(@event);
 
             List<EventAction> actions =
@@ -164,18 +174,24 @@ namespace Rocket.Core.Eventing
                  select info)
                 .ToList();
 
-            if (targetActions.Count == 0)
+            void FinishEvent()
             {
+                logger?.LogDebug("Event finished: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
                 inProgress.Remove(@event);
                 callback?.Invoke(@event);
+            }
+
+            if (targetActions.Count == 0)
+            {
+                logger?.LogDebug("Omitting event \"" + @event.Name + "\" by \"" + sender.Name + "\": No target subscriptions found.");
+                FinishEvent();
                 return;
             }
 
             container.TryGet<ITaskScheduler>(null, out var scheduler);
             if (scheduler == null && @event.ExecutionTarget != EventExecutionTargetContext.Sync)
             {
-                inProgress.Remove(@event);
-                callback?.Invoke(@event);
+                FinishEvent();
                 return;
             }
 
@@ -199,16 +215,14 @@ namespace Rocket.Core.Eventing
                     //all actions called; run OnEventExecuted
                     if (executionCount == targetActions.Count)
                     {
-                        inProgress.Remove(@event);
-                        callback?.Invoke(@event);
+                        FinishEvent();
                     }
                 }, (ExecutionTargetContext)@event.ExecutionTarget);
             }
 
             if (scheduler == null)
             {
-                inProgress.Remove(@event);
-                callback?.Invoke(@event);
+                FinishEvent();
             }
         }
 

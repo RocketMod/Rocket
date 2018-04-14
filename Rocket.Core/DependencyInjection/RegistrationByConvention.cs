@@ -19,7 +19,8 @@ namespace Rocket.Core.DependencyInjection
             };
 
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
-            assemblies.Reverse();
+
+            logger.LogDebug("Assemblies: [" + string.Join(", ", assemblies.Select(c => c.GetName().Name).ToArray()) + "]");
 
             foreach (Assembly assembly in assemblies)
             {
