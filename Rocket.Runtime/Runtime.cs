@@ -19,7 +19,6 @@ namespace Rocket
 
             Container.Activate(typeof(RegistrationByConvention));
             Container.Get<IImplementation>().Load(this);
-            Container.Get<IPluginManager>().Init();
         }
 
         public IDependencyResolver Resolver { get; private set; }
