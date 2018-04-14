@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
@@ -16,7 +18,9 @@ namespace Rocket.Core.DependencyInjection
                     ((IDependencyRegistrator) Activator.CreateInstance(type)).Register(container, resolver);
             };
 
-            Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            assemblies.Reverse();
+
             foreach (Assembly assembly in assemblies)
                 foreach (Type type in assembly.GetTypesWithInterface<IDependencyRegistrator>())
                     ((IDependencyRegistrator) Activator.CreateInstance(type)).Register(container, resolver);
