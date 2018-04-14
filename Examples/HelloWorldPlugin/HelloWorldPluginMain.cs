@@ -7,6 +7,15 @@ namespace HelloWorldPlugin
 {
     public class HelloWorldPluginMain : Plugin
     {
+        public override object DefaultConfiguration => new
+        {
+            MyConfigField = "MyFieldValue",
+            NestedSection = new
+            {
+                NestedConfigField = "MyNestedFieldValue"
+            }
+        };
+
         private readonly ILogger logger;
 
         public HelloWorldPluginMain(IDependencyContainer container, ILogger logger) : base("HelloWorldPlugin",
@@ -22,6 +31,6 @@ namespace HelloWorldPlugin
 
         protected override void OnUnload() { }
 
-        public override IEnumerable<string> Capabilities => new List<string>();
+        public override IEnumerable<string> Capabilities => new List<string> { CapabilityOptions.NoTranslations };
     }
 }
