@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using Rocket.API;
 using Rocket.API.Logging;
+using Rocket.API.Player;
+using Rocket.API.Plugin;
 
 namespace Rocket.Tests
 {
@@ -27,6 +29,7 @@ namespace Rocket.Tests
         public void Load(IRuntime runtime)
         {
             logger.LogInformation("Loading implementation");
+            runtime.Container.Get<IPluginManager>().Init();
         }
 
         public void Reload()
