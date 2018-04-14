@@ -47,16 +47,16 @@ namespace Rocket.Core.Plugins
             Container = container.CreateChildContainer();
         }
 
-        public IDependencyContainer Container { get; }
-        public IEventManager EventManager => Container.Get<IEventManager>();
-        public ILogger Logger => Container.Get<ILogger>();
+        protected IDependencyContainer Container { get; }
+        protected IEventManager EventManager => Container.Get<IEventManager>();
+        protected ILogger Logger => Container.Get<ILogger>();
 
 
-        public IPluginManager PluginManager => Container.Get<IPluginManager>();
+        protected IPluginManager PluginManager => Container.Get<IPluginManager>();
 
-        public IRuntime Runtime => Container.Get<IRuntime>();
+        protected IRuntime Runtime => Container.Get<IRuntime>();
 
-        public IImplementation Implementation => Container.Get<IImplementation>();
+        protected IImplementation Implementation => Container.Get<IImplementation>();
 
         public void Load()
         {
@@ -132,6 +132,11 @@ namespace Rocket.Core.Plugins
         protected virtual void OnLoad() { }
 
         protected virtual void OnUnload() { }
+
+        public void Subscribe(IEventListener listener)
+        {
+            EventManager.AddEventListener(this, listener);
+        }
 
         public void Subscribe<T>(EventCallback<T> callback) where T : IEvent
         {
