@@ -1,41 +1,12 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Rocket.API;
-using Rocket.API.Configuration;
+using Rocket.Core.Configuration.JsonNetBase;
 
 namespace Rocket.Core.Configuration.Json
 {
-    public class JsonConfiguration : JsonConfigurationBase, IConfiguration
+    public class JsonConfiguration : JsonNetConfigurationBase
     {
-        public JsonConfiguration() : base(null)
-        {
-            Root = this;
-        }
-
-        private string file;
-
-        public bool Exist(IConfigurationContext context)
-        {
-            return File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + ".json"));
-        }
-
-        public void Load(IConfigurationContext context, object defaultConfiguration)
-        {
-            file = System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + ".json");
-
-            if (!File.Exists(file))
-            {
-                LoadFromObject(defaultConfiguration);
-                Save();
-                return;
-            }
-
-            string json = File.ReadAllText(file);
-            LoadFromJson(json);
-        }
-
         public void LoadFromJson(string json)
         {
             Node = JObject.Parse(json, new JsonLoadSettings
@@ -43,49 +14,20 @@ namespace Rocket.Core.Configuration.Json
                 CommentHandling = CommentHandling.Ignore,
                 LineInfoHandling = LineInfoHandling.Ignore
             });
+
             IsLoaded = true;
         }
 
-        public void LoadFromObject(object o)
+        protected override void LoadFromFile(string file)
         {
-            Node = JObject.FromObject(o);
-            IsLoaded = true;
+            string json = File.ReadAllText(file);
+            LoadFromJson(json);
         }
 
-        public void LoadEmpty()
+        protected override void SaveToFile(string file)
         {
-            Node = new JObject();
-            IsLoaded = true;
-        }
-
-        public void Reload()
-        {
-            GuardLoaded();
-            if (file == null)
-                return;
-
-            LoadFromJson(File.ReadAllText(file));
-        }
-
-        public void Save()
-        {
-            GuardLoaded();
-
-            if (file == null)
-                throw new NotSupportedException(
-                    "This configuration was not loaded from a file; so it can not be saved!");
-
-            File.WriteAllText(file, Node.ToString(Formatting.Indented));
-        }
-
-        public bool IsLoaded { get; protected set; }
-
-        public override string Path => "";
-
-        public override void Set(object o)
-        {
-            GuardLoaded();
-            Node = JObject.FromObject(o);
+            string json = Node.ToString(Formatting.Indented);
+            File.WriteAllText(file, json);
         }
     }
 }

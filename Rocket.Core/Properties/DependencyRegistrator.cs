@@ -7,6 +7,7 @@ using Rocket.API.Permissions;
 using Rocket.API.Plugin;
 using Rocket.Core.Commands;
 using Rocket.Core.Configuration.Json;
+using Rocket.Core.Configuration.Xml;
 using Rocket.Core.Eventing;
 using Rocket.Core.I18N;
 using Rocket.Core.Permissions;
@@ -27,7 +28,9 @@ namespace Rocket.Core.Properties
 
             if (!container.IsRegistered<IConfiguration>())
                 container.RegisterType<IConfiguration, JsonConfiguration>();
+
             container.RegisterType<IConfiguration, JsonConfiguration>("json");
+            container.RegisterType<IConfiguration, XmlConfiguration>("xml");
         }
     }
 }

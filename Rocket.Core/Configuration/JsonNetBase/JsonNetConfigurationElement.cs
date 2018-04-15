@@ -1,27 +1,24 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
-namespace Rocket.Core.Configuration.Json
+namespace Rocket.Core.Configuration.JsonNetBase
 {
-    public abstract class JsonConfigurationBase : IConfigurationElement
+    public abstract class JsonNetConfigurationElement : IConfigurationElement
     {
         public JToken Node { get; protected set; }
 
-        protected JsonConfigurationBase(IConfiguration root, IConfigurationElement parent, JToken node)
+        protected JsonNetConfigurationElement(IConfiguration root, IConfigurationElement parent, JToken node)
         {
             Root = root;
             Parent = parent;
             Node = node ?? throw new ArgumentNullException(nameof(node));
         }
 
-        protected JsonConfigurationBase(IConfiguration root)
+        protected JsonNetConfigurationElement(IConfiguration root)
         {
             Root = root;
         }
@@ -35,7 +32,7 @@ namespace Rocket.Core.Configuration.Json
             GuardLoaded();
             GuardPath(path);
 
-            JsonConfigurationBase currentNode = this;
+            JsonNetConfigurationElement currentNode = this;
             string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length == 1)
@@ -52,12 +49,12 @@ namespace Rocket.Core.Configuration.Json
                 if (childNode is JValue)
                     childNode = childNode.Parent;
 
-                return new JsonConfigurationSection(Root, this, childNode, key);
+                return new JsonNetConfigurationSection(Root, this, childNode, key);
             }
 
             foreach (string part in parts)
             {
-                currentNode = (JsonConfigurationSection)currentNode.GetSection(part);
+                currentNode = (JsonNetConfigurationSection)currentNode.GetSection(part);
             }
 
             return (IConfigurationSection)currentNode;
@@ -114,8 +111,8 @@ namespace Rocket.Core.Configuration.Json
             GuardLoaded();
             GuardPath(path);
 
-            var node = ((JsonConfigurationBase)GetSection(path)).Node;
-            var parent = (JObject)((JsonConfigurationBase)GetSection(path).Parent).Node;
+            var node = ((JsonNetConfigurationElement)GetSection(path)).Node;
+            var parent = (JObject)((JsonNetConfigurationElement)GetSection(path).Parent).Node;
             parent.Remove(node.Path.Replace(parent.Path + ".", ""));
             return true;
         }

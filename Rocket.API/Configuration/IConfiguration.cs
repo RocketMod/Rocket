@@ -8,6 +8,8 @@ namespace Rocket.API.Configuration
 
         void Load(IConfigurationContext context, object defaultConfiguration);
 
+        void SetContext(IConfigurationContext context);
+
         void LoadEmpty();
 
         void LoadFromObject(object o);

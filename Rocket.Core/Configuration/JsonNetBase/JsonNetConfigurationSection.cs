@@ -2,13 +2,13 @@
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
-namespace Rocket.Core.Configuration.Json
+namespace Rocket.Core.Configuration.JsonNetBase
 {
-    public class JsonConfigurationSection : JsonConfigurationBase, IConfigurationSection
+    public class JsonNetConfigurationSection : JsonNetConfigurationElement, IConfigurationSection
     {
         private readonly string key;
 
-        public JsonConfigurationSection(IConfiguration root, IConfigurationElement parent, JToken node, string key) : base(root, parent, node)
+        public JsonNetConfigurationSection(IConfiguration root, IConfigurationElement parent, JToken node, string key) : base(root, parent, node)
         {
             this.key = key;
         }
