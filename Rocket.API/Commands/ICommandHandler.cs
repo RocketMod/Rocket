@@ -14,6 +14,8 @@ namespace Rocket.API.Commands
         /// <returns>true if the command was handled, false when not</returns>
         bool HandleCommand(ICommandCaller caller, string commandLine);
 
+        bool SupportsCaller(ICommandCaller caller);
+
         /// <summary>
         ///    Get the command for the context
         /// </summary>

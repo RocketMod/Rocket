@@ -50,7 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandContext.cs" />
-    <Compile Include="Commands\CommandHandler.cs" />
+    <Compile Include="Commands\DefaultCommandHandler.cs" />
+    <Compile Include="Commands\CommandHandlerProxy.cs" />
+    <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />
     <Compile Include="Configuration\Json\JsonConfiguration.cs" />
@@ -101,6 +103,7 @@
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
     <Compile Include="Plugins\PluginManager.cs" />
+    <Compile Include="ServiceProxies\ServiceProxy.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">

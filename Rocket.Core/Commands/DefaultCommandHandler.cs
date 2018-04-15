@@ -5,20 +5,23 @@ using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.Core.Exceptions;
+using Rocket.Core.Permissions;
 
 namespace Rocket.Core.Commands
 {
-    public class CommandHandler : ICommandHandler
+    public class DefaultCommandHandler : ICommandHandler
     {
         private readonly IDependencyContainer container;
 
-        public CommandHandler(IDependencyContainer container)
+        public DefaultCommandHandler(IDependencyContainer container)
         {
             this.container = container;
         }
 
         public bool HandleCommand(ICommandCaller caller, string commandLine)
         {
+            GuardCaller(caller);
+
             commandLine = commandLine.Trim();
             string[] args = commandLine.Split(' ');
 
@@ -56,45 +59,25 @@ namespace Rocket.Core.Commands
             return true;
         }
 
+        public bool SupportsCaller(ICommandCaller caller)
+        {
+            return true;
+        }
+
         public ICommand GetCommand(ICommandContext ctx)
         {
+            GuardCaller(ctx.Caller);
+
             IEnumerable<ICommand> commands = container.GetAll<ICommandProvider>().SelectMany(c => c.Commands);
             return commands
                    .Where(c => c.SupportsCaller(ctx.Caller))
                    .FirstOrDefault(c => c.Name.Equals(ctx.Command, StringComparison.OrdinalIgnoreCase));
         }
-    }
 
-    public class NotEnoughPermissionsException : Exception
-    {
-        public ICommandCaller Caller { get; }
-        public string[] Permissions { get; }
-
-        public NotEnoughPermissionsException(ICommandCaller caller, string[] permissions)
+        private void GuardCaller(ICommandCaller caller)
         {
-            Caller = caller;
-            Permissions = permissions;
-        }
-
-        public override string Message
-        {
-            get
-            {
-                string message = $"{Caller.Name} does not have the following permissions: ";
-                message += Environment.NewLine;
-                foreach (var perm in Permissions)
-                {
-                    message += "* " + perm + Environment.NewLine;
-                }
-
-                return message;
-            }
-        }
-
-        public NotEnoughPermissionsException(ICommandCaller caller, string permission) : this(caller,
-            new[] { permission })
-        {
-
+            if (!SupportsCaller(caller))
+                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
         }
     }
 }

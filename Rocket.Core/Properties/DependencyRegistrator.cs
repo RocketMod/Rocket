@@ -21,7 +21,8 @@ namespace Rocket.Core.Properties
         {
             //singleton dependencies
             container.RegisterSingletonType<IEventManager, EventManager>();
-            container.RegisterSingletonType<ICommandHandler, CommandHandler>();
+            container.RegisterSingletonType<ICommandHandler, DefaultCommandHandler>("default_cmdhandler", null);
+            container.RegisterSingletonType<ICommandHandler, CommandHandlerProxy>("proxy_cmdhandler", null);
             container.RegisterSingletonType<IPluginManager, PluginManager>();
             container.RegisterSingletonType<ICommandProvider, PluginManager>();
 
