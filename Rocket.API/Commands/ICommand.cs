@@ -7,5 +7,7 @@
         string Permission { get; }
 
         void Execute(ICommandContext context);
+
+        bool SupportsCaller(ICommandCaller caller);
     }
 }

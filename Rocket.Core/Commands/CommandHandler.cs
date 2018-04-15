@@ -29,8 +29,8 @@ namespace Rocket.Core.Commands
             if (target == null)
                 return false; // only return false when the command was not found
 
-            var tmp = new List<string>{ target.Name };
-            if(target.Permission != null)
+            var tmp = new List<string> { target.Name };
+            if (target.Permission != null)
                 tmp.Add(target.Permission);
 
             var perms = tmp.ToArray();
@@ -41,14 +41,14 @@ namespace Rocket.Core.Commands
             bool hasPermission = false;
             foreach (var provider in permProviders)
             {
-                if (provider.HasAnyPermissions(caller, perms))
+                if (provider.HasAnyPermissions(caller, perms) == EPermissionResult.Grant)
                 {
                     hasPermission = true;
                     break;
                 }
             }
 
-            if(!hasPermission)
+            if (!hasPermission)
                 throw new NotEnoughPermissionsException(caller, perms);
 
             try
@@ -72,7 +72,9 @@ namespace Rocket.Core.Commands
         public ICommand GetCommand(ICommandContext ctx)
         {
             IEnumerable<ICommand> commands = container.GetAll<ICommandProvider>().SelectMany(c => c.Commands);
-            return commands.FirstOrDefault(c => c.Name.Equals(ctx.Command, StringComparison.OrdinalIgnoreCase));
+            return commands
+                   .Where(c => c.SupportsCaller(ctx.Caller))
+                   .FirstOrDefault(c => c.Name.Equals(ctx.Command, StringComparison.OrdinalIgnoreCase));
         }
     }
 
