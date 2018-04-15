@@ -21,14 +21,18 @@ namespace Rocket.Core.Properties
         {
             //singleton dependencies
             container.RegisterSingletonType<IEventManager, EventManager>();
-            container.RegisterSingletonType<ICommandHandler, DefaultCommandHandler>("default_cmdhandler", null);
-            container.RegisterSingletonType<ICommandHandler, CommandHandlerProxy>("proxy_cmdhandler", null);
+
+            container.RegisterSingletonType<ICommandHandler, DefaultCommandHandler>("default_cmdhandler");
+            container.RegisterSingletonType<ICommandHandler, ProxyCommandHandler>("proxy_cmdhandler", null);
+
             container.RegisterSingletonType<IPluginManager, PluginManager>();
-            container.RegisterSingletonType<ICommandProvider, PluginManager>();
+
+            container.RegisterSingletonType<ICommandProvider, PluginManager>("plugin_cmdprovider");
+            container.RegisterSingletonType<ICommandProvider, ProxyCommandProvider>("proxy_cmdprovider", null);
 
             container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>("config_permissions");
             container.RegisterSingletonType<IPermissionProvider, ConsolePermissionProvider>("console_permissions");
-            container.RegisterSingletonType<IPermissionProvider, PermissionProviderProxy>("proxy_permissions", null);
+            container.RegisterSingletonType<IPermissionProvider, ProxyPermissionProvider>("proxy_permissions", null);
 
             //transient dependencies
             container.RegisterType<ITranslationLocator, TranslationLocator>();

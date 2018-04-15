@@ -7,8 +7,7 @@ using Rocket.API.ServiceProxies;
 
 namespace Rocket.Core.ServiceProxies
 {
-    public abstract class ServiceProxy<T> : IServiceProxy<T> 
-        where T : IProxyableService
+    public abstract class ServiceProxy<T> : IServiceProxy<T>
     {
         private IDependencyContainer Container { get; }
 

@@ -10,9 +10,9 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions
 {
-    public class PermissionProviderProxy : ServiceProxy<IPermissionProvider>, IPermissionProvider
+    public class ProxyPermissionProvider : ServiceProxy<IPermissionProvider>, IPermissionProvider
     {
-        public PermissionProviderProxy(IDependencyContainer container) : base(container) { }
+        public ProxyPermissionProvider(IDependencyContainer container) : base(container) { }
         
 
         public bool SupportsCaller(ICommandCaller caller)

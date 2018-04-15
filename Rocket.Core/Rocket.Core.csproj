@@ -51,7 +51,8 @@
   <ItemGroup>
     <Compile Include="Commands\CommandContext.cs" />
     <Compile Include="Commands\DefaultCommandHandler.cs" />
-    <Compile Include="Commands\CommandHandlerProxy.cs" />
+    <Compile Include="Commands\ProxyCommandHandler.cs" />
+    <Compile Include="Commands\ProxyCommandProvider.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />
@@ -65,7 +66,7 @@
     <Compile Include="Eventing\GenericEvent.cs" />
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Permissions\ConsolePermissionProvider.cs" />
-    <Compile Include="Permissions\PermissionProviderProxy.cs" />
+    <Compile Include="Permissions\ProxyPermissionProvider.cs" />
     <Compile Include="ServiceProxies\ServicePriority.cs" />
     <Compile Include="ServiceProxies\ServicePriorityAttribute.cs" />
     <Compile Include="ServiceProxies\ServicePriorityComparer.cs" />

@@ -9,9 +9,9 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Commands
 {
-    public class CommandHandlerProxy : ServiceProxy<ICommandHandler>, ICommandHandler
+    public class ProxyCommandHandler : ServiceProxy<ICommandHandler>, ICommandHandler
     {
-        public CommandHandlerProxy(IDependencyContainer container) : base(container) { }
+        public ProxyCommandHandler(IDependencyContainer container) : base(container) { }
 
         public bool HandleCommand(ICommandCaller caller, string commandLine)
         {
