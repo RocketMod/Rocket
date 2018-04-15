@@ -8,7 +8,7 @@
     <ProjectGuid>{31BA2AC3-EF06-430F-8008-61D16FD567B5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HelloWorldPlugin</RootNamespace>
+    <RootNamespace>Rocket.Examples.HelloWorldPlugin</RootNamespace>
     <AssemblyName>HelloWorldPlugin</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>

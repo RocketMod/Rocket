@@ -2,7 +2,7 @@
 using Rocket.API.Logging;
 using Rocket.Core.Plugins;
 
-namespace HelloWorldPlugin
+namespace Rocket.Examples.HelloWorldPlugin
 {
     public class HelloWorldPlugin : Plugin
     {
