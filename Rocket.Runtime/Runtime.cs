@@ -10,8 +10,6 @@ namespace Rocket
 {
     public class Runtime : IRuntime
     {
-        private static Runtime runtime;
-
         private Runtime()
         {
             Container = new UnityDependencyContainer();
@@ -26,9 +24,9 @@ namespace Rocket
 
         public IDependencyContainer Container { get; }
 
-        public static IRuntime Bootstrap() => runtime ?? (runtime = new Runtime());
+        public static IRuntime Bootstrap() => new Runtime();
 
-        public bool IsAlive => runtime != null;
+        public bool IsAlive => true;
         public string Name => "Rocket.Runtime";
         public string WorkingDirectory { get; } = Environment.CurrentDirectory;
         public string ConfigurationName { get; } = "Rocket";
