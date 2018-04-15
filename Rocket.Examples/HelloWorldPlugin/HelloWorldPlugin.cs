@@ -18,7 +18,7 @@ namespace Rocket.Examples.HelloWorldPlugin
 
         private readonly ILogger logger;
 
-        public HelloWorld(IDependencyContainer container, ILogger logger) : base("HelloWorldPlugin",
+        public HelloWorldPlugin(IDependencyContainer container, ILogger logger) : base("HelloWorldPlugin",
             container)
         {
             this.logger = logger;
@@ -31,6 +31,5 @@ namespace Rocket.Examples.HelloWorldPlugin
 
         protected override void OnUnload() { }
 
-        public override IEnumerable<string> Capabilities => new List<string> { CapabilityOptions.NoTranslations };
-    }
+     }
 }

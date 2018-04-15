@@ -14,12 +14,6 @@ namespace Rocket.Tests
             Logger.LogInformation("Constructing TestPlugin (From plugin)");
         }
 
-        public override IEnumerable<string> Capabilities => new List<string>
-        {
-            CapabilityOptions.NoTranslations,
-            CapabilityOptions.NoConfig
-        };
-
         public Task<bool> TestEventing()
         {
             TaskCompletionSource<bool> promise = new TaskCompletionSource<bool>();
