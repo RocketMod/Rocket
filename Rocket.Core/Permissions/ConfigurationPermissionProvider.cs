@@ -3,18 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
-using Rocket.API.Handlers;
 using Rocket.API.Permissions;
+using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions
 {
-    [HandlerPriority(Priority = HandlerPriority.Lowest)]
-    public class PermissionProvider : IPermissionProvider
+    [ServicePriority(Priority = ServicePriority.Lowest)]
+    public class ConfigurationPermissionProvider : IPermissionProvider
     {
         public IConfigurationElement GroupsConfig { get; protected set; }
         public IConfigurationElement PlayersConfig { get; protected set; }
 
-        public bool CanHandle(ICommandCaller caller)
+        public bool SupportsCaller(ICommandCaller caller)
+        {
+            if (caller is IConsoleCommandCaller)
+                return false;
+
+            return true;
+        }
+
+        public bool SupportsGroup(IPermissionGroup group)
         {
             return true;
         }
@@ -40,9 +48,6 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult HasPermission(ICommandCaller caller, string permission)
         {
-            if (caller is IConsoleCommandCaller)
-                return PermissionResult.Grant;
-
             GuardLoaded();
             GuardPermission(ref permission);
 
@@ -130,9 +135,6 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions)
         {
-            if (caller is IConsoleCommandCaller)
-                return PermissionResult.Grant;
-
             GuardLoaded();
             GuardPermissions(permissions);
 
@@ -159,7 +161,7 @@ namespace Rocket.Core.Permissions
             return true;
         }
 
-        public bool AddInvertedPermission(IPermissionGroup group, string permission)
+        public bool AddDeniedPermission(IPermissionGroup group, string permission)
         {
             GuardPermission(ref permission);
             return AddPermission(group, "!" + permission);
@@ -167,9 +169,6 @@ namespace Rocket.Core.Permissions
 
         public bool AddPermission(ICommandCaller caller, string permission)
         {
-            if (caller is IConsoleCommandCaller)
-                return false;
-
             GuardPermission(ref permission);
             var permsSection = GetConfigSection(caller)["Permissions"];
             List<string> groupPermissions = permsSection.Get(defaultValue: new string[0]).ToList();
@@ -177,11 +176,9 @@ namespace Rocket.Core.Permissions
             permsSection.Set(groupPermissions.ToArray());
             return true;
         }
-        public bool AddInvertedPermission(ICommandCaller caller, string permission)
-        {
-            if (caller is IConsoleCommandCaller)
-                return false;
 
+        public bool AddDeniedPermission(ICommandCaller caller, string permission)
+        {
             GuardPermission(ref permission);
             return AddPermission(caller, "!" + permission);
         }
@@ -196,7 +193,7 @@ namespace Rocket.Core.Permissions
             return i > 0;
         }
 
-        public bool RemoveInvertedPermission(IPermissionGroup group, string permission)
+        public bool RemoveDeniedPermission(IPermissionGroup group, string permission)
         {
             GuardPermission(ref permission);
             return RemovePermission(group, "!" + permission);
@@ -204,9 +201,6 @@ namespace Rocket.Core.Permissions
 
         public bool RemovePermission(ICommandCaller caller, string permission)
         {
-            if (caller is IConsoleCommandCaller)
-                return false;
-
             GuardPermission(ref permission);
             var permsSection = GetConfigSection(caller)["Permissions"];
             List<string> groupPermissions = permsSection.Get(defaultValue: new string[0]).ToList();
@@ -215,29 +209,20 @@ namespace Rocket.Core.Permissions
             return i > 0;
         }
 
-        public bool RemoveInvertedPermission(ICommandCaller caller, string permission)
+        public bool RemoveDeniedPermission(ICommandCaller caller, string permission)
         {
-            if (caller is IConsoleCommandCaller)
-                return false;
-
             GuardPermission(ref permission);
             return RemovePermission(caller, "!" + permission);
         }
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
-            if (caller is IConsoleCommandCaller)
-                return null;
-
             GuardLoaded();
             return GetGroups(caller).OrderByDescending(c => c.Priority).FirstOrDefault();
         }
 
         public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
         {
-            if (caller is IConsoleCommandCaller)
-                return new PermissionGroup[0];
-
             GuardLoaded();
             IConfigurationSection groupsSection = GetConfigSection(caller)["Groups"];
             string[] groups = groupsSection.Get(defaultValue: new string[0]);
@@ -286,9 +271,6 @@ namespace Rocket.Core.Permissions
 
         public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
         {
-            if (caller is IConsoleCommandCaller)
-                return;
-
             GuardLoaded();
             IConfigurationSection groupsSection = GetConfigSection(caller)["Groups"];
             List<string> groups = groupsSection.Get(defaultValue: new string[0]).ToList();
@@ -299,9 +281,6 @@ namespace Rocket.Core.Permissions
 
         public bool RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
         {
-            if (caller is IConsoleCommandCaller)
-                return false;
-
             GuardLoaded();
             IConfigurationSection groupsSection = GetConfigSection(caller)["Groups"];
             List<string> groups = groupsSection.Get(defaultValue: new string[0]).ToList();
@@ -343,24 +322,24 @@ namespace Rocket.Core.Permissions
         }
 
         /// <summary>
-        /// Builds a permission tree for the given permission <br/>
-        /// Will 
+        /// Builds a parent permission tree for the given permission <br/>
+        /// If the target has any of these permissions, they will automatically have the given permission too <br/><br/> 
         /// <b>Example Input:</b>
         /// <code>
         /// "player.test.sub"
         /// </code>
         /// <b>Example output:</b>
         /// <code>
-        /// {
+        /// [
         ///     "*",
         ///     "player.*",
         ///     "player.test.*",
         ///     "player.test.sub"
-        /// }
+        /// ]
         /// </code>
         /// </summary>
-        /// <param name="permission"></param>
-        /// <returns>A collection of all permission nodes</returns>
+        /// <param name="permission">The permission to build the tree for</param>
+        /// <returns>The collection of all parent permission nodes</returns>
         public IEnumerable<string> BuildPermissionTree(string permission)
         {
             List<string> permissions = new List<string>
@@ -421,7 +400,7 @@ namespace Rocket.Core.Permissions
         private IConfigurationSection GetConfigSection(ICommandCaller caller)
         {
             var config = PlayersConfig;
-            var basePath = $"{caller.PlayerType.Name}.{caller.Id}";
+            var basePath = $"{caller.CallerType.Name}.{caller.Id}";
             string permissionsPath = basePath + ".Permissions";
             string groupsPath = basePath + ".Groups";
 

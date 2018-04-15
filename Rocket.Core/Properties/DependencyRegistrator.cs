@@ -19,16 +19,20 @@ namespace Rocket.Core.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
+            //singleton dependencies
             container.RegisterSingletonType<IEventManager, EventManager>();
             container.RegisterSingletonType<ICommandHandler, CommandHandler>();
             container.RegisterSingletonType<IPluginManager, PluginManager>();
             container.RegisterSingletonType<ICommandProvider, PluginManager>();
+
+            container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>("config_permissions");
+            container.RegisterSingletonType<IPermissionProvider, ConsolePermissionProvider>("console_permissions");
+            container.RegisterSingletonType<IPermissionProvider, PermissionProviderProxy>("proxy_permissions", null);
+
+            //transient dependencies
             container.RegisterType<ITranslationLocator, TranslationLocator>();
-            container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
 
-            if (!container.IsRegistered<IConfiguration>())
-                container.RegisterType<IConfiguration, JsonConfiguration>();
-
+            container.RegisterType<IConfiguration, JsonConfiguration>();
             container.RegisterType<IConfiguration, JsonConfiguration>("json");
             container.RegisterType<IConfiguration, XmlConfiguration>("xml");
         }

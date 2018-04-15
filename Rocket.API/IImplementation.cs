@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Rocket.API.Commands;
 using Rocket.API.Eventing;
 
 namespace Rocket.API
@@ -10,5 +11,7 @@ namespace Rocket.API
         void Init(IRuntime runtime);
         void Shutdown();
         void Reload();
+
+        IConsoleCommandCaller GetConsoleCaller();
     }
 }

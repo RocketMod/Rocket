@@ -6,9 +6,9 @@ using Rocket.Core.Configuration.Xml;
 namespace Rocket.Tests.Configuration
 {
     [TestClass]
-    public class XmlConfigurationTests : ConfigurationTestBase
+    public class XmlConfigurationTests : ConfigurationTestsBase
     {
-        protected override IConfiguration GetUnloadedConfig()
+        protected override IConfiguration GetConfig()
         {
             return Runtime.Container.Get<IConfiguration>("xml");
         }
@@ -16,7 +16,7 @@ namespace Rocket.Tests.Configuration
         [TestMethod]
         public void TestXmlLoading()
         {
-            XmlConfiguration config = (XmlConfiguration)GetUnloadedConfig();
+            XmlConfiguration config = (XmlConfiguration)GetConfig();
 
             string xml =
                 "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + 

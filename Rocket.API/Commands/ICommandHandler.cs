@@ -1,8 +1,10 @@
-﻿using Rocket.API.Handlers;
+﻿
+using Rocket.API.DependencyInjection;
+using Rocket.API.ServiceProxies;
 
 namespace Rocket.API.Commands
 {
-    public interface ICommandHandler : IHandler
+    public interface ICommandHandler : IProxyableService
     {
         /// <summary>
         ///     Handles a command
@@ -12,6 +14,11 @@ namespace Rocket.API.Commands
         /// <returns>true if the command was handled, false when not</returns>
         bool HandleCommand(ICommandCaller caller, string commandLine);
 
+        /// <summary>
+        ///    Get the command for the context
+        /// </summary>
+        /// <param name="ctx">The context</param>
+        /// <returns>The command of the context</returns>
         ICommand GetCommand(ICommandContext ctx);
     }
 }

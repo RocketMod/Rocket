@@ -5,9 +5,9 @@ using System.Reflection;
 using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
-using Rocket.API.Handlers;
 using Rocket.API.Logging;
 using Rocket.API.Scheduler;
+using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Eventing
 {
@@ -128,7 +128,7 @@ namespace Rocket.Core.Eventing
                                                                 .FirstOrDefault()
                         ?? new EventHandler
                         {
-                            Priority = HandlerPriority.Normal
+                            Priority = ServicePriority.Normal
                         };
 
                     Type eventType = @interface.GetGenericArguments()[0];
@@ -161,7 +161,7 @@ namespace Rocket.Core.Eventing
                         ?? c.TargetEventName.Equals(@event.Name, StringComparison.OrdinalIgnoreCase))
                     .ToList();
 
-            actions.Sort((a, b) => HandlerPriorityComparer.Compare(a.Handler.Priority, b.Handler.Priority));
+            actions.Sort((a, b) => ServicePriorityComparer.Compare(a.Handler.Priority, b.Handler.Priority));
 
             List<EventAction> targetActions =
                 (from info in actions

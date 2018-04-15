@@ -1,6 +1,6 @@
-﻿namespace Rocket.API.Handlers
+﻿namespace Rocket.Core.ServiceProxies
 {
-    public enum HandlerPriority
+    public enum ServicePriority
     {
         Lowest,
         Low,

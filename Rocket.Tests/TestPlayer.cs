@@ -24,7 +24,7 @@ namespace Rocket.Tests
 
         public string Id { get; set; }
         public string Name { get; set; }
-        public Type PlayerType => typeof(TestPlayer);
+        public Type CallerType => typeof(TestPlayer);
 
         public void SendMessage(string message)
         {

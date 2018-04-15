@@ -1,12 +1,12 @@
 ﻿using System;
-using Rocket.API.Handlers;
+using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Eventing
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class EventHandler : HandlerPriorityAttribute
+    public class EventHandler : ServicePriorityAttribute
     {
-        public override HandlerPriority Priority { get; set; } = HandlerPriority.Normal;
+        public override ServicePriority Priority { get; set; } = ServicePriority.Normal;
 
         public bool IgnoreCancelled { get; set; } = false;
 

@@ -11,7 +11,7 @@ namespace Rocket.Tests
         public static void Startup(TestContext testContext) { }
 
         [TestInitialize]
-        public void Bootstrap()
+        public virtual void Bootstrap()
         {
             Runtime = Rocket.Runtime.Bootstrap();
         }

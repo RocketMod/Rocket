@@ -3,16 +3,19 @@ using Rocket.API.Logging;
 using Rocket.API.Plugin;
 using System;
 using System.Collections.Generic;
+using Rocket.API.Commands;
 
 namespace Rocket.Tests
 {
     public class TestImplementation : IImplementation
     {
         private readonly ILogger logger;
+        private readonly IConsoleCommandCaller consoleCaller;
 
         public TestImplementation(ILogger logger)
         {
             this.logger = logger;
+            consoleCaller = new TestConsoleCaller();
         }
 
         public IEnumerable<string> Capabilities => new List<string>
@@ -34,6 +37,11 @@ namespace Rocket.Tests
         public void Reload()
         {
             logger.LogInformation("Reloading implementation");
+        }
+
+        public IConsoleCommandCaller GetConsoleCaller()
+        {
+            return consoleCaller;
         }
 
         public void Shutdown()

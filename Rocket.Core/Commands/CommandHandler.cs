@@ -5,7 +5,6 @@ using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.Core.Exceptions;
-using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Commands
 {
@@ -35,20 +34,8 @@ namespace Rocket.Core.Commands
 
             var perms = tmp.ToArray();
 
-            var permProviders = container.GetHandlers<IPermissionProvider>();
-            permProviders.Reverse(); //usually Lowest gets called first, so we need to reverse order
-
-            bool hasPermission = false;
-            foreach (var provider in permProviders)
-            {
-                if (provider.HasAnyPermissions(caller, perms) == PermissionResult.Grant)
-                {
-                    hasPermission = true;
-                    break;
-                }
-            }
-
-            if (!hasPermission)
+            var provider = container.Get<IPermissionProvider>();
+            if (provider.HasAnyPermissions(caller, perms) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(caller, perms);
 
             try

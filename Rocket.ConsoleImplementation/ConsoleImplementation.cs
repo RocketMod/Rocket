@@ -1,6 +1,7 @@
 ﻿using Rocket.API;
 using System;
 using System.Collections.Generic;
+using Rocket.API.Commands;
 
 namespace Rocket.ConsoleImplementation
 {
@@ -9,6 +10,8 @@ namespace Rocket.ConsoleImplementation
         public string Name => "ConsoleHost";
 
         public string WorkingDirectory => Environment.CurrentDirectory;
+
+        private ConsoleCaller consoleCaller;
 
         public void Init(IRuntime runtime)
         {
@@ -25,6 +28,10 @@ namespace Rocket.ConsoleImplementation
         public string InstanceId => "console";
 
         public void Reload() { }
+        public IConsoleCommandCaller GetConsoleCaller()
+        {
+            return consoleCaller;
+        }
 
         public bool IsAlive => true;
 

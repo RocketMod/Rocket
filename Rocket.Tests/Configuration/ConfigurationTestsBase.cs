@@ -8,13 +8,15 @@ using Rocket.Core.Configuration.Json;
 namespace Rocket.Tests.Configuration
 {
     [TestCategory("Configuration")]
-    public abstract class ConfigurationTestBase : RocketTestBase
+    public abstract class ConfigurationTestsBase : RocketTestBase
     {
         protected object TestConfigObject { get; private set; }
 
         [TestInitialize]
-        public void BootstrapConfigTest()
+        public override void Bootstrap()
         {
+            base.Bootstrap();
+
             TestConfigObject = new
             {
                 Test1 = "A",
@@ -31,9 +33,9 @@ namespace Rocket.Tests.Configuration
         }
 
         [TestMethod]
-        public void TestObjectConfig()
+        public virtual void TestObjectConfig()
         {
-            IConfiguration config = GetUnloadedConfig();
+            IConfiguration config = GetConfig();
             config.LoadEmpty();
 
             config.Set(TestConfigObject);
@@ -42,9 +44,9 @@ namespace Rocket.Tests.Configuration
         }
 
         [TestMethod]
-        public void TestArrays()
+        public virtual void TestArrays()
         {
-            var config = GetUnloadedConfig();
+            var config = GetConfig();
             config.LoadEmpty();
 
             var arraySection = config.CreateSection("ArrayTest", SectionType.Array);
@@ -60,7 +62,7 @@ namespace Rocket.Tests.Configuration
         }
 
         [TestMethod]
-        public void TestLoadFromObject()
+        public virtual void TestLoadFromObject()
         {
             IConfiguration config = LoadConfigFromObject();
             AssertConfigEquality(config);
@@ -68,7 +70,7 @@ namespace Rocket.Tests.Configuration
         }
 
         [TestMethod]
-        public void TestConfigSectionDeletion()
+        public virtual void TestConfigSectionDeletion()
         {
             var config = LoadConfigFromObject();
             Assert.IsNotNull(config.GetSection("Test1"));
@@ -77,7 +79,7 @@ namespace Rocket.Tests.Configuration
         }
 
         [TestMethod]
-        public void TestConfigSectionCreation()
+        public virtual void TestConfigSectionCreation()
         {
             var config = LoadConfigFromObject();
             var section = config.CreateSection("dynamictest.test2", SectionType.Object);
@@ -142,11 +144,11 @@ namespace Rocket.Tests.Configuration
         
         protected IConfiguration LoadConfigFromObject()
         {
-            IConfiguration config = GetUnloadedConfig();
+            IConfiguration config = GetConfig();
             config.LoadFromObject(TestConfigObject);
             return config;
         }
 
-        protected abstract IConfiguration GetUnloadedConfig();
+        protected abstract IConfiguration GetConfig();
     }
 }

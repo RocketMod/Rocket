@@ -1,15 +1,16 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
-using Rocket.API.Handlers;
+using Rocket.API.ServiceProxies;
 
 namespace Rocket.API.Permissions
 {
-    public interface IPermissionProvider : IHandler
+    public interface IPermissionProvider : IProxyableService
     {
         // do not add something like GetPermissions()!
 
-        bool CanHandle(ICommandCaller caller);
+        bool SupportsCaller(ICommandCaller caller);
+        bool SupportsGroup(IPermissionGroup group);
 
         PermissionResult HasPermission(IPermissionGroup group, string permission);
         PermissionResult HasPermission(ICommandCaller caller, string permission);
@@ -22,19 +23,19 @@ namespace Rocket.API.Permissions
 
         bool AddPermission(IPermissionGroup group, string permission);
 
-        bool AddInvertedPermission(IPermissionGroup group, string permission);
+        bool AddDeniedPermission(IPermissionGroup group, string permission);
 
         bool AddPermission(ICommandCaller caller, string permission);
 
-        bool AddInvertedPermission(ICommandCaller group, string permission);
+        bool AddDeniedPermission(ICommandCaller caller, string permission);
 
         bool RemovePermission(IPermissionGroup group, string permission);
 
-        bool RemoveInvertedPermission(IPermissionGroup group, string permission);
+        bool RemoveDeniedPermission(IPermissionGroup group, string permission);
 
         bool RemovePermission(ICommandCaller caller, string permission);
 
-        bool RemoveInvertedPermission(ICommandCaller group, string permission);
+        bool RemoveDeniedPermission(ICommandCaller caller, string permission);
 
         IPermissionGroup GetPrimaryGroup(ICommandCaller caller);
 

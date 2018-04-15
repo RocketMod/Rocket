@@ -6,7 +6,7 @@ namespace Rocket.API.Commands
     public interface ICommandCaller : IIdentifiable
     {
         string Name { get; }
-        Type PlayerType { get; }
+        Type CallerType { get; }
 
         void SendMessage(string message);
     }

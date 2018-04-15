@@ -6,12 +6,12 @@ using Rocket.Core.Configuration.Json;
 namespace Rocket.Tests.Configuration
 {
     [TestClass]
-    public class JsonConfigurationTests : ConfigurationTestBase
+    public class JsonConfigurationTests : ConfigurationTestsBase
     {
         [TestMethod]
         public void TestJsonLoading()
         {
-            JsonConfiguration config = (JsonConfiguration) GetUnloadedConfig();
+            JsonConfiguration config = (JsonConfiguration) GetConfig();
 
             string json =
                 "{"
@@ -31,7 +31,7 @@ namespace Rocket.Tests.Configuration
             AssertSaveException(config);
         }
 
-        protected override IConfiguration GetUnloadedConfig()
+        protected override IConfiguration GetConfig()
         {
             return Runtime.Container.Get<IConfiguration>("json");
         }

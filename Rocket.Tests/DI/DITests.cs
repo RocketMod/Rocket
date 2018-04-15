@@ -24,6 +24,8 @@ namespace Rocket.Tests.DI
         {
             Assert.IsNotNull(Runtime.Container.Get<IEventManager>());
             Assert.IsNotNull(Runtime.Container.Get<IPermissionProvider>());
+            Assert.IsNotNull(Runtime.Container.Get<IPermissionProvider>("config_permissions"));
+            Assert.IsNotNull(Runtime.Container.Get<IPermissionProvider>("console_permissions"));
             Assert.IsNotNull(Runtime.Container.Get<IEventManager>());
             Assert.IsNotNull(Runtime.Container.Get<ICommandHandler>());
             Assert.IsNotNull(Runtime.Container.Get<IPluginManager>());

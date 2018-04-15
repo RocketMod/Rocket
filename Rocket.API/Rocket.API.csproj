@@ -55,12 +55,10 @@
     <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Configuration\IConfigurationSection.cs" />
     <Compile Include="Configuration\SectionType.cs" />
+    <Compile Include="ServiceProxies\IProxyableService.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\EventExecutionTargetContext.cs" />
     <Compile Include="Eventing\IEventEmitter.cs" />
-    <Compile Include="Handlers\HandlerPriorityAttribute.cs" />
-    <Compile Include="Handlers\HandlerPriorityComparer.cs" />
-    <Compile Include="Handlers\IHandler.cs" />
     <Compile Include="I18N\ITranslatable.cs" />
     <Compile Include="IEnvironmentContext.cs" />
     <Compile Include="Permissions\IIdentifiable.cs" />
@@ -71,7 +69,6 @@
     <Compile Include="Eventing\ICancellableEvent.cs" />
     <Compile Include="Eventing\IEvent.cs" />
     <Compile Include="Eventing\IEventListener.cs" />
-    <Compile Include="Handlers\HandlerPriority.cs" />
     <Compile Include="ILifecycleController.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslations.cs" />
@@ -91,6 +88,7 @@
     <Compile Include="Scheduler\TaskScheduleEvent.cs" />
     <Compile Include="Scheduler\ITaskScheduler.cs" />
     <Compile Include="Scheduler\ITask.cs" />
+    <Compile Include="ServiceProxies\IServiceProxy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Rocket.API.nuspec">
