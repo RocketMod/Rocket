@@ -19,20 +19,33 @@ namespace Rocket.Core.Configuration.Xml
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            var json = JsonConvert.DeserializeXmlNode(xml).ToString();
+            var json = JsonConvert.SerializeXmlNode(doc);
 
             Node = JObject.Parse(json, new JsonLoadSettings
             {
                 CommentHandling = CommentHandling.Ignore,
                 LineInfoHandling = LineInfoHandling.Ignore
-            });
+            }).GetValue("Config").DeepClone();
 
             IsLoaded = true;
         }
 
         protected override void SaveToFile(string file)
         {
-            var json = Node.ToString();
+            var clone = Node.DeepClone();
+            var xml = new
+            {
+                @version = "1.0",
+                @encoding = "UTF-8",
+                @standalone = true
+            };
+            JObject o = new JObject
+            {
+                {"?xml", new JObject(xml)},
+                {"Config", clone}
+            };
+
+            var json = o.ToString();
 
             XmlDocument doc = JsonConvert.DeserializeXmlNode(json);
             File.WriteAllText(file, doc.ToString());

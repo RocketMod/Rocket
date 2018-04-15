@@ -30,6 +30,7 @@ namespace Rocket.Tests.DI
             Assert.IsNotNull(Runtime.Container.Get<ITranslationLocator>());
             Assert.IsNotNull(Runtime.Container.Get<IConfiguration>());
             Assert.IsNotNull(Runtime.Container.Get<IConfiguration>("json"));
+            Assert.IsNotNull(Runtime.Container.Get<IConfiguration>("xml"));
         }
     }
 }

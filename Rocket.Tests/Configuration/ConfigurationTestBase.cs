@@ -7,9 +7,8 @@ using Rocket.Core.Configuration.Json;
 
 namespace Rocket.Tests.Configuration
 {
-    [TestClass]
     [TestCategory("Configuration")]
-    public class ConfigurationTests : RocketTestBase
+    public abstract class ConfigurationTestBase : RocketTestBase
     {
         protected object TestConfigObject { get; private set; }
 
@@ -29,29 +28,6 @@ namespace Rocket.Tests.Configuration
                     }
                 }
             };
-        }
-
-        [TestMethod]
-        public void TestJsonConfig()
-        {
-            JsonConfiguration config = (JsonConfiguration)Runtime.Container.Get<IConfiguration>("json");
-
-            string json =
-                "{"
-                    + "\"Test1\": \"A\","
-                    + "\"NestedObjectTest\": {"
-                        + "\"NestedStringValue\": \"B\","
-                        + "\"NestedNumberValue\": 4,"
-                        + "\"VeryNestedObject\": {"
-                            + "\"Value\": \"3\""
-                        + "}"
-                    + "}"
-                + "}";
-
-            config.LoadFromJson(json);
-
-            AssertConfigEquality(config);
-            AssertSaveException(config);
         }
 
         [TestMethod]
@@ -171,10 +147,6 @@ namespace Rocket.Tests.Configuration
             return config;
         }
 
-        protected virtual IConfiguration GetUnloadedConfig()
-        {
-            return Runtime.Container.Get<IConfiguration>();
-        }
-
+        protected abstract IConfiguration GetUnloadedConfig();
     }
 }
