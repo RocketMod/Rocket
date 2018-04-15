@@ -1,16 +1,24 @@
 ﻿using System;
 using Rocket.API.Logging;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Logging
 {
     public class ConsoleLogger : ILogger
     {
-        private readonly string debugPrefix = "[DEBUG]";
-        private readonly string errorPrefix = "[ERROR]";
-        private readonly string fatalPrefix = "[FATAL]";
-        private readonly string infoPrefix = "[INFO]";
-        private readonly string tracePrefix = "[TRACE]";
-        private readonly string warnPrefix = "[WARN]";
+        private readonly string debugPrefix = "DEBUG";
+        private readonly string errorPrefix = "ERROR";
+        private readonly string fatalPrefix = "FATAL";
+        private readonly string infoPrefix = "INFO";
+        private readonly string tracePrefix = "TRACE";
+        private readonly string warnPrefix = "WARN";
+
+        private string FormatMessage(string message, string prefix, params object[] args)
+        {
+            var callingMethod = ReflectionExtensions.GetCallingMethod(skipTypes: typeof(ConsoleLogger));
+            string format = $"[{prefix}] [{callingMethod.ReflectedType?.Name ?? "<anonymous>"}#{callingMethod.Name}] {message}";
+            return string.Format(format, args);
+        }
 
         public bool IsTraceEnabled
         {
@@ -46,14 +54,14 @@ namespace Rocket.Core.Logging
 
         public void LogDebug(string message, params object[] arguments)
         {
-            throw new NotImplementedException();
+            LogDebug(message, (ConsoleColor?)null, arguments);
         }
 
         public void LogDebug(string message, ConsoleColor? color, params object[] arguments)
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Cyan);
-            Console.WriteLine($"{debugPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, debugPrefix, arguments));
             SetColor(orgCol);
         }
 
@@ -66,7 +74,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Cyan);
-            Console.WriteLine($"{debugPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, debugPrefix, arguments));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
             SetColor(orgCol);
@@ -86,7 +94,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
-            Console.WriteLine($"{errorPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, errorPrefix, arguments));
             SetColor(orgCol);
         }
 
@@ -99,7 +107,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
-            Console.WriteLine($"{errorPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, errorPrefix, arguments));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
             SetColor(orgCol);
@@ -114,7 +122,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
-            Console.WriteLine($"{fatalPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, fatalPrefix, arguments));
             SetColor(orgCol);
         }
 
@@ -127,7 +135,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
-            Console.WriteLine($"{fatalPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, fatalPrefix, arguments));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
             SetColor(orgCol);
@@ -137,7 +145,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.White);
-            Console.WriteLine($"{infoPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, infoPrefix, arguments));
             SetColor(orgCol);
         }
 
@@ -150,7 +158,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.White);
-            Console.WriteLine($"{fatalPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, infoPrefix, arguments));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(infoPrefix);
             SetColor(orgCol);
@@ -170,7 +178,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Cyan);
-            Console.WriteLine($"{tracePrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, tracePrefix, arguments));
             SetColor(orgCol);
         }
 
@@ -183,7 +191,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Cyan);
-            Console.WriteLine($"{tracePrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, tracePrefix, arguments));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
             SetColor(orgCol);
@@ -193,7 +201,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Yellow);
-            Console.WriteLine($"{warnPrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, warnPrefix, arguments));
             SetColor(orgCol);
         }
 
@@ -206,7 +214,7 @@ namespace Rocket.Core.Logging
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Yellow);
-            Console.WriteLine($"{tracePrefix} {message}", arguments);
+            Console.WriteLine(FormatMessage(message, warnPrefix, arguments));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(warnPrefix);
             SetColor(orgCol);
