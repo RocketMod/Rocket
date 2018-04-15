@@ -3,7 +3,7 @@ using Rocket.API.Commands;
 using Rocket.API.Eventing;
 using Rocket.API.Player;
 
-namespace Rocket.Core.Player.Events
+namespace Rocket.Core.Player
 {
     public class PlayerBanEvent : PlayerEvent, ICancellableEvent
     {

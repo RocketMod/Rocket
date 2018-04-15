@@ -16,15 +16,6 @@ namespace Rocket.Core.Plugins
 {
     public abstract class Plugin : IPlugin, ITranslatable, IConfigurable
     {
-        public class CapabilityOptions
-        {
-            public const string NoConfig = "NoConfig";
-            public const string NoTranslations = "NoTranslations";
-
-            public const string CustomConfig = "CustomConfig";
-            public const string CustomTranslations = "CustomTranslations";
-        }
-
         public IConfiguration Configuration { get; protected set; }
         public virtual object DefaultConfiguration 
             => null;
@@ -73,7 +64,7 @@ namespace Rocket.Core.Plugins
             if (DefaultConfiguration != null)
             {
                 Configuration = Container.Get<IConfiguration>();
-                Configuration.Load(new ConfigurationContext()
+                Configuration.Load(new ConfigurationContext
                 {
                     WorkingDirectory = WorkingDirectory,
                     ConfigurationName = Name + ".Configuration"
@@ -83,7 +74,7 @@ namespace Rocket.Core.Plugins
             if (DefaultTranslations != null)
             {
                 Translations = Container.Get<ITranslationLocator>();
-                Translations.Load(new ConfigurationContext()
+                Translations.Load(new ConfigurationContext
                 {
                     WorkingDirectory = WorkingDirectory,
                     ConfigurationName = Name + ".Translations"
