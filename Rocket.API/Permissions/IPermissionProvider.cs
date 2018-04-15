@@ -11,14 +11,14 @@ namespace Rocket.API.Permissions
 
         bool CanHandle(ICommandCaller caller);
 
-        bool HasPermission(IPermissionGroup group, string permission);
-        bool HasPermission(ICommandCaller caller, string permission);
+        EPermissionResult HasPermission(IPermissionGroup group, string permission);
+        EPermissionResult HasPermission(ICommandCaller caller, string permission);
 
-        bool HasAllPermissions(IPermissionGroup group, params string[] permissions);
-        bool HasAllPermissions(ICommandCaller caller, params string[] permissions);
+        EPermissionResult HasAllPermissions(IPermissionGroup group, params string[] permissions);
+        EPermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions);
 
-        bool HasAnyPermissions(IPermissionGroup group, params string[] permissions);
-        bool HasAnyPermissions(ICommandCaller caller, params string[] permissions);
+        EPermissionResult HasAnyPermissions(IPermissionGroup group, params string[] permissions);
+        EPermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions);
 
         bool AddPermission(IPermissionGroup group, string permission);
 

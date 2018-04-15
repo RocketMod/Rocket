@@ -19,81 +19,129 @@ namespace Rocket.Core.Permissions
             return true;
         }
 
-        public bool HasPermission(IPermissionGroup @group, string permission)
+        public EPermissionResult HasPermission(IPermissionGroup @group, string permission)
         {
             GuardLoaded();
             GuardPermission(ref permission);
 
-            if (!permission.StartsWith("!") && HasPermission(@group, "!" + permission))
-                return false;
+            if (!permission.StartsWith("!") && HasPermission(@group, "!" + permission) == EPermissionResult.Grant)
+                return EPermissionResult.Deny;
 
             var permissionTree = BuildPermissionTree(permission);
             foreach (var permissionNode in permissionTree)
             {
                 string[] groupPermissions = GetConfigSection(@group)["Permissions"].Get(new string[0]);
                 if (groupPermissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
-                    return true;
+                    return EPermissionResult.Grant;
             }
 
-            return false;
+            return EPermissionResult.Default;
         }
 
-        public bool HasPermission(ICommandCaller caller, string permission)
+        public EPermissionResult HasPermission(ICommandCaller caller, string permission)
         {
             if (caller is IConsoleCommandCaller)
-                return true;
+                return EPermissionResult.Grant;
 
             GuardLoaded();
             GuardPermission(ref permission);
 
-            if (!permission.StartsWith("!") && HasPermission(caller, "!" + permission))
-                return false;
+            if (!permission.StartsWith("!") && HasPermission(caller, "!" + permission) == EPermissionResult.Grant)
+                return EPermissionResult.Deny;
 
             var permissionTree = BuildPermissionTree(permission);
             foreach (var permissionNode in permissionTree)
             {
                 string[] playerPermissions = GetConfigSection(caller)["Permissions"].Get(new string[0]);
                 if (playerPermissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
-                    return true;
+                    return EPermissionResult.Grant;
             }
 
             IEnumerable<IPermissionGroup> groups = GetGroups(caller);
-            return groups.Any(c => HasPermission(c, permission));
+            foreach (var group in groups)
+            {
+                var result = HasPermission(group, permission);
+                if (result == EPermissionResult.Grant)
+                    return EPermissionResult.Grant;
+
+                if (result == EPermissionResult.Deny)
+                    return EPermissionResult.Deny;
+            }
+            return EPermissionResult.Default;
         }
 
-        public bool HasAllPermissions(IPermissionGroup @group, params string[] permissions)
+        public EPermissionResult HasAllPermissions(IPermissionGroup @group, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
 
-            return permissions.All(c => HasPermission(group, c));
+            foreach (var permission in permissions)
+            {
+                var result = HasPermission(@group, permission);
+                if (result == EPermissionResult.Deny)
+                    return EPermissionResult.Deny;
+
+                if (result == EPermissionResult.Default)
+                    return EPermissionResult.Default;
+            }
+
+            return EPermissionResult.Grant;
         }
 
-        public bool HasAllPermissions(ICommandCaller caller, params string[] permissions)
+        public EPermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions)
+        {
+            GuardLoaded();
+            GuardPermissions(permissions);
+            foreach (var permission in permissions)
+            {
+                var result = HasPermission(caller, permission);
+                if (result == EPermissionResult.Deny)
+                    return EPermissionResult.Deny;
+
+                if (result == EPermissionResult.Default)
+                    return EPermissionResult.Default;
+            }
+
+            return EPermissionResult.Grant;
+        }
+
+        public EPermissionResult HasAnyPermissions(IPermissionGroup @group, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
 
-            return permissions.All(c => HasPermission(caller, c));
+            foreach (var permission in permissions)
+            {
+                var result = HasPermission(@group, permission);
+                if (result == EPermissionResult.Deny)
+                    return EPermissionResult.Deny;
+
+                if (result == EPermissionResult.Grant)
+                    return EPermissionResult.Grant;
+            }
+
+            return EPermissionResult.Default;
         }
 
-        public bool HasAnyPermissions(IPermissionGroup @group, params string[] permissions)
-        {
-            GuardLoaded();
-            GuardPermissions(permissions);
-
-            return permissions.Any(c => HasPermission(group, c));
-        }
-
-        public bool HasAnyPermissions(ICommandCaller caller, params string[] permissions)
+        public EPermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions)
         {
             if (caller is IConsoleCommandCaller)
-                return true;
+                return EPermissionResult.Grant;
 
             GuardLoaded();
             GuardPermissions(permissions);
 
-            return permissions.Any(c => HasPermission(caller, c));
+            foreach (var permission in permissions)
+            {
+                var result = HasPermission(caller, permission);
+                if (result == EPermissionResult.Deny)
+                    return EPermissionResult.Deny;
+
+                if (result == EPermissionResult.Grant)
+                    return EPermissionResult.Grant;
+            }
+
+            return EPermissionResult.Default;
         }
 
         public bool AddPermission(IPermissionGroup group, string permission)
