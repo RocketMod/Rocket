@@ -6,30 +6,14 @@ using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
-using Rocket.API.ServiceProxies;
 using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions
 {
-    public class PermissionProviderProxy : IPermissionProvider, IServiceProxy<IPermissionProvider>
+    public class PermissionProviderProxy : ServiceProxy<IPermissionProvider>, IPermissionProvider
     {
-        private readonly IDependencyContainer container;
-        public IEnumerable<IPermissionProvider> ProxiedProviders
-        {
-            get
-            {
-                var providers = container.GetAll<IPermissionProvider>()
-                                         .Where(c => c != this)
-                                         .ToList();
-
-                ServicePriorityComparer.Sort(providers, true);
-                return providers;
-            }
-        }
-        public PermissionProviderProxy(IDependencyContainer container)
-        {
-            this.container = container;
-        }
+        public PermissionProviderProxy(IDependencyContainer container) : base(container) { }
+        
 
         public bool SupportsCaller(ICommandCaller caller)
         {
@@ -242,13 +226,13 @@ namespace Rocket.Core.Permissions
         private void GuardCaller(ICommandCaller caller)
         {
             if(!SupportsCaller(caller))
-                throw new NotSupportedException(caller.GetType() + " is not supported!");
+                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
         }
 
         private void GuardGroup(IPermissionGroup group)
         {
             if (!SupportsGroup(group))
-                throw new NotSupportedException(group.GetType() + " is not supported!");
+                throw new NotSupportedException(group.GetType().FullName + " is not supported!");
         }
     }
 }

@@ -466,13 +466,13 @@ namespace Rocket.Core.Permissions
         private void GuardCaller(ICommandCaller caller)
         {
             if (!SupportsCaller(caller))
-                throw new NotSupportedException(caller.GetType() + " is not supported!");
+                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
         }
 
         private void GuardGroup(IPermissionGroup group)
         {
             if (!SupportsGroup(group))
-                throw new NotSupportedException(group.GetType() + " is not supported!");
+                throw new NotSupportedException(group.GetType().FullName + " is not supported!");
         }
     }
 }
