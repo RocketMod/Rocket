@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using Rocket.API.DependencyInjection;
+﻿using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core.Plugins;
 
-namespace Rocket.Examples.HelloWorldPlugin
+namespace HelloWorldPlugin
 {
     public class HelloWorldPlugin : Plugin
     {

@@ -2,7 +2,7 @@
 using Rocket.API.Eventing;
 using Rocket.API.Player;
 
-namespace Rocket.Core.Player
+namespace Rocket.Core.Player.Events
 {
     public class PlayerKickEvent : PlayerEvent, ICancellableEvent
     {
