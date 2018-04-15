@@ -19,98 +19,98 @@ namespace Rocket.Core.Permissions
             return true;
         }
 
-        public EPermissionResult HasPermission(IPermissionGroup @group, string permission)
+        public PermissionResult HasPermission(IPermissionGroup @group, string permission)
         {
             GuardLoaded();
             GuardPermission(ref permission);
 
-            if (!permission.StartsWith("!") && HasPermission(@group, "!" + permission) == EPermissionResult.Grant)
-                return EPermissionResult.Deny;
+            if (!permission.StartsWith("!") && HasPermission(@group, "!" + permission) == PermissionResult.Grant)
+                return PermissionResult.Deny;
 
             var permissionTree = BuildPermissionTree(permission);
             foreach (var permissionNode in permissionTree)
             {
                 string[] groupPermissions = GetConfigSection(@group)["Permissions"].Get(new string[0]);
                 if (groupPermissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
-                    return EPermissionResult.Grant;
+                    return PermissionResult.Grant;
             }
 
-            return EPermissionResult.Default;
+            return PermissionResult.Default;
         }
 
-        public EPermissionResult HasPermission(ICommandCaller caller, string permission)
+        public PermissionResult HasPermission(ICommandCaller caller, string permission)
         {
             if (caller is IConsoleCommandCaller)
-                return EPermissionResult.Grant;
+                return PermissionResult.Grant;
 
             GuardLoaded();
             GuardPermission(ref permission);
 
-            if (!permission.StartsWith("!") && HasPermission(caller, "!" + permission) == EPermissionResult.Grant)
-                return EPermissionResult.Deny;
+            if (!permission.StartsWith("!") && HasPermission(caller, "!" + permission) == PermissionResult.Grant)
+                return PermissionResult.Deny;
 
             var permissionTree = BuildPermissionTree(permission);
             foreach (var permissionNode in permissionTree)
             {
                 string[] playerPermissions = GetConfigSection(caller)["Permissions"].Get(new string[0]);
                 if (playerPermissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
-                    return EPermissionResult.Grant;
+                    return PermissionResult.Grant;
             }
 
             IEnumerable<IPermissionGroup> groups = GetGroups(caller);
             foreach (var group in groups)
             {
                 var result = HasPermission(group, permission);
-                if (result == EPermissionResult.Grant)
-                    return EPermissionResult.Grant;
+                if (result == PermissionResult.Grant)
+                    return PermissionResult.Grant;
 
-                if (result == EPermissionResult.Deny)
-                    return EPermissionResult.Deny;
+                if (result == PermissionResult.Deny)
+                    return PermissionResult.Deny;
             }
-            return EPermissionResult.Default;
+            return PermissionResult.Default;
         }
 
-        public EPermissionResult HasAllPermissions(IPermissionGroup @group, params string[] permissions)
+        public PermissionResult HasAllPermissions(IPermissionGroup @group, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
 
-            EPermissionResult result = EPermissionResult.Grant;
+            PermissionResult result = PermissionResult.Grant;
 
             foreach (var permission in permissions)
             {
                 var tmp = HasPermission(@group, permission);
-                if (tmp == EPermissionResult.Deny)
-                    return EPermissionResult.Deny;
+                if (tmp == PermissionResult.Deny)
+                    return PermissionResult.Deny;
 
-                if (tmp == EPermissionResult.Default)
-                    result = EPermissionResult.Default;
+                if (tmp == PermissionResult.Default)
+                    result = PermissionResult.Default;
             }
 
             return result;
         }
 
-        public EPermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions)
+        public PermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
 
-            EPermissionResult result = EPermissionResult.Grant;
+            PermissionResult result = PermissionResult.Grant;
 
             foreach (var permission in permissions)
             {
                 var tmp = HasPermission(caller, permission);
-                if (tmp == EPermissionResult.Deny)
-                    return EPermissionResult.Deny;
+                if (tmp == PermissionResult.Deny)
+                    return PermissionResult.Deny;
 
-                if (tmp == EPermissionResult.Default)
-                    result = EPermissionResult.Default;
+                if (tmp == PermissionResult.Default)
+                    result = PermissionResult.Default;
             }
 
             return result;
         }
 
-        public EPermissionResult HasAnyPermissions(IPermissionGroup @group, params string[] permissions)
+        public PermissionResult HasAnyPermissions(IPermissionGroup @group, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
@@ -118,20 +118,20 @@ namespace Rocket.Core.Permissions
             foreach (var permission in permissions)
             {
                 var result = HasPermission(@group, permission);
-                if (result == EPermissionResult.Deny)
-                    return EPermissionResult.Deny;
+                if (result == PermissionResult.Deny)
+                    return PermissionResult.Deny;
 
-                if (result == EPermissionResult.Grant)
-                    return EPermissionResult.Grant;
+                if (result == PermissionResult.Grant)
+                    return PermissionResult.Grant;
             }
 
-            return EPermissionResult.Default;
+            return PermissionResult.Default;
         }
 
-        public EPermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions)
+        public PermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions)
         {
             if (caller is IConsoleCommandCaller)
-                return EPermissionResult.Grant;
+                return PermissionResult.Grant;
 
             GuardLoaded();
             GuardPermissions(permissions);
@@ -139,14 +139,14 @@ namespace Rocket.Core.Permissions
             foreach (var permission in permissions)
             {
                 var result = HasPermission(caller, permission);
-                if (result == EPermissionResult.Deny)
-                    return EPermissionResult.Deny;
+                if (result == PermissionResult.Deny)
+                    return PermissionResult.Deny;
 
-                if (result == EPermissionResult.Grant)
-                    return EPermissionResult.Grant;
+                if (result == PermissionResult.Grant)
+                    return PermissionResult.Grant;
             }
 
-            return EPermissionResult.Default;
+            return PermissionResult.Default;
         }
 
         public bool AddPermission(IPermissionGroup group, string permission)

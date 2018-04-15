@@ -41,7 +41,7 @@ namespace Rocket.Core.Commands
             bool hasPermission = false;
             foreach (var provider in permProviders)
             {
-                if (provider.HasAnyPermissions(caller, perms) == EPermissionResult.Grant)
+                if (provider.HasAnyPermissions(caller, perms) == PermissionResult.Grant)
                 {
                     hasPermission = true;
                     break;

@@ -1,6 +1,6 @@
 ﻿namespace Rocket.API.Permissions
 {
-    public enum EPermissionResult
+    public enum PermissionResult
     {
         Default,
         Grant,
