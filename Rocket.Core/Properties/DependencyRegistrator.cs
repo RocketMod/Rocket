@@ -22,8 +22,8 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<ICommandHandler, CommandHandler>();
             container.RegisterSingletonType<IPluginManager, PluginManager>();
             container.RegisterSingletonType<ICommandProvider, PluginManager>();
-            container.RegisterType<ITranslationLocator, TranslationLocator>("defaultranslations");
-            container.RegisterSingletonType<IPermissionProvider, PermissionProvider>("defaultpermissions");
+            container.RegisterType<ITranslationLocator, TranslationLocator>();
+            container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
 
             if (!container.IsRegistered<IConfiguration>())
                 container.RegisterType<IConfiguration, JsonConfiguration>();
