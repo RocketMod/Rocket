@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ObjectBuilder2;
 using Rocket.API.Commands;
@@ -42,6 +43,8 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult HasPermission(IPermissionGroup @group, string permission)
         {
+            GuardGroup(group);
+
             foreach (var provider in ProxiedProviders.Where(c => c.SupportsGroup(group)))
             {
                 PermissionResult result = provider.HasPermission(group, permission);
@@ -56,6 +59,8 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult HasPermission(ICommandCaller caller, string permission)
         {
+            GuardCaller(caller);
+
             foreach (var provider in ProxiedProviders.Where(c => c.SupportsCaller(caller)))
             {
                 PermissionResult result = provider.HasPermission(caller, permission);
@@ -70,6 +75,8 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult HasAllPermissions(IPermissionGroup @group, params string[] permissions)
         {
+            GuardGroup(group);
+
             foreach (var provider in ProxiedProviders.Where(c => c.SupportsGroup(group)))
             {
                 PermissionResult result = provider.HasAllPermissions(@group, permissions);
@@ -84,6 +91,8 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions)
         {
+            GuardCaller(caller);
+
             foreach (var provider in ProxiedProviders.Where(c => c.SupportsCaller(caller)))
             {
                 PermissionResult result = provider.HasAllPermissions(caller, permissions);
@@ -98,6 +107,8 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult HasAnyPermissions(IPermissionGroup @group, params string[] permissions)
         {
+            GuardGroup(group);
+
             foreach (var provider in ProxiedProviders.Where(c => c.SupportsGroup(group)))
             {
                 PermissionResult result = provider.HasAnyPermissions(@group, permissions);
@@ -112,6 +123,8 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions)
         {
+            GuardCaller(caller);
+
             foreach (var provider in ProxiedProviders.Where(c => c.SupportsCaller(caller)))
             {
                 PermissionResult result = provider.HasAnyPermissions(caller, permissions);
@@ -126,56 +139,58 @@ namespace Rocket.Core.Permissions
 
         public bool AddPermission(IPermissionGroup @group, string permission)
         {
-            throw new System.NotSupportedException("Adding permissions from proxy is not supported.");
+            throw new NotSupportedException("Adding permissions from proxy is not supported.");
         }
 
         public bool AddDeniedPermission(IPermissionGroup @group, string permission)
         {
-            throw new System.NotSupportedException("Adding inverted permissions from proxy is not supported.");
+            throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
         }
 
         public bool AddPermission(ICommandCaller caller, string permission)
         {
-            throw new System.NotSupportedException("Adding permissions from proxy is not supported.");
+            throw new NotSupportedException("Adding permissions from proxy is not supported.");
         }
 
         public bool AddDeniedPermission(ICommandCaller caller, string permission)
         {
-            throw new System.NotSupportedException("Adding inverted permissions from proxy is not supported.");
+            throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
         }
 
         public bool RemovePermission(IPermissionGroup @group, string permission)
         {
-            throw new System.NotSupportedException("Removing permissions from proxy is not supported.");
+            throw new NotSupportedException("Removing permissions from proxy is not supported.");
         }
 
         public bool RemoveDeniedPermission(IPermissionGroup @group, string permission)
         {
-            throw new System.NotSupportedException("Removing inverted permissions from proxy is not supported.");
+            throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
         }
 
         public bool RemovePermission(ICommandCaller caller, string permission)
         {
-            throw new System.NotSupportedException("Removing permissions from proxy is not supported.");
+            throw new NotSupportedException("Removing permissions from proxy is not supported.");
         }
 
         public bool RemoveDeniedPermission(ICommandCaller @group, string permission)
         {
-            throw new System.NotSupportedException("Removing denied permissions from proxy is not supported.");
+            throw new NotSupportedException("Removing denied permissions from proxy is not supported.");
         }
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
-            throw new System.NotSupportedException("Getting primary group from proxy is not supported.");
+            throw new NotSupportedException("Getting primary group from proxy is not supported.");
         }
 
         public IPermissionGroup GetGroup(string id)
         {
-            throw new System.NotSupportedException("Getting a group via id from proxy is not supported.");
+            throw new NotSupportedException("Getting a group via id from proxy is not supported.");
         }
 
         public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
         {
+            GuardCaller(caller);
+
             return ProxiedProviders.SelectMany(c => c.GetGroups(caller));
         }
 
@@ -186,32 +201,32 @@ namespace Rocket.Core.Permissions
 
         public void UpdateGroup(IPermissionGroup @group)
         {
-            throw new System.NotSupportedException("Updating groups from proxy is not supported.");
+            throw new NotSupportedException("Updating groups from proxy is not supported.");
         }
 
         public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
         {
-            throw new System.NotSupportedException("Adding groups from proxy is not supported.");
+            throw new NotSupportedException("Adding groups from proxy is not supported.");
         }
 
         public bool RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
         {
-            throw new System.NotSupportedException("Removing groups from proxy is not supported.");
+            throw new NotSupportedException("Removing groups from proxy is not supported.");
         }
 
         public void CreateGroup(IPermissionGroup @group)
         {
-            throw new System.NotSupportedException("Creating groups from proxy is not supported.");
+            throw new NotSupportedException("Creating groups from proxy is not supported.");
         }
 
         public void DeleteGroup(IPermissionGroup @group)
         {
-            throw new System.NotSupportedException("Deleting groups from proxy is not supported.");
+            throw new NotSupportedException("Deleting groups from proxy is not supported.");
         }
 
         public void Load(IConfigurationElement groups, IConfigurationElement players)
         {
-            throw new System.NotSupportedException("Loading from proxy is not supported.");
+            throw new NotSupportedException("Loading from proxy is not supported.");
         }
 
         public void Reload()
@@ -222,6 +237,18 @@ namespace Rocket.Core.Permissions
         public void Save()
         {
             ProxiedProviders.ForEach(c => c.Save());
+        }
+
+        private void GuardCaller(ICommandCaller caller)
+        {
+            if(!SupportsCaller(caller))
+                throw new NotSupportedException(caller.GetType() + " is not supported!");
+        }
+
+        private void GuardGroup(IPermissionGroup group)
+        {
+            if (!SupportsGroup(group))
+                throw new NotSupportedException(group.GetType() + " is not supported!");
         }
     }
 }
