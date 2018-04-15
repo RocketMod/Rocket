@@ -53,7 +53,7 @@ namespace Rocket.API.Permissions
 
         void DeleteGroup(IPermissionGroup @group);
 
-        void Load(IConfigurationBase groups, IConfigurationBase players);
+        void Load(IConfigurationElement groups, IConfigurationElement players);
         void Reload();
         void Save();
     }

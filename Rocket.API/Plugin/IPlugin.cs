@@ -5,8 +5,6 @@ namespace Rocket.API.Plugin
 {
     public interface IPlugin : IEventEmitter
     {
-        IEnumerable<string> Capabilities { get; }
-
         void Load();
 
         void Unload();

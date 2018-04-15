@@ -2,11 +2,11 @@
 
 namespace Rocket.API.Configuration
 {
-    public interface IConfiguration : IConfigurationBase
+    public interface IConfiguration : IConfigurationElement
     {
-        bool Exist(IEnvironmentContext context);
+        bool Exist(IConfigurationContext context);
 
-        void Load(IEnvironmentContext context, object defaultConfiguration);
+        void Load(IConfigurationContext context, object defaultConfiguration);
 
         void LoadEmpty();
 

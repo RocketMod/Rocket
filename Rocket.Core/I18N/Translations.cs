@@ -6,11 +6,11 @@ using Rocket.API.I18N;
 
 namespace Rocket.Core.I18N
 {
-    public class Translations : ITranslations
+    public class TranslationLocator : ITranslationLocator
     {
         private readonly IConfiguration config;
 
-        public Translations(IConfiguration config)
+        public TranslationLocator(IConfiguration config)
         {
             this.config = config;
         }
@@ -22,7 +22,7 @@ namespace Rocket.Core.I18N
             config[translationKey].Set(message);
         }
 
-        public void Load(IEnvironmentContext context, Dictionary<string, string> defaultConfiguration)
+        public void Load(IConfigurationContext context, Dictionary<string, string> defaultConfiguration)
         {
             if (config.IsLoaded)
                 throw new Exception("Permission provider is already loaded");

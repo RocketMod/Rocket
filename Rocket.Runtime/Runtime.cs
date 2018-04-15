@@ -1,4 +1,5 @@
-﻿using Rocket.API;
+﻿using System;
+using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
@@ -18,7 +19,7 @@ namespace Rocket
             Container.RegisterSingletonType<ILogger, ConsoleLogger>();
 
             Container.Activate(typeof(RegistrationByConvention));
-            Container.Get<IImplementation>().Load(this);
+            Container.Get<IImplementation>().Init(this);
         }
 
         public IDependencyResolver Resolver { get; private set; }
@@ -29,5 +30,7 @@ namespace Rocket
 
         public bool IsAlive => runtime != null;
         public string Name => "Rocket.Runtime";
+        public string WorkingDirectory { get; } = Environment.CurrentDirectory;
+        public string ConfigurationName { get; } = "Rocket";
     }
 }

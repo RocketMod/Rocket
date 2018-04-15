@@ -10,11 +10,11 @@ namespace Rocket.API.Handlers
         public static List<T> Sort<T>(List<T> objects)
         {
             List<T> cpy = objects.ToList();
-            cpy.Sort((a, b) => Compare(GetPrio(a), GetPrio(b)));
+            cpy.Sort((a, b) => Compare(GetPriority(a), GetPriority(b)));
             return cpy;
         }
 
-        private static HandlerPriority GetPrio(object a)
+        private static HandlerPriority GetPriority(object a)
         {
             HandlerPriorityAttribute handlerAttribute = (HandlerPriorityAttribute)
                 a.GetType()

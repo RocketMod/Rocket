@@ -8,7 +8,7 @@ namespace Rocket.Core.Configuration.Json
     {
         private readonly string key;
 
-        public JsonConfigurationSection(IConfiguration root, IConfigurationBase parent, JToken node, string key) : base(root, parent, node)
+        public JsonConfigurationSection(IConfiguration root, IConfigurationElement parent, JToken node, string key) : base(root, parent, node)
         {
             this.key = key;
         }
@@ -17,7 +17,7 @@ namespace Rocket.Core.Configuration.Json
 
         public override string Path => Node.Path;
 
-        public bool IsNull
+        public bool HasValue
         {
             get
             {

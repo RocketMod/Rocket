@@ -2,10 +2,9 @@
 
 namespace Rocket.Core
 {
-    //Subject to change
-    public class EnvironmentContext : IEnvironmentContext
+    public class ConfigurationContext : IConfigurationContext
     {
         public string WorkingDirectory { get; set; }
-        public string Name { get; set; }
+        public string ConfigurationName { get; set; }
     }
 }

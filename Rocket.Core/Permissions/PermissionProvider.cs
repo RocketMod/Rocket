@@ -11,8 +11,8 @@ namespace Rocket.Core.Permissions
     [HandlerPriority(Priority = HandlerPriority.Lowest)]
     public class PermissionProvider : IPermissionProvider
     {
-        public IConfigurationBase GroupsConfig { get; protected set; }
-        public IConfigurationBase PlayersConfig { get; protected set; }
+        public IConfigurationElement GroupsConfig { get; protected set; }
+        public IConfigurationElement PlayersConfig { get; protected set; }
 
         public bool CanHandle(ICommandCaller caller)
         {
@@ -271,7 +271,7 @@ namespace Rocket.Core.Permissions
             GroupsConfig.RemoveSection($"{@group.Id}");
         }
 
-        public void Load(IConfigurationBase groupsConfig, IConfigurationBase playersConfig)
+        public void Load(IConfigurationElement groupsConfig, IConfigurationElement playersConfig)
         {
             GroupsConfig = groupsConfig;
             PlayersConfig = playersConfig;

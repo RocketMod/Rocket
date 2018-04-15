@@ -1,7 +1,7 @@
 ﻿using Rocket.API;
 using Rocket.API.Eventing;
 
-namespace Rocket.Core.Events.Implementation
+namespace Rocket.Core.Implementation.Events
 {
     public class ImplementationReadyEvent : Event
     {

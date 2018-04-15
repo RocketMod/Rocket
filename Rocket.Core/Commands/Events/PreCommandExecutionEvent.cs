@@ -1,7 +1,7 @@
 ﻿using Rocket.API.Commands;
 using Rocket.API.Eventing;
 
-namespace Rocket.Core.Events.Commands
+namespace Rocket.Core.Commands.Events
 {
     public class PreCommandExecutionEvent : Event, ICancellableEvent
     {

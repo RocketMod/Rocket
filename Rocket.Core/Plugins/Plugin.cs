@@ -9,8 +9,8 @@ using Rocket.API.Eventing;
 using Rocket.API.I18N;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
-using Rocket.Core.Events.Plugins;
 using Rocket.Core.I18N;
+using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins
 {
@@ -29,11 +29,8 @@ namespace Rocket.Core.Plugins
         public virtual object DefaultConfiguration 
             => null;
 
-        public ITranslations Translations { get; protected set; }
-        public Dictionary<string, string> DefaultTranslations 
-            => null;
-        
-        public abstract IEnumerable<string> Capabilities { get; }
+        public ITranslationLocator Translations { get; protected set; }
+        public Dictionary<string, string> DefaultTranslations => null;
 
         public string Name { get; }
 
@@ -73,29 +70,23 @@ namespace Rocket.Core.Plugins
             if (!Directory.Exists(WorkingDirectory))
                 Directory.CreateDirectory(WorkingDirectory);
 
-            if (!Capabilities.Any(c => c.Equals(CapabilityOptions.CustomConfig, StringComparison.OrdinalIgnoreCase))
-                && !Capabilities.Any(c => c.Equals(CapabilityOptions.NoConfig, StringComparison.OrdinalIgnoreCase))
-                && DefaultConfiguration != null)
+            if (DefaultConfiguration != null)
             {
                 Configuration = Container.Get<IConfiguration>();
-                Configuration.Load(new EnvironmentContext()
+                Configuration.Load(new ConfigurationContext()
                 {
                     WorkingDirectory = WorkingDirectory,
-                    Name = Name + ".Configuration"
+                    ConfigurationName = Name + ".Configuration"
                 }, DefaultConfiguration);
             }
 
-            if (!Capabilities.Any(c
-                    => c.Equals(CapabilityOptions.CustomTranslations, StringComparison.OrdinalIgnoreCase))
-                && !Capabilities.Any(
-                    c => c.Equals(CapabilityOptions.NoTranslations, StringComparison.OrdinalIgnoreCase)) 
-                && DefaultTranslations != null)
+            if (DefaultTranslations != null)
             {
-                Translations = Container.Get<ITranslations>();
-                Translations.Load(new EnvironmentContext()
+                Translations = Container.Get<ITranslationLocator>();
+                Translations.Load(new ConfigurationContext()
                 {
                     WorkingDirectory = WorkingDirectory,
-                    Name = Name + ".Translations"
+                    ConfigurationName = Name + ".Translations"
                 }, DefaultTranslations);
             }
 

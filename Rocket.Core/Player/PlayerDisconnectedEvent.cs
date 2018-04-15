@@ -1,7 +1,7 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.Player;
 
-namespace Rocket.Core.Events.Player
+namespace Rocket.Core.Player.Events
 {
     public class PlayerDisconnectedEvent : PlayerEvent
     {

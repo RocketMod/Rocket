@@ -16,14 +16,14 @@ namespace Rocket.Core.Configuration.Json
 
         private string file;
 
-        public bool Exist(IEnvironmentContext context)
+        public bool Exist(IConfigurationContext context)
         {
-            return File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.Name + ".json"));
+            return File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + ".json"));
         }
 
-        public void Load(IEnvironmentContext context, object defaultConfiguration)
+        public void Load(IConfigurationContext context, object defaultConfiguration)
         {
-            file = System.IO.Path.Combine(context.WorkingDirectory, context.Name + ".json");
+            file = System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + ".json");
 
             if (!File.Exists(file))
             {

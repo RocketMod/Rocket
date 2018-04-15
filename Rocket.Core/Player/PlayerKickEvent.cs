@@ -2,39 +2,39 @@
 using Rocket.API.Eventing;
 using Rocket.API.Player;
 
-namespace Rocket.Core.Events.Player
+namespace Rocket.Core.Player.Events
 {
     public class PlayerKickEvent : PlayerEvent, ICancellableEvent
     {
-        public ICommandCaller Kicker { get; }
+        public ICommandCaller Caller { get; }
         public string Reason { get; set; }
 
-        public PlayerKickEvent(IPlayer player, ICommandCaller kicker = null, string reason = null) : base(player)
+        public PlayerKickEvent(IPlayer player, ICommandCaller caller = null, string reason = null) : base(player)
         {
-            Kicker = kicker;
+            Caller = caller;
             Reason = reason;
         }
 
-        public PlayerKickEvent(IPlayer player, ICommandCaller kicker = null, string reason = null, bool global = true) : base(player,
+        public PlayerKickEvent(IPlayer player, ICommandCaller caller = null, string reason = null, bool global = true) : base(player,
             global)
         {
-            Kicker = kicker;
+            Caller = caller;
             Reason = reason;
         }
 
-        public PlayerKickEvent(IPlayer player, ICommandCaller kicker = null, string reason = null,
+        public PlayerKickEvent(IPlayer player, ICommandCaller caller = null, string reason = null,
                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                bool global = true) : base(player, executionTarget, global)
         {
-            Kicker = kicker;
+            Caller = caller;
             Reason = reason;
         }
 
-        public PlayerKickEvent(IPlayer player, ICommandCaller kicker = null, string reason = null, string name = null,
+        public PlayerKickEvent(IPlayer player, ICommandCaller caller = null, string reason = null, string name = null,
                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                bool global = true) : base(player, name, executionTarget, global)
         {
-            Kicker = kicker;
+            Caller = caller;
             Reason = reason;
         }
 

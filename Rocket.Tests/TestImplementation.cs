@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.Logging;
-using Rocket.API.Player;
 using Rocket.API.Plugin;
+using System;
+using System.Collections.Generic;
 
 namespace Rocket.Tests
 {
@@ -26,7 +25,7 @@ namespace Rocket.Tests
 
         public bool IsAlive => true;
 
-        public void Load(IRuntime runtime)
+        public void Init(IRuntime runtime)
         {
             logger.LogInformation("Loading implementation");
             runtime.Container.Get<IPluginManager>().Init();
@@ -43,5 +42,7 @@ namespace Rocket.Tests
         }
 
         public string Name => "TestImplementation";
+
+        public string ConfigurationName => "TestImplementation";
     }
 }

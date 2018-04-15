@@ -3,12 +3,11 @@ using Rocket.API.Eventing;
 
 namespace Rocket.API
 {
-    public interface IImplementation : IEventEmitter
+    public interface IImplementation : IEventEmitter, IConfigurationContext
     {
-        IEnumerable<string> Capabilities { get; }
         string InstanceId { get; }
         string WorkingDirectory { get; }
-        void Load(IRuntime runtime);
+        void Init(IRuntime runtime);
         void Shutdown();
         void Reload();
     }

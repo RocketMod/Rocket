@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Rocket.API;
+using System;
 using System.Collections.Generic;
-using Rocket.API;
 
 namespace Rocket.ConsoleImplementation
 {
@@ -10,7 +10,7 @@ namespace Rocket.ConsoleImplementation
 
         public string WorkingDirectory => Environment.CurrentDirectory;
 
-        public void Load(IRuntime runtime)
+        public void Init(IRuntime runtime)
         {
             Console.WriteLine("Loading...");
         }
@@ -27,5 +27,7 @@ namespace Rocket.ConsoleImplementation
         public void Reload() { }
 
         public bool IsAlive => true;
+
+        public string ConfigurationName => "ConsoleHost";
     }
 }

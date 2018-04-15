@@ -10,11 +10,11 @@ using Rocket.API.Configuration;
 
 namespace Rocket.Core.Configuration.Json
 {
-    public abstract class JsonConfigurationBase : IConfigurationBase
+    public abstract class JsonConfigurationBase : IConfigurationElement
     {
         public JToken Node { get; protected set; }
 
-        protected JsonConfigurationBase(IConfiguration root, IConfigurationBase parent, JToken node)
+        protected JsonConfigurationBase(IConfiguration root, IConfigurationElement parent, JToken node)
         {
             Root = root;
             Parent = parent;
@@ -27,7 +27,7 @@ namespace Rocket.Core.Configuration.Json
         }
 
         public IConfigurationSection this[string path] => GetSection(path);
-        public IConfigurationBase Parent { get; }
+        public IConfigurationElement Parent { get; }
         public IConfiguration Root { get; protected set; }
 
         public IConfigurationSection GetSection(string path)

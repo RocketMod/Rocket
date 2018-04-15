@@ -1,9 +1,8 @@
 ﻿namespace Rocket.API
 {
-    // Temporary class; subject to change
-    public interface IEnvironmentContext
+    public interface IConfigurationContext
     {
         string WorkingDirectory { get; }
-        string Name { get; }
+        string ConfigurationName { get; }
     }
 }

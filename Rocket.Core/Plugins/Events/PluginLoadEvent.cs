@@ -1,7 +1,7 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.Plugin;
 
-namespace Rocket.Core.Events.Plugins
+namespace Rocket.Core.Plugins.Events
 {
     public class PluginLoadEvent : PluginEvent, ICancellableEvent
     {

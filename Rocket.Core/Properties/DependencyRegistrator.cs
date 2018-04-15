@@ -18,31 +18,16 @@ namespace Rocket.Core.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
-            if (!container.IsRegistered<IEventManager>())
-                container.RegisterSingletonType<IEventManager, EventManager>();
-            container.RegisterSingletonType<IEventManager, EventManager>("defaulteventmanager");
-
-            if (!container.IsRegistered<ICommandHandler>())
-                container.RegisterSingletonType<ICommandHandler, CommandHandler>();
-            container.RegisterSingletonType<ICommandHandler, CommandHandler>("defaultcommandhandler");
-
-            if (!container.IsRegistered<IPluginManager>())
-                container.RegisterSingletonType<IPluginManager, PluginManager>();
-            container.RegisterSingletonType<IPluginManager, PluginManager>("defaultpluginmanager");
-            container.RegisterSingletonType<ICommandProvider, PluginManager>("defaultpluginmanager_commandprovider");
-
-            if (!container.IsRegistered<ITranslations>())
-                container.RegisterType<ITranslations, Translations>();
-            container.RegisterType<ITranslations, Translations>("defaultranslations");
-
-            if (!container.IsRegistered<IPermissionProvider>())
-                container.RegisterSingletonType<IPermissionProvider, PermissionProvider>();
+            container.RegisterSingletonType<IEventManager, EventManager>();
+            container.RegisterSingletonType<ICommandHandler, CommandHandler>();
+            container.RegisterSingletonType<IPluginManager, PluginManager>();
+            container.RegisterSingletonType<ICommandProvider, PluginManager>();
+            container.RegisterType<ITranslationLocator, TranslationLocator>("defaultranslations");
             container.RegisterSingletonType<IPermissionProvider, PermissionProvider>("defaultpermissions");
 
             if (!container.IsRegistered<IConfiguration>())
                 container.RegisterType<IConfiguration, JsonConfiguration>();
-
-            container.RegisterType<IConfiguration, JsonConfiguration>("json", "defaultconfig");
+            container.RegisterType<IConfiguration, JsonConfiguration>("json");
         }
     }
 }

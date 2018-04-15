@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace Rocket.API.Configuration
 {
-    public interface IConfigurationBase : IEnumerable<IConfigurationSection>
+    public interface IConfigurationElement : IEnumerable<IConfigurationSection>
     {
         /// <summary>Gets a configuration section.</summary>
         /// <param name="path">The configuration path.</param>
         /// <returns>The configuration section.</returns>
         IConfigurationSection this[string path] { get; }
 
-        IConfigurationBase Parent { get; }
+        IConfigurationElement Parent { get; }
 
         IConfiguration Root { get; }
 

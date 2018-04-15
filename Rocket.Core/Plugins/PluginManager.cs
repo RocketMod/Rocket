@@ -10,8 +10,8 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
-using Rocket.Core.Events.Plugins;
 using Rocket.Core.Extensions;
+using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins
 {
@@ -101,7 +101,7 @@ namespace Rocket.Core.Plugins
             foreach (Assembly assembly in assemblies)
                 LoadPluginFromAssembly(assembly);
 
-            PluginManagerLoadEvent @event = new PluginManagerLoadEvent(this, EventExecutionTargetContext.Sync);
+            PluginManagerInitEvent @event = new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
             eventManager.Emit(runtime, @event);
 
             container.TryGetAll(out IEnumerable<IPlugin> plugins);

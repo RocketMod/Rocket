@@ -3,9 +3,9 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core.Plugins;
 
-namespace HelloWorldPlugin
+namespace Rocket.Examples.HelloWorldPlugin
 {
-    public class HelloWorldPluginMain : Plugin
+    public class HelloWorldPlugin : Plugin
     {
         public override object DefaultConfiguration => new
         {
@@ -18,7 +18,7 @@ namespace HelloWorldPlugin
 
         private readonly ILogger logger;
 
-        public HelloWorldPluginMain(IDependencyContainer container, ILogger logger) : base("HelloWorldPlugin",
+        public HelloWorld(IDependencyContainer container, ILogger logger) : base("HelloWorldPlugin",
             container)
         {
             this.logger = logger;

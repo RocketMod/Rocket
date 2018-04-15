@@ -106,20 +106,20 @@ namespace Rocket.Tests.Configuration
             var config = LoadConfigFromObject();
             var section = config.CreateSection("dynamictest.test2", SectionType.Object);
             Assert.IsNotNull(section);
-            Assert.IsTrue(section.IsNull);
+            Assert.IsTrue(section.HasValue);
 
             section.Set(new { test4 = false });
             Assert.IsFalse(section["test4"].Get<bool>());
-            Assert.IsFalse(section.IsNull);
+            Assert.IsFalse(section.HasValue);
 
             var childSection = config.CreateSection("dynamictest.test2.test3", SectionType.Value);
             Assert.IsNotNull(childSection);
-            Assert.IsTrue(childSection.IsNull);
+            Assert.IsTrue(childSection.HasValue);
             childSection.Set(true);
-            Assert.IsFalse(childSection.IsNull);
+            Assert.IsFalse(childSection.HasValue);
             Assert.IsTrue(childSection.Get<bool>());
 
-            Assert.IsFalse(section.IsNull);
+            Assert.IsFalse(section.HasValue);
         }
 
         public void AssertConfigEquality(IConfiguration config)
