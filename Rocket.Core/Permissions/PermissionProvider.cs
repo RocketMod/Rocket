@@ -75,34 +75,39 @@ namespace Rocket.Core.Permissions
             GuardLoaded();
             GuardPermissions(permissions);
 
+            EPermissionResult result = EPermissionResult.Grant;
+
             foreach (var permission in permissions)
             {
-                var result = HasPermission(@group, permission);
-                if (result == EPermissionResult.Deny)
+                var tmp = HasPermission(@group, permission);
+                if (tmp == EPermissionResult.Deny)
                     return EPermissionResult.Deny;
 
-                if (result == EPermissionResult.Default)
-                    return EPermissionResult.Default;
+                if (tmp == EPermissionResult.Default)
+                    result = EPermissionResult.Default;
             }
 
-            return EPermissionResult.Grant;
+            return result;
         }
 
         public EPermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
+
+            EPermissionResult result = EPermissionResult.Grant;
+
             foreach (var permission in permissions)
             {
-                var result = HasPermission(caller, permission);
-                if (result == EPermissionResult.Deny)
+                var tmp = HasPermission(caller, permission);
+                if (tmp == EPermissionResult.Deny)
                     return EPermissionResult.Deny;
 
-                if (result == EPermissionResult.Default)
-                    return EPermissionResult.Default;
+                if (tmp == EPermissionResult.Default)
+                    result = EPermissionResult.Default;
             }
 
-            return EPermissionResult.Grant;
+            return result;
         }
 
         public EPermissionResult HasAnyPermissions(IPermissionGroup @group, params string[] permissions)

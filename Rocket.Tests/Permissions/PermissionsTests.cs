@@ -36,7 +36,8 @@ namespace Rocket.Tests.Permissions
                     Permissions = new[]
                     {
                         "GroupPermission2",
-                        "GroupPermission2.Child"
+                        "GroupPermission2.Child",
+                        "!GroupPermission3"
                     }
                 },
                 TestGroup3 = new
@@ -61,7 +62,8 @@ namespace Rocket.Tests.Permissions
                         Permissions = new[]
                         {
                             "PlayerPermission.Test",
-                            "PlayerPermission.Test2.*"
+                            "PlayerPermission.Test2.*",
+                            "!PlayerPermission.Test3"
                         }
                     }
                 }
@@ -99,15 +101,19 @@ namespace Rocket.Tests.Permissions
         public void TestGroupPermissions()
         {
             var provider = LoadProvider();
-            Assert.IsFalse(provider.HasPermission(TestPlayer, "GroupPermission1"));
-            Assert.IsTrue(provider.HasPermission(TestPlayer, "GroupPermission2"));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasPermission(TestPlayer, "GroupPermission1"));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasPermission(TestPlayer, "NonExistantPermission"));
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasPermission(TestPlayer, "GroupPermission2"));
+            Assert.AreEqual(EPermissionResult.Deny, provider.HasPermission(TestPlayer, "GroupPermission3"));
         }
 
         [TestMethod]
         public void TestPlayerPermissions()
         {
             var provider = LoadProvider();
-            Assert.IsTrue(provider.HasPermission(TestPlayer, "PlayerPermission.Test"));
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasPermission(TestPlayer, "PlayerPermission.Test"));
+            Assert.AreEqual(EPermissionResult.Deny, provider.HasPermission(TestPlayer, "PlayerPermission.Test3"));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasPermission(TestPlayer, "PlayerPermission.NonExistantPermission"));
         }
 
         [TestMethod]
@@ -115,13 +121,14 @@ namespace Rocket.Tests.Permissions
         {
             var provider = LoadProvider();
             //should not be inherited
-            Assert.IsFalse(provider.HasPermission(TestPlayer, "PlayerPermission.Test.ChildNode"));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasPermission(TestPlayer, "PlayerPermission.Test.ChildNode"));
 
             //should be inherited from PlayerPermission.Test2.*
-            Assert.IsTrue(provider.HasPermission(TestPlayer, "PlayerPermission.Test2.ChildNode"));
+            Assert.AreEqual(EPermissionResult.Grant,
+                provider.HasPermission(TestPlayer, "PlayerPermission.Test2.ChildNode"));
 
             //only has permission to the childs; not to the node itself
-            Assert.IsFalse(provider.HasPermission(TestPlayer, "PlayerPermission.Test2"));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasPermission(TestPlayer, "PlayerPermission.Test2"));
         }
 
         [TestMethod]
@@ -131,8 +138,8 @@ namespace Rocket.Tests.Permissions
             var group = provider.GetGroup("TestGroup2");
             provider.AddPermission(group, "DynamicGroupPermission");
 
-            Assert.IsTrue(provider.HasPermission(group, "DynamicGroupPermission"));
-            Assert.IsTrue(provider.HasPermission(TestPlayer, "DynamicGroupPermission"));
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasPermission(group, "DynamicGroupPermission"));
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasPermission(TestPlayer, "DynamicGroupPermission"));
         }
 
         [TestMethod]
@@ -142,8 +149,8 @@ namespace Rocket.Tests.Permissions
             var group = provider.GetGroup("TestGroup2");
             Assert.IsTrue(provider.RemovePermission(group, "GroupPermission2"));
 
-            Assert.IsFalse(provider.HasPermission(group, "GroupPermission2"));
-            Assert.IsFalse(provider.HasPermission(TestPlayer, "GroupPermission2"));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasPermission(group, "GroupPermission2"));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasPermission(TestPlayer, "GroupPermission2"));
         }
 
         [TestMethod]
@@ -151,15 +158,17 @@ namespace Rocket.Tests.Permissions
         {
             var provider = LoadProvider();
             provider.AddPermission(TestPlayer, "DynamicGroupPermission");
-            Assert.IsTrue(provider.HasPermission(TestPlayer, "DynamicGroupPermission"));
+
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasPermission(TestPlayer, "DynamicGroupPermission"));
         }
 
         [TestMethod]
         public void TestRemovePermissionFromPlayer()
         {
             var provider = LoadProvider();
+
             Assert.IsTrue(provider.RemovePermission(TestPlayer, "PlayerPermission.Test"));
-            Assert.IsFalse(provider.HasPermission(TestPlayer, "PlayerPermission.Test"));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasPermission(TestPlayer, "PlayerPermission.Test"));
         }
 
         [TestMethod]
@@ -168,15 +177,20 @@ namespace Rocket.Tests.Permissions
             var provider = LoadProvider();
             var group = provider.GetGroup("TestGroup2");
 
-            Assert.IsTrue(provider.HasAllPermissions(group, "GroupPermission2", "GroupPermission2.Child"));
-            Assert.IsTrue(provider.HasAllPermissions(TestPlayer,
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasAllPermissions(group, "GroupPermission2", "GroupPermission2.Child"));
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasAllPermissions(TestPlayer,
                 "PlayerPermission.Test", "PlayerPermission.Test2.ChildNode",
                 "GroupPermission2", "GroupPermission2.Child"));
 
             var failPerms = new[] { "PlayerPermission.Test", "GroupPermission2", "NonExistantPermission" };
 
-            Assert.IsFalse(provider.HasAllPermissions(group, failPerms));
-            Assert.IsFalse(provider.HasAllPermissions(TestPlayer, failPerms));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasAllPermissions(group, failPerms));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasAllPermissions(TestPlayer, failPerms));
+
+            //GroupPermission3 is explicitly denied
+            failPerms = new[] { "PlayerPermission.Test", "GroupPermission2", "GroupPermission3" };
+            Assert.AreEqual(EPermissionResult.Deny, provider.HasAllPermissions(group, failPerms));
+            Assert.AreEqual(EPermissionResult.Deny, provider.HasAllPermissions(TestPlayer, failPerms));
         }
 
         [TestMethod]
@@ -185,13 +199,18 @@ namespace Rocket.Tests.Permissions
             var provider = LoadProvider();
             var group = provider.GetGroup("TestGroup2");
 
-            Assert.IsTrue(provider.HasAnyPermissions(group, "GroupPermission2", "NonExistantPermission"));
-            Assert.IsTrue(provider.HasAnyPermissions(TestPlayer, "PlayerPermission.Test", "NonExistantPermission"));
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasAnyPermissions(group, "GroupPermission2", "NonExistantPermission"));
+            Assert.AreEqual(EPermissionResult.Grant, provider.HasAnyPermissions(TestPlayer, "PlayerPermission.Test", "NonExistantPermission"));
 
-            var perms = new[] { "NonExistantPermission", "NonExistantPermission2" };
+            //Player does not inherit GroupPermission1
+            var perms = new[] { "NonExistantPermission", "GroupPermission1" };
+            Assert.AreEqual(EPermissionResult.Default, provider.HasAnyPermissions(group, perms));
+            Assert.AreEqual(EPermissionResult.Default, provider.HasAnyPermissions(TestPlayer, perms));
 
-            Assert.IsFalse(provider.HasAnyPermissions(group, perms));
-            Assert.IsFalse(provider.HasAnyPermissions(TestPlayer, perms));
+            //GroupPermission3 is explicitly denied
+            perms = new[] { "NonExistantPermission", "GroupPermission3" };
+            Assert.AreEqual(EPermissionResult.Deny, provider.HasAnyPermissions(group, perms));
+            Assert.AreEqual(EPermissionResult.Deny, provider.HasAnyPermissions(TestPlayer, perms));
         }
 
         [TestMethod]
