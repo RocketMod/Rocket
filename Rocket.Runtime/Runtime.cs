@@ -14,7 +14,8 @@ namespace Rocket
         {
             Container = new UnityDependencyContainer();
             Container.RegisterInstance<IRuntime>(this);
-            Container.RegisterSingletonType<ILogger, ConsoleLogger>();
+            Container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
+            Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
 
             Container.Activate(typeof(RegistrationByConvention));
             Container.Get<IImplementation>().Init(this);

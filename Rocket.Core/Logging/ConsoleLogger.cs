@@ -15,7 +15,7 @@ namespace Rocket.Core.Logging
 
         private string FormatMessage(string message, string prefix, params object[] args)
         {
-            var callingMethod = ReflectionExtensions.GetCallingMethod(skipTypes: typeof(ConsoleLogger));
+            var callingMethod = ReflectionExtensions.GetCallingMethod(typeof(ConsoleLogger), typeof(ProxyLogger));
             string format = $"[{prefix}] [{callingMethod.ReflectedType?.Name ?? "<anonymous>"}#{callingMethod.Name}] {message}";
             return string.Format(format, args);
         }

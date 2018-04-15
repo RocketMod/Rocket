@@ -53,6 +53,7 @@
     <Compile Include="Commands\DefaultCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandProvider.cs" />
+    <Compile Include="Logging\ProxyLogger.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />

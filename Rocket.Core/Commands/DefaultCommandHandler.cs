@@ -68,7 +68,7 @@ namespace Rocket.Core.Commands
         {
             GuardCaller(ctx.Caller);
 
-            IEnumerable<ICommand> commands = container.GetAll<ICommandProvider>().SelectMany(c => c.Commands);
+            IEnumerable<ICommand> commands = container.Get<ICommandProvider>().Commands;
             return commands
                    .Where(c => c.SupportsCaller(ctx.Caller))
                    .FirstOrDefault(c => c.Name.Equals(ctx.Command, StringComparison.OrdinalIgnoreCase));

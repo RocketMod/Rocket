@@ -1,8 +1,9 @@
 ﻿using System;
+using Rocket.API.ServiceProxies;
 
 namespace Rocket.API.Logging
 {
-    public interface ILogger
+    public interface ILogger : IProxyableService
     {
         bool IsTraceEnabled { get; }
         bool IsDebugEnabled { get; }
