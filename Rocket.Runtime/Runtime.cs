@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
@@ -16,6 +18,9 @@ namespace Rocket
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
             Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
+
+            var versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
+            Container.Get<ILogger>().LogInformation("Initializing RocketMod " + versionInfo.FileVersion, ConsoleColor.DarkGreen);
 
             Container.Activate(typeof(RegistrationByConvention));
             Container.Get<IImplementation>().Init(this);
