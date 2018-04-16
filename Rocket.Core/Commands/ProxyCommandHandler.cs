@@ -17,7 +17,7 @@ namespace Rocket.Core.Commands
         {
             GuardCaller(caller);
 
-            foreach (var handler in ProxiedProviders.Where(c => c.SupportsCaller(caller)))
+            foreach (var handler in ProxiedServices.Where(c => c.SupportsCaller(caller)))
             {
                 if (handler.HandleCommand(caller, commandLine))
                 {
@@ -36,14 +36,14 @@ namespace Rocket.Core.Commands
 
         public bool SupportsCaller(ICommandCaller caller)
         {
-            return ProxiedProviders.Any(c => c.SupportsCaller(caller));
+            return ProxiedServices.Any(c => c.SupportsCaller(caller));
         }
 
         public ICommand GetCommand(ICommandContext ctx)
         {
             GuardCaller(ctx.Caller);
 
-            foreach (var provider in ProxiedProviders)
+            foreach (var provider in ProxiedServices)
             {
                 var prov = provider.GetCommand(ctx);
                 if (prov != null)

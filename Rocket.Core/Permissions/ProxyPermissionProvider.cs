@@ -17,19 +17,19 @@ namespace Rocket.Core.Permissions
 
         public bool SupportsCaller(ICommandCaller caller)
         {
-            return ProxiedProviders.Any(c => c.SupportsCaller(caller));
+            return ProxiedServices.Any(c => c.SupportsCaller(caller));
         }
 
         public bool SupportsGroup(IPermissionGroup group)
         {
-            return ProxiedProviders.Any(c => c.SupportsGroup(group));
+            return ProxiedServices.Any(c => c.SupportsGroup(group));
         }
 
         public PermissionResult HasPermission(IPermissionGroup @group, string permission)
         {
             GuardGroup(group);
 
-            foreach (var provider in ProxiedProviders.Where(c => c.SupportsGroup(group)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsGroup(group)))
             {
                 PermissionResult result = provider.HasPermission(group, permission);
                 if(result == PermissionResult.Default)
@@ -45,7 +45,7 @@ namespace Rocket.Core.Permissions
         {
             GuardCaller(caller);
 
-            foreach (var provider in ProxiedProviders.Where(c => c.SupportsCaller(caller)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsCaller(caller)))
             {
                 PermissionResult result = provider.HasPermission(caller, permission);
                 if (result == PermissionResult.Default)
@@ -61,7 +61,7 @@ namespace Rocket.Core.Permissions
         {
             GuardGroup(group);
 
-            foreach (var provider in ProxiedProviders.Where(c => c.SupportsGroup(group)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsGroup(group)))
             {
                 PermissionResult result = provider.HasAllPermissions(@group, permissions);
                 if (result == PermissionResult.Default)
@@ -77,7 +77,7 @@ namespace Rocket.Core.Permissions
         {
             GuardCaller(caller);
 
-            foreach (var provider in ProxiedProviders.Where(c => c.SupportsCaller(caller)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsCaller(caller)))
             {
                 PermissionResult result = provider.HasAllPermissions(caller, permissions);
                 if (result == PermissionResult.Default)
@@ -93,7 +93,7 @@ namespace Rocket.Core.Permissions
         {
             GuardGroup(group);
 
-            foreach (var provider in ProxiedProviders.Where(c => c.SupportsGroup(group)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsGroup(group)))
             {
                 PermissionResult result = provider.HasAnyPermissions(@group, permissions);
                 if (result == PermissionResult.Default)
@@ -109,7 +109,7 @@ namespace Rocket.Core.Permissions
         {
             GuardCaller(caller);
 
-            foreach (var provider in ProxiedProviders.Where(c => c.SupportsCaller(caller)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsCaller(caller)))
             {
                 PermissionResult result = provider.HasAnyPermissions(caller, permissions);
                 if (result == PermissionResult.Default)
@@ -175,12 +175,12 @@ namespace Rocket.Core.Permissions
         {
             GuardCaller(caller);
 
-            return ProxiedProviders.SelectMany(c => c.GetGroups(caller));
+            return ProxiedServices.SelectMany(c => c.GetGroups(caller));
         }
 
         public IEnumerable<IPermissionGroup> GetGroups()
         {
-            return ProxiedProviders.SelectMany(c => c.GetGroups());
+            return ProxiedServices.SelectMany(c => c.GetGroups());
         }
 
         public void UpdateGroup(IPermissionGroup @group)
@@ -215,12 +215,12 @@ namespace Rocket.Core.Permissions
 
         public void Reload()
         {
-            ProxiedProviders.ForEach(c => c.Reload());
+            ProxiedServices.ForEach(c => c.Reload());
         }
 
         public void Save()
         {
-            ProxiedProviders.ForEach(c => c.Save());
+            ProxiedServices.ForEach(c => c.Save());
         }
 
         private void GuardCaller(ICommandCaller caller)

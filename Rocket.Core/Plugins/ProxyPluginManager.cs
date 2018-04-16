@@ -23,7 +23,7 @@ namespace Rocket.Core.Plugins
 
         public IPlugin GetPlugin(string name)
         {
-            foreach (var pluginManager in ProxiedProviders)
+            foreach (var pluginManager in ProxiedServices)
             {
                 if(!pluginManager.PluginExists(name))
                     continue;
@@ -38,12 +38,12 @@ namespace Rocket.Core.Plugins
 
         public bool PluginExists(string name)
         {
-            return ProxiedProviders.Any(c => c.PluginExists(name));
+            return ProxiedServices.Any(c => c.PluginExists(name));
         }
 
         public void Init()
         {
-            foreach(var pluginManager in ProxiedProviders)
+            foreach(var pluginManager in ProxiedServices)
                 pluginManager.Init();
         }
 
@@ -57,7 +57,7 @@ namespace Rocket.Core.Plugins
             throw new NotSupportedException("Unloading plugins is not supported through proxy");
         }
 
-        public IEnumerable<IPlugin> Plugins => ProxiedProviders.SelectMany(c => c.Plugins);
+        public IEnumerable<IPlugin> Plugins => ProxiedServices.SelectMany(c => c.Plugins);
         public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
         {
             throw new NotSupportedException("Not supported on proxies");

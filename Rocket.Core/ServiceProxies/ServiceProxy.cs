@@ -11,7 +11,7 @@ namespace Rocket.Core.ServiceProxies
     {
         private IDependencyContainer Container { get; }
 
-        public IEnumerable<T> ProxiedProviders
+        public IEnumerable<T> ProxiedServices
         {
             get
             {

@@ -133,7 +133,7 @@ namespace Rocket.Core.DependencyInjection
 
         #region Get Methods
 
-        /// <exception cref="UnityInstanceNotResolvedException">
+        /// <exception cref="NotResolvedException">
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
@@ -145,10 +145,10 @@ namespace Rocket.Core.DependencyInjection
             if (IsRegistered<T>(mappingName))
                 return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
 
-            throw new UnityInstanceNotResolvedException(typeof(T), mappingName);
+            throw new NotResolvedException(typeof(T), mappingName);
         }
 
-        /// <exception cref="UnityInstanceNotResolvedException">
+        /// <exception cref="NotResolvedException">
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
@@ -160,10 +160,10 @@ namespace Rocket.Core.DependencyInjection
             if (IsRegistered<T>(mappingName))
                 return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
 
-            throw new UnityInstanceNotResolvedException(typeof(T), mappingName);
+            throw new NotResolvedException(typeof(T), mappingName);
         }
 
-        /// <exception cref="UnityInstanceNotResolvedException">
+        /// <exception cref="NotResolvedException">
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
@@ -175,10 +175,10 @@ namespace Rocket.Core.DependencyInjection
             if (IsRegistered(serviceType, mappingName))
                 return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
 
-            throw new UnityInstanceNotResolvedException(serviceType, mappingName);
+            throw new NotResolvedException(serviceType, mappingName);
         }
 
-        /// <exception cref="UnityInstanceNotResolvedException">
+        /// <exception cref="NotResolvedException">
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
@@ -190,10 +190,10 @@ namespace Rocket.Core.DependencyInjection
             if (IsRegistered(serviceType, mappingName))
                 return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
 
-            throw new UnityInstanceNotResolvedException(serviceType, mappingName);
+            throw new NotResolvedException(serviceType, mappingName);
         }
 
-        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
+        /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
         public IEnumerable<T> GetAll<T>()
         {
             if (!(typeof(ILogger).IsAssignableFrom(typeof(T))))
@@ -204,10 +204,10 @@ namespace Rocket.Core.DependencyInjection
 
             if (instances.Count() != 0) return instances;
 
-            throw new UnityInstanceNotResolvedException(typeof(T));
+            throw new NotResolvedException(typeof(T));
         }
 
-        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
+        /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
         public IEnumerable<T> GetAll<T>(params object[] parameters)
         {
             if (!(typeof(ILogger).IsAssignableFrom(typeof(T))))
@@ -218,10 +218,10 @@ namespace Rocket.Core.DependencyInjection
 
             if (instances.Count() != 0) return instances;
 
-            throw new UnityInstanceNotResolvedException(typeof(T));
+            throw new NotResolvedException(typeof(T));
         }
 
-        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
+        /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
         public IEnumerable<object> GetAll(Type type)
         {
             if (!(typeof(ILogger).IsAssignableFrom(type)))
@@ -232,10 +232,10 @@ namespace Rocket.Core.DependencyInjection
 
             if (instances.Count() != 0) return instances;
 
-            throw new UnityInstanceNotResolvedException(type);
+            throw new NotResolvedException(type);
         }
 
-        /// <exception cref="UnityInstanceNotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
+        /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
         public IEnumerable<object> GetAll(Type type, params object[] parameters)
         {
             if (!(typeof(ILogger).IsAssignableFrom(type)))
@@ -246,7 +246,7 @@ namespace Rocket.Core.DependencyInjection
 
             if (instances.Count() != 0) return instances;
 
-            throw new UnityInstanceNotResolvedException(type);
+            throw new NotResolvedException(type);
         }
 
         #endregion

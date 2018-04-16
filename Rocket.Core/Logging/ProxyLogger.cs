@@ -18,145 +18,145 @@ namespace Rocket.Core.Logging
 
         public void LogTrace(string message, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogTrace(message, arguments);
         }
 
         public void LogTrace(string message, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogTrace(message, color, arguments);
         }
 
         public void LogTrace(string message, Exception exception, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogTrace(message, exception, arguments);
         }
 
         public void LogTrace(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogTrace(message, exception, color, arguments);
         }
 
         public void LogDebug(string message, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogDebug(message, arguments);
         }
 
         public void LogDebug(string message, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogDebug(message, color, arguments);
         }
 
         public void LogDebug(string message, Exception exception, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogDebug(message, exception, arguments);
         }
 
         public void LogDebug(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogDebug(message, exception, color, arguments);
         }
 
         public void LogInformation(string message, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogInformation(message, arguments);
         }
 
         public void LogInformation(string message, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogInformation(message, color, arguments);
         }
 
         public void LogInformation(string message, Exception exception, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogInformation(message, exception, arguments);
         }
 
         public void LogInformation(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogInformation(message, exception, color, arguments);
         }
 
         public void LogWarning(string message, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogWarning(message, arguments);
         }
 
         public void LogWarning(string message, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogWarning(message, color, arguments);
         }
 
         public void LogWarning(string message, Exception exception, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogWarning(message, exception, arguments);
         }
 
         public void LogWarning(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogWarning(message, exception, color, arguments);
         }
 
         public void LogError(string message, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogError(message, arguments);
         }
 
         public void LogError(string message, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogError(message, color, arguments);
         }
 
         public void LogError(string message, Exception exception, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogError(message, exception, arguments);
         }
 
         public void LogError(string message, Exception exception, ConsoleColor? color = null, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogError(message, exception, color, arguments);
         }
 
         public void LogFatal(string message, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogFatal(message, arguments);
         }
 
         public void LogFatal(string message, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogFatal(message, color, arguments);
         }
 
         public void LogFatal(string message, Exception exception, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogFatal(message, exception, arguments);
         }
 
         public void LogFatal(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
-            foreach (var logger in ProxiedProviders)
+            foreach (var logger in ProxiedServices)
                 logger.LogFatal(message, exception, color, arguments);
         }
     }

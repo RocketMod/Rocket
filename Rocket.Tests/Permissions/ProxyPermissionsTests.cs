@@ -16,7 +16,7 @@ namespace Rocket.Tests.Permissions
         protected override IPermissionProvider LoadProvider()
         {
             var prov = (IServiceProxy<IPermissionProvider>)GetPermissionProvider();
-            foreach (var proxy in prov.ProxiedProviders)
+            foreach (var proxy in prov.ProxiedServices)
                 proxy.Load(GroupsConfig, PlayersConfig);
 
             return (IPermissionProvider)prov;

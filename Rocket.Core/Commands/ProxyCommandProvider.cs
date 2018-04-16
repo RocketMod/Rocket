@@ -10,6 +10,6 @@ namespace Rocket.Core.Commands
     {
         public ProxyCommandProvider(IDependencyContainer container) : base(container) { }
         public IEnumerable<ICommand> Commands => 
-            ProxiedProviders.SelectMany(c => c.Commands);
+            ProxiedServices.SelectMany(c => c.Commands);
     }
 }
