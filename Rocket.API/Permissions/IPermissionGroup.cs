@@ -1,6 +1,8 @@
-﻿namespace Rocket.API.Permissions
+﻿using System;
+
+namespace Rocket.API.Permissions
 {
-    public interface IPermissionGroup
+    public interface IPermissionGroup: IFormattable
     {
         string Id { get; }
         string Name { get; }
