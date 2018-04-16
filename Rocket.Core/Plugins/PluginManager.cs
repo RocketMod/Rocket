@@ -57,18 +57,18 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public void Init(string pluginsDirectory = null, string packagesDirectory = null)
+        public void Init()
         {
-            this.pluginsDirectory = pluginsDirectory ?? Path.Combine(implementation.WorkingDirectory, "./Plugins/");
-            this.packagesDirectory = packagesDirectory ?? Path.Combine(implementation.WorkingDirectory, "./Packages/");
+            pluginsDirectory = Path.Combine(implementation.WorkingDirectory, "Plugins");
+            packagesDirectory = Path.Combine(implementation.WorkingDirectory, "Packages");
 
             commands = new Dictionary<IPlugin, List<ICommand>>();
 
-            Directory.CreateDirectory(this.pluginsDirectory);
-            pluginAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(this.pluginsDirectory);
+            Directory.CreateDirectory(pluginsDirectory);
+            pluginAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(pluginsDirectory);
 
-            Directory.CreateDirectory(this.packagesDirectory);
-            packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(this.packagesDirectory);
+            Directory.CreateDirectory(packagesDirectory);
+            packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(packagesDirectory);
 
             AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs args)
             {

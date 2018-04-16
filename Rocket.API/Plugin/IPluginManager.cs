@@ -1,15 +1,16 @@
 using System;
 using System.Collections.Generic;
+using Rocket.API.ServiceProxies;
 
 namespace Rocket.API.Plugin
 {
-    public interface IPluginManager : IEnumerable<IPlugin>
+    public interface IPluginManager : IEnumerable<IPlugin>, IProxyableService
     {
         IPlugin GetPlugin(string name);
 
         bool PluginExists(string name);
 
-        void Init(string pluginsDirectory = null, string packagesDirectory = null);
+        void Init();
 
         bool LoadPlugin(string name);
 

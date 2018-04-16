@@ -68,6 +68,7 @@
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Permissions\ConsolePermissionProvider.cs" />
     <Compile Include="Permissions\ProxyPermissionProvider.cs" />
+    <Compile Include="Plugins\ProxyPluginManager.cs" />
     <Compile Include="ServiceProxies\ServicePriority.cs" />
     <Compile Include="ServiceProxies\ServicePriorityAttribute.cs" />
     <Compile Include="ServiceProxies\ServicePriorityComparer.cs" />
