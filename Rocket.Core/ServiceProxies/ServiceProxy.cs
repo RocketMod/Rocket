@@ -16,7 +16,6 @@ namespace Rocket.Core.ServiceProxies
             get
             {
                 var providers = Container.GetAll<T>()
-                                         .Where(c => c.GetType() != GetType())
                                          .ToList();
 
                 ServicePriorityComparer.Sort(providers, true);
