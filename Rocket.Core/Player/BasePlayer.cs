@@ -38,6 +38,7 @@ namespace Rocket.Core.Player
 
         public abstract double Health { get; set; }
         public abstract double MaxHealth { get; set; }
+        public abstract bool IsOnline { get; }
 
         public string ToString(string format, IFormatProvider formatProvider)
         {

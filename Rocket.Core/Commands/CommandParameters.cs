@@ -27,5 +27,26 @@ namespace Rocket.Core.Commands
 
             throw new NotSupportedException($"Converting \"{Parameters[index]}\" to \"{typeof(T).FullName}\" is not supported!");
         }
+
+        public T Get<T>(int index, T defaultValue)
+        {
+            if (TryGet(index, out T val))
+                return val;
+            return defaultValue;
+        }
+
+        public bool TryGet<T>(int index, out T value)
+        {
+            value = default(T);
+            try
+            {
+                value = Get<T>(index);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

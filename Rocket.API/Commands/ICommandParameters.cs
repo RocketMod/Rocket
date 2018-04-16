@@ -9,5 +9,9 @@ namespace Rocket.API.Commands
         int Length { get; }
 
         T Get<T>(int index);
+
+        T Get<T>(int index, T defaultValue);
+
+        bool TryGet<T>(int index, out T value);
     }
 }

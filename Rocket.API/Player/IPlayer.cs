@@ -8,5 +8,7 @@ namespace Rocket.API.Player
     {
         double Health { get; set; }
         double MaxHealth { get; set; }
+
+        bool IsOnline { get; }
     }
 }

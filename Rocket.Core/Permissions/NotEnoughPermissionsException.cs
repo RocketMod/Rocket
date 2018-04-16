@@ -7,12 +7,20 @@ namespace Rocket.Core.Permissions {
     {
         public ICommandCaller Caller { get; }
         public string[] Permissions { get; }
+        public string FriendlyErrorMessage { get; }
 
-        public NotEnoughPermissionsException(ICommandCaller caller, string[] permissions)
+        public NotEnoughPermissionsException(ICommandCaller caller, string[] permissions) : this(caller, permissions, "You don't have enough permissions to do that.") { }
+
+        public NotEnoughPermissionsException(ICommandCaller caller, string[] permissions, string friendlyErrorMessage)
         {
             Caller = caller;
             Permissions = permissions;
+            FriendlyErrorMessage = friendlyErrorMessage;
         }
+
+
+        public NotEnoughPermissionsException(ICommandCaller caller, string permission, string friendlyErrorMessage) : this(caller, new[] { permission }, friendlyErrorMessage) { }
+        public NotEnoughPermissionsException(ICommandCaller caller, string permission) : this(caller, new[] { permission }) { }
 
         public override string Message
         {
@@ -29,15 +37,9 @@ namespace Rocket.Core.Permissions {
             }
         }
 
-        public NotEnoughPermissionsException(ICommandCaller caller, string permission) : this(caller,
-            new[] { permission })
-        {
-
-        }
-
         public void SendErrorMessage(ICommandContext context)
         {
-            context.Caller.SendMessage("Not enough permissions.", ConsoleColor.Red);
+            context.Caller.SendMessage(FriendlyErrorMessage, ConsoleColor.Red);
         }
     }
 }
