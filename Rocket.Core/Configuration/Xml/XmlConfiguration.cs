@@ -8,6 +8,7 @@ namespace Rocket.Core.Configuration.Xml
 {
     public class XmlConfiguration : JsonNetConfigurationBase
     {
+        private const string ConfigRoot = "Config";
         protected override void LoadFromFile(string file)
         {
             string xml  = File.ReadAllText(file);
@@ -25,7 +26,7 @@ namespace Rocket.Core.Configuration.Xml
             {
                 CommentHandling = CommentHandling.Ignore,
                 LineInfoHandling = LineInfoHandling.Ignore
-            }).GetValue("Config").DeepClone();
+            }).GetValue(ConfigRoot).DeepClone();
 
             IsLoaded = true;
         }
@@ -42,7 +43,7 @@ namespace Rocket.Core.Configuration.Xml
             JObject o = new JObject
             {
                 {"?xml", new JObject(xml)},
-                {"Config", clone}
+                {ConfigRoot, clone}
             };
 
             var json = o.ToString();
