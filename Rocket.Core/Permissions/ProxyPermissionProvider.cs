@@ -163,12 +163,17 @@ namespace Rocket.Core.Permissions
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
-            throw new NotSupportedException("Getting primary group from proxy is not supported.");
+            IPermissionGroup group;
+            foreach(var service in ProxiedServices.Where(c => c.SupportsCaller(caller)))
+                if ((group = service.GetPrimaryGroup(caller)) != null)
+                    return group;
+
+            return null;
         }
 
         public IPermissionGroup GetGroup(string id)
         {
-            throw new NotSupportedException("Getting a group via id from proxy is not supported.");
+            return GetGroups().FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
         public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
