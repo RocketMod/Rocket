@@ -25,6 +25,9 @@ namespace Rocket.Core.Eventing
 
         public void Subscribe(ILifecycleObject @object, string eventName, EventCallback callback)
         {
+            if (!@object.IsAlive)
+                return;
+
             EventHandler handler = GetEventHandler(callback.Method, null);
             eventListeners.Add(new EventAction(@object, callback.Invoke, handler, eventName));
         }
@@ -32,6 +35,9 @@ namespace Rocket.Core.Eventing
         public void Subscribe<TEvent>(ILifecycleObject @object, EventCallback<TEvent> callback,
                                       string emitterName = null) where TEvent : IEvent
         {
+            if (!@object.IsAlive)
+                return;
+
             EventHandler handler = GetEventHandler(callback.Method, emitterName);
             eventListeners.Add(new EventAction(@object,
                 (sender, @event) => callback.Invoke(sender, (TEvent)@event), handler, typeof(TEvent)));
@@ -40,12 +46,18 @@ namespace Rocket.Core.Eventing
         public void Subscribe(ILifecycleObject @object, Type eventType, EventCallback callback,
                               string emitterName = null)
         {
+            if (!@object.IsAlive)
+                return;
+
             EventHandler handler = GetEventHandler(callback.Method, emitterName);
             eventListeners.Add(new EventAction(@object, callback.Invoke, handler, eventType));
         }
 
         public void Subscribe(ILifecycleObject @object, string emitterName, string eventName, EventCallback callback)
         {
+            if (!@object.IsAlive)
+                return;
+
             EventHandler handler = GetEventHandler(callback.Method, emitterName);
             eventListeners.Add(new EventAction(@object, callback, handler, eventName));
         }
@@ -53,6 +65,9 @@ namespace Rocket.Core.Eventing
         public void Subscribe<TEvent, TEmitter>(ILifecycleObject @object, EventCallback<TEvent> callback)
             where TEvent : IEvent where TEmitter : IEventEmitter
         {
+            if (!@object.IsAlive)
+                return;
+
             EventHandler handler = GetEventHandler(callback.Method, GetEmitterName(typeof(TEmitter)));
             eventListeners.Add(new EventAction(@object,
                 (sender, @event) => callback.Invoke(sender, (TEvent)@event), handler, typeof(TEvent)));
@@ -60,32 +75,50 @@ namespace Rocket.Core.Eventing
 
         public void Subscribe(ILifecycleObject @object, EventCallback callback, Type eventType, Type eventEmitterType)
         {
+            if (!@object.IsAlive)
+                return;
+
             EventHandler handler = GetEventHandler(callback.Method, GetEmitterName(eventEmitterType));
             eventListeners.Add(new EventAction(@object, callback.Invoke, handler, eventType));
         }
 
         public void Unsubscribe(ILifecycleObject @object)
         {
+            if (!@object.IsAlive)
+                return;
+
             eventListeners.RemoveAll(c => c.Owner == @object);
         }
 
         public void Unsubscribe(ILifecycleObject @object, string eventName)
         {
+            if (!@object.IsAlive)
+                return;
+
             eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, eventName));
         }
 
         public void Unsubscribe<TEvent>(ILifecycleObject @object) where TEvent : IEvent
         {
+            if (!@object.IsAlive)
+                return;
+
             eventListeners.RemoveAll(c => c.Owner == @object);
         }
 
         public void Unsubscribe(ILifecycleObject @object, Type eventType)
         {
+            if (!@object.IsAlive)
+                return;
+
             eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, GetEventName(eventType)));
         }
 
         public void Unsubscribe(ILifecycleObject @object, string emitterName, string eventName)
         {
+            if (!@object.IsAlive)
+                return;
+
             eventListeners.RemoveAll(c => c.Owner == @object
                 && c.Handler.EmitterName.Equals(emitterName,
                     StringComparison.OrdinalIgnoreCase)
@@ -95,6 +128,9 @@ namespace Rocket.Core.Eventing
         public void Unsubscribe<TEvent, TEmitter>(ILifecycleObject @object)
             where TEvent : IEvent where TEmitter : IEventEmitter
         {
+            if (!@object.IsAlive)
+                return;
+
             eventListeners.RemoveAll(c => c.Owner == @object
                 && CheckEvent(c, GetEventName(typeof(TEvent)))
                 && CheckEmitter(c, GetEmitterName(typeof(TEmitter)), false));
@@ -102,6 +138,9 @@ namespace Rocket.Core.Eventing
 
         public void Unsubscribe(ILifecycleObject @object, Type eventType, Type eventEmitterType)
         {
+            if (!@object.IsAlive)
+                return;
+
             eventListeners.RemoveAll(c => c.Owner == @object
                 && CheckEvent(c, GetEventName(eventType))
                 && CheckEmitter(c, GetEmitterName(eventEmitterType), false));
@@ -109,6 +148,9 @@ namespace Rocket.Core.Eventing
 
         public void AddEventListener(ILifecycleObject @object, IEventListener eventListener)
         {
+            if (!@object.IsAlive)
+                return;
+
             // ReSharper disable once UseIsOperator.2
             if (!typeof(IEventListener).IsInstanceOfType(eventListener))
                 throw new ArgumentException(
@@ -144,7 +186,10 @@ namespace Rocket.Core.Eventing
 
         public void Emit(IEventEmitter sender, IEvent @event, EventExecutedCallback callback = null)
         {
-            if(sender == null)
+            if (!sender.IsAlive)
+                return;
+
+            if (sender == null)
                 throw new ArgumentNullException(nameof(sender));
 
             if(@event == null)
@@ -158,7 +203,8 @@ namespace Rocket.Core.Eventing
             List<EventAction> actions =
                 eventListeners
                     .Where(c => c.TargetEventType?.IsInstanceOfType(@event)
-                        ?? c.TargetEventName.Equals(@event.Name, StringComparison.OrdinalIgnoreCase))
+                        ?? c.TargetEventName.Equals(@event.Name, StringComparison.OrdinalIgnoreCase) 
+                        && c.Owner.IsAlive)
                     .ToList();
 
             actions.Sort((a, b) => ServicePriorityComparer.Compare(a.Handler.Priority, b.Handler.Priority));
@@ -199,7 +245,6 @@ namespace Rocket.Core.Eventing
             foreach (EventAction info in targetActions)
             {
                 ILifecycleObject pl = info.Owner;
-                if (!pl.IsAlive) continue;
 
                 if (scheduler == null)
                 {

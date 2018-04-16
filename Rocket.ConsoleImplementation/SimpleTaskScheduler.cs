@@ -90,7 +90,11 @@ namespace Rocket.ConsoleImplementation
         {
             TaskScheduleEvent e = new TaskScheduleEvent(task);
 
-            if (!(task.Owner is IEventEmitter owner)) return;
+            if (!(task.Owner is IEventEmitter owner))
+                return;
+
+            if (!task.Owner.IsAlive)
+                return;
 
             IEventManager eventManager = container.Get<IEventManager>();
 

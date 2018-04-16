@@ -1,7 +1,11 @@
-﻿namespace Rocket.API.Commands
+﻿using System.Collections.Generic;
+
+namespace Rocket.API.Commands
 {
     public interface ICommand
     {
+        List<string> Aliases { get; }
+
         string Name { get; }
 
         string Permission { get; }
