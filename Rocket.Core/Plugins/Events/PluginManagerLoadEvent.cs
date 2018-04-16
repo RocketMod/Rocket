@@ -9,7 +9,7 @@ namespace Rocket.Core.Plugins.Events
     /// It should not be used by plugins itself, only by implementations.<br/><br/>
     /// Plugins can use <see cref="PluginLoadEvent"/> and <see cref="PluginLoadedEvent"/>
     /// </summary>
-    public class PluginManagerInitEvent : Event
+    public class PluginManagerInitEvent : Event, ICancellableEvent
     {
         public IPluginManager PluginManager { get; }
 
@@ -29,5 +29,7 @@ namespace Rocket.Core.Plugins.Events
         {
             PluginManager = pluginManager;
         }
+
+        public bool IsCancelled { get; set; }
     }
 }

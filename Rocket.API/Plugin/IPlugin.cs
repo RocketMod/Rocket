@@ -5,6 +5,8 @@ namespace Rocket.API.Plugin
 {
     public interface IPlugin : IEventEmitter
     {
+        string WorkingDirectory { get; }
+
         void Load();
 
         void Unload();
