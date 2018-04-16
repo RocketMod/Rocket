@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 
@@ -7,6 +8,13 @@ namespace Rocket.Core.Plugins
 {
     public abstract class BasePlayer : IPlayer
     {
+        protected IDependencyContainer Container { get; }
+
+        protected BasePlayer(IDependencyContainer container)
+        {
+            Container = container;
+        }
+
         public int CompareTo(object obj) => CompareTo((IIdentifiable)obj);
 
         public int CompareTo(IIdentifiable other) => CompareTo(other.Id);
@@ -22,8 +30,6 @@ namespace Rocket.Core.Plugins
         public int CompareTo(string other) => Id.CompareTo(other);
 
         public bool Equals(string other) => Id.Equals(other, StringComparison.OrdinalIgnoreCase);
-
-
         public abstract string Id { get; protected set; }
         public abstract string Name { get; protected set; }
         public abstract Type CallerType { get; }
@@ -47,7 +53,10 @@ namespace Rocket.Core.Plugins
                 return Id.ToString(formatProvider);
 
             if (format.Equals("name", StringComparison.OrdinalIgnoreCase))
-                return Name.ToString(formatProvider); ;
+                return Name.ToString(formatProvider);
+
+            if (format.Equals("group", StringComparison.OrdinalIgnoreCase))
+                return Container.Get<IPermissionProvider>().GetPrimaryGroup(this).Name;
 
             if(format.Equals("health", StringComparison.OrdinalIgnoreCase))
             {

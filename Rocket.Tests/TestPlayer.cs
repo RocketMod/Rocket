@@ -1,4 +1,5 @@
 ﻿using System;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 using Rocket.Core.Plugins;
@@ -7,15 +8,15 @@ namespace Rocket.Tests
 {
     public sealed class TestPlayer : BasePlayer
     {
-        public TestPlayer(string id, string name)
+        public TestPlayer(IDependencyContainer container, string id, string name) : base(container)
         {
             Id = id;
             Name = name;
         }
 
-        public TestPlayer() : this("TestPlayerId", "TestPlayer")
+        public TestPlayer(IDependencyContainer container) : this(container, "TestPlayerId", "TestPlayer")
         {
-            
+
         }
 
         public override string Id { get; protected set; }
