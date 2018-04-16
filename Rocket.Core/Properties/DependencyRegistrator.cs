@@ -28,10 +28,11 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPluginManager, PluginManager>("default_plugins");
             container.RegisterSingletonType<IPluginManager, ProxyPluginManager>("proxy_plugins", null);
 
+            container.RegisterSingletonType<ICommandProvider, RocketCommandProvider>("rocket_cmdprovider");
             container.RegisterSingletonType<ICommandProvider, PluginManager>("plugin_cmdprovider");
             container.RegisterSingletonType<ICommandProvider, ProxyCommandProvider>("proxy_cmdprovider", null);
 
-            container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>("config_permissions");
+            container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>("default_permissions");
             container.RegisterSingletonType<IPermissionProvider, ConsolePermissionProvider>("console_permissions");
             container.RegisterSingletonType<IPermissionProvider, ProxyPermissionProvider>("proxy_permissions", null);
 

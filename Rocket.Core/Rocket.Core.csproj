@@ -52,9 +52,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Commands\CommandContext.cs" />
+    <Compile Include="Commands\CommandParameters.cs" />
+    <Compile Include="Commands\CommandWrongUsageException.cs" />
     <Compile Include="Commands\DefaultCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandProvider.cs" />
+    <Compile Include="Commands\RocketCommandProvider.cs" />
+    <Compile Include="Commands\CommandParameterMismatchException.cs" />
+    <Compile Include="Commands\RocketCommands\CommandPermissionGroups.cs" />
     <Compile Include="Logging\ProxyLogger.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
@@ -70,7 +75,8 @@
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Permissions\ConsolePermissionProvider.cs" />
     <Compile Include="Permissions\ProxyPermissionProvider.cs" />
-    <Compile Include="Plugins\BasePlayer.cs" />
+    <Compile Include="Player\BasePlayer.cs" />
+    <Compile Include="Player\PlayerTypeConverter.cs" />
     <Compile Include="Plugins\ProxyPluginManager.cs" />
     <Compile Include="ServiceProxies\ServicePriority.cs" />
     <Compile Include="ServiceProxies\ServicePriorityAttribute.cs" />
@@ -91,7 +97,7 @@
     <Compile Include="Plugins\Events\PluginManagerLoadEvent.cs" />
     <Compile Include="Plugins\Events\PluginUnloadedEvent.cs" />
     <Compile Include="Plugins\Events\PluginUnloadEvent.cs" />
-    <Compile Include="Exceptions\IFriendlyException.cs" />
+    <Compile Include="Exceptions\ICommandFriendlyException.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

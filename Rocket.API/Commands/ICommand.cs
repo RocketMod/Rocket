@@ -4,6 +4,8 @@ namespace Rocket.API.Commands
 {
     public interface ICommand
     {
+        string GetSyntax(ICommandContext context);
+
         List<string> Aliases { get; }
 
         string Name { get; }

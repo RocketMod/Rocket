@@ -11,8 +11,8 @@ namespace Rocket.API.Player
 
         bool Ban(IPlayer player, ICommandCaller banner = null, string reason = null, TimeSpan? timeSpan = null);
 
-        IPlayer GetPlayer(string uniqueID);
-
+        IPlayer GetPlayer(string nameOrId);
+        IPlayer GetPlayerById(string id);
         IPlayer GetPlayerByName(string displayName);
 
         bool TryGetPlayer(string uniqueID, out IPlayer output);

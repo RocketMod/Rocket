@@ -3,7 +3,7 @@ using Rocket.API.Commands;
 using Rocket.Core.Exceptions;
 
 namespace Rocket.Core.Permissions {
-    public class NotEnoughPermissionsException : Exception, IFriendlyException
+    public class NotEnoughPermissionsException : Exception, ICommandFriendlyException
     {
         public ICommandCaller Caller { get; }
         public string[] Permissions { get; }
@@ -35,9 +35,9 @@ namespace Rocket.Core.Permissions {
 
         }
 
-        public string ToFriendlyString(ICommandContext context)
+        public void SendErrorMessage(ICommandContext context)
         {
-            return "Not enough permissions.";
+            context.Caller.SendMessage("Not enough permissions.", ConsoleColor.Red);
         }
     }
 }

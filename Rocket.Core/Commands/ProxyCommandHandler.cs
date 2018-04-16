@@ -13,13 +13,13 @@ namespace Rocket.Core.Commands
     {
         public ProxyCommandHandler(IDependencyContainer container) : base(container) { }
 
-        public bool HandleCommand(ICommandCaller caller, string commandLine)
+        public bool HandleCommand(ICommandCaller caller, string commandLine, string prefix)
         {
             GuardCaller(caller);
 
             foreach (var handler in ProxiedServices.Where(c => c.SupportsCaller(caller)))
             {
-                if (handler.HandleCommand(caller, commandLine))
+                if (handler.HandleCommand(caller, commandLine, prefix))
                 {
                     return true;
                 }

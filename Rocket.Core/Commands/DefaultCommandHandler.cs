@@ -18,18 +18,20 @@ namespace Rocket.Core.Commands
             this.container = container;
         }
 
-        public bool HandleCommand(ICommandCaller caller, string commandLine)
+        public bool HandleCommand(ICommandCaller caller, string commandLine, string prefix)
         {
             GuardCaller(caller);
 
             commandLine = commandLine.Trim();
             string[] args = commandLine.Split(' ');
 
-            CommandContext context = new CommandContext(caller, args[0], args.Skip(1).ToArray());
+            CommandContext context = new CommandContext(container.CreateChildContainer(), caller, prefix, null, args[0], args.Skip(1).ToArray());
 
             ICommand target = GetCommand(context);
             if (target == null)
                 return false; // only return false when the command was not found
+
+            context.Command = target;
 
             var tmp = new List<string> { target.Name };
             if (target.Permission != null)
@@ -47,9 +49,9 @@ namespace Rocket.Core.Commands
             }
             catch (Exception e)
             {
-                if (e is IFriendlyException)
+                if (e is ICommandFriendlyException exception)
                 {
-                    ((IFriendlyException)e).ToFriendlyString(context);
+                    exception.SendErrorMessage(context);
                     return true;
                 }
 
@@ -71,7 +73,7 @@ namespace Rocket.Core.Commands
             IEnumerable<ICommand> commands = container.Get<ICommandProvider>().Commands;
             return commands
                    .Where(c => c.SupportsCaller(ctx.Caller))
-                   .FirstOrDefault(c => c.Name.Equals(ctx.Command, StringComparison.OrdinalIgnoreCase));
+                   .FirstOrDefault(c => c.Name.Equals(ctx.CommandAlias, StringComparison.OrdinalIgnoreCase));
         }
 
         private void GuardCaller(ICommandCaller caller)

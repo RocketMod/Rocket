@@ -32,9 +32,12 @@ namespace Rocket.ConsoleImplementation {
         public string Id => "Console";
         public string Name => "Console";
         public Type CallerType => typeof(ConsoleCaller);
-        public void SendMessage(string message)
+        public void SendMessage(string message, ConsoleColor? color)
         {
-            Console.WriteLine(message);
+            var tmp = Console.ForegroundColor;
+            Console.ForegroundColor = color ?? tmp;
+            Console.WriteLine("[SendMessage] " + message);
+            Console.ForegroundColor = tmp;
         }
     }
 }

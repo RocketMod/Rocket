@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using Rocket.API.Commands;
 
 namespace Rocket.API.Player

@@ -8,6 +8,6 @@ namespace Rocket.API.Commands
         string Name { get; }
         Type CallerType { get; }
 
-        void SendMessage(string message);
+        void SendMessage(string message, ConsoleColor? color = null);
     }
 }

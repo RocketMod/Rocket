@@ -1,11 +1,12 @@
 ﻿using System;
-using System.Linq;
+using System.ComponentModel;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 
-namespace Rocket.Core.Plugins
+namespace Rocket.Core.Player
 {
+    [TypeConverter(typeof(PlayerTypeConverter))]
     public abstract class BasePlayer : IPlayer
     {
         protected IDependencyContainer Container { get; }
@@ -33,7 +34,7 @@ namespace Rocket.Core.Plugins
         public abstract string Id { get; protected set; }
         public abstract string Name { get; protected set; }
         public abstract Type CallerType { get; }
-        public abstract void SendMessage(string message);
+        public abstract void SendMessage(string message, ConsoleColor? color = null);
 
         public abstract double Health { get; set; }
         public abstract double MaxHealth { get; set; }

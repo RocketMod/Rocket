@@ -12,7 +12,7 @@ namespace Rocket.API.Commands
         /// <param name="caller">The caller</param>
         /// <param name="commandLine">The command line</param>
         /// <returns>true if the command was handled, false when not</returns>
-        bool HandleCommand(ICommandCaller caller, string commandLine);
+        bool HandleCommand(ICommandCaller caller, string commandLine, string prefix);
 
         bool SupportsCaller(ICommandCaller caller);
 

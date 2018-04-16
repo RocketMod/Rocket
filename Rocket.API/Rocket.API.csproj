@@ -50,6 +50,7 @@
     <Compile Include="Commands\ICommandCaller.cs" />
     <Compile Include="Commands\ICommandContext.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
+    <Compile Include="Commands\ICommandParameters.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Commands\IConsoleCommandCaller.cs" />
     <Compile Include="Configuration\IConfigurable.cs" />

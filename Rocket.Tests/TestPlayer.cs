@@ -2,6 +2,7 @@
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
+using Rocket.Core.Player;
 using Rocket.Core.Plugins;
 
 namespace Rocket.Tests
@@ -23,7 +24,7 @@ namespace Rocket.Tests
         public override string Name { get; protected set; }
         public override Type CallerType => typeof(TestPlayer);
 
-        public override void SendMessage(string message)
+        public override void SendMessage(string message, ConsoleColor? color)
         {
             throw new NotImplementedException();
         }

@@ -33,9 +33,12 @@ namespace Rocket.Tests {
         public string Id => "Console";
         public string Name => "Console";
         public Type CallerType => typeof(TestConsoleCaller);
-        public void SendMessage(string message)
+        public void SendMessage(string message, ConsoleColor? color = null)
         {
+            var tmp = Console.ForegroundColor;
+            Console.ForegroundColor = color ?? tmp;
             Console.WriteLine("[SendMessage] " + message);
+            Console.ForegroundColor = tmp;
         }
     }
 }

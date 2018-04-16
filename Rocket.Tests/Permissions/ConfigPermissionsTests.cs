@@ -9,7 +9,7 @@ namespace Rocket.Tests.Permissions
     {
         protected override IPermissionProvider GetPermissionProvider()
         {
-            return Runtime.Container.Get<IPermissionProvider>("config_permissions");
+            return Runtime.Container.Get<IPermissionProvider>("default_permissions");
         }
     }
 }

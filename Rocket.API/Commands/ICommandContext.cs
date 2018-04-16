@@ -1,11 +1,19 @@
-﻿namespace Rocket.API.Commands
+﻿using Rocket.API.DependencyInjection;
+
+namespace Rocket.API.Commands
 {
     public interface ICommandContext
     {
-        string Command { get; }
+        string CommandPrefix { get; }
+
+        string CommandAlias { get; }
+
+        ICommand Command { get; }
 
         ICommandCaller Caller { get; }
 
-        string[] Parameters { get; }
+        ICommandParameters Parameters { get; }
+
+        IDependencyContainer Container { get; }
     }
 }
