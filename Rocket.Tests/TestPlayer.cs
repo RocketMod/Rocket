@@ -1,32 +1,28 @@
 ﻿using System;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
+using Rocket.Core.Plugins;
 
 namespace Rocket.Tests
 {
-    public class TestPlayer : IPlayer
+    public sealed class TestPlayer : BasePlayer
     {
-        public int CompareTo(object obj) => CompareTo((IIdentifiable) obj);
-
-        public int CompareTo(IIdentifiable other) => CompareTo(other.Id);
-
-        public bool Equals(IIdentifiable other)
+        public TestPlayer(string id, string name)
         {
-            if (other == null)
-                return false;
-
-            return Equals(other.Id);
+            Id = id;
+            Name = name;
         }
 
-        public int CompareTo(string other) => Id.CompareTo(other);
+        public TestPlayer() : this("TestPlayerId", "TestPlayer")
+        {
+            
+        }
 
-        public bool Equals(string other) => Id.Equals(other, StringComparison.OrdinalIgnoreCase);
+        public override string Id { get; protected set; }
+        public override string Name { get; protected set; }
+        public override Type CallerType => typeof(TestPlayer);
 
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public Type CallerType => typeof(TestPlayer);
-
-        public void SendMessage(string message)
+        public override void SendMessage(string message)
         {
             throw new NotImplementedException();
         }

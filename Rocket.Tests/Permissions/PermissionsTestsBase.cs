@@ -76,10 +76,7 @@ namespace Rocket.Tests.Permissions
             GroupsConfig = GetConfigurationProvider();
             GroupsConfig.LoadFromObject(sampleGroupsPermissions);
 
-            TestPlayer = new TestPlayer
-            {
-                Id = "TestPlayerId"
-            };
+            TestPlayer = new TestPlayer();
         }
 
         public virtual IConfiguration GetConfigurationProvider() => Runtime.Container.Get<IConfiguration>();

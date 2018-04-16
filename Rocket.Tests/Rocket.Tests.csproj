@@ -63,6 +63,8 @@
     <Compile Include="Permissions\ConfigPermissionsTests.cs" />
     <Compile Include="Permissions\PermissionsTestsBase.cs" />
     <Compile Include="Permissions\ProxyPermissionsTests.cs" />
+    <Compile Include="PlayerTests\DefaultPlayerTests.cs" />
+    <Compile Include="PlayerTests\PlayerTestsBase.cs" />
     <Compile Include="Plugins\PluginTests.cs" />
     <Compile Include="TestConsoleCaller.cs" />
     <Compile Include="TestPlayer.cs" />

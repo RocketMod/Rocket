@@ -6,7 +6,7 @@ using Rocket.API.I18N;
 
 namespace Rocket.Core.I18N
 {
-    public class TranslationLocator : ITranslationLocator
+    public class TranslationLocator : ITranslationLocator, IFormattable
     {
         private readonly IConfiguration config;
 
@@ -48,6 +48,11 @@ namespace Rocket.Core.I18N
         public void Save()
         {
             config.Save();
+        }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return GetLocalizedMessage(format);
         }
     }
 }
