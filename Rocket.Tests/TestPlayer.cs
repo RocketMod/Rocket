@@ -26,5 +26,8 @@ namespace Rocket.Tests
         {
             throw new NotImplementedException();
         }
+
+        public override double Health { get => 0; set {} }
+        public override double MaxHealth { get => 100; set { } }
     }
 }

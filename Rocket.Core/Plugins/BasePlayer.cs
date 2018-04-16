@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 
@@ -28,16 +29,35 @@ namespace Rocket.Core.Plugins
         public abstract Type CallerType { get; }
         public abstract void SendMessage(string message);
 
+        public abstract double Health { get; set; }
+        public abstract double MaxHealth { get; set; }
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             if (format == null)
-                return Name;
+                return Name.ToString(formatProvider); ;
+
+            string[] subFormats = format.Split(':');
+
+            format = subFormats[0];
+            string subFormat = subFormats.Length > 1 ? subFormats[1] : null; 
+
 
             if (format.Equals("id", StringComparison.OrdinalIgnoreCase))
-                return Id;
+                return Id.ToString(formatProvider);
 
             if (format.Equals("name", StringComparison.OrdinalIgnoreCase))
-                return Name;
+                return Name.ToString(formatProvider); ;
+
+            if(format.Equals("health", StringComparison.OrdinalIgnoreCase))
+            {
+                return subFormat != null ? Health.ToString(subFormat, formatProvider) : Health.ToString(formatProvider);
+            }
+
+            if (format.Equals("maxhealth", StringComparison.OrdinalIgnoreCase))
+            {
+                return subFormat != null ? MaxHealth.ToString(subFormat, formatProvider) : MaxHealth.ToString(formatProvider);
+            }
 
             throw new FormatException($"\"{format}\" is not a valid format.");
         }
