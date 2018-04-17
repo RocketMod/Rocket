@@ -81,7 +81,7 @@ namespace Rocket.Core.Commands
                     CommandContext childContext = new CommandContext(
                         parent.Container.CreateChildContainer(),
                         parent.Caller,
-                        parent.CommandPrefix + parent.CommandAlias,
+                        parent.CommandPrefix + (parent.ParentCommandContext == null ? "" : " ")+ parent.CommandAlias,
                         cmd,
                         alias,
                         ((CommandParameters)parent.Parameters).Parameters.Skip(1).ToArray(),
