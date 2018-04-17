@@ -23,7 +23,7 @@ namespace Rocket.Tests.Permissions
         }
 
         [TestMethod]
-        public void TestPermissionsLoad()
+        public override void TestPermissionsLoad()
         {
             //proxy does not support loading from configs
             Assert.ThrowsException<NotSupportedException>(() => base.TestPermissionsLoad());

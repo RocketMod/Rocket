@@ -285,7 +285,7 @@ namespace Rocket.Tests.Permissions
         protected abstract IPermissionProvider GetPermissionProvider();
 
         [TestMethod]
-        public void TestPermissionsLoad()
+        public virtual void TestPermissionsLoad()
         {
             var notLoadedProvider = GetPermissionProvider();
             notLoadedProvider.Load(GroupsConfig, PlayersConfig); //should not throw an exception
