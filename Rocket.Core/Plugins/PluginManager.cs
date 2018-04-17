@@ -267,9 +267,9 @@ namespace Rocket.Core.Plugins
             IPlugin pluginInstance = (IPlugin)parentContainer.Activate(pluginType);
             container.RegisterInstance(pluginInstance, pluginInstance.Name);
 
-            IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>();
-            IEnumerable<Type> commands = pluginInstance.FindTypes<ICommand>();
-            IEnumerable<Type> dependcyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>();
+            IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>(false);
+            IEnumerable<Type> commands = pluginInstance.FindTypes<ICommand>(false, c => !typeof(ISubCommand).IsAssignableFrom(c));
+            IEnumerable<Type> dependcyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>(false);
 
             foreach (Type registrator in dependcyRegistrators) ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(container, resolver);
 

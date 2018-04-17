@@ -53,6 +53,7 @@
     <Compile Include="Commands\ICommandParameters.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Commands\IConsoleCommandCaller.cs" />
+    <Compile Include="Commands\ISubCommand.cs" />
     <Compile Include="Configuration\IConfigurable.cs" />
     <Compile Include="Configuration\IConfigurationElement.cs" />
     <Compile Include="Configuration\IConfiguration.cs" />

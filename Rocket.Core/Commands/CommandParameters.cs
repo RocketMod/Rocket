@@ -1,12 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using Rocket.API.Commands;
 
 namespace Rocket.Core.Commands
 {
     public class CommandParameters : ICommandParameters
     {
-        public string[] Parameters { get; }
+        protected internal string[] Parameters { get; }
 
         public CommandParameters(string[] parameters)
         {
@@ -47,6 +48,11 @@ namespace Rocket.Core.Commands
             {
                 return false;
             }
+        }
+
+        public string[] ToArray()
+        {
+            return Parameters.ToArray(); // send copy
         }
     }
 }

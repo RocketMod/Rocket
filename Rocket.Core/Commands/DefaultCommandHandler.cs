@@ -38,9 +38,20 @@ namespace Rocket.Core.Commands
 
             context.Command = target;
 
-            context = GetChild(context);
+            List<ICommand> tree = new List<ICommand> { target };
+            context = GetChild(context, tree);
 
-            var tmp = new List<string> { context.Command.Name };
+
+            //Builds a defalt permission
+            //If the command is "A" with sub command "B", the default permission will be "A.B"
+            string defaultPerm = "";
+            foreach (var node in tree)
+                if (defaultPerm == "")
+                    defaultPerm = node.Name;
+                else
+                    defaultPerm += "." + node.Name;
+
+            var tmp = new List<string> { defaultPerm };
             if (context.Command.Permission != null)
                 tmp.Add(context.Command.Permission);
 
@@ -68,7 +79,7 @@ namespace Rocket.Core.Commands
             return true;
         }
 
-        private CommandContext GetChild(CommandContext parent)
+        private CommandContext GetChild(CommandContext parent, List<ICommand> tree)
         {
             if (parent.Command?.ChildCommands == null)
                 return parent;
@@ -78,22 +89,24 @@ namespace Rocket.Core.Commands
                 string alias = parent.Parameters[0];
                 if (Equals(cmd, alias))
                 {
+                    if (!cmd.SupportsCaller(parent.Caller))
+                    {
+                        throw new NotSupportedException(parent.Caller.GetType().Name + " can not use this command.");
+                    }
+
+                    tree.Add(cmd);
+
                     CommandContext childContext = new CommandContext(
                         parent.Container.CreateChildContainer(),
                         parent.Caller,
-                        parent.CommandPrefix + (parent.ParentCommandContext == null ? "" : " ")+ parent.CommandAlias,
+                        parent.CommandPrefix + parent.CommandAlias + " ",
                         cmd,
                         alias,
                         ((CommandParameters)parent.Parameters).Parameters.Skip(1).ToArray(),
                         parent
                     );
 
-                    if (!cmd.SupportsCaller(parent.Caller))
-                    {
-                        throw new NotSupportedException(parent.Caller.GetType().Name + " can not use this command.");
-                    }
-
-                    return GetChild(childContext);
+                    return GetChild(childContext, tree);
                 }
             }
 
@@ -114,7 +127,7 @@ namespace Rocket.Core.Commands
                    .Where(c => c.SupportsCaller(ctx.Caller))
                    .FirstOrDefault(c => Equals(c, ctx.CommandAlias));
         }
-        
+
         private bool Equals(ICommand command, string alias)
         {
             return command.Name.Equals(alias, StringComparison.OrdinalIgnoreCase)

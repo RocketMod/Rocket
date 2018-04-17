@@ -1,9 +1,6 @@
 ﻿using System;
 using Rocket.API.DependencyInjection;
-using Rocket.API.Permissions;
-using Rocket.API.Player;
 using Rocket.Core.Player;
-using Rocket.Core.Plugins;
 
 namespace Rocket.Tests
 {

@@ -13,5 +13,7 @@ namespace Rocket.API.Commands
         T Get<T>(int index, T defaultValue);
 
         bool TryGet<T>(int index, out T value);
+
+        string[] ToArray();
     }
 }

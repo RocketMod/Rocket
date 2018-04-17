@@ -13,7 +13,7 @@ namespace Rocket.Core.Commands {
         {
             context.Caller.SendMessage(Message, ConsoleColor.DarkRed);
             context.Caller.SendMessage("Correct usage:");
-            context.Caller.SendMessage(context.CommandPrefix + context.CommandAlias + " " + context.Command.GetSyntax(context));
+            context.Caller.SendMessage(context.CommandPrefix + context.CommandAlias + " " + context.Command.Syntax);
         }
     }
 }

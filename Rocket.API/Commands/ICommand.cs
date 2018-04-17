@@ -7,17 +7,13 @@ namespace Rocket.API.Commands
         string Name { get; }
         string Description { get; }
         string Permission { get; }
+        string Syntax { get; }
 
-        List<ICommand> ChildCommands { get; }
-
-        string GetSyntax(ICommandContext context);
-        string GetHelpText(ICommandContext context);
-
+        List<ISubCommand> ChildCommands { get; }
         List<string> Aliases { get; }
 
         bool SupportsCaller(ICommandCaller caller);
 
         void Execute(ICommandContext context);
-
     }
 }

@@ -77,6 +77,7 @@
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Permissions\ConsolePermissionProvider.cs" />
     <Compile Include="Permissions\ProxyPermissionProvider.cs" />
+    <Compile Include="Player\BaseOnlinePlayer.cs" />
     <Compile Include="Player\BasePlayer.cs" />
     <Compile Include="Player\PlayerTypeConverter.cs" />
     <Compile Include="Plugins\ProxyPluginManager.cs" />
