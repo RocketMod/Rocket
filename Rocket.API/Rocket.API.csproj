@@ -99,7 +99,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="packages.config" />
     <None Include="Rocket.API.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
