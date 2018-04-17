@@ -13,8 +13,6 @@
     <copyright>Sven Mawby&lt;fr34kyn01535@bam.yt&gt; ©</copyright>
     <tags>Rocket Mod UnityEngine UnrealEngine</tags>
     <dependencies>
-      <dependency id="Unity" version="2.1.505.2" />
-      <dependency id="Newtonsoft.Json" version="11.0.2"/>
 	  <dependency id="Rocket.API" version="$version$" />
     </dependencies>
   </metadata>
