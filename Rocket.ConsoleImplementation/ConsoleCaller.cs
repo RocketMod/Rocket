@@ -39,5 +39,10 @@ namespace Rocket.ConsoleImplementation {
             Console.WriteLine("[SendMessage] " + message);
             Console.ForegroundColor = tmp;
         }
+
+        public string ToString(string format, IFormatProvider formatProvider)
+        {
+            return Id;
+        }
     }
 }

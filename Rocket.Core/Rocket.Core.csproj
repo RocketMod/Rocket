@@ -59,6 +59,7 @@
     <Compile Include="Commands\ProxyCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandProvider.cs" />
     <Compile Include="Commands\CommandParameterMismatchException.cs" />
+    <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Logging\ProxyLogger.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />

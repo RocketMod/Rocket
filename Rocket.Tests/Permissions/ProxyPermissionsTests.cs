@@ -29,14 +29,6 @@ namespace Rocket.Tests.Permissions
             Assert.ThrowsException<NotSupportedException>(() => base.TestPermissionsLoad());
         }
 
-
-        [TestMethod]
-        public override void TestGroupPermissions()
-        {
-            //Groups are not supported on proxy
-            Assert.ThrowsException<NotSupportedException>(() => base.TestGroupPermissions());
-        }
-
         [TestMethod]
         public override void TestUpdateGroup()
         {
@@ -77,18 +69,6 @@ namespace Rocket.Tests.Permissions
         {
             //Groups are not supported on proxy
             Assert.ThrowsException<NotSupportedException>(() => base.TestCreateGroup());
-        }
-
-        [TestMethod]
-        public override void TestHasAnyPermissionsGroup()
-        {
-            Assert.ThrowsException<NotSupportedException>(() => base.TestHasAllPermissionsGroup());
-        }
-
-        [TestMethod]
-        public override void TestHasAllPermissionsGroup()
-        {
-            Assert.ThrowsException<NotSupportedException>(() => base.TestHasAllPermissionsGroup());
         }
 
         [TestMethod]

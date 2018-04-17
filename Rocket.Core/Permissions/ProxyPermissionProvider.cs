@@ -15,23 +15,18 @@ namespace Rocket.Core.Permissions
         public ProxyPermissionProvider(IDependencyContainer container) : base(container) { }
         
 
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsPermissible(IPermissible target)
         {
-            return ProxiedServices.Any(c => c.SupportsCaller(caller));
+            return ProxiedServices.Any(c => c.SupportsPermissible(target));
         }
 
-        public bool SupportsGroup(IPermissionGroup group)
+        public PermissionResult HasPermission(IPermissible target, string permission)
         {
-            return ProxiedServices.Any(c => c.SupportsGroup(group));
-        }
+            GuardPermissible(target);
 
-        public PermissionResult HasPermission(IPermissionGroup @group, string permission)
-        {
-            GuardGroup(group);
-
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsGroup(group)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
-                PermissionResult result = provider.HasPermission(group, permission);
+                PermissionResult result = provider.HasPermission(target, permission);
                 if(result == PermissionResult.Default)
                     continue;
 
@@ -41,13 +36,13 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult HasPermission(ICommandCaller caller, string permission)
+        public PermissionResult HasAllPermissions(IPermissible target, params string[] permissions)
         {
-            GuardCaller(caller);
+            GuardPermissible(target);
 
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsCaller(caller)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
-                PermissionResult result = provider.HasPermission(caller, permission);
+                PermissionResult result = provider.HasAllPermissions(target, permissions);
                 if (result == PermissionResult.Default)
                     continue;
 
@@ -57,13 +52,13 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult HasAllPermissions(IPermissionGroup @group, params string[] permissions)
+        public PermissionResult HasAnyPermissions(IPermissible target, params string[] permissions)
         {
-            GuardGroup(group);
+            GuardPermissible(target);
 
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsGroup(group)))
+            foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
-                PermissionResult result = provider.HasAllPermissions(@group, permissions);
+                PermissionResult result = provider.HasAnyPermissions(target, permissions);
                 if (result == PermissionResult.Default)
                     continue;
 
@@ -73,98 +68,31 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions)
-        {
-            GuardCaller(caller);
 
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsCaller(caller)))
-            {
-                PermissionResult result = provider.HasAllPermissions(caller, permissions);
-                if (result == PermissionResult.Default)
-                    continue;
-
-                return result;
-            }
-
-            return PermissionResult.Default;
-        }
-
-        public PermissionResult HasAnyPermissions(IPermissionGroup @group, params string[] permissions)
-        {
-            GuardGroup(group);
-
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsGroup(group)))
-            {
-                PermissionResult result = provider.HasAnyPermissions(@group, permissions);
-                if (result == PermissionResult.Default)
-                    continue;
-
-                return result;
-            }
-
-            return PermissionResult.Default;
-        }
-
-        public PermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions)
-        {
-            GuardCaller(caller);
-
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsCaller(caller)))
-            {
-                PermissionResult result = provider.HasAnyPermissions(caller, permissions);
-                if (result == PermissionResult.Default)
-                    continue;
-
-                return result;
-            }
-
-            return PermissionResult.Default;
-        }
-
-        public bool AddPermission(IPermissionGroup @group, string permission)
+        public bool AddPermission(IPermissible target, string permission)
         {
             throw new NotSupportedException("Adding permissions from proxy is not supported.");
         }
 
-        public bool AddDeniedPermission(IPermissionGroup @group, string permission)
+        public bool AddDeniedPermission(IPermissible target, string permission)
         {
             throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
         }
 
-        public bool AddPermission(ICommandCaller caller, string permission)
-        {
-            throw new NotSupportedException("Adding permissions from proxy is not supported.");
-        }
-
-        public bool AddDeniedPermission(ICommandCaller caller, string permission)
-        {
-            throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
-        }
-
-        public bool RemovePermission(IPermissionGroup @group, string permission)
+        public bool RemovePermission(IPermissible target, string permission)
         {
             throw new NotSupportedException("Removing permissions from proxy is not supported.");
         }
 
-        public bool RemoveDeniedPermission(IPermissionGroup @group, string permission)
+        public bool RemoveDeniedPermission(IPermissible target, string permission)
         {
             throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
-        }
-
-        public bool RemovePermission(ICommandCaller caller, string permission)
-        {
-            throw new NotSupportedException("Removing permissions from proxy is not supported.");
-        }
-
-        public bool RemoveDeniedPermission(ICommandCaller @group, string permission)
-        {
-            throw new NotSupportedException("Removing denied permissions from proxy is not supported.");
         }
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
             IPermissionGroup group;
-            foreach(var service in ProxiedServices.Where(c => c.SupportsCaller(caller)))
+            foreach(var service in ProxiedServices.Where(c => c.SupportsPermissible(caller)))
                 if ((group = service.GetPrimaryGroup(caller)) != null)
                     return group;
 
@@ -176,11 +104,10 @@ namespace Rocket.Core.Permissions
             return GetGroups().FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
+        public IEnumerable<IPermissionGroup> GetGroups(IPermissible target)
         {
-            GuardCaller(caller);
-
-            return ProxiedServices.SelectMany(c => c.GetGroups(caller));
+            return ProxiedServices.Where(c => c.SupportsPermissible(target))
+                                  .SelectMany(c => c.GetGroups(target));
         }
 
         public IEnumerable<IPermissionGroup> GetGroups()
@@ -193,22 +120,22 @@ namespace Rocket.Core.Permissions
             throw new NotSupportedException("Updating groups from proxy is not supported.");
         }
 
-        public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
+        public bool AddGroup(IPermissible target, IPermissionGroup @group)
         {
             throw new NotSupportedException("Adding groups from proxy is not supported.");
         }
 
-        public bool RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
+        public bool RemoveGroup(IPermissible target, IPermissionGroup @group)
         {
             throw new NotSupportedException("Removing groups from proxy is not supported.");
         }
 
-        public void CreateGroup(IPermissionGroup @group)
+        public bool CreateGroup(IPermissionGroup @group)
         {
             throw new NotSupportedException("Creating groups from proxy is not supported.");
         }
 
-        public void DeleteGroup(IPermissionGroup @group)
+        public bool DeleteGroup(IPermissionGroup @group)
         {
             throw new NotSupportedException("Deleting groups from proxy is not supported.");
         }
@@ -228,16 +155,10 @@ namespace Rocket.Core.Permissions
             ProxiedServices.ForEach(c => c.Save());
         }
 
-        private void GuardCaller(ICommandCaller caller)
+        private void GuardPermissible(IPermissible target)
         {
-            if(!SupportsCaller(caller))
-                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
-        }
-
-        private void GuardGroup(IPermissionGroup group)
-        {
-            if (!SupportsGroup(group))
-                throw new NotSupportedException(group.GetType().FullName + " is not supported!");
+            if (!SupportsPermissible(target))
+                throw new NotSupportedException(target.GetType().FullName + " is not supported!");
         }
     }
 }

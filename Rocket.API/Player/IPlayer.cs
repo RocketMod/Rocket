@@ -1,14 +1,11 @@
 ﻿using System;
-using System.ComponentModel;
 using Rocket.API.Commands;
+using Rocket.API.Permissions;
 
 namespace Rocket.API.Player
 {
-    public interface IPlayer : ICommandCaller, IFormattable
+    public interface IPlayer : ICommandCaller, IFormattable, IPermissible
     {
-        double Health { get; set; }
-        double MaxHealth { get; set; }
-
         bool IsOnline { get; }
     }
 }

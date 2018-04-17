@@ -8,132 +8,92 @@ namespace Rocket.Core.Permissions
 {
     public class ConsolePermissionProvider : IPermissionProvider
     {
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsPermissible(IPermissible permissible)
         {
-            return caller is IConsoleCommandCaller;
+            return permissible is IConsoleCommandCaller;
+        }
+        
+        public PermissionResult HasPermission(IPermissible target, string permission)
+        {
+            GuardPermissible(target);
+            return PermissionResult.Grant;
         }
 
-        public bool SupportsGroup(IPermissionGroup @group)
+        public PermissionResult HasAllPermissions(IPermissible target, params string[] permissions)
+        {
+            GuardPermissible(target);
+            return PermissionResult.Grant;
+        }
+
+        public PermissionResult HasAnyPermissions(IPermissible target, params string[] permissions)
+        {
+            GuardPermissible(target);
+            return PermissionResult.Grant;
+        }
+
+        public bool AddPermission(IPermissible target, string permission)
         {
             return false;
         }
 
-        public PermissionResult HasPermission(IPermissionGroup @group, string permission)
+        public bool AddDeniedPermission(IPermissible target, string permission)
         {
-            throw new NotSupportedException();
+            return false;
         }
 
-        public PermissionResult HasPermission(ICommandCaller caller, string permission)
+        public bool RemovePermission(IPermissible target, string permission)
         {
-            GuardCaller(caller);
-            return PermissionResult.Grant;
+            return false;
         }
 
-        public PermissionResult HasAllPermissions(IPermissionGroup @group, params string[] permissions)
+        public bool RemoveDeniedPermission(IPermissible target, string permission)
         {
-            throw new NotSupportedException();
-        }
-
-        public PermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions)
-        {
-            GuardCaller(caller);
-            return PermissionResult.Grant;
-        }
-
-        public PermissionResult HasAnyPermissions(IPermissionGroup @group, params string[] permissions)
-        {
-            throw new NotSupportedException();
-        }
-
-        public PermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions)
-        {
-            GuardCaller(caller);
-            return PermissionResult.Grant;
-        }
-
-        public bool AddPermission(IPermissionGroup @group, string permission)
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool AddDeniedPermission(IPermissionGroup @group, string permission)
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool AddPermission(ICommandCaller caller, string permission)
-        {
-            throw new NotSupportedException("Adding permissions to console is not supported.");
-        }
-
-        public bool AddDeniedPermission(ICommandCaller caller, string permission)
-        {
-            throw new NotSupportedException("Adding denied permissions to console is not supported.");
-        }
-
-        public bool RemovePermission(IPermissionGroup @group, string permission)
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool RemoveDeniedPermission(IPermissionGroup @group, string permission)
-        {
-            throw new NotSupportedException();
-        }
-
-        public bool RemovePermission(ICommandCaller caller, string permission)
-        {
-            throw new NotSupportedException("Removing permissions from console is not supported.");
-        }
-
-        public bool RemoveDeniedPermission(ICommandCaller @group, string permission)
-        {
-            throw new NotSupportedException("Removing denied permissions from console is not supported.");
+            return false;
         }
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
-            throw new NotSupportedException("Getting primary group of console is not supported.");
+            return null;
         }
 
         public IPermissionGroup GetGroup(string id)
         {
-            throw new NotSupportedException();
+            return null;
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller)
+        public IEnumerable<IPermissionGroup> GetGroups(IPermissible caller)
         {
-            throw new NotSupportedException("Getting groups of console is not supported.");
+            return new IPermissionGroup[0];
         }
 
         public IEnumerable<IPermissionGroup> GetGroups()
         {
-            throw new NotSupportedException();
+            return new IPermissionGroup[0];
         }
 
         public void UpdateGroup(IPermissionGroup @group)
         {
-            throw new NotSupportedException();
+            
         }
 
-        public void AddGroup(ICommandCaller caller, IPermissionGroup @group)
+        public bool AddGroup(IPermissible target, IPermissionGroup @group)
         {
-            throw new NotSupportedException("Adding groups to console is not supported.");
+            return false;
         }
 
-        public bool RemoveGroup(ICommandCaller caller, IPermissionGroup @group)
+        public bool RemoveGroup(IPermissible caller, IPermissionGroup @group)
         {
-            throw new NotSupportedException("Removing groups from console is not supported.");
+            return false;
         }
 
-        public void CreateGroup(IPermissionGroup @group)
+        public bool CreateGroup(IPermissionGroup @group)
         {
-            throw new NotSupportedException();
+            return false;
         }
 
-        public void DeleteGroup(IPermissionGroup @group)
+        public bool DeleteGroup(IPermissionGroup @group)
         {
-            throw new NotSupportedException();
+            return false;
         }
 
         public void Load(IConfigurationElement groups, IConfigurationElement players)
@@ -150,10 +110,10 @@ namespace Rocket.Core.Permissions
         {
             // do nothing
         }
-        private void GuardCaller(ICommandCaller caller)
+        private void GuardPermissible(IPermissible target)
         {
-            if (!SupportsCaller(caller))
-                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
+            if (!SupportsPermissible(target))
+                throw new NotSupportedException(target.GetType().FullName + " is not supported!");
         }
     }
 }

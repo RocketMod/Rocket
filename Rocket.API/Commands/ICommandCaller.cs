@@ -3,7 +3,7 @@ using Rocket.API.Permissions;
 
 namespace Rocket.API.Commands
 {
-    public interface ICommandCaller : IIdentifiable
+    public interface ICommandCaller : IIdentifiable, IPermissible
     {
         string Name { get; }
         Type CallerType { get; }

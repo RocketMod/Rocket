@@ -9,50 +9,38 @@ namespace Rocket.API.Permissions
     {
         // do not add something like GetPermissions()!
 
-        bool SupportsCaller(ICommandCaller caller);
-        bool SupportsGroup(IPermissionGroup group);
+        bool SupportsPermissible(IPermissible permissible);
 
-        PermissionResult HasPermission(IPermissionGroup group, string permission);
-        PermissionResult HasPermission(ICommandCaller caller, string permission);
+        PermissionResult HasPermission(IPermissible target, string permission);
 
-        PermissionResult HasAllPermissions(IPermissionGroup group, params string[] permissions);
-        PermissionResult HasAllPermissions(ICommandCaller caller, params string[] permissions);
+        PermissionResult HasAllPermissions(IPermissible target, params string[] permissions);
 
-        PermissionResult HasAnyPermissions(IPermissionGroup group, params string[] permissions);
-        PermissionResult HasAnyPermissions(ICommandCaller caller, params string[] permissions);
+        PermissionResult HasAnyPermissions(IPermissible target, params string[] permissions);
 
-        bool AddPermission(IPermissionGroup group, string permission);
+        bool AddPermission(IPermissible target, string permission);
 
-        bool AddDeniedPermission(IPermissionGroup group, string permission);
+        bool AddDeniedPermission(IPermissible target, string permission);
 
-        bool AddPermission(ICommandCaller caller, string permission);
+        bool RemovePermission(IPermissible target, string permission);
 
-        bool AddDeniedPermission(ICommandCaller caller, string permission);
-
-        bool RemovePermission(IPermissionGroup group, string permission);
-
-        bool RemoveDeniedPermission(IPermissionGroup group, string permission);
-
-        bool RemovePermission(ICommandCaller caller, string permission);
-
-        bool RemoveDeniedPermission(ICommandCaller caller, string permission);
+        bool RemoveDeniedPermission(IPermissible target, string permission);
 
         IPermissionGroup GetPrimaryGroup(ICommandCaller caller);
 
         IPermissionGroup GetGroup(string id);
 
-        IEnumerable<IPermissionGroup> GetGroups(ICommandCaller caller);
+        IEnumerable<IPermissionGroup> GetGroups(IPermissible target);
         IEnumerable<IPermissionGroup> GetGroups();
 
         void UpdateGroup(IPermissionGroup group);
 
-        void AddGroup(ICommandCaller caller, IPermissionGroup group);
+        bool AddGroup(IPermissible caller, IPermissionGroup group);
 
-        bool RemoveGroup(ICommandCaller caller, IPermissionGroup group);
+        bool RemoveGroup(IPermissible caller, IPermissionGroup group);
 
-        void CreateGroup(IPermissionGroup @group);
+        bool CreateGroup(IPermissionGroup @group);
 
-        void DeleteGroup(IPermissionGroup @group);
+        bool DeleteGroup(IPermissionGroup @group);
 
         void Load(IConfigurationElement groups, IConfigurationElement players);
         void Reload();

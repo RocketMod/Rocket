@@ -1,5 +1,6 @@
 ﻿using System;
 using Rocket.API.Permissions;
+using Rocket.API.Player;
 
 namespace Rocket.Core.Permissions
 {

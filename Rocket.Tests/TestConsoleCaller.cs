@@ -1,10 +1,22 @@
 ﻿using System;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
+using Rocket.Core.Player;
 
 namespace Rocket.Tests {
     public class TestConsoleCaller : IConsoleCommandCaller
     {
+        public string Id => "Console";
+        public string Name => "Console";
+        public Type CallerType => typeof(TestConsoleCaller);
+        public void SendMessage(string message, ConsoleColor? color = null)
+        {
+            var tmp = Console.ForegroundColor;
+            Console.ForegroundColor = color ?? tmp;
+            Console.WriteLine("[SendMessage] " + message);
+            Console.ForegroundColor = tmp;
+        }
+
         public int CompareTo(object obj)
         {
             throw new NotImplementedException();
@@ -30,15 +42,9 @@ namespace Rocket.Tests {
             throw new NotImplementedException();
         }
 
-        public string Id => "Console";
-        public string Name => "Console";
-        public Type CallerType => typeof(TestConsoleCaller);
-        public void SendMessage(string message, ConsoleColor? color = null)
+        public string ToString(string format, IFormatProvider formatProvider)
         {
-            var tmp = Console.ForegroundColor;
-            Console.ForegroundColor = color ?? tmp;
-            Console.WriteLine("[SendMessage] " + message);
-            Console.ForegroundColor = tmp;
+            return Id;
         }
     }
 }

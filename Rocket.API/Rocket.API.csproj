@@ -59,6 +59,8 @@
     <Compile Include="Configuration\IConfigurationSection.cs" />
     <Compile Include="Configuration\SectionType.cs" />
     <Compile Include="Economy\EconomyProvider.cs" />
+    <Compile Include="Player\IOnlinePlayer.cs" />
+    <Compile Include="Permissions\IPermissionGroup.cs" />
     <Compile Include="ServiceProxies\IProxyableService.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\EventExecutionTargetContext.cs" />
@@ -66,7 +68,7 @@
     <Compile Include="I18N\ITranslatable.cs" />
     <Compile Include="IEnvironmentContext.cs" />
     <Compile Include="Permissions\IIdentifiable.cs" />
-    <Compile Include="Permissions\IPermissionGroup.cs" />
+    <Compile Include="Permissions\target.cs" />
     <Compile Include="Permissions\PermissionResult.cs" />
     <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />

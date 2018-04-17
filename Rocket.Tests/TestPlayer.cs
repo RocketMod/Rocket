@@ -20,16 +20,16 @@ namespace Rocket.Tests
 
         }
 
-        public override string Id { get; protected set; }
-        public override string Name { get; protected set; }
+        public override string Id { get; }
+        public override string Name { get; }
         public override Type CallerType => typeof(TestPlayer);
 
         public override void SendMessage(string message, ConsoleColor? color)
         {
-            throw new NotImplementedException();
+            Console.WriteLine("[TestPlayer.SendMessage] " + message);
         }
 
-        public override double Health { get => 0; set {} }
+        public override double Health { get => 0; set { } }
         public override double MaxHealth { get => 100; set { } }
         public override bool IsOnline => false;
     }

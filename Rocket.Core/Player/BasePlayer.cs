@@ -31,8 +31,8 @@ namespace Rocket.Core.Player
         public int CompareTo(string other) => Id.CompareTo(other);
 
         public bool Equals(string other) => Id.Equals(other, StringComparison.OrdinalIgnoreCase);
-        public abstract string Id { get; protected set; }
-        public abstract string Name { get; protected set; }
+        public abstract string Id { get; }
+        public abstract string Name { get; }
         public abstract Type CallerType { get; }
         public abstract void SendMessage(string message, ConsoleColor? color = null);
 
