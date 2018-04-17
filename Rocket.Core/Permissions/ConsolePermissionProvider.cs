@@ -13,19 +13,19 @@ namespace Rocket.Core.Permissions
             return permissible is IConsoleCommandCaller;
         }
         
-        public PermissionResult HasPermission(IPermissible target, string permission)
+        public PermissionResult CheckPermission(IPermissible target, string permission)
         {
             GuardPermissible(target);
             return PermissionResult.Grant;
         }
 
-        public PermissionResult HasAllPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAllPermissions(IPermissible target, params string[] permissions)
         {
             GuardPermissible(target);
             return PermissionResult.Grant;
         }
 
-        public PermissionResult HasAnyPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAnyPermission(IPermissible target, params string[] permissions)
         {
             GuardPermissible(target);
             return PermissionResult.Grant;

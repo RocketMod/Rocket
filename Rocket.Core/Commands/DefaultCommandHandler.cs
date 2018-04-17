@@ -40,7 +40,7 @@ namespace Rocket.Core.Commands
             var perms = tmp.ToArray();
 
             var provider = container.Get<IPermissionProvider>();
-            if (provider.HasAnyPermissions(caller, perms) != PermissionResult.Grant)
+            if (provider.CheckHasAnyPermission(caller, perms) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(caller, perms);
 
             try

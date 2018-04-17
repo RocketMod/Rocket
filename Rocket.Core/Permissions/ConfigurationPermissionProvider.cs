@@ -19,13 +19,13 @@ namespace Rocket.Core.Permissions
             return permissible is IPermissionGroup || permissible is ICommandCaller;
         }
 
-        public PermissionResult HasPermission(IPermissible target, string permission)
+        public PermissionResult CheckPermission(IPermissible target, string permission)
         {
             GuardLoaded();
             GuardPermission(ref permission);
             GuardPermissible(target);
 
-            if (!permission.StartsWith("!") && HasPermission(target, "!" + permission) == PermissionResult.Grant)
+            if (!permission.StartsWith("!") && CheckPermission(target, "!" + permission) == PermissionResult.Grant)
                 return PermissionResult.Deny;
 
             var permissionTree = BuildPermissionTree(permission);
@@ -40,7 +40,7 @@ namespace Rocket.Core.Permissions
             IEnumerable<IPermissionGroup> groups = GetGroups(target);
             foreach (var group in groups)
             {
-                var result = HasPermission(group, permission);
+                var result = CheckPermission(group, permission);
                 if (result == PermissionResult.Grant)
                     return PermissionResult.Grant;
 
@@ -51,7 +51,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult HasAllPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAllPermissions(IPermissible target, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
@@ -61,7 +61,7 @@ namespace Rocket.Core.Permissions
 
             foreach (var permission in permissions)
             {
-                var tmp = HasPermission(target, permission);
+                var tmp = CheckPermission(target, permission);
                 if (tmp == PermissionResult.Deny)
                     return PermissionResult.Deny;
 
@@ -72,7 +72,7 @@ namespace Rocket.Core.Permissions
             return result;
         }
 
-        public PermissionResult HasAnyPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAnyPermission(IPermissible target, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
@@ -80,7 +80,7 @@ namespace Rocket.Core.Permissions
 
             foreach (var permission in permissions)
             {
-                var result = HasPermission(target, permission);
+                var result = CheckPermission(target, permission);
                 if (result == PermissionResult.Deny)
                     return PermissionResult.Deny;
 

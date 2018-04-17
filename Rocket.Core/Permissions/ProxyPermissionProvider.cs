@@ -20,13 +20,13 @@ namespace Rocket.Core.Permissions
             return ProxiedServices.Any(c => c.SupportsPermissible(target));
         }
 
-        public PermissionResult HasPermission(IPermissible target, string permission)
+        public PermissionResult CheckPermission(IPermissible target, string permission)
         {
             GuardPermissible(target);
 
             foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
-                PermissionResult result = provider.HasPermission(target, permission);
+                PermissionResult result = provider.CheckPermission(target, permission);
                 if(result == PermissionResult.Default)
                     continue;
 
@@ -36,13 +36,13 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult HasAllPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAllPermissions(IPermissible target, params string[] permissions)
         {
             GuardPermissible(target);
 
             foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
-                PermissionResult result = provider.HasAllPermissions(target, permissions);
+                PermissionResult result = provider.CheckHasAllPermissions(target, permissions);
                 if (result == PermissionResult.Default)
                     continue;
 
@@ -52,13 +52,13 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult HasAnyPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAnyPermission(IPermissible target, params string[] permissions)
         {
             GuardPermissible(target);
 
             foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
-                PermissionResult result = provider.HasAnyPermissions(target, permissions);
+                PermissionResult result = provider.CheckHasAnyPermission(target, permissions);
                 if (result == PermissionResult.Default)
                     continue;
 

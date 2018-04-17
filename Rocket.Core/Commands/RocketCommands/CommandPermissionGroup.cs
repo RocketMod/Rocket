@@ -36,7 +36,7 @@ namespace Rocket.Core.Commands.RocketCommands
             var groupName = context.Parameters.Get<string>(2);
 
             string permission = "Rocket.Permissions.ManageGroups." + groupName;
-            if (permissions.HasPermission(context.Caller, permission) != PermissionResult.Grant)
+            if (permissions.CheckPermission(context.Caller, permission) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(context.Caller, permission, "You don't have permissions to manage this group.");
 
             var group = permissions.GetGroup(groupName);

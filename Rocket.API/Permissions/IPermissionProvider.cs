@@ -11,11 +11,11 @@ namespace Rocket.API.Permissions
 
         bool SupportsPermissible(IPermissible permissible);
 
-        PermissionResult HasPermission(IPermissible target, string permission);
+        PermissionResult CheckPermission(IPermissible target, string permission);
 
-        PermissionResult HasAllPermissions(IPermissible target, params string[] permissions);
+        PermissionResult CheckHasAllPermissions(IPermissible target, params string[] permissions);
 
-        PermissionResult HasAnyPermissions(IPermissible target, params string[] permissions);
+        PermissionResult CheckHasAnyPermission(IPermissible target, params string[] permissions);
 
         bool AddPermission(IPermissible target, string permission);
 

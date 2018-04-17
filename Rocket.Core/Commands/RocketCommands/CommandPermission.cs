@@ -30,7 +30,7 @@ namespace Rocket.Core.Commands.RocketCommands
             return "<add/remove/reload>";
         }
 
-        public string Description => "Manage permissions";
+        public string Description => "Add or remove permissions from players and groups";
 
         public List<string> Aliases => new List<string> { "P" };
 
@@ -67,16 +67,15 @@ namespace Rocket.Core.Commands.RocketCommands
             var targetName = context.Parameters.Get<string>(2);
             var permissionToUpdate = context.Parameters.Get<string>(3);
 
-            string permission = "Rocket.Permissions.ManageGroups." + targetName;
-            if (permissions.HasPermission(context.Caller, permission) != PermissionResult.Grant)
-                throw new NotEnoughPermissionsException(context.Caller, permission, "You don't have permissions to manage this group.");
-
             IPermissible target;
-
-
+            string permission;
+            string permissionFailMessage;
             switch (type)
             {
                 case "group":
+                    permission = "Rocket.Permissions.ManageGroups." + targetName;
+                    permissionFailMessage = "You don't have permissions to manage this group.";
+
                     target = permissions.GetGroup(targetName);
                     if (target == null)
                     {
@@ -85,12 +84,18 @@ namespace Rocket.Core.Commands.RocketCommands
                     }
                     break;
                 case "player":
+                    permission = "Rocket.Permissions.ManagePlayers";
+                    permissionFailMessage = "You don't have permissions to manage permissions of players.";
+
                     target = context.Parameters.Get<IPlayer>(2);
                     break;
 
                 default:
                     throw new CommandWrongUsageException();
             }
+            
+            if (permissions.CheckPermission(context.Caller, permission) != PermissionResult.Grant)
+                throw new NotEnoughPermissionsException(context.Caller, permission, permissionFailMessage);
 
             switch (cmd)
             {
