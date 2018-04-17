@@ -4,23 +4,21 @@ namespace Rocket.API.Commands
 {
     public interface ICommand
     {
+        string Name { get; }
+        string Description { get; }
+        string Permission { get; }
+
         /* todo: not used yet */
         List<ICommand> ChildCommands { get; }
 
         string GetSyntax(ICommandContext context);
-
-        string Description { get; }
+        string GetHelpText(ICommandContext context);
 
         List<string> Aliases { get; }
 
-        string GetHelpText(ICommandContext context);
-
-        string Name { get; }
-
-        string Permission { get; }
+        bool SupportsCaller(ICommandCaller caller);
 
         void Execute(ICommandContext context);
 
-        bool SupportsCaller(ICommandCaller caller);
     }
 }

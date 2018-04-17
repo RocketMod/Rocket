@@ -23,7 +23,7 @@ namespace Rocket.Examples.HelloWorldPlugin
             this.logger = logger;
         }
 
-        protected override void OnLoad()
+        protected override void OnLoad(bool isReload)
         {
             logger.LogInformation("Hello world!");
         }

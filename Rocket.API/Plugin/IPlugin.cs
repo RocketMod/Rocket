@@ -8,7 +8,7 @@ namespace Rocket.API.Plugin
         string WorkingDirectory { get; }
 
         void Load();
-
         void Unload();
+        void Reload();
     }
 }

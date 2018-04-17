@@ -50,7 +50,7 @@ namespace Rocket.Tests
             return promise.Task;
         }
 
-        protected override void OnLoad()
+        protected override void OnLoad(bool isReload)
         {
             Logger.LogInformation("Hello World (From plugin)");
         }

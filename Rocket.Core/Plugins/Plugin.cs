@@ -48,6 +48,11 @@ namespace Rocket.Core.Plugins
 
         public void Load()
         {
+            Load(false);
+        }
+
+        public void Load(bool isReload)
+        {
             WorkingDirectory = Path.Combine(Path.Combine(Implementation.WorkingDirectory, "Plugins"), Name);
 
             if (EventManager != null)
@@ -81,7 +86,7 @@ namespace Rocket.Core.Plugins
                 }, DefaultTranslations);
             }
 
-            OnLoad();
+            OnLoad(isReload);
             IsAlive = true;
 
             if (EventManager != null)
@@ -109,10 +114,17 @@ namespace Rocket.Core.Plugins
             }
         }
 
+        public void Reload()
+        {
+            Unload();
+            Configuration?.Reload();
+            Translations?.Reload();
+            Load(true);
+        }
+
         public bool IsAlive { get; internal set; }
 
-        protected virtual void OnLoad() { }
-
+        protected virtual void OnLoad(bool isReload) { }
         protected virtual void OnUnload() { }
 
         public void Subscribe(IEventListener listener)

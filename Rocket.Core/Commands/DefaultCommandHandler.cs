@@ -25,7 +25,9 @@ namespace Rocket.Core.Commands
             commandLine = commandLine.Trim();
             string[] args = commandLine.Split(' ');
 
-            CommandContext context = new CommandContext(container.CreateChildContainer(), caller, prefix, null, args[0], args.Skip(1).ToArray());
+            CommandContext context = new CommandContext(container.CreateChildContainer(), 
+                caller, prefix, null, 
+                args[0], args.Skip(1).ToArray(), null);
 
             ICommand target = GetCommand(context);
             if (target == null)

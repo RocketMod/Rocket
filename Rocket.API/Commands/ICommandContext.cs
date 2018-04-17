@@ -4,6 +4,8 @@ namespace Rocket.API.Commands
 {
     public interface ICommandContext
     {
+        ICommandContext ParentCommandContext { get; }
+
         string CommandPrefix { get; }
 
         string CommandAlias { get; }
