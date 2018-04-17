@@ -8,7 +8,6 @@ namespace Rocket.API.Commands
         string Description { get; }
         string Permission { get; }
 
-        /* todo: not used yet */
         List<ICommand> ChildCommands { get; }
 
         string GetSyntax(ICommandContext context);
