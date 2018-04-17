@@ -4,7 +4,7 @@ using Rocket.API.Permissions;
 
 namespace Rocket.API.Player
 {
-    public interface IPlayer : ICommandCaller, IFormattable, IPermissible
+    public interface IPlayer : IFormattable, IPermissible
     {
         bool IsOnline { get; }
     }
