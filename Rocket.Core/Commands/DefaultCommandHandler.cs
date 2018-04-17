@@ -88,6 +88,11 @@ namespace Rocket.Core.Commands
                         parent
                     );
 
+                    if (!cmd.SupportsCaller(parent.Caller))
+                    {
+                        throw new NotSupportedException(parent.Caller.GetType().Name + " can not use this command.");
+                    }
+
                     return GetChild(childContext);
                 }
             }
