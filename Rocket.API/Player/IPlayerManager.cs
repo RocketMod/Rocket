@@ -11,12 +11,14 @@ namespace Rocket.API.Player
 
         bool Ban(IPlayer player, ICommandCaller banner = null, string reason = null, TimeSpan? timeSpan = null);
 
-        IPlayer GetPlayer(string nameOrId);
-        IPlayer GetPlayerById(string id);
-        IPlayer GetPlayerByName(string displayName);
+        IOnlinePlayer GetOnlinePlayer(string nameOrId);
+        IOnlinePlayer GetOnlinePlayerByName(string displayName);
+        IOnlinePlayer GetOnlinePlayerById(string id);
 
-        bool TryGetPlayer(string uniqueID, out IPlayer output);
+        bool TryGetOnlinePlayer(string stringIdOrName, out IOnlinePlayer output);
+        bool TryGetOnlinePlayerById(string uniqueID, out IOnlinePlayer output);
+        bool TryGetOnlinePlayerByName(string displayName, out IOnlinePlayer output);
 
-        bool TryGetPlayerByName(string displayName, out IPlayer output);
+        IPlayer GetPlayer(string id); //guaranteed to return non null
     }
 }
