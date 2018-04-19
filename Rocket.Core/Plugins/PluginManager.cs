@@ -195,7 +195,14 @@ namespace Rocket.Core.Plugins
             return !plugin.IsAlive;
         }
 
-        public IEnumerable<IPlugin> Plugins => container.GetAll<IPlugin>();
+        public IEnumerable<IPlugin> Plugins
+        {
+            get
+            {
+                container.TryGetAll<IPlugin>(out var plugins);
+                return plugins;
+            }
+        }
 
         public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
         {
