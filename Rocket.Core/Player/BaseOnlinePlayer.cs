@@ -31,7 +31,7 @@ namespace Rocket.Core.Player
 
                 if (this is ILivingEntity && format.Equals("maxhealth", StringComparison.OrdinalIgnoreCase))
                 {
-                    var maxHealth = ((ILivingEntity)this).Health;
+                    var maxHealth = ((ILivingEntity)this).MaxHealth;
                     return subFormat != null ? maxHealth.ToString(subFormat, formatProvider) : maxHealth.ToString(formatProvider);
                 }
             }
