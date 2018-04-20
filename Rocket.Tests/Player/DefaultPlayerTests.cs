@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Player;
 
-namespace Rocket.Tests.PlayerTests
+namespace Rocket.Tests.Player
 {
     [TestClass]
     public class DefaultPlayerTests : PlayerTestBase

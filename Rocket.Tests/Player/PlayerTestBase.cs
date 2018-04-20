@@ -1,13 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using System.Runtime.Remoting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Player;
 using Rocket.Core.Extensions;
 using Rocket.Tests.Mock;
 
-namespace Rocket.Tests.PlayerTests
+namespace Rocket.Tests.Player
 {
     [TestCategory("Players")]
     public abstract class PlayerTestBase : RocketTestBase
