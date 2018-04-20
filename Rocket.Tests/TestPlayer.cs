@@ -29,5 +29,6 @@ namespace Rocket.Tests
         public override double Health { get => 0; set { } }
         public override double MaxHealth { get => 100; set { } }
         public override bool IsOnline => true;
+        public override DateTime? LastSeen => DateTime.Now;
     }
 }

@@ -36,6 +36,7 @@ namespace Rocket.Core.Player
         public abstract Type CallerType { get; }
 
         public abstract bool IsOnline { get; }
+        public abstract DateTime? LastSeen { get; }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
