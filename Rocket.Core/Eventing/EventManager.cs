@@ -157,7 +157,7 @@ namespace Rocket.Core.Eventing
                     "The eventListener to register has to implement IEventListener!",
                     nameof(eventListener));
 
-            if (eventListeners.Any(c => c.Listener == eventListener)) return;
+            if (eventListeners.Any(c => c.Listener.GetType() == eventListener.GetType())) return;
 
             Type type = eventListener.GetType();
 

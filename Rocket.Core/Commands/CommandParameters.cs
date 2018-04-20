@@ -20,28 +20,48 @@ namespace Rocket.Core.Commands
 
         public T Get<T>(int index)
         {
-            TypeConverter converter = TypeDescriptor.GetConverter(typeof(T));
+            return (T) Get(index, typeof(T));
+        }
+
+        public object Get(int index, Type type)
+        {
+            if(type == null)
+                throw new ArgumentNullException(nameof(type));
+
+            TypeConverter converter = TypeDescriptor.GetConverter(type);
             if (converter.CanConvertFrom(typeof(string)))
             {
-                return (T) converter.ConvertFrom(Parameters[index]);
+                return converter.ConvertFrom(Parameters[index]);
             }
 
-            throw new NotSupportedException($"Converting \"{Parameters[index]}\" to \"{typeof(T).FullName}\" is not supported!");
+            throw new NotSupportedException($"Converting \"{Parameters[index]}\" to \"{type.FullName}\" is not supported!");
         }
 
         public T Get<T>(int index, T defaultValue)
         {
-            if (TryGet(index, out T val))
+            return (T) Get(index, typeof(T), defaultValue);
+        }
+
+        public object Get(int index, Type type, object defaultValue)
+        {
+            if (TryGet(index, type, out object val))
                 return val;
             return defaultValue;
         }
 
         public bool TryGet<T>(int index, out T value)
         {
-            value = default(T);
+            bool result = TryGet(index, typeof(T), out var tmp);
+            value = (T) tmp;
+            return result;
+        }
+
+        public bool TryGet(int index, Type type, out object value)
+        {
+            value = null;
             try
             {
-                value = Get<T>(index);
+                value = Get(index, type);
                 return true;
             }
             catch

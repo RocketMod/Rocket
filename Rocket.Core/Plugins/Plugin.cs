@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -9,7 +7,6 @@ using Rocket.API.Eventing;
 using Rocket.API.I18N;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
-using Rocket.Core.I18N;
 using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins
@@ -94,6 +91,12 @@ namespace Rocket.Core.Plugins
                 PluginLoadedEvent loadedEvent = new PluginLoadedEvent(PluginManager, this);
                 EventManager.Emit(Runtime, loadedEvent);
             }
+        }
+
+        public void RegisterCommandsFromObject(object o)
+        {
+            var p = PluginManager as PluginManager;
+            p?.RegisterCommands(this, o);
         }
 
         public void Unload()

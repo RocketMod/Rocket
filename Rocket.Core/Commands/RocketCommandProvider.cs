@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Practices.Unity.Utility;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.Core.Extensions;

@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
+using Rocket.Core.Commands;
 #if NET35
 using Rocket.Compability;
 #endif
@@ -52,7 +51,7 @@ namespace Rocket.Core.Plugins
             cachedAssemblies = new Dictionary<string, Assembly>();
         }
 
-        public IEnumerable<ICommand> Commands
+        public virtual IEnumerable<ICommand> Commands
         {
             get
             {
@@ -62,7 +61,24 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public void Init()
+        public virtual void RegisterCommands(IPlugin plugin, object o)
+        {
+            foreach (var method in o.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                var attr = (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
+                CommandAttributeWrapper wrapper = new CommandAttributeWrapper(o, method, attr);
+                if (!commands.ContainsKey(plugin))
+                    commands.Add(plugin, new List<ICommand>());
+
+                var cmds = commands[plugin];
+                if (cmds.Any(c => (c as CommandAttributeWrapper)?.Method == method))
+                    continue;
+
+                cmds.Add(wrapper);
+            }
+        }
+
+        public virtual void Init()
         {
             pluginsDirectory = Path.Combine(implementation.WorkingDirectory, "Plugins");
             packagesDirectory = Path.Combine(implementation.WorkingDirectory, "Packages");
@@ -137,7 +153,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public IPlugin GetPlugin(string name)
+        public virtual IPlugin GetPlugin(string name)
         {
             IPlugin pl = container.Get<IPlugin>(name);
             if (pl != null)
@@ -159,9 +175,9 @@ namespace Rocket.Core.Plugins
             return null;
         }
 
-        public bool PluginExists(string name) => container.IsRegistered<IPlugin>(name);
+        public virtual bool PluginExists(string name) => container.IsRegistered<IPlugin>(name);
 
-        public bool LoadPlugin(string name)
+        public virtual bool LoadPlugin(string name)
         {
             IPlugin plugin = GetPlugin(name);
             if (plugin != null && !plugin.IsAlive)
@@ -185,7 +201,7 @@ namespace Rocket.Core.Plugins
             return true;
         }
 
-        public bool UnloadPlugin(string name)
+        public virtual bool UnloadPlugin(string name)
         {
             IPlugin plugin = GetPlugin(name);
             if (plugin == null || !plugin.IsAlive)
@@ -195,9 +211,9 @@ namespace Rocket.Core.Plugins
             return !plugin.IsAlive;
         }
 
-        public IEnumerable<IPlugin> Plugins => container.GetAll<IPlugin>();
+        public virtual IEnumerable<IPlugin> Plugins => container.GetAll<IPlugin>();
 
-        public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
+        public virtual bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
         {
             if (PluginExists(pluginName))
             {
@@ -208,7 +224,7 @@ namespace Rocket.Core.Plugins
             return false;
         }
 
-        private Assembly LoadAssembly(string path)
+        protected virtual Assembly LoadAssembly(string path)
         {
             path = path.Trim();
 
@@ -233,7 +249,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public IPlugin LoadPluginFromAssembly(Assembly pluginAssembly)
+        public virtual IPlugin LoadPluginFromAssembly(Assembly pluginAssembly)
         {
             string loc = GetAssemblyLocationSafe(pluginAssembly);
 
@@ -286,13 +302,16 @@ namespace Rocket.Core.Plugins
             this.commands.Remove(pluginInstance);
 
             foreach (Type command in commands)
-                cmdInstanceList.Add((ICommand)Activator.CreateInstance(command, new object[0]));
+            {
+                if (cmdInstanceList.All(c => c.GetType() != command))
+                    cmdInstanceList.Add((ICommand)Activator.CreateInstance(command, new object[0]));
+            }
 
             this.commands.Add(pluginInstance, cmdInstanceList);
             return pluginInstance;
         }
 
-        public IEnumerator<IPlugin> GetEnumerator()
+        public virtual IEnumerator<IPlugin> GetEnumerator()
         {
             return Plugins.GetEnumerator();
         }
