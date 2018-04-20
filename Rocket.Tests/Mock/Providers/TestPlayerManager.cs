@@ -22,7 +22,7 @@ namespace Rocket.Tests.Mock.Providers
             return false;
         }
 
-        public bool Ban(IOnlinePlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IPlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? timeSpan = null)
         {
             return false;
         }
