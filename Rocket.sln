@@ -15,9 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Tests", "Rocket.Test
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.ConsoleImplementation", "Rocket.ConsoleImplementation\Rocket.ConsoleImplementation.csproj", "{2C208038-27DA-4F7B-AA8C-276BB2531E1E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "examples\HelloWorldPlugin\HelloWorldPlugin.csproj", "{31BA2AC3-EF06-430F-8008-61D16FD567B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "examples\hello_world\HelloWorldPlugin.csproj", "{31BA2AC3-EF06-430F-8008-61D16FD567B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandsExample", "examples\commands\CommandsExample\CommandsExample.csproj", "{AF4E374A-89FB-4364-8BB6-E5E1A3A10EC7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandsExample", "examples\commands\CommandsExample.csproj", "{AF4E374A-89FB-4364-8BB6-E5E1A3A10EC7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
