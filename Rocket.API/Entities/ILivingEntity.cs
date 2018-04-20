@@ -1,4 +1,5 @@
-﻿using Rocket.API.Entities;
+﻿using Rocket.API.Commands;
+using Rocket.API.Entities;
 
 namespace Rocket.API.Player
 {
@@ -11,5 +12,7 @@ namespace Rocket.API.Player
         void Kill();
 
         void Kill(IEntity killer);
+
+        void Kill(ICommandCaller caller);
     }
 }
