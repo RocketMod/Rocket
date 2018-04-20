@@ -1,10 +1,13 @@
 ﻿using System;
+using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Entities;
+using Rocket.API.Player;
 using Rocket.Core.Player;
 
 namespace Rocket.Tests.Mock
 {
-    public sealed class TestPlayer : BaseOnlinePlayer
+    public sealed class TestPlayer : BaseOnlinePlayer, ILivingEntity
     {
         public TestPlayer(IDependencyContainer container, string id, string name) : base(container)
         {
@@ -32,5 +35,22 @@ namespace Rocket.Tests.Mock
 
         public override bool IsOnline => true;
         public override DateTime? LastSeen => DateTime.Now;
+        public double MaxHealth => 100;
+        public double Health => 0;
+
+        public void Kill()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Kill(IEntity killer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Kill(ICommandCaller caller)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
