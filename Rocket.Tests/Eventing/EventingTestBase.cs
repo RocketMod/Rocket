@@ -5,12 +5,11 @@ using Rocket.Core.Eventing;
 
 namespace Rocket.Tests.Eventing
 {
-    [TestClass]
     [TestCategory("Eventing")]
-    public class EventingTests : RocketTestBase
+    public abstract class EventingTestBase : RocketTestBase
     {
         [TestMethod]
-        public void TestSyncEventingWithType()
+        public virtual void TestSyncEventingWithType()
         {
             var manager = GetEventManager();
             manager.Subscribe<TestEvent>(GetListener(), (@sender, @event) => @event.ValueChanged = true);
@@ -22,7 +21,7 @@ namespace Rocket.Tests.Eventing
         }
 
         [TestMethod]
-        public void TestSyncEventingWithName()
+        public virtual void TestSyncEventingWithName()
         {
             var manager = GetEventManager();
             manager.Subscribe(GetListener(), "test", (@sender, @event) => ((TestEvent)@event).ValueChanged = true);
@@ -34,7 +33,7 @@ namespace Rocket.Tests.Eventing
         }
 
         [TestMethod]
-        public void TestCancellationWithoutIgnore()
+        public virtual void TestCancellationWithoutIgnore()
         {
             var manager = GetEventManager();
             manager.Subscribe<TestEvent>(GetListener(), (@sender, @event) => @event.ValueChanged = true);
@@ -46,7 +45,7 @@ namespace Rocket.Tests.Eventing
         }
 
         [TestMethod]
-        public void TestCancellationWithIgnore()
+        public virtual void TestCancellationWithIgnore()
         {
             var manager = GetEventManager();
             manager.Subscribe<TestEvent>(GetListener(), CancelIgnoreEventHandler);
@@ -71,18 +70,16 @@ namespace Rocket.Tests.Eventing
                 ;
         }
 
-        public IEventEmitter GetEmitter()
+        protected virtual IEventEmitter GetEmitter()
         {
             return Runtime.Container.Get<IImplementation>();
         }
-        public ILifecycleObject GetListener()
+
+        protected virtual ILifecycleObject GetListener()
         {
             return Runtime.Container.Get<IRuntime>();
         }
 
-        protected virtual IEventManager GetEventManager()
-        {
-            return Runtime.Container.Get<IEventManager>();
-        }
+        protected abstract IEventManager GetEventManager();
     }
 }

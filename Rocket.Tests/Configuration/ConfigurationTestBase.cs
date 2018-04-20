@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Configuration;
-using Rocket.Core.Configuration.Json;
 
 namespace Rocket.Tests.Configuration
 {

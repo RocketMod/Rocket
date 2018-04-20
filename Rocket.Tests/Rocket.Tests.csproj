@@ -57,7 +57,8 @@
     </Compile>
     <Compile Include="Configuration\JsonConfigurationTest.cs" />
     <Compile Include="Configuration\XmlConfigurationTest.cs" />
-    <Compile Include="Eventing\EventingTests.cs" />
+    <Compile Include="Eventing\DefaultEventingTests.cs" />
+    <Compile Include="Eventing\EventingTestBase.cs" />
     <Compile Include="Eventing\TestEvent.cs" />
     <Compile Include="DI\DITests.cs" />
     <Compile Include="Permissions\ConfigPermissionsTests.cs" />
