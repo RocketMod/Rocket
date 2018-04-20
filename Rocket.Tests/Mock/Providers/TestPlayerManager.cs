@@ -17,12 +17,12 @@ namespace Rocket.Tests.Mock.Providers
         }
 
         public IEnumerable<IOnlinePlayer> OnlinePlayers => new List<IOnlinePlayer> { new TestPlayer(Container) };
-        public bool Kick(IPlayer player, ICommandCaller caller = null, string reason = null)
+        public bool Kick(IOnlinePlayer player, ICommandCaller caller = null, string reason = null)
         {
             return false;
         }
 
-        public bool Ban(IPlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IOnlinePlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? timeSpan = null)
         {
             return false;
         }
