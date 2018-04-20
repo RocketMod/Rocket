@@ -10,10 +10,7 @@ namespace Rocket.Core.Player
     public abstract class BaseOnlinePlayer : BasePlayer, IOnlinePlayer
     {
         protected BaseOnlinePlayer(IDependencyContainer container) : base(container) { }
-
-        public abstract double Health { get; set; }
-        public abstract double MaxHealth { get; set; }
-
+        
         public override string ToString(string format, IFormatProvider formatProvider)
         {
             if (format != null)
@@ -26,19 +23,24 @@ namespace Rocket.Core.Player
                 if (format.Equals("group", StringComparison.OrdinalIgnoreCase))
                     return Container.Get<IPermissionProvider>().GetPrimaryGroup(this).Name;
                 
-                if (format.Equals("health", StringComparison.OrdinalIgnoreCase))
+                if (this is ILivingEntity && format.Equals("health", StringComparison.OrdinalIgnoreCase))
                 {
-                    return subFormat != null ? Health.ToString(subFormat, formatProvider) : Health.ToString(formatProvider);
+                    var health = ((ILivingEntity) this).Health;
+                    return subFormat != null ? health.ToString(subFormat, formatProvider) : health.ToString(formatProvider);
                 }
 
-                if (format.Equals("maxhealth", StringComparison.OrdinalIgnoreCase))
+                if (this is ILivingEntity && format.Equals("maxhealth", StringComparison.OrdinalIgnoreCase))
                 {
-                    return subFormat != null ? MaxHealth.ToString(subFormat, formatProvider) : MaxHealth.ToString(formatProvider);
+                    var maxHealth = ((ILivingEntity)this).Health;
+                    return subFormat != null ? maxHealth.ToString(subFormat, formatProvider) : maxHealth.ToString(formatProvider);
                 }
             }
             return base.ToString(format, formatProvider);
         }
 
         public abstract void SendMessage(string message, ConsoleColor? color = null);
+        public abstract DateTime SessionConnectTime { get; }
+        public abstract DateTime? SessionDisconnectTime { get; }
+        public abstract TimeSpan SessionOnlineTime { get; }
     }
 }

@@ -29,7 +29,8 @@ namespace Rocket.Tests.Mock.Providers
 
         public IOnlinePlayer GetOnlinePlayer(string nameOrId)
         {
-            return OnlinePlayers.FirstOrDefault(c => c.Id.Equals(nameOrId, StringComparison.OrdinalIgnoreCase) || c.Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
+            return OnlinePlayers.FirstOrDefault(c => c.Id.Equals(nameOrId, StringComparison.OrdinalIgnoreCase) 
+                || ((ICommandCaller)c).Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
         }
 
         public IOnlinePlayer GetOnlinePlayerByName(string name)

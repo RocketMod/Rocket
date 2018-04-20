@@ -26,8 +26,10 @@ namespace Rocket.Tests.Mock
             Console.WriteLine("[TestPlayer.SendMessage] " + message);
         }
 
-        public override double Health { get => 0; set { } }
-        public override double MaxHealth { get => 100; set { } }
+        public override DateTime SessionConnectTime { get; } = DateTime.Now;
+        public override DateTime? SessionDisconnectTime => null;
+        public override TimeSpan SessionOnlineTime => DateTime.Now - SessionConnectTime;
+
         public override bool IsOnline => true;
         public override DateTime? LastSeen => DateTime.Now;
     }
