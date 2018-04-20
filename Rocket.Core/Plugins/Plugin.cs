@@ -18,7 +18,7 @@ namespace Rocket.Core.Plugins
             => null;
 
         public ITranslationLocator Translations { get; protected set; }
-        public Dictionary<string, string> DefaultTranslations => null;
+        public virtual Dictionary<string, string> DefaultTranslations => null;
 
         public string Name { get; }
 
