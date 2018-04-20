@@ -3,20 +3,34 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerPreConnectEvent : PlayerEvent, ICancellableEvent
+    public class PlayerPreConnectEvent : Event, ICancellableEvent
     {
+        public IPlayer Player { get; }
+
         public virtual string RejectionReason { get; set; }
 
-        public PlayerPreConnectEvent(IOnlinePlayer player) : base(player, true) { }
-        public PlayerPreConnectEvent(IOnlinePlayer player, bool global = true) : base(player, global) { }
+        public PlayerPreConnectEvent(IPlayer player) : base(true)
+        {
+            Player = player;
+        }
+        public PlayerPreConnectEvent(IPlayer player, bool global = true) : base(global)
+        {
+            Player = player;
+        }
 
-        public PlayerPreConnectEvent(IOnlinePlayer player,
+        public PlayerPreConnectEvent(IPlayer player,
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                     bool global = true) : base(player, executionTarget, global) { }
+                                     bool global = true) : base(executionTarget, global)
+        {
+            Player = player;
+        }
 
-        public PlayerPreConnectEvent(IOnlinePlayer player, string name = null,
+        public PlayerPreConnectEvent(IPlayer player, string name = null,
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                     bool global = true) : base(player, name, executionTarget, global) { }
+                                     bool global = true) : base(name, executionTarget, global)
+        {
+            Player = player;
+        }
 
         public bool IsCancelled { get; set; }
     }
