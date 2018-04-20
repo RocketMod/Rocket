@@ -70,10 +70,11 @@
     <Compile Include="TestPlayer.cs" />
     <Compile Include="Configuration\ConfigurationTestsBase.cs" />
     <Compile Include="RocketTestBase.cs" />
-    <Compile Include="TestImplementation.cs" />
+    <Compile Include="TestProviders\TestImplementation.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestPlugin.cs" />
+    <Compile Include="TestProviders\TestPlayerManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

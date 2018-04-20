@@ -2,9 +2,8 @@
 
 namespace Rocket.API.Permissions
 {
-    public interface IPermissible: IFormattable
+    public interface IPermissible: IFormattable, IIdentifiable
     {
-        string Id { get; }
         string Name { get; }
     }
 }

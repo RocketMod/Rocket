@@ -64,6 +64,7 @@
     <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />
+    <Compile Include="Extensions\TypeConverterExtensions.cs" />
     <Compile Include="Logging\ProxyLogger.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />

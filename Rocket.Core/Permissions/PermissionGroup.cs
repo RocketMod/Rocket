@@ -1,6 +1,5 @@
 ﻿using System;
 using Rocket.API.Permissions;
-using Rocket.API.Player;
 
 namespace Rocket.Core.Permissions
 {
@@ -22,5 +21,22 @@ namespace Rocket.Core.Permissions
 
             throw new FormatException($"Unknown format for permission groups: {format}");
         }
+
+
+        public int CompareTo(object obj) => CompareTo((IIdentifiable)obj);
+
+        public int CompareTo(IIdentifiable other) => CompareTo(other.Id);
+
+        public bool Equals(IIdentifiable other)
+        {
+            if (other == null)
+                return false;
+
+            return Equals(other.Id);
+        }
+
+        public int CompareTo(string other) => Id.CompareTo(other);
+
+        public bool Equals(string other) => Id.Equals(other, StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.Remoting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Player;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Tests.PlayerTests
 {
@@ -38,6 +40,16 @@ namespace Rocket.Tests.PlayerTests
             Assert.AreEqual("100", $"{TestPlayer:MaxHealth:0}");
 
             Assert.ThrowsException<FormatException>(() => string.Format(CultureInfo.InvariantCulture, "{0:invalid_format}", TestPlayer));
+        }
+
+        [TestMethod]
+        public void TestConverterts()
+        {
+            TypeConverter playerConverter = TypeConverterExtensions.GetConverter(typeof(IPlayer));
+            TypeConverter onlinePlayerConverter = TypeConverterExtensions.GetConverter(typeof(IOnlinePlayer));
+
+            Assert.AreEqual(TestPlayer.Id, ((IPlayer)playerConverter.ConvertFromWithContext(Runtime.Container, TestPlayer.Id)).Id);
+            Assert.AreEqual(TestPlayer.Id, ((IOnlinePlayer)onlinePlayerConverter.ConvertFromWithContext(Runtime.Container, TestPlayer.Id)).Id);
         }
 
         protected abstract IPlayerManager GetPlayerManager();

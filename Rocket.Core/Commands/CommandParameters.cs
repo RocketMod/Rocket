@@ -6,19 +6,20 @@ using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
 using Rocket.Core.DependencyInjection;
+using Rocket.Core.Extensions;
 using Rocket.Core.Player;
 
 namespace Rocket.Core.Commands
 {
     public class CommandParameters : ICommandParameters
     {
-        private readonly UnityDescriptorContext descriptorContext;
+        private readonly IDependencyContainer container;
 
         protected internal string[] Parameters { get; }
 
         public CommandParameters(IDependencyContainer container, string[] parameters)
         {
-            descriptorContext = UnityDescriptorContext.From(container);
+            this.container = container;
             Parameters = parameters;
         }
 
@@ -36,23 +37,11 @@ namespace Rocket.Core.Commands
             if(type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            TypeConverter converter;
-            if (typeof(IPlayer).IsAssignableFrom(type))
-            {
-                converter = new PlayerTypeConverter();
-            }
-            else if (typeof(IOnlinePlayer).IsAssignableFrom(type))
-            {
-                converter = new OnlinePlayerTypeConverter();
-            }
-            else
-            {
-                converter = TypeDescriptor.GetConverter(type);
-            }
+            TypeConverter converter = TypeConverterExtensions.GetConverter(type);
 
             if (converter.CanConvertFrom(typeof(string)))
             {
-                return converter.ConvertFrom(descriptorContext, Thread.CurrentThread.CurrentCulture, Parameters[index]);
+                return converter.ConvertFromWithContext(container, Parameters[index]);
             }
 
             throw new NotSupportedException($"Converting \"{Parameters[index]}\" to \"{type.FullName}\" is not supported!");

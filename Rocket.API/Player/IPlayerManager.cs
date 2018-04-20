@@ -13,7 +13,7 @@ namespace Rocket.API.Player
         bool Ban(IPlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? timeSpan = null);
 
         IOnlinePlayer GetOnlinePlayer(string nameOrId);
-        IOnlinePlayer GetOnlinePlayerByName(string displayName);
+        IOnlinePlayer GetOnlinePlayerByName(string name);
         IOnlinePlayer GetOnlinePlayerById(string id);
 
         bool TryGetOnlinePlayer(string nameOrId, out IOnlinePlayer output);

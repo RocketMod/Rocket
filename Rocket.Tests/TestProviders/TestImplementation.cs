@@ -1,11 +1,11 @@
-﻿using Rocket.API;
+﻿using System;
+using System.Collections.Generic;
+using Rocket.API;
+using Rocket.API.Commands;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
-using System;
-using System.Collections.Generic;
-using Rocket.API.Commands;
 
-namespace Rocket.Tests
+namespace Rocket.Tests.TestProviders
 {
     public class TestImplementation : IImplementation
     {
