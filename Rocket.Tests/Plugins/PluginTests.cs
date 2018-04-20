@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Plugin;
+using Rocket.Tests.Mock;
 
 namespace Rocket.Tests.Plugins
 {
@@ -14,8 +15,8 @@ namespace Rocket.Tests.Plugins
             TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
 
-            Assert.IsNull(plugin.Configuration); //NoConfig capability
-            Assert.IsNull(plugin.Translations);  //NoTranslations capability
+            Assert.IsNull(plugin.Configuration); //No config for test plugin
+            Assert.IsNull(plugin.Translations);  //No translations for test plugin
         }
     }
 }

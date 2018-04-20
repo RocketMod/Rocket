@@ -4,7 +4,7 @@ using Rocket.API.Player;
 namespace Rocket.Tests.PlayerTests
 {
     [TestClass]
-    public class DefaultPlayerTests : PlayerTestsBase
+    public class DefaultPlayerTests : PlayerTestBase
     {
         protected override IPlayerManager GetPlayerManager()
         {

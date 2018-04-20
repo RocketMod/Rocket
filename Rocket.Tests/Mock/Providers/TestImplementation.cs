@@ -5,7 +5,7 @@ using Rocket.API.Commands;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
 
-namespace Rocket.Tests.TestProviders
+namespace Rocket.Tests.Mock.Providers
 {
     public class TestImplementation : IImplementation
     {

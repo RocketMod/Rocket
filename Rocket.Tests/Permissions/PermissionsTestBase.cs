@@ -4,11 +4,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
 using Rocket.Core.Permissions;
+using Rocket.Tests.Mock;
 
 namespace Rocket.Tests.Permissions
 {
     [TestCategory("Permissions")]
-    public abstract class PermissionsTestsBase : RocketTestBase
+    public abstract class PermissionsTestBase : RocketTestBase
     {
         protected IConfiguration PlayersConfig { get; private set; }
         protected IConfiguration GroupsConfig { get; private set; }

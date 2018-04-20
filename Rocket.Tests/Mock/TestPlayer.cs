@@ -2,7 +2,7 @@
 using Rocket.API.DependencyInjection;
 using Rocket.Core.Player;
 
-namespace Rocket.Tests
+namespace Rocket.Tests.Mock
 {
     public sealed class TestPlayer : BaseOnlinePlayer
     {

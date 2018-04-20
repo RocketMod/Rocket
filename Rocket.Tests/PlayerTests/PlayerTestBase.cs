@@ -5,11 +5,12 @@ using System.Runtime.Remoting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Player;
 using Rocket.Core.Extensions;
+using Rocket.Tests.Mock;
 
 namespace Rocket.Tests.PlayerTests
 {
     [TestCategory("Players")]
-    public abstract class PlayerTestsBase : RocketTestBase
+    public abstract class PlayerTestBase : RocketTestBase
     {
         public TestPlayer TestPlayer { get; private set; }
 

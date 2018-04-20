@@ -6,7 +6,7 @@ using Rocket.Core.Configuration.Json;
 namespace Rocket.Tests.Configuration
 {
     [TestClass]
-    public class JsonConfigurationTests : ConfigurationTestsBase
+    public class JsonConfigurationTests : ConfigurationTestBase
     {
         [TestMethod]
         public void TestJsonLoading()

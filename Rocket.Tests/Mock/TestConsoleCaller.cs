@@ -1,9 +1,8 @@
 ﻿using System;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
-using Rocket.Core.Player;
 
-namespace Rocket.Tests {
+namespace Rocket.Tests.Mock {
     public class TestConsoleCaller : IConsoleCommandCaller
     {
         public string Id => "Console";

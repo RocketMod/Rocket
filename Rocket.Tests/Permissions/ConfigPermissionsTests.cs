@@ -5,7 +5,7 @@ using Rocket.API.Permissions;
 namespace Rocket.Tests.Permissions
 {
     [TestClass]
-    public class ConfigPermissionsTests : PermissionsTestsBase
+    public class ConfigPermissionsTests : PermissionsTestBase
     {
         protected override IPermissionProvider GetPermissionProvider()
         {

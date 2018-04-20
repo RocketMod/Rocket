@@ -6,7 +6,7 @@ using Rocket.API.ServiceProxies;
 namespace Rocket.Tests.Permissions
 {
     [TestClass]
-    public class ProxyPermissionsTests : PermissionsTestsBase
+    public class ProxyPermissionsTests : PermissionsTestBase
     {
         protected override IPermissionProvider GetPermissionProvider()
         {

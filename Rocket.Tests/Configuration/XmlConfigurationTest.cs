@@ -6,7 +6,7 @@ using Rocket.Core.Configuration.Xml;
 namespace Rocket.Tests.Configuration
 {
     [TestClass]
-    public class XmlConfigurationTests : ConfigurationTestsBase
+    public class XmlConfigurationTests : ConfigurationTestBase
     {
         protected override IConfiguration GetConfig()
         {

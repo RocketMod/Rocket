@@ -5,7 +5,7 @@ using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
 
-namespace Rocket.Tests.TestProviders
+namespace Rocket.Tests.Mock.Providers
 {
     public class TestPlayerManager : IPlayerManager
     {
