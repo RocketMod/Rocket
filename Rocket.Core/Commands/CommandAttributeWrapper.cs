@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Rocket.API.Commands;
@@ -8,27 +9,36 @@ namespace Rocket.Core.Commands
 {
     public class CommandAttributeWrapper : ICommand
     {
+        private readonly Type[] supportedCallers;
         public CommandAttribute Attribute { get; }
 
-        public CommandAttributeWrapper(object instance, MethodBase method, CommandAttribute attribute)
+        public CommandAttributeWrapper(object instance, MethodBase method, 
+                                       CommandAttribute attribute, 
+                                       string[] aliases,
+                                       Type[] supportedCallers)
         {
+            this.supportedCallers = supportedCallers;
             Instance = instance;
             Method = method;
             Attribute = attribute;
+            Aliases = aliases;
         }
 
         public string Name => Attribute.Name;
         public string Description => Attribute.Description;
         public string Permission => Attribute.Permission;
         public string Syntax => Attribute.Syntax;
-        public List<ISubCommand> ChildCommands { get; } //todo
-        public List<string> Aliases => Attribute.Aliases.ToList();
+        public ISubCommand[] ChildCommands { get; } //todo
+        public string[] Aliases { get; }
         public object Instance { get; }
         public MethodBase Method { get; set; }
 
         public bool SupportsCaller(ICommandCaller caller)
         {
-            return Attribute.SupportedCommandCallers.Any(c => c.IsInstanceOfType(caller));
+            if (supportedCallers.Length == 0)
+                return true;
+
+            return supportedCallers.Any(c => c.IsInstanceOfType(caller));
         }
 
         public void Execute(ICommandContext context)

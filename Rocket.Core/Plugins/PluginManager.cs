@@ -65,8 +65,18 @@ namespace Rocket.Core.Plugins
         {
             foreach (var method in o.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
-                var attr = (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
-                CommandAttributeWrapper wrapper = new CommandAttributeWrapper(o, method, attr);
+                var cmdAttr = (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
+                var aliasAttrs = method.GetCustomAttributes(typeof(CommandAliasAttribute), true)
+                                       .Cast<CommandAliasAttribute>();
+
+                var supportedTypeAttrs = method.GetCustomAttributes(typeof(CommandCallerAttribute), true)
+                                       .Cast<CommandCallerAttribute>();
+
+
+                CommandAttributeWrapper wrapper = new CommandAttributeWrapper(o, method, cmdAttr, 
+                    aliasAttrs.Select(c => c.AliasName).ToArray(), 
+                    supportedTypeAttrs.Select(c => c.SupportedCaller).ToArray());
+
                 if (!commands.ContainsKey(plugin))
                     commands.Add(plugin, new List<ICommand>());
 

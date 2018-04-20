@@ -51,8 +51,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CommandAliasAttribute.cs" />
     <Compile Include="Commands\CommandAttribute.cs" />
     <Compile Include="Commands\CommandAttributeWrapper.cs" />
+    <Compile Include="Commands\CommandCaller.cs" />
     <Compile Include="Commands\CommandContext.cs" />
     <Compile Include="Commands\CommandParameters.cs" />
     <Compile Include="Commands\CommandWrongUsageException.cs" />

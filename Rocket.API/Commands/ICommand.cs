@@ -9,8 +9,8 @@ namespace Rocket.API.Commands
         string Permission { get; }
         string Syntax { get; }
 
-        List<ISubCommand> ChildCommands { get; }
-        List<string> Aliases { get; }
+        ISubCommand[] ChildCommands { get; }
+        string[] Aliases { get; }
 
         bool SupportsCaller(ICommandCaller caller);
 

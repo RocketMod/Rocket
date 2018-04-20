@@ -13,8 +13,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "<reload>";
 
         public string Description => "Manage Rocket";
-        public List<string> Aliases => null;
-        public List<ISubCommand> ChildCommands => new List<ISubCommand> { new RocketSubCommandReload() };
+        public string[] Aliases => null;
+        public ISubCommand[] ChildCommands => new ISubCommand[] {new RocketSubCommandReload()};
 
         public void Execute(ICommandContext context)
         {
@@ -33,8 +33,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Description => "Reload Rocket";
         public string Permission => "Rocket.ManageRocket.Reload";
         public string Syntax => "";
-        public List<ISubCommand> ChildCommands => null;
-        public List<string> Aliases => null;
+        public ISubCommand[] ChildCommands => null;
+        public string[] Aliases => null;
         public bool SupportsCaller(ICommandCaller caller)
         {
             return true;

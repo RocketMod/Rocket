@@ -5,9 +5,9 @@ namespace Rocket.API.Player
 {
     public interface ILivingEntity
     {
-        double MaxHealth { get; }
+        double MaxHealth { get; set; }
 
-        double Health { get; }
+        double Health { get; set; }
 
         void Kill();
 

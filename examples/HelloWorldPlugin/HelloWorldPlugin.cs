@@ -27,43 +27,25 @@ namespace Rocket.Examples.HelloWorldPlugin
 
         public override Dictionary<string, string> DefaultTranslations => new Dictionary<string, string>
         {
-            {"broadcast", "[{0:Name}] {1}"}
+            {"some_translatable_message", "This is some translatable / replaceable text!"}
         };
 
-        private readonly ILogger logger;
-
         public HelloWorldPlugin(IDependencyContainer container, 
-                                IChatManager chatManager, 
-                                ILogger logger) : base("HelloWorldPlugin",
-            container)
+                                IChatManager chatManager) : base("HelloWorldPlugin", container)
         {
             ChatManager = chatManager;
-            this.logger = logger;
 
             RegisterCommandsFromObject(this);
         }
 
         protected override void OnLoad(bool isReload)
         {
-            logger.LogInformation("Hello world!");
+            Logger.LogInformation("Hello world!");
         }
 
-        protected override void OnUnload() { }
-
-        [Command]
-        public void KillPlayer(ICommandCaller sender, IOnlinePlayer target)
+        protected override void OnUnload()
         {
-            if(target is ILivingEntity)
-                ((ILivingEntity)target).Kill(sender);
-            else
-                sender.SendMessage("Target could not be killed :(");
+            Logger.LogInformation("Good bye!");
         }
-
-        [Command]
-        public void Broadcast(ICommandCaller sender, string[] args)
-        {
-            string message = string.Join(" ", args);
-            ChatManager.BroadcastLocalized(Translations, message, sender, message);
-        }
-     }
+    }
 }

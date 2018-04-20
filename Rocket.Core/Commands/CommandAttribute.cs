@@ -3,7 +3,7 @@ using Rocket.API.Commands;
 
 namespace Rocket.Core.Commands
 {
-    [AttributeUsage(AttributeTargets.Method)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class CommandAttribute : Attribute
     {
         public string Name { get; set; }
@@ -13,9 +13,5 @@ namespace Rocket.Core.Commands
         public string Permission { get; set; }
 
         public string Syntax { get; set; }
-
-        public string[] Aliases { get; set; }
-
-        public Type[] SupportedCommandCallers = { typeof(ICommandCaller)};
     }
 }

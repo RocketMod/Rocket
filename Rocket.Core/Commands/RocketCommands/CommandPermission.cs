@@ -14,8 +14,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "<add/remove/reload>";
         public string Description => "Manage rocket permissions";
 
-        public List<ISubCommand> ChildCommands => new List<ISubCommand> { new PermissionSubCommandAdd(), new PermissionSubCommandRemove(), new PermissionSubCommandReload() };
-        public List<string> Aliases => new List<string> { "P" };
+        public ISubCommand[] ChildCommands => new ISubCommand[] { new PermissionSubCommandAdd(), new PermissionSubCommandRemove(), new PermissionSubCommandReload() };
+        public string[] Aliases => new[] {"P"};
 
         public void Execute(ICommandContext context)
         {
@@ -34,8 +34,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public abstract string Permission { get; }
         public string Syntax => "<[p]layer/[g]roup> [target] [permission]";
 
-        public List<ISubCommand> ChildCommands => null;
-        public abstract List<string> Aliases { get; }
+        public ISubCommand[] ChildCommands => null;
+        public abstract string[] Aliases { get; }
 
         public bool SupportsCaller(ICommandCaller caller)
         {
@@ -97,7 +97,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Name => "Add";
         public override string Description => "Add a permission to a group or player";
         public override string Permission => "Rocket.Permissions.ManagePermissions.Add";
-        public override List<string> Aliases => new List<string> { "a", "+" };
+        public override string[] Aliases => new[] {"a", "+"};
 
         protected override void UpdatePermission(ICommandCaller caller, IPermissionProvider permissions, IPermissible target, string permissionToUpdate)
         {
@@ -117,7 +117,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Name => "Remove";
         public override string Description => "Remove permission to a group or player";
         public override string Permission => "Rocket.Permissions.ManagePermissions.Remove";
-        public override List<string> Aliases => new List<string> { "r", "-" };
+        public override string[] Aliases => new[] {"r", "-"};
 
         protected override void UpdatePermission(ICommandCaller caller, IPermissionProvider permissions, IPermissible target, string permissionToUpdate)
         {
@@ -138,8 +138,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Description => "Reload permissions";
         public string Permission => "Rocket.Permissions.ManagePermissions.Reload";
         public string Syntax => "";
-        public List<ISubCommand> ChildCommands => null;
-        public List<string> Aliases => new List<string> { "R" };
+        public ISubCommand[] ChildCommands => null;
+        public string[] Aliases => new[] {"R"};
         public bool SupportsCaller(ICommandCaller caller)
         {
             return true;

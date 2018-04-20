@@ -35,8 +35,17 @@ namespace Rocket.Tests.Mock
 
         public override bool IsOnline => true;
         public override DateTime? LastSeen => DateTime.Now;
-        public double MaxHealth => 100;
-        public double Health => 0;
+        public double MaxHealth
+        {
+            get { return 100; }
+            set => throw new NotImplementedException();
+        }
+
+        public double Health
+        {
+            get { return 0; }
+            set => throw new NotImplementedException();
+        }
 
         public void Kill()
         {
