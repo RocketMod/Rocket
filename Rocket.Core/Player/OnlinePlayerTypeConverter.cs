@@ -1,13 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
 using Rocket.Core.DependencyInjection;
 
 namespace Rocket.Core.Player
 {
-    public class PlayerTypeConverter : TypeConverter
+    public class OnlinePlayerTypeConverter : TypeConverter
     {
         public override bool CanConvertFrom(ITypeDescriptorContext context,
                                             Type sourceType)
@@ -23,9 +22,9 @@ namespace Rocket.Core.Player
         public override object ConvertFrom(ITypeDescriptorContext context,
                                            CultureInfo culture, object value)
         {
-            if (value is string playerId && context is UnityDescriptorContext ctx)
+            if (value is string nameOrId && context is UnityDescriptorContext ctx)
             {
-                return ctx.UnityContainer.Get<IPlayerManager>().GetPlayer(playerId);
+                return ctx.UnityContainer.Get<IPlayerManager>().GetOnlinePlayer(nameOrId);
             }
 
             return base.ConvertFrom(context, culture, value);

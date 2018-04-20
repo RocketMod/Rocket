@@ -1,10 +1,12 @@
 ﻿using System;
+using System.ComponentModel;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 
 namespace Rocket.Core.Player
 {
+    [TypeConverter(typeof(OnlinePlayerTypeConverter))]
     public abstract class BaseOnlinePlayer : BasePlayer, IOnlinePlayer
     {
         protected BaseOnlinePlayer(IDependencyContainer container) : base(container) { }

@@ -18,7 +18,7 @@ namespace Rocket.Core.Commands
             Command = command;
             CommandAlias = commandAlias;
             ParentCommandContext = parentCommandContext;
-            Parameters = new CommandParameters(parameters);
+            Parameters = new CommandParameters(container, parameters);
             CommandPrefix = commandPrefix;
         }
 
