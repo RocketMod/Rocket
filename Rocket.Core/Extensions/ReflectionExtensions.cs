@@ -29,7 +29,7 @@ namespace Rocket.Core.Extensions
             for (int i = 0; i < st.FrameCount; i++)
             {
                 var frame = st.GetFrame(i);
-                if (skipTypes.Any(c => c == frame.GetMethod().DeclaringType))
+                if (skipTypes.Any(c => c == frame.GetMethod()?.DeclaringType))
                     continue;
 
                 target = frame;
@@ -37,6 +37,23 @@ namespace Rocket.Core.Extensions
 
             return target?.GetMethod();
         }
+
+        public static MethodBase GetCallingMethod(params Assembly[] skipAssemblies)
+        {
+            StackTrace st = new StackTrace();
+            StackFrame target = null;
+            for (int i = 0; i < st.FrameCount; i++)
+            {
+                var frame = st.GetFrame(i);
+                if (skipAssemblies.Any(c => Equals(c, frame.GetMethod()?.DeclaringType?.Assembly)))
+                    continue;
+
+                target = frame;
+            }
+
+            return target?.GetMethod();
+        }
+
 
         public static IEnumerable<Type> FindAllTypes(this ILifecycleObject @object,
                                                      bool includeAbstractAndInterfaces = false)
