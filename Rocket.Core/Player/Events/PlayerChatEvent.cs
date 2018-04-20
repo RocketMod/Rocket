@@ -7,24 +7,24 @@ namespace Rocket.Core.Player.Events
     {
         public string Message { get; set; }
 
-        public PlayerChatEvent(IPlayer player, string message) : base(player)
+        public PlayerChatEvent(IOnlinePlayer player, string message) : base(player)
         {
             Message = message;
         }
 
-        public PlayerChatEvent(IPlayer player, string message, bool global = true) : base(player, global)
+        public PlayerChatEvent(IOnlinePlayer player, string message, bool global = true) : base(player, global)
         {
             Message = message;
         }
 
-        public PlayerChatEvent(IPlayer player, string message,
+        public PlayerChatEvent(IOnlinePlayer player, string message,
                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                bool global = true) : base(player, executionTarget, global)
         {
             Message = message;
         }
 
-        public PlayerChatEvent(IPlayer player, string message, string name = null,
+        public PlayerChatEvent(IOnlinePlayer player, string message, string name = null,
                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                bool global = true) : base(player, name, executionTarget, global)
         {

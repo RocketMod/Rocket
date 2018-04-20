@@ -7,29 +7,29 @@ namespace Rocket.Core.Player.Events
     {
         public string Reason { get; }
 
-        public PlayerDisconnectedEvent(IPlayer player) : base(player)
+        public PlayerDisconnectedEvent(IOnlinePlayer player) : base(player)
         {
             Reason = null;
         }
 
-        public PlayerDisconnectedEvent(IPlayer player, string reason = null) : base(player)
+        public PlayerDisconnectedEvent(IOnlinePlayer player, string reason = null) : base(player)
         {
             Reason = reason;
         }
 
-        public PlayerDisconnectedEvent(IPlayer player, string reason = null, bool global = true) : base(player, global)
+        public PlayerDisconnectedEvent(IOnlinePlayer player, string reason = null, bool global = true) : base(player, global)
         {
             Reason = reason;
         }
 
-        public PlayerDisconnectedEvent(IPlayer player, string reason = null,
+        public PlayerDisconnectedEvent(IOnlinePlayer player, string reason = null,
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                      bool global = true) : base(player, executionTarget, global)
         {
             Reason = reason;
         }
 
-        public PlayerDisconnectedEvent(IPlayer player, string reason = null, string name = null,
+        public PlayerDisconnectedEvent(IOnlinePlayer player, string reason = null, string name = null,
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                      bool global = true) : base(player, name, executionTarget, global)
         {

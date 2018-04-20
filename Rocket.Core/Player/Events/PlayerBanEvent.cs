@@ -11,25 +11,25 @@ namespace Rocket.Core.Player.Events
         public ICommandCaller Caller { get; }
         public string Reason { get; set; }
 
-        public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? duration = null) : base(player)
+        public PlayerBanEvent(IOnlinePlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? duration = null) : base(player)
         {
             Caller = caller;
             Reason = reason;
             Duration = duration;
         }
-        public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? duration = null, bool global = true) : base(player, global)
+        public PlayerBanEvent(IOnlinePlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? duration = null, bool global = true) : base(player, global)
         {
             Caller = caller;
             Reason = reason;
             Duration = duration;
         }
-        public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? duration = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, executionTarget, global)
+        public PlayerBanEvent(IOnlinePlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? duration = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, executionTarget, global)
         {
             Caller = caller;
             Reason = reason;
             Duration = duration;
         }
-        public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? duration = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, name, executionTarget, global)
+        public PlayerBanEvent(IOnlinePlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? duration = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, name, executionTarget, global)
         {
             Caller = caller;
             Reason = reason;

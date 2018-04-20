@@ -5,19 +5,19 @@ namespace Rocket.Core.Player.Events
 {
     public abstract class PlayerEvent : Event
     {
-        public IPlayer Player { get; }
+        public IOnlinePlayer Player { get; }
 
-        protected PlayerEvent(IPlayer player) : this(player, true) { }
+        protected PlayerEvent(IOnlinePlayer player) : this(player, true) { }
 
         /// <param name="global">Defines if the event is emitted globally</param>
-        protected PlayerEvent(IPlayer player, bool global = true) : base(global)
+        protected PlayerEvent(IOnlinePlayer player, bool global = true) : base(global)
         {
             Player = player;
         }
 
         /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget" /></param>
         /// <param name="global">Defines if the event is emitted globally</param>
-        protected PlayerEvent(IPlayer player,
+        protected PlayerEvent(IOnlinePlayer player,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(executionTarget, global)
         {
@@ -28,7 +28,7 @@ namespace Rocket.Core.Player.Events
         /// <param name="name">The name of the event. Will be auto set when null.</param>
         /// ///
         /// <param name="global">Defines if the event is emitted globally</param>
-        protected PlayerEvent(IPlayer player, string name = null,
+        protected PlayerEvent(IOnlinePlayer player, string name = null,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(name, executionTarget, global)
         {
