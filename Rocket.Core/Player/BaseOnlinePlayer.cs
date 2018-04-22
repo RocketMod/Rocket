@@ -45,7 +45,5 @@ namespace Rocket.Core.Player
         public abstract DateTime SessionConnectTime { get; }
         public abstract DateTime? SessionDisconnectTime { get; }
         public abstract TimeSpan SessionOnlineTime { get; }
-
-        public abstract event PlayerMove OnPlayerMove;
     }
 }

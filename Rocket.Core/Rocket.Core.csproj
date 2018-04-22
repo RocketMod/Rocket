@@ -84,6 +84,7 @@
     <Compile Include="Permissions\ProxyPermissionProvider.cs" />
     <Compile Include="Player\BaseOnlinePlayer.cs" />
     <Compile Include="Player\BasePlayer.cs" />
+    <Compile Include="Player\Events\PlayerMoveEvent.cs" />
     <Compile Include="Player\OnlinePlayerTypeConverter.cs" />
     <Compile Include="Player\PlayerTypeConverter.cs" />
     <Compile Include="DependencyInjection\UnityDescriptorContext.cs" />

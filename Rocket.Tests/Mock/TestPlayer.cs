@@ -33,8 +33,6 @@ namespace Rocket.Tests.Mock
         public override DateTime? SessionDisconnectTime => null;
         public override TimeSpan SessionOnlineTime => DateTime.Now - SessionConnectTime;
 
-        public override event PlayerMove OnPlayerMove;
-
         public override bool IsOnline => true;
         public override DateTime? LastSeen => DateTime.Now;
         public double MaxHealth
