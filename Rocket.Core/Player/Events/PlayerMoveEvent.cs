@@ -4,7 +4,7 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerMoveEvent : PlayerEvent
+    public class PlayerMoveEvent : OnlinePlayerEvent
     {
         public RVector3 OldPosition { get; }
         public RVector3 NewPosition { get; }

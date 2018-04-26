@@ -4,7 +4,7 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerDeathEvent : PlayerEvent
+    public class PlayerDeathEvent : OnlinePlayerEvent
     {
         public IEntity Killer { get; }
 

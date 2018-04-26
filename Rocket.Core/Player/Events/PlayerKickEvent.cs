@@ -4,7 +4,7 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerKickEvent : PlayerEvent, ICancellableEvent
+    public class PlayerKickEvent : OnlinePlayerEvent, ICancellableEvent
     {
         public ICommandCaller Caller { get; }
         public string Reason { get; set; }

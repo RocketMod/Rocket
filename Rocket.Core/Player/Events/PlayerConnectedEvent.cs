@@ -3,7 +3,7 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerConnectedEvent : PlayerEvent
+    public class PlayerConnectedEvent : OnlinePlayerEvent
     {
         public PlayerConnectedEvent(IOnlinePlayer player) : base(player) { }
         public PlayerConnectedEvent(IOnlinePlayer player, bool global = true) : base(player, global) { }

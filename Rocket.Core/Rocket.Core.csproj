@@ -98,7 +98,7 @@
     <Compile Include="Player\Events\PlayerConnectedEvent.cs" />
     <Compile Include="Player\Events\PlayerDeathEvent.cs" />
     <Compile Include="Player\Events\PlayerDisconnectedEvent.cs" />
-    <Compile Include="Player\Events\PlayerEvent.cs" />
+    <Compile Include="Player\Events\OnlinePlayerEvent.cs" />
     <Compile Include="Player\Events\PlayerKickEvent.cs" />
     <Compile Include="Commands\Events\PreCommandExecutionEvent.cs" />
     <Compile Include="Player\Events\PlayerPreConnectEvent.cs" />

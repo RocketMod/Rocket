@@ -3,7 +3,7 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerDisconnectedEvent : PlayerEvent
+    public class PlayerDisconnectedEvent : OnlinePlayerEvent
     {
         public string Reason { get; }
 

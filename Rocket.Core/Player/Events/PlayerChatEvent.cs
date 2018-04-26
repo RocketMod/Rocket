@@ -3,7 +3,7 @@ using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerChatEvent : PlayerEvent, ICancellableEvent
+    public class PlayerChatEvent : OnlinePlayerEvent, ICancellableEvent
     {
         public string Message { get; set; }
 
