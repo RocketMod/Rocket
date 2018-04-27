@@ -7,7 +7,7 @@ namespace Rocket.Core.Player.Events
     public class PlayerDamageEvent : OnlinePlayerEvent, ICancellableEvent
     {
         public ICommandCaller DamageDealer { get; }
-        public double Damage { get; }
+        public double Damage { get; set; }
 
         public PlayerDamageEvent(IOnlinePlayer player, double damage, ICommandCaller damageDealer) : base(player)
         {
