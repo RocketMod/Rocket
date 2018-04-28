@@ -16,11 +16,6 @@ namespace Rocket.Tests.Mock {
             Console.WriteLine("[SendMessage] " + message, bindings);
             Console.ForegroundColor = tmp;
         }
-        public void SendLocalizedMessage(ITranslationLocator translations, string translationKey, ConsoleColor? color = null,
-                                         params object[] bindings)
-        {
-            SendMessage(translations.GetLocalizedMessage(translationKey), color, bindings);
-        }
 
         public int CompareTo(object obj)
         {

@@ -16,28 +16,10 @@ namespace Rocket.API.Chat
         void SendMessage(IOnlinePlayer player, string message, params object[] bindings);
 
         /// <summary>
-        /// Sends a localized message to the given player
-        /// </summary>
-        /// <param name="translationSource">The translation source</param>
-        /// <param name="player">The receiver of the message</param>
-        /// <param name="translationKey">The key of the translated message to send</param>
-        /// <param name="bindings">The bindings for the message</param>
-        void SendLocalizedMessage(ITranslationLocator translationSource, IOnlinePlayer player, string translationKey,
-                                  params object[] bindings);
-
-        /// <summary>
         /// Broadcasts a message to all players
         /// </summary>
         /// <param name="message">The message to broadcast</param>
         /// <param name="bindings">The bindings for the message</param> 
         void Broadcast(string message, params object[] bindings);
-
-        /// <summary>
-        /// Broadcasts a localized message to all players
-        /// </summary>
-        /// <param name="translations">The translation soruce</param>
-        /// <param name="translationKey">The key of the translated message to send</param>
-        /// <param name="bindings">The bindings for the message</param> 
-        void BroadcastLocalized(ITranslationLocator translations, string translationKey, params object[] bindings);
     }
 }

@@ -47,11 +47,5 @@ namespace Rocket.Core.Player
         public abstract TimeSpan SessionOnlineTime { get; }
         public string EntityTypeName => "Player";
         public abstract void SendMessage(string message, ConsoleColor? color = null, params object[] bindings);
-
-        public void SendLocalizedMessage(ITranslationLocator translations, string translationKey, ConsoleColor? color = null,
-                                         params object[] bindings)
-        {
-            SendMessage(translations.GetLocalizedMessage(translationKey), color, bindings);
-        }
     }
 }

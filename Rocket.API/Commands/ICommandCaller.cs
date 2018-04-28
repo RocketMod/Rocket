@@ -1,6 +1,8 @@
 ﻿using System;
+using Rocket.API.Chat;
 using Rocket.API.I18N;
 using Rocket.API.Permissions;
+using Rocket.API.Player;
 
 namespace Rocket.API.Commands
 {
@@ -22,14 +24,5 @@ namespace Rocket.API.Commands
         /// <param name="color">The color of the message. Depending on the caller implementation, it may not be used.</param>
         /// <param name="bindings">The bindings for the message. See <see cref="string.Format(string, object[])"/></param>
         void SendMessage(string message, ConsoleColor? color = null, params object[] bindings);
-
-        /// <summary>
-        /// Sends a localized (translatable) message to the command caller.
-        /// </summary>
-        /// <param name="translations">The translations source.</param>
-        /// <param name="translationKey">The translation key.</param>
-        /// <param name="color">The color of the message. Depending on the caller implementation, it may not be used.</param>
-        /// <param name="bindings">The bindings for the message. See <see cref="string.Format(string, object[])"/></param>
-        void SendLocalizedMessage(ITranslationLocator translations, string translationKey, ConsoleColor? color = null, params object[] bindings);
     }
 }

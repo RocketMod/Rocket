@@ -41,12 +41,6 @@ namespace Rocket.ConsoleImplementation {
             Console.ForegroundColor = tmp;
         }
 
-        public void SendLocalizedMessage(ITranslationLocator translations, string translationKey, ConsoleColor? color = null,
-                                         params object[] bindings)
-        {
-            SendMessage(translations.GetLocalizedMessage(translationKey), color, bindings);
-        }
-
         public string ToString(string format, IFormatProvider formatProvider)
         {
             return Id;
