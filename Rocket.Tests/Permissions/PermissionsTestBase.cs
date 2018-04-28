@@ -297,20 +297,14 @@ namespace Rocket.Tests.Permissions
             Assert.IsTrue(groups.Select(c => c.Id).Contains("TestGroup4"));
         }
 
-        protected virtual IPermissionProvider LoadProvider()
-        {
-            IPermissionProvider provider = GetPermissionProvider();
-            provider.Load(GroupsConfig, PlayersConfig);
-            return provider;
-        }
+        protected abstract IPermissionProvider LoadProvider();
 
         protected abstract IPermissionProvider GetPermissionProvider();
 
         [TestMethod]
         public virtual void TestPermissionsLoad()
         {
-            IPermissionProvider notLoadedProvider = GetPermissionProvider();
-            notLoadedProvider.Load(GroupsConfig, PlayersConfig); //should not throw an exception
+            LoadProvider();
         }
     }
 }

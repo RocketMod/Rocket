@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
@@ -54,7 +55,7 @@ namespace Rocket.Core.Permissions
 
         public bool DeleteGroup(IPermissionGroup group) => false;
 
-        public void Load(IConfigurationElement groups, IConfigurationElement players)
+        public void Load(IConfigurationContext context)
         {
             // do nothing
         }

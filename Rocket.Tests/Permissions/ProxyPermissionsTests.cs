@@ -5,12 +5,13 @@ using Rocket.API.ServiceProxies;
 
 namespace Rocket.Tests.Permissions
 {
+    /*
     [TestClass]
     public class ProxyPermissionsTests : PermissionsTestBase
     {
         protected override IPermissionProvider GetPermissionProvider()
             => Runtime.Container.Get<IPermissionProvider>("proxy_permissions");
-
+        
         protected override IPermissionProvider LoadProvider()
         {
             IServiceProxy<IPermissionProvider> prov = (IServiceProxy<IPermissionProvider>) GetPermissionProvider();
@@ -83,4 +84,5 @@ namespace Rocket.Tests.Permissions
             Assert.ThrowsException<NotSupportedException>(() => base.TestRemovePermissionFromPlayer());
         }
     }
+    */
 }

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.Core.ServiceProxies;
 
@@ -11,8 +13,15 @@ namespace Rocket.Core.Permissions
     [ServicePriority(Priority = ServicePriority.Lowest)]
     public class ConfigurationPermissionProvider : IPermissionProvider
     {
-        public IConfigurationElement GroupsConfig { get; protected set; }
-        public IConfigurationElement PlayersConfig { get; protected set; }
+        public ConfigurationPermissionProvider(IConfiguration groupsConfig,
+                                               IConfiguration playersConfig)
+        {
+            GroupsConfig = groupsConfig;
+            PlayersConfig = playersConfig;
+        }
+
+        public IConfiguration GroupsConfig { get; protected set; }
+        public IConfiguration PlayersConfig { get; protected set; }
 
         public bool SupportsPermissible(IPermissible permissible)
             => permissible is IPermissionGroup || permissible is ICommandCaller;
@@ -231,10 +240,15 @@ namespace Rocket.Core.Permissions
             return GroupsConfig.RemoveSection($"{group.Id}");
         }
 
-        public void Load(IConfigurationElement groupsConfig, IConfigurationElement playersConfig)
+        public void Load(IConfigurationContext context)
         {
-            GroupsConfig = groupsConfig;
-            PlayersConfig = playersConfig;
+            ConfigurationContext groupsContext = new ConfigurationContext(context);
+            groupsContext.ConfigurationName += ".Groups";
+            GroupsConfig.Load(groupsContext, new { });
+
+            ConfigurationContext playersContext = new ConfigurationContext(context);
+            playersContext.ConfigurationName += ".Players";
+            PlayersConfig.Load(playersContext, new { });
         }
 
         public void Reload()
@@ -364,6 +378,12 @@ namespace Rocket.Core.Permissions
         {
             if (!SupportsPermissible(permissible))
                 throw new NotSupportedException(permissible.GetType().FullName + " is not supported!");
+        }
+
+        public void LoadFromConfig(IConfiguration groupsConfig, IConfiguration playersConfig)
+        {
+            GroupsConfig = groupsConfig;
+            PlayersConfig = playersConfig;
         }
     }
 }

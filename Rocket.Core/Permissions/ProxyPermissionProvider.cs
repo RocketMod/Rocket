@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ObjectBuilder2;
+using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -122,7 +123,7 @@ namespace Rocket.Core.Permissions
         public bool DeleteGroup(IPermissionGroup group)
             => throw new NotSupportedException("Deleting groups from proxy is not supported.");
 
-        public void Load(IConfigurationElement groups, IConfigurationElement players)
+        public void Load(IConfigurationContext context)
         {
             throw new NotSupportedException("Loading from proxy is not supported.");
         }
