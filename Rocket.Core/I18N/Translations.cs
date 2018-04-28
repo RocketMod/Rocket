@@ -20,9 +20,9 @@ namespace Rocket.Core.I18N
         public string GetLocalizedMessage(string translationKey, params object[] bindings)
             => string.Format(config[translationKey].Get<string>(), bindings);
 
-        public void SetLocalizedMessage(string translationKey, string message)
+        public void SetFormat(string translationKey, string format)
         {
-            config[translationKey].Set(message);
+            config[translationKey].Set(format);
         }
 
         public void Load(IConfigurationContext context, Dictionary<string, string> defaultConfiguration)

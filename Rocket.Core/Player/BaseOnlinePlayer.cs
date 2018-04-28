@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Entities;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 

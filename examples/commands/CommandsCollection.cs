@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Chat;
 using Rocket.API.Commands;
+using Rocket.API.Entities;
 using Rocket.API.I18N;
 using Rocket.API.Player;
 using Rocket.Core.Commands;

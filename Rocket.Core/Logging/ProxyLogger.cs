@@ -34,10 +34,10 @@ namespace Rocket.Core.Logging
                 logger.LogTrace(message, exception, arguments);
         }
 
-        public void LogTrace(string message, Exception exception, ConsoleColor? color, params object[] arguments)
+        public void LogTrace(string message, Exception exception, ConsoleColor? color, params object[] bindings)
         {
             foreach (ILogger logger in ProxiedServices)
-                logger.LogTrace(message, exception, color, arguments);
+                logger.LogTrace(message, exception, color, bindings);
         }
 
         public void LogDebug(string message, params object[] arguments)

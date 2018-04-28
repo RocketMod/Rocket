@@ -3,6 +3,7 @@ using System.Reflection;
 
 namespace Rocket.API.Eventing
 {
+    /// <inheritdoc/>
     public class Event : IEvent
     {
         /// <param name="global">Defines if the event is emitted globally</param>
@@ -15,7 +16,6 @@ namespace Rocket.API.Eventing
 
         /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget" /></param>
         /// <param name="name">The name of the event. Will be auto set when null.</param>
-        /// ///
         /// <param name="global">Defines if the event is emitted globally</param>
         protected Event(string name = null,
                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
@@ -26,6 +26,10 @@ namespace Rocket.API.Eventing
             ExecutionTarget = executionTarget;
         }
 
+        /// <summary>
+        /// <inheritdoc/><br/><br/>
+        /// In this implementation it contains the properties of the class with their respective values.
+        /// </summary>
         public Dictionary<string, object> Arguments
         {
             get
@@ -44,9 +48,13 @@ namespace Rocket.API.Eventing
             }
         }
 
+        /// <inheritdoc/>
         public string Name { get; }
+
+        /// <inheritdoc/>
         public EventExecutionTargetContext ExecutionTarget { get; }
 
+        /// <inheritdoc/>
         public bool IsGlobal { get; }
     }
 }

@@ -181,11 +181,11 @@ namespace Rocket.Core.Logging
             LogDebug(message, exception, null, arguments);
         }
 
-        public void LogTrace(string message, Exception exception, ConsoleColor? color, params object[] arguments)
+        public void LogTrace(string message, Exception exception, ConsoleColor? color, params object[] bindings)
         {
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Cyan);
-            Console.WriteLine(FormatMessage(message, tracePrefix, arguments));
+            Console.WriteLine(FormatMessage(message, tracePrefix, bindings));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
             SetColor(orgCol);
