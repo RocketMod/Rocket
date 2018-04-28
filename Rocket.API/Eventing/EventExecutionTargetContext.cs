@@ -1,24 +1,27 @@
 ﻿namespace Rocket.API.Eventing
 {
+    /// <summary>
+    ///     Defines when and where event listeners should be notified.
+    /// </summary>
     public enum EventExecutionTargetContext
     {
         /// <summary>
-        ///     Trigger the event on the next frame
+        ///     Notifies the subscriptions on the next frame update.
         /// </summary>
         NextFrame,
 
         /// <summary>
-        ///     Trigger the event on a separate thread on the next frame
+        ///     Notifies the subscriptions on the next frame update from a separate thread.
         /// </summary>
         NextAsyncFrame,
 
         /// <summary>
-        ///     Trigger the event on the next physics update
+        ///     Notifies the subscriptions the event on the next physics update.
         /// </summary>
         NextPhysicsUpdate,
 
         /// <summary>
-        ///     Trigger the event immediately
+        ///     Notifies the subscriptions the event immediately.
         /// </summary>
         Sync
     }
