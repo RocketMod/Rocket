@@ -13,17 +13,6 @@ namespace Rocket.Core.Plugins
 {
     public abstract class Plugin : IPlugin, ITranslatable, IConfigurable
     {
-        public IConfiguration Configuration { get; protected set; }
-        public virtual object DefaultConfiguration 
-            => null;
-
-        public ITranslationLocator Translations { get; protected set; }
-        public virtual Dictionary<string, string> DefaultTranslations => null;
-
-        public string Name { get; }
-
-        public virtual string WorkingDirectory { get; set; }
-
         protected Plugin(IDependencyContainer container) : this(null, container) { }
 
         protected Plugin(string name, IDependencyContainer container)
@@ -36,17 +25,55 @@ namespace Rocket.Core.Plugins
         protected IEventManager EventManager => Container.Get<IEventManager>();
         protected ILogger Logger => Container.Get<ILogger>();
 
-
         protected IPluginManager PluginManager => Container.Get<IPluginManager>();
 
         protected IRuntime Runtime => Container.Get<IRuntime>();
 
         protected IImplementation Implementation => Container.Get<IImplementation>();
+        public IConfiguration Configuration { get; protected set; }
+
+        public virtual object DefaultConfiguration
+            => null;
+
+        public string Name { get; }
+
+        public virtual string WorkingDirectory { get; set; }
 
         public void Load()
         {
             Load(false);
         }
+
+        public void Unload()
+        {
+            if (EventManager != null)
+            {
+                PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
+                EventManager.Emit(Runtime, loadedEvent);
+            }
+
+            OnUnload();
+            IsAlive = false;
+
+            if (EventManager != null)
+            {
+                PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
+                EventManager.Emit(Runtime, loadedEvent);
+            }
+        }
+
+        public void Reload()
+        {
+            Unload();
+            Configuration?.Reload();
+            Translations?.Reload();
+            Load(true);
+        }
+
+        public bool IsAlive { get; internal set; }
+
+        public ITranslationLocator Translations { get; protected set; }
+        public virtual Dictionary<string, string> DefaultTranslations => null;
 
         public void Load(bool isReload)
         {
@@ -95,37 +122,9 @@ namespace Rocket.Core.Plugins
 
         public void RegisterCommandsFromObject(object o)
         {
-            var p = PluginManager as PluginManager;
+            PluginManager p = PluginManager as PluginManager;
             p?.RegisterCommands(this, o);
         }
-
-        public void Unload()
-        {
-            if (EventManager != null)
-            {
-                PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadedEvent);
-            }
-
-            OnUnload();
-            IsAlive = false;
-
-            if (EventManager != null)
-            {
-                PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadedEvent);
-            }
-        }
-
-        public void Reload()
-        {
-            Unload();
-            Configuration?.Reload();
-            Translations?.Reload();
-            Load(true);
-        }
-
-        public bool IsAlive { get; internal set; }
 
         protected virtual void OnLoad(bool isReload) { }
         protected virtual void OnUnload() { }

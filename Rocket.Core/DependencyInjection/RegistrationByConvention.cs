@@ -15,19 +15,22 @@ namespace Rocket.Core.DependencyInjection
             AppDomain.CurrentDomain.AssemblyLoad += (sender, args) =>
             {
                 foreach (Type type in args.LoadedAssembly.GetTypesWithInterface<IDependencyRegistrator>())
-                    ((IDependencyRegistrator)Activator.CreateInstance(type)).Register(container, resolver);
+                    ((IDependencyRegistrator) Activator.CreateInstance(type)).Register(container, resolver);
             };
 
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
 
-            logger.LogDebug("Assemblies: [" + string.Join(", ", assemblies.Select(c => c.GetName().Name).ToArray()) + "]");
+            logger.LogDebug("Assemblies: ["
+                + string.Join(", ", assemblies.Select(c => c.GetName().Name).ToArray())
+                + "]");
 
             foreach (Assembly assembly in assemblies)
             {
                 logger?.LogDebug("Registering assembly: " + assembly.FullName);
-                foreach (Type type in assembly.GetTypesWithInterface<IDependencyRegistrator>()) {
+                foreach (Type type in assembly.GetTypesWithInterface<IDependencyRegistrator>())
+                {
                     logger?.LogDebug("\tRegistering from IDependencyRegistrator: " + type.FullName);
-                    ((IDependencyRegistrator)Activator.CreateInstance(type)).Register(container, resolver);
+                    ((IDependencyRegistrator) Activator.CreateInstance(type)).Register(container, resolver);
                 }
             }
         }

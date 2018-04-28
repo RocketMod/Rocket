@@ -1,3 +1,4 @@
-﻿namespace Rocket.API.ServiceProxies {
+﻿namespace Rocket.API.ServiceProxies
+{
     public interface IProxyableService { }
 }

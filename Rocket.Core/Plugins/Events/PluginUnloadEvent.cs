@@ -5,7 +5,8 @@ namespace Rocket.Core.Plugins.Events
 {
     public class PluginUnloadEvent : PluginEvent
     {
-        public PluginUnloadEvent(IPluginManager plugnManager, IPlugin plugin, bool global = true) : base(plugnManager, plugin, global) { }
+        public PluginUnloadEvent(IPluginManager plugnManager, IPlugin plugin, bool global = true) : base(plugnManager,
+            plugin, global) { }
 
         public PluginUnloadEvent(IPluginManager plugnManager, IPlugin plugin,
                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,

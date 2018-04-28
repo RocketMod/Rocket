@@ -9,8 +9,8 @@ namespace Rocket.Tests.Mock.Providers
 {
     public class TestImplementation : IImplementation
     {
-        private readonly ILogger logger;
         private readonly IConsoleCommandCaller consoleCaller;
+        private readonly ILogger logger;
 
         public TestImplementation(ILogger logger)
         {
@@ -39,10 +39,7 @@ namespace Rocket.Tests.Mock.Providers
             logger.LogInformation("Reloading implementation");
         }
 
-        public IConsoleCommandCaller GetConsoleCaller()
-        {
-            return consoleCaller;
-        }
+        public IConsoleCommandCaller GetConsoleCaller() => consoleCaller;
 
         public void Shutdown()
         {

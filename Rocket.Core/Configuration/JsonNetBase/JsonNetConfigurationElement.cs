@@ -9,8 +9,6 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public abstract class JsonNetConfigurationElement : IConfigurationElement
     {
-        public JToken Node { get; protected set; }
-
         protected JsonNetConfigurationElement(IConfiguration root, IConfigurationElement parent, JToken node)
         {
             Root = root;
@@ -23,6 +21,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
             Root = root;
         }
 
+        public JToken Node { get; protected set; }
+
         public IConfigurationSection this[string path] => GetSection(path);
         public IConfigurationElement Parent { get; }
         public IConfiguration Root { get; protected set; }
@@ -33,31 +33,28 @@ namespace Rocket.Core.Configuration.JsonNetBase
             GuardPath(path);
 
             JsonNetConfigurationElement currentNode = this;
-            string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = path.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length == 1)
             {
                 string key = parts[0];
 
                 //Path == "" on Root
-                var parentPath = string.IsNullOrEmpty(Path) ? "" : Path + ".";
+                string parentPath = string.IsNullOrEmpty(Path) ? "" : Path + ".";
 
                 if (Node is JObject o && !o.ContainsKey(key))
                     throw new KeyNotFoundException($"Path \"{parentPath}{path}\" doesn\'t exist!");
 
-                var childNode = Node[key];
+                JToken childNode = Node[key];
                 if (childNode is JValue)
                     childNode = childNode.Parent;
 
                 return new JsonNetConfigurationSection(Root, this, childNode, key);
             }
 
-            foreach (string part in parts)
-            {
-                currentNode = (JsonNetConfigurationSection)currentNode.GetSection(part);
-            }
+            foreach (string part in parts) currentNode = (JsonNetConfigurationSection) currentNode.GetSection(part);
 
-            return (IConfigurationSection)currentNode;
+            return (IConfigurationSection) currentNode;
         }
 
         public IConfigurationSection CreateSection(string path, SectionType type)
@@ -67,7 +64,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
             JToken current = Node;
 
-            string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = path.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries);
 
             int i = 0;
             foreach (string part in parts)
@@ -79,12 +76,11 @@ namespace Rocket.Core.Configuration.JsonNetBase
                     continue;
                 }
 
-                if (i == (parts.Length - 1))
-                {
+                if (i == parts.Length - 1)
                     switch (type)
                     {
                         case SectionType.Value:
-                            o.Add(new JProperty(part, (string)null));
+                            o.Add(new JProperty(part, (string) null));
                             break;
                         case SectionType.Array:
                             o.Add(part, new JArray());
@@ -93,11 +89,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
                             o.Add(part, new JObject());
                             break;
                     }
-                }
                 else
-                {
                     o.Add(part, new JObject());
-                }
 
                 current = current[part];
                 i++;
@@ -111,8 +104,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
             GuardLoaded();
             GuardPath(path);
 
-            var node = ((JsonNetConfigurationElement)GetSection(path)).Node;
-            var parent = (JObject)((JsonNetConfigurationElement)GetSection(path).Parent).Node;
+            JToken node = ((JsonNetConfigurationElement) GetSection(path)).Node;
+            JObject parent = (JObject) ((JsonNetConfigurationElement) GetSection(path).Parent).Node;
             parent.Remove(node.Path.Replace(parent.Path + ".", ""));
             return true;
         }
@@ -132,18 +125,6 @@ namespace Rocket.Core.Configuration.JsonNetBase
         }
 
         public abstract string Path { get; }
-
-        public void GuardLoaded()
-        {
-            if (Node == null)
-                throw new ConfigurationNotLoadedException();
-        }
-
-        public void GuardPath(string path)
-        {
-            if (string.IsNullOrEmpty(path))
-                throw new ArgumentException("Configuration paths can not be null or empty");
-        }
 
         public virtual T Get<T>() => Node.ToObject<T>();
         public object Get(Type t) => Node.ToObject(t);
@@ -168,21 +149,15 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
         public virtual void Set(object value)
         {
-            var node = Node;
+            JToken node = Node;
 
             if (node is JArray array)
             {
-                foreach (var child in array.ToList() /* ToList() to make a simple clone */)
-                {
-                    child.Remove();
-                }
+                foreach (JToken child in array.ToList() /* ToList() to make a simple clone */) child.Remove();
 
                 if (value is IEnumerable enumerable)
                 {
-                    foreach (var child in enumerable)
-                    {
-                        array.Add(new JValue(child));
-                    }
+                    foreach (object child in enumerable) array.Add(new JValue(child));
                     return;
                 }
 
@@ -191,7 +166,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
             if (node is JObject @object)
             {
-                var obj = JObject.FromObject(value);
+                JObject obj = JObject.FromObject(value);
                 DeepCopy(obj, @object);
                 return;
             }
@@ -203,26 +178,6 @@ namespace Rocket.Core.Configuration.JsonNetBase
             }
 
             throw new NotSupportedException("Can not set values of non-properties");
-        }
-
-        public static void DeepCopy(JToken from, JToken to)
-        {
-            if (from.Type != to.Type)
-                return;
-
-            foreach (var child in from)
-            {
-                string path = child.Path.Replace(from.Path + ".", "");
-                if (to is JObject o)
-                {
-                    if (!o.ContainsKey(path))
-                        o.Add(child);
-                    else
-                        o[path] = child;
-                }
-
-                DeepCopy(child, to[path]);
-            }
         }
 
         public bool TryGet<T>(out T value)
@@ -273,5 +228,35 @@ namespace Rocket.Core.Configuration.JsonNetBase
         public IEnumerator<IConfigurationSection> GetEnumerator() => GetChildren().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public void GuardLoaded()
+        {
+            if (Node == null)
+                throw new ConfigurationNotLoadedException();
+        }
+
+        public void GuardPath(string path)
+        {
+            if (string.IsNullOrEmpty(path))
+                throw new ArgumentException("Configuration paths can not be null or empty");
+        }
+
+        public static void DeepCopy(JToken from, JToken to)
+        {
+            if (from.Type != to.Type)
+                return;
+
+            foreach (JToken child in from)
+            {
+                string path = child.Path.Replace(from.Path + ".", "");
+                if (to is JObject o)
+                    if (!o.ContainsKey(path))
+                        o.Add(child);
+                    else
+                        o[path] = child;
+
+                DeepCopy(child, to[path]);
+            }
+        }
     }
 }

@@ -1,9 +1,8 @@
-﻿using System.IO;
-
-namespace Rocket.API.Configuration
+﻿namespace Rocket.API.Configuration
 {
     public interface IConfiguration : IConfigurationElement
     {
+        bool IsLoaded { get; }
         bool Exist(IConfigurationContext context);
 
         void Load(IConfigurationContext context, object defaultConfiguration);
@@ -17,7 +16,5 @@ namespace Rocket.API.Configuration
         void Reload();
 
         void Save();
-
-        bool IsLoaded { get; }
     }
 }

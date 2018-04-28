@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Rocket.API.Commands;
 using Rocket.API.Player;
 
@@ -13,15 +12,13 @@ namespace Rocket.Examples.CommandsPlugin
         public string Syntax => "<target player> <health>";
         public ISubCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"sh"};
-        public bool SupportsCaller(Type commandCaller)
-        {
-            return true; //supports all callers (e.g. Console, Player, etc...)
-        }
+
+        public bool SupportsCaller(Type commandCaller) => true;
 
         public void Execute(ICommandContext context)
         {
             IOnlinePlayer target = context.Parameters.Get<IOnlinePlayer>(0); // target player is first parameter
-            double health = context.Parameters.Get<double>(1); // health is second parameter
+            double health = context.Parameters.Get<double>(1);               // health is second parameter
 
             if (target is ILivingEntity entity)
                 entity.Health = health;

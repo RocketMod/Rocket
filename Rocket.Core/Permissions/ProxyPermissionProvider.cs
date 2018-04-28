@@ -13,7 +13,6 @@ namespace Rocket.Core.Permissions
     public class ProxyPermissionProvider : ServiceProxy<IPermissionProvider>, IPermissionProvider
     {
         public ProxyPermissionProvider(IDependencyContainer container) : base(container) { }
-        
 
         public bool SupportsPermissible(IPermissible target)
         {
@@ -24,10 +23,10 @@ namespace Rocket.Core.Permissions
         {
             GuardPermissible(target);
 
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
+            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
                 PermissionResult result = provider.CheckPermission(target, permission);
-                if(result == PermissionResult.Default)
+                if (result == PermissionResult.Default)
                     continue;
 
                 return result;
@@ -40,7 +39,7 @@ namespace Rocket.Core.Permissions
         {
             GuardPermissible(target);
 
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
+            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
                 PermissionResult result = provider.CheckHasAllPermissions(target, permissions);
                 if (result == PermissionResult.Default)
@@ -56,7 +55,7 @@ namespace Rocket.Core.Permissions
         {
             GuardPermissible(target);
 
-            foreach (var provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
+            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
             {
                 PermissionResult result = provider.CheckHasAnyPermission(target, permissions);
                 if (result == PermissionResult.Default)
@@ -68,31 +67,22 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-
         public bool AddPermission(IPermissible target, string permission)
-        {
-            throw new NotSupportedException("Adding permissions from proxy is not supported.");
-        }
+            => throw new NotSupportedException("Adding permissions from proxy is not supported.");
 
         public bool AddDeniedPermission(IPermissible target, string permission)
-        {
-            throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
-        }
+            => throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
 
         public bool RemovePermission(IPermissible target, string permission)
-        {
-            throw new NotSupportedException("Removing permissions from proxy is not supported.");
-        }
+            => throw new NotSupportedException("Removing permissions from proxy is not supported.");
 
         public bool RemoveDeniedPermission(IPermissible target, string permission)
-        {
-            throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
-        }
+            => throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
             IPermissionGroup group;
-            foreach(var service in ProxiedServices.Where(c => c.SupportsPermissible(caller)))
+            foreach (IPermissionProvider service in ProxiedServices.Where(c => c.SupportsPermissible(caller)))
                 if ((group = service.GetPrimaryGroup(caller)) != null)
                     return group;
 
@@ -115,30 +105,22 @@ namespace Rocket.Core.Permissions
             return ProxiedServices.SelectMany(c => c.GetGroups());
         }
 
-        public void UpdateGroup(IPermissionGroup @group)
+        public void UpdateGroup(IPermissionGroup group)
         {
             throw new NotSupportedException("Updating groups from proxy is not supported.");
         }
 
-        public bool AddGroup(IPermissible target, IPermissionGroup @group)
-        {
-            throw new NotSupportedException("Adding groups from proxy is not supported.");
-        }
+        public bool AddGroup(IPermissible target, IPermissionGroup group)
+            => throw new NotSupportedException("Adding groups from proxy is not supported.");
 
-        public bool RemoveGroup(IPermissible target, IPermissionGroup @group)
-        {
-            throw new NotSupportedException("Removing groups from proxy is not supported.");
-        }
+        public bool RemoveGroup(IPermissible target, IPermissionGroup group)
+            => throw new NotSupportedException("Removing groups from proxy is not supported.");
 
-        public bool CreateGroup(IPermissionGroup @group)
-        {
-            throw new NotSupportedException("Creating groups from proxy is not supported.");
-        }
+        public bool CreateGroup(IPermissionGroup group)
+            => throw new NotSupportedException("Creating groups from proxy is not supported.");
 
-        public bool DeleteGroup(IPermissionGroup @group)
-        {
-            throw new NotSupportedException("Deleting groups from proxy is not supported.");
-        }
+        public bool DeleteGroup(IPermissionGroup group)
+            => throw new NotSupportedException("Deleting groups from proxy is not supported.");
 
         public void Load(IConfigurationElement groups, IConfigurationElement players)
         {

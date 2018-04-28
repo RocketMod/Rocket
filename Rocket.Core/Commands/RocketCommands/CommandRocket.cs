@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Plugin;
@@ -21,10 +20,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(Type commandCaller)
-        {
-            return true;
-        }
+        public bool SupportsCaller(Type commandCaller) => true;
     }
 
     public class RocketSubCommandReload : ISubCommand
@@ -35,20 +31,15 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "";
         public ISubCommand[] ChildCommands => null;
         public string[] Aliases => null;
-        public bool SupportsCaller(Type commandCaller)
-        {
-            return true;
-        }
+
+        public bool SupportsCaller(Type commandCaller) => true;
 
         public void Execute(ICommandContext context)
         {
-            var permissions = context.Container.Get<IPermissionProvider>();
+            IPermissionProvider permissions = context.Container.Get<IPermissionProvider>();
             permissions.Reload();
 
-            foreach (var plugin in context.Container.Get<IPluginManager>())
-            {
-                plugin.Reload();
-            }
+            foreach (IPlugin plugin in context.Container.Get<IPluginManager>()) plugin.Reload();
 
             context.Caller.SendMessage("Reload completed.", ConsoleColor.DarkGreen);
         }

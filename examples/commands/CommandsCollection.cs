@@ -4,7 +4,6 @@ using Rocket.API.I18N;
 using Rocket.API.Player;
 using Rocket.Core.Commands;
 using Rocket.Core.I18N;
-using Rocket.Core.Permissions;
 
 namespace Rocket.Examples.CommandsPlugin
 {
@@ -27,7 +26,7 @@ namespace Rocket.Examples.CommandsPlugin
             else // the game likely does not support killing players (e.g. Eco)
                 sender.SendMessage("Target could not be killed :(");
         }
-        
+
         [Command(Name = "Broadcast", Description = "Broadcast a message")]
         [CommandAlias("bc")]
         [CommandCaller(typeof(IConsoleCommandCaller))] // only console can call it

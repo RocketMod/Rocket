@@ -8,6 +8,7 @@ namespace Rocket.Core.Permissions
         public string Id { get; set; }
         public string Name { get; set; }
         public int Priority { get; set; }
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             if (format == null)
@@ -22,8 +23,7 @@ namespace Rocket.Core.Permissions
             throw new FormatException($"Unknown format for permission groups: {format}");
         }
 
-
-        public int CompareTo(object obj) => CompareTo((IIdentifiable)obj);
+        public int CompareTo(object obj) => CompareTo((IIdentifiable) obj);
 
         public int CompareTo(IIdentifiable other) => CompareTo(other.Id);
 

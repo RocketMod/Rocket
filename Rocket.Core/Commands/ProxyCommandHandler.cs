@@ -14,21 +14,11 @@ namespace Rocket.Core.Commands
         {
             GuardCaller(caller);
 
-            foreach (var handler in ProxiedServices.Where(c => c.SupportsCaller(caller.GetType())))
-            {
+            foreach (ICommandHandler handler in ProxiedServices.Where(c => c.SupportsCaller(caller.GetType())))
                 if (handler.HandleCommand(caller, commandLine, prefix))
-                {
                     return true;
-                }
-            }
 
             return false;
-        }
-
-        private void GuardCaller(ICommandCaller caller)
-        {
-            if(!SupportsCaller(caller.GetType()))
-                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
         }
 
         public bool SupportsCaller(Type commandCaller)
@@ -40,14 +30,20 @@ namespace Rocket.Core.Commands
         {
             GuardCaller(context.Caller);
 
-            foreach (var provider in ProxiedServices)
+            foreach (ICommandHandler provider in ProxiedServices)
             {
-                var prov = provider.GetCommand(context);
+                ICommand prov = provider.GetCommand(context);
                 if (prov != null)
                     return prov;
             }
 
             return null;
+        }
+
+        private void GuardCaller(ICommandCaller caller)
+        {
+            if (!SupportsCaller(caller.GetType()))
+                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
         }
     }
 }

@@ -15,19 +15,11 @@ namespace Rocket.Tests.Mock
             Name = name;
         }
 
-        public TestPlayer(IDependencyContainer container) : this(container, "TestPlayerId", "TestPlayer")
-        {
-
-        }
+        public TestPlayer(IDependencyContainer container) : this(container, "TestPlayerId", "TestPlayer") { }
 
         public override string Id { get; }
         public override string Name { get; }
         public override Type CallerType => typeof(TestPlayer);
-
-        public override void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
-        {
-            Console.WriteLine("[TestPlayer.SendMessage] " + message, bindings);
-        }
 
         public override DateTime SessionConnectTime { get; } = DateTime.Now;
         public override DateTime? SessionDisconnectTime => null;
@@ -35,15 +27,16 @@ namespace Rocket.Tests.Mock
 
         public override bool IsOnline => true;
         public override DateTime? LastSeen => DateTime.Now;
+
         public double MaxHealth
         {
-            get { return 100; }
+            get => 100;
             set => throw new NotImplementedException();
         }
 
         public double Health
         {
-            get { return 0; }
+            get => 0;
             set => throw new NotImplementedException();
         }
 
@@ -60,6 +53,11 @@ namespace Rocket.Tests.Mock
         public void Kill(ICommandCaller caller)
         {
             throw new NotImplementedException();
+        }
+
+        public override void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
+        {
+            Console.WriteLine("[TestPlayer.SendMessage] " + message, bindings);
         }
     }
 }

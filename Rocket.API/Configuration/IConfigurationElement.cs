@@ -14,9 +14,13 @@ namespace Rocket.API.Configuration
 
         IConfiguration Root { get; }
 
+        /// <summary>
+        ///     Gets the path of the config section
+        /// </summary>
+        string Path { get; }
 
         /// <summary>
-        /// Gets a configuration sub-section with the specified path.
+        ///     Gets a configuration sub-section with the specified path.
         /// </summary>
         /// <param name="path">The path of the configuration section.</param>
         /// <returns>The <see cref="IConfigurationSection" />.</returns>
@@ -31,16 +35,10 @@ namespace Rocket.API.Configuration
         bool RemoveSection(string path);
 
         /// <summary>
-        /// Gets the immediate descendant configuration sub-sections.
+        ///     Gets the immediate descendant configuration sub-sections.
         /// </summary>
         /// <returns>The configuration sub-sections.</returns>
         IEnumerable<IConfigurationSection> GetChildren();
-
-
-        /// <summary>
-        /// Gets the path of the config section
-        /// </summary>
-        string Path { get; }
 
         void Set(object o);
 

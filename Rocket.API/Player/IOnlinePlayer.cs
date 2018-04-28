@@ -1,7 +1,6 @@
 ﻿using System;
 using Rocket.API.Commands;
 using Rocket.API.Entities;
-using Rocket.API.Math;
 
 namespace Rocket.API.Player
 {
@@ -10,7 +9,7 @@ namespace Rocket.API.Player
         DateTime SessionConnectTime { get; }
 
         DateTime? SessionDisconnectTime { get; }
-        
+
         TimeSpan SessionOnlineTime { get; }
     }
 }

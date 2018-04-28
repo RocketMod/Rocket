@@ -11,32 +11,32 @@ using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Plugin;
 using Rocket.Core.Commands;
-#if NET35
-using Rocket.Compability;
-#endif
 using Rocket.Core.Extensions;
 using Rocket.Core.Plugins.Events;
+#if NET35
+using Rocket.Compability;
+
+#endif
 
 namespace Rocket.Core.Plugins
 {
     public class PluginManager : IPluginManager, ICommandProvider
     {
-        private string pluginsDirectory;
-        private string packagesDirectory;
+        private readonly Dictionary<string, Assembly> cachedAssemblies;
+        private readonly IDependencyContainer container;
 
         private readonly IEventManager eventManager;
-        private readonly IDependencyContainer container;
+        private readonly IImplementation implementation;
         private readonly ILogger logger;
-        private readonly IRuntime runtime;
         private readonly IDependencyContainer parentContainer;
         private readonly IDependencyResolver resolver;
-        private readonly IImplementation implementation;
-
-        private readonly Dictionary<string, Assembly> cachedAssemblies;
+        private readonly IRuntime runtime;
 
         private Dictionary<IPlugin, List<ICommand>> commands;
         private Dictionary<string, string> packageAssemblies;
+        private string packagesDirectory;
         private Dictionary<string, string> pluginAssemblies;
+        private string pluginsDirectory;
 
         public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger,
                              IEventManager eventManager, IRuntime runtime, IImplementation implementation)
@@ -61,33 +61,6 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public virtual void RegisterCommands(IPlugin plugin, object o)
-        {
-            foreach (var method in o.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
-            {
-                var cmdAttr = (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
-                var aliasAttrs = method.GetCustomAttributes(typeof(CommandAliasAttribute), true)
-                                       .Cast<CommandAliasAttribute>();
-
-                var supportedTypeAttrs = method.GetCustomAttributes(typeof(CommandCallerAttribute), true)
-                                       .Cast<CommandCallerAttribute>();
-
-
-                CommandAttributeWrapper wrapper = new CommandAttributeWrapper(o, method, cmdAttr, 
-                    aliasAttrs.Select(c => c.AliasName).ToArray(), 
-                    supportedTypeAttrs.Select(c => c.SupportedCaller).ToArray());
-
-                if (!commands.ContainsKey(plugin))
-                    commands.Add(plugin, new List<ICommand>());
-
-                var cmds = commands[plugin];
-                if (cmds.Any(c => (c as CommandAttributeWrapper)?.Method == method))
-                    continue;
-
-                cmds.Add(wrapper);
-            }
-        }
-
         public virtual void Init()
         {
             pluginsDirectory = Path.Combine(implementation.WorkingDirectory, "Plugins");
@@ -101,7 +74,7 @@ namespace Rocket.Core.Plugins
             Directory.CreateDirectory(packagesDirectory);
             packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(packagesDirectory);
 
-            AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
+            AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs args)
             {
                 if (pluginAssemblies.TryGetValue(args.Name, out string pluginFile))
                     return LoadAssembly(pluginFile);
@@ -109,7 +82,7 @@ namespace Rocket.Core.Plugins
                 if (pluginAssemblies.TryGetValue(args.Name, out string packageFile))
                     return LoadAssembly(packageFile);
 
-                logger.LogDebug(((AppDomain)sender).FriendlyName + " could not find dependency: " + args.Name);
+                logger.LogDebug(((AppDomain) sender).FriendlyName + " could not find dependency: " + args.Name);
                 return null;
             };
 
@@ -141,10 +114,10 @@ namespace Rocket.Core.Plugins
             container.TryGetAll(out IEnumerable<IPlugin> plugins);
             foreach (IPlugin plugin in plugins)
             {
-                var asm = plugin.GetType().Assembly;
-                var pluginDir = plugin.WorkingDirectory;
+                Assembly asm = plugin.GetType().Assembly;
+                string pluginDir = plugin.WorkingDirectory;
 
-                foreach (var s in asm.GetManifestResourceNames())
+                foreach (string s in asm.GetManifestResourceNames())
                     using (Stream stream = asm.GetManifestResourceStream(s))
                     {
                         using (MemoryStream ms = new MemoryStream())
@@ -154,7 +127,7 @@ namespace Rocket.Core.Plugins
 
                             stream.CopyTo(ms);
                             byte[] data = ms.ToArray();
-                            var fileName = s.Replace(plugin.GetType().Namespace, "");
+                            string fileName = s.Replace(plugin.GetType().Namespace, "");
                             File.WriteAllBytes(Path.Combine(pluginDir, fileName), data);
                         }
                     }
@@ -225,7 +198,7 @@ namespace Rocket.Core.Plugins
         {
             get
             {
-                container.TryGetAll<IPlugin>(out var plugins);
+                container.TryGetAll(out IEnumerable<IPlugin> plugins);
                 return plugins;
             }
         }
@@ -239,6 +212,41 @@ namespace Rocket.Core.Plugins
             }
 
             return false;
+        }
+
+        public virtual IEnumerator<IPlugin> GetEnumerator() => Plugins.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        public virtual void RegisterCommands(IPlugin plugin, object o)
+        {
+            foreach (MethodInfo method in o.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
+            {
+                CommandAttribute cmdAttr =
+                    (CommandAttribute) method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
+                IEnumerable<CommandAliasAttribute> aliasAttrs = method
+                                                                .GetCustomAttributes(typeof(CommandAliasAttribute),
+                                                                    true)
+                                                                .Cast<CommandAliasAttribute>();
+
+                IEnumerable<CommandCallerAttribute> supportedTypeAttrs = method
+                                                                         .GetCustomAttributes(
+                                                                             typeof(CommandCallerAttribute), true)
+                                                                         .Cast<CommandCallerAttribute>();
+
+                CommandAttributeWrapper wrapper = new CommandAttributeWrapper(o, method, cmdAttr,
+                    aliasAttrs.Select(c => c.AliasName).ToArray(),
+                    supportedTypeAttrs.Select(c => c.SupportedCaller).ToArray());
+
+                if (!commands.ContainsKey(plugin))
+                    commands.Add(plugin, new List<ICommand>());
+
+                List<ICommand> cmds = commands[plugin];
+                if (cmds.Any(c => (c as CommandAttributeWrapper)?.Method == method))
+                    continue;
+
+                cmds.Add(wrapper);
+            }
         }
 
         protected virtual Assembly LoadAssembly(string path)
@@ -297,18 +305,20 @@ namespace Rocket.Core.Plugins
             if (pluginType == null)
                 return null;
 
-            IPlugin pluginInstance = (IPlugin)parentContainer.Activate(pluginType);
+            IPlugin pluginInstance = (IPlugin) parentContainer.Activate(pluginType);
             container.RegisterInstance(pluginInstance, pluginInstance.Name);
 
             IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>(false);
-            IEnumerable<Type> commands = pluginInstance.FindTypes<ICommand>(false, c => !typeof(ISubCommand).IsAssignableFrom(c));
+            IEnumerable<Type> commands =
+                pluginInstance.FindTypes<ICommand>(false, c => !typeof(ISubCommand).IsAssignableFrom(c));
             IEnumerable<Type> dependcyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>(false);
 
-            foreach (Type registrator in dependcyRegistrators) ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(container, resolver);
+            foreach (Type registrator in dependcyRegistrators)
+                ((IDependencyRegistrator) Activator.CreateInstance(registrator)).Register(container, resolver);
 
             foreach (Type listener in listeners)
             {
-                IEventListener instance = (IEventListener)Activator.CreateInstance(listener, new object[0]);
+                IEventListener instance = (IEventListener) Activator.CreateInstance(listener, new object[0]);
                 eventManager.AddEventListener(pluginInstance, instance);
             }
 
@@ -319,29 +329,17 @@ namespace Rocket.Core.Plugins
             this.commands.Remove(pluginInstance);
 
             foreach (Type command in commands)
-            {
                 if (cmdInstanceList.All(c => c.GetType() != command))
-                    cmdInstanceList.Add((ICommand)Activator.CreateInstance(command, new object[0]));
-            }
+                    cmdInstanceList.Add((ICommand) Activator.CreateInstance(command, new object[0]));
 
             this.commands.Add(pluginInstance, cmdInstanceList);
             return pluginInstance;
-        }
-
-        public virtual IEnumerator<IPlugin> GetEnumerator()
-        {
-            return Plugins.GetEnumerator();
         }
 
         ~PluginManager()
         {
             container.TryGetAll(out IEnumerable<IPlugin> plugins);
             foreach (IPlugin plugin in plugins) plugin.Unload();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
         }
     }
 }

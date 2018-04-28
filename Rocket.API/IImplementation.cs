@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Rocket.API.Commands;
+﻿using Rocket.API.Commands;
 using Rocket.API.Eventing;
 
 namespace Rocket.API

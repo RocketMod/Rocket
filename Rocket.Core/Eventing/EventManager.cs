@@ -40,7 +40,7 @@ namespace Rocket.Core.Eventing
 
             EventHandler handler = GetEventHandler(callback.Method, emitterName);
             eventListeners.Add(new EventAction(@object,
-                (sender, @event) => callback.Invoke(sender, (TEvent)@event), handler, typeof(TEvent)));
+                (sender, @event) => callback.Invoke(sender, (TEvent) @event), handler, typeof(TEvent)));
         }
 
         public void Subscribe(ILifecycleObject @object, Type eventType, EventCallback callback,
@@ -70,7 +70,7 @@ namespace Rocket.Core.Eventing
 
             EventHandler handler = GetEventHandler(callback.Method, GetEmitterName(typeof(TEmitter)));
             eventListeners.Add(new EventAction(@object,
-                (sender, @event) => callback.Invoke(sender, (TEvent)@event), handler, typeof(TEvent)));
+                (sender, @event) => callback.Invoke(sender, (TEvent) @event), handler, typeof(TEvent)));
         }
 
         public void Subscribe(ILifecycleObject @object, EventCallback callback, Type eventType, Type eventEmitterType)
@@ -166,7 +166,7 @@ namespace Rocket.Core.Eventing
                                                 && c.GetGenericArguments().Length > 0))
                 foreach (MethodInfo method in @interface.GetMethods())
                 {
-                    EventHandler handler = (EventHandler)method.GetCustomAttributes(typeof(EventHandler), false)
+                    EventHandler handler = (EventHandler) method.GetCustomAttributes(typeof(EventHandler), false)
                                                                 .FirstOrDefault()
                         ?? new EventHandler
                         {
@@ -192,7 +192,7 @@ namespace Rocket.Core.Eventing
             if (sender == null)
                 throw new ArgumentNullException(nameof(sender));
 
-            if(@event == null)
+            if (@event == null)
                 throw new ArgumentNullException(nameof(@event));
 
             container.TryGet(null, out ILogger logger);
@@ -203,7 +203,7 @@ namespace Rocket.Core.Eventing
             List<EventAction> actions =
                 eventListeners
                     .Where(c => c.TargetEventType?.IsInstanceOfType(@event)
-                        ?? c.TargetEventName.Equals(@event.Name, StringComparison.OrdinalIgnoreCase) 
+                        ?? c.TargetEventName.Equals(@event.Name, StringComparison.OrdinalIgnoreCase)
                         && c.Owner.IsAlive)
                     .ToList();
 
@@ -211,9 +211,9 @@ namespace Rocket.Core.Eventing
 
             List<EventAction> targetActions =
                 (from info in actions
-                     /* ignore cancelled events */
+                 /* ignore cancelled events */
                  where !(@event is ICancellableEvent)
-                     || !((ICancellableEvent)@event).IsCancelled
+                     || !((ICancellableEvent) @event).IsCancelled
                      || info.Handler.IgnoreCancelled
                  where CheckEmitter(info, sender.Name, @event.IsGlobal)
                  where CheckEvent(info, GetEventName(@event.GetType()))
@@ -229,12 +229,16 @@ namespace Rocket.Core.Eventing
 
             if (targetActions.Count == 0)
             {
-                logger?.LogDebug("Omitting event \"" + @event.Name + "\" by \"" + sender.Name + "\": No target subscriptions found.");
+                logger?.LogDebug("Omitting event \""
+                    + @event.Name
+                    + "\" by \""
+                    + sender.Name
+                    + "\": No target subscriptions found.");
                 FinishEvent();
                 return;
             }
 
-            container.TryGet<ITaskScheduler>(null, out var scheduler);
+            container.TryGet(null, out ITaskScheduler scheduler);
             if (scheduler == null && @event.ExecutionTarget != EventExecutionTargetContext.Sync)
             {
                 FinishEvent();
@@ -258,32 +262,23 @@ namespace Rocket.Core.Eventing
                     info.Action.Invoke(sender, @event);
 
                     //all actions called; run OnEventExecuted
-                    if (executionCount == targetActions.Count)
-                    {
-                        FinishEvent();
-                    }
-                }, (ExecutionTargetContext)@event.ExecutionTarget);
+                    if (executionCount == targetActions.Count) FinishEvent();
+                }, (ExecutionTargetContext) @event.ExecutionTarget);
             }
 
-            if (scheduler == null)
-            {
-                FinishEvent();
-            }
+            if (scheduler == null) FinishEvent();
         }
 
-        public bool HasFinished(IEvent @event)
-        {
-            return !inProgress.Contains(@event);
-        }
+        public bool HasFinished(IEvent @event) => !inProgress.Contains(@event);
 
         public static string GetEmitterName(Type type) => type.Name;
 
         public static string GetEventName(Type type) => type.Name.Replace("Event", "");
-        
+
         private EventHandler GetEventHandler(Type target, string emitterName)
         {
             EventHandler handler =
-                (EventHandler)target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
+                (EventHandler) target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
                 ?? new EventHandler();
             handler.EmitterName = emitterName ?? handler.EmitterName;
             return handler;

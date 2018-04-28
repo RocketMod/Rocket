@@ -15,7 +15,10 @@ namespace Rocket.Core.I18N
             this.config = config;
         }
 
-        public string GetLocalizedMessage(string translationKey, params object[] bindings) => string.Format(config[translationKey].Get<string>(), bindings);
+        public string ToString(string format, IFormatProvider formatProvider) => GetLocalizedMessage(format);
+
+        public string GetLocalizedMessage(string translationKey, params object[] bindings)
+            => string.Format(config[translationKey].Get<string>(), bindings);
 
         public void SetLocalizedMessage(string translationKey, string message)
         {
@@ -28,16 +31,14 @@ namespace Rocket.Core.I18N
                 throw new Exception("Permission provider is already loaded");
 
             bool isNew = config.Exist(context);
-            config.Load(context, new {});
+            config.Load(context, new { });
 
             if (isNew)
-            {
-                foreach (var pair in defaultConfiguration)
+                foreach (KeyValuePair<string, string> pair in defaultConfiguration)
                 {
                     config.CreateSection(pair.Key, SectionType.Value);
                     config[pair.Key].Set(pair.Value);
                 }
-            }
         }
 
         public void Reload()
@@ -48,11 +49,6 @@ namespace Rocket.Core.I18N
         public void Save()
         {
             config.Save();
-        }
-
-        public string ToString(string format, IFormatProvider formatProvider)
-        {
-            return GetLocalizedMessage(format);
         }
     }
 }

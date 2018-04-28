@@ -9,7 +9,7 @@ namespace Rocket.Core.ServiceProxies
             => highestFirst ? Compare(b, a) : Compare(a, b);
 
         public static int Compare(ServicePriority a, ServicePriority b)
-            => ((int)a).CompareTo((int) b);
+            => ((int) a).CompareTo((int) b);
 
         public static void Sort<T>(List<T> objects)
         {

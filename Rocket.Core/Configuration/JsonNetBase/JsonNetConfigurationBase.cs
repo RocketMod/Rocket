@@ -8,17 +8,15 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public abstract class JsonNetConfigurationBase : JsonNetConfigurationElement, IConfiguration
     {
+        private string file;
+
         protected JsonNetConfigurationBase() : base(null)
         {
             Root = this;
         }
 
-        private string file;
-
         public bool Exist(IConfigurationContext context)
-        {
-            return File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + ".json"));
-        }
+            => File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + ".json"));
 
         public void SetContext(IConfigurationContext context)
         {
@@ -38,8 +36,6 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
             LoadFromFile(file);
         }
-
-        protected abstract void LoadFromFile(string file);
 
         public void LoadFromObject(object o)
         {
@@ -73,8 +69,6 @@ namespace Rocket.Core.Configuration.JsonNetBase
             SaveToFile(file);
         }
 
-        protected abstract void SaveToFile(string file);
-
         public bool IsLoaded { get; protected set; }
 
         public override string Path => "";
@@ -84,5 +78,9 @@ namespace Rocket.Core.Configuration.JsonNetBase
             GuardLoaded();
             Node = JObject.FromObject(o);
         }
+
+        protected abstract void LoadFromFile(string file);
+
+        protected abstract void SaveToFile(string file);
     }
 }

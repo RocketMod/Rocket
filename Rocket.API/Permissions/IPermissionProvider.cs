@@ -38,9 +38,9 @@ namespace Rocket.API.Permissions
 
         bool RemoveGroup(IPermissible caller, IPermissionGroup group);
 
-        bool CreateGroup(IPermissionGroup @group);
+        bool CreateGroup(IPermissionGroup group);
 
-        bool DeleteGroup(IPermissionGroup @group);
+        bool DeleteGroup(IPermissionGroup group);
 
         void Load(IConfigurationElement groups, IConfigurationElement players);
         void Reload();

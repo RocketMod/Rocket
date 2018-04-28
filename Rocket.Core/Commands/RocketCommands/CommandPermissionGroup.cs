@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
@@ -10,7 +9,9 @@ namespace Rocket.Core.Commands.RocketCommands
     public class CommandPermissionGroup : ICommand
     {
         public string Syntax { get; }
-        public ISubCommand[] ChildCommands => new ISubCommand[] {new PermissionGroupSubCommandAdd(), new PermissionGroupSubCommandRemove()};
+
+        public ISubCommand[] ChildCommands => new ISubCommand[]
+            {new PermissionGroupSubCommandAdd(), new PermissionGroupSubCommandRemove()};
 
         public string Description { get; }
 
@@ -24,10 +25,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(Type commandCaller)
-        {
-            return true;
-        }
+        public bool SupportsCaller(Type commandCaller) => true;
     }
 
     public abstract class PermissionGroupSubCommandUpdate : ISubCommand
@@ -40,23 +38,21 @@ namespace Rocket.Core.Commands.RocketCommands
         public ISubCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsCaller(Type commandCaller)
-        {
-            return true;
-        }
+        public bool SupportsCaller(Type commandCaller) => true;
 
         public void Execute(ICommandContext context)
         {
-            var targetPlayer = context.Parameters.Get<IPlayer>(0);
-            var groupName = context.Parameters.Get<string>(1);
+            IPlayer targetPlayer = context.Parameters.Get<IPlayer>(0);
+            string groupName = context.Parameters.Get<string>(1);
 
             string permission = "Rocket.Permissions.ManageGroups." + groupName;
-            var permissions = context.Container.Get<IPermissionProvider>("default_permissions");
+            IPermissionProvider permissions = context.Container.Get<IPermissionProvider>("default_permissions");
 
             if (permissions.CheckPermission(context.Caller, permission) != PermissionResult.Grant)
-                throw new NotEnoughPermissionsException(context.Caller, permission, "You don't have permissions to manage this group.");
+                throw new NotEnoughPermissionsException(context.Caller, permission,
+                    "You don't have permissions to manage this group.");
 
-            var groupToUpdate = permissions.GetGroup(groupName);
+            IPermissionGroup groupToUpdate = permissions.GetGroup(groupName);
             if (groupToUpdate == null)
             {
                 context.Caller.SendMessage($"Group \"{groupName}\" was not found.", ConsoleColor.Red);
@@ -66,7 +62,8 @@ namespace Rocket.Core.Commands.RocketCommands
             UpdateGroup(context.Caller, permissions, targetPlayer, groupToUpdate);
         }
 
-        protected abstract void UpdateGroup(ICommandCaller caller, IPermissionProvider permissions, IPlayer targetPlayer, IPermissionGroup groupToUpdate);
+        protected abstract void UpdateGroup(ICommandCaller caller, IPermissionProvider permissions,
+                                            IPlayer targetPlayer, IPermissionGroup groupToUpdate);
     }
 
     public class PermissionGroupSubCommandAdd : PermissionGroupSubCommandUpdate
@@ -75,10 +72,13 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Description => "Add a player to a permission group";
         public override string Permission => "Rocket.Permissions.ManageGroups.Add";
         public override string[] Aliases => new[] {"a", "+"};
-        protected override void UpdateGroup(ICommandCaller caller, IPermissionProvider permissions, IPlayer targetPlayer, IPermissionGroup groupToUpdate)
+
+        protected override void UpdateGroup(ICommandCaller caller, IPermissionProvider permissions,
+                                            IPlayer targetPlayer, IPermissionGroup groupToUpdate)
         {
             if (permissions.AddGroup(targetPlayer, groupToUpdate))
-                caller.SendMessage($"Successfully added {targetPlayer:Name} to \"{groupToUpdate:Name}\"!", ConsoleColor.DarkGreen);
+                caller.SendMessage($"Successfully added {targetPlayer:Name} to \"{groupToUpdate:Name}\"!",
+                    ConsoleColor.DarkGreen);
             else
                 caller.SendMessage($"Failed to add {targetPlayer:Name} to \"{groupToUpdate:Name}\"!", ConsoleColor.Red);
         }
@@ -90,12 +90,16 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Description => "Remove a player from a permission group";
         public override string Permission => "Rocket.Permissions.ManageGroups.Remove";
         public override string[] Aliases => new[] {"r", "-"};
-        protected override void UpdateGroup(ICommandCaller caller, IPermissionProvider permissions, IPlayer targetPlayer, IPermissionGroup groupToUpdate)
+
+        protected override void UpdateGroup(ICommandCaller caller, IPermissionProvider permissions,
+                                            IPlayer targetPlayer, IPermissionGroup groupToUpdate)
         {
             if (permissions.RemoveGroup(targetPlayer, groupToUpdate))
-                caller.SendMessage($"Successfully removed {targetPlayer:Name} from \"{groupToUpdate:Name}\"!", ConsoleColor.DarkGreen);
+                caller.SendMessage($"Successfully removed {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
+                    ConsoleColor.DarkGreen);
             else
-                caller.SendMessage($"Failed to remove {targetPlayer:Name} from \"{groupToUpdate:Name}\"!", ConsoleColor.Red);
+                caller.SendMessage($"Failed to remove {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
+                    ConsoleColor.Red);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿namespace Rocket.Core.Commands {
+﻿namespace Rocket.Core.Commands
+{
     public class CommandParameterMismatchException : CommandWrongUsageException
     {
         public CommandParameterMismatchException() : base("Command has been called with wrong parameters") { }

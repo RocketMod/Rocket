@@ -12,22 +12,15 @@ namespace Rocket.Core.Extensions
     {
         public static TypeConverter GetConverter(Type type)
         {
-            if (typeof(IPlayer).IsAssignableFrom(type))
-            {
-                return new PlayerTypeConverter();
-            }
+            if (typeof(IPlayer).IsAssignableFrom(type)) return new PlayerTypeConverter();
 
-            if (typeof(IOnlinePlayer).IsAssignableFrom(type))
-            {
-                return new OnlinePlayerTypeConverter();
-            }
+            if (typeof(IOnlinePlayer).IsAssignableFrom(type)) return new OnlinePlayerTypeConverter();
 
             return TypeDescriptor.GetConverter(type);
         }
 
-        public static object ConvertFromWithContext(this TypeConverter converter, IDependencyContainer container, object value)
-        {
-            return converter.ConvertFrom(UnityDescriptorContext.From(container), Thread.CurrentThread.CurrentCulture, value);
-        }
+        public static object ConvertFromWithContext(this TypeConverter converter, IDependencyContainer container,
+                                                    object value) => converter.ConvertFrom(
+            UnityDescriptorContext.From(container), Thread.CurrentThread.CurrentCulture, value);
     }
 }

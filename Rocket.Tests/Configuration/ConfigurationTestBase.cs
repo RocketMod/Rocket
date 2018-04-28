@@ -45,12 +45,12 @@ namespace Rocket.Tests.Configuration
         [TestMethod]
         public virtual void TestArrays()
         {
-            var config = GetConfig();
+            IConfiguration config = GetConfig();
             config.LoadEmpty();
 
-            var arraySection = config.CreateSection("ArrayTest", SectionType.Array);
-            arraySection.Set(new[] { "Test1", "Test2"});
-            var value = arraySection.Get(new string[0]);
+            IConfigurationSection arraySection = config.CreateSection("ArrayTest", SectionType.Array);
+            arraySection.Set(new[] {"Test1", "Test2"});
+            string[] value = arraySection.Get(new string[0]);
             Assert.AreEqual(value.Length, 2);
             Assert.IsTrue(value.Contains("Test1"));
             Assert.IsTrue(value.Contains("Test2"));
@@ -71,7 +71,7 @@ namespace Rocket.Tests.Configuration
         [TestMethod]
         public virtual void TestConfigSectionDeletion()
         {
-            var config = LoadConfigFromObject();
+            IConfiguration config = LoadConfigFromObject();
             Assert.IsNotNull(config.GetSection("Test1"));
             Assert.IsTrue(config.RemoveSection("Test1"));
             Assert.ThrowsException<KeyNotFoundException>(() => config.GetSection("Test1"));
@@ -80,16 +80,16 @@ namespace Rocket.Tests.Configuration
         [TestMethod]
         public virtual void TestConfigSectionCreation()
         {
-            var config = LoadConfigFromObject();
-            var section = config.CreateSection("dynamictest.test2", SectionType.Object);
+            IConfiguration config = LoadConfigFromObject();
+            IConfigurationSection section = config.CreateSection("dynamictest.test2", SectionType.Object);
             Assert.IsNotNull(section);
             Assert.IsTrue(section.HasValue);
 
-            section.Set(new { test4 = false });
+            section.Set(new {test4 = false});
             Assert.IsFalse(section["test4"].Get<bool>());
             Assert.IsFalse(section.HasValue);
 
-            var childSection = config.CreateSection("dynamictest.test2.test3", SectionType.Value);
+            IConfigurationSection childSection = config.CreateSection("dynamictest.test2.test3", SectionType.Value);
             Assert.IsNotNull(childSection);
             Assert.IsTrue(childSection.HasValue);
             childSection.Set(true);
@@ -140,7 +140,7 @@ namespace Rocket.Tests.Configuration
             // Config has not been loaded from a file so it can not be saved
             Assert.ThrowsException<NotSupportedException>(() => config.Save());
         }
-        
+
         protected IConfiguration LoadConfigFromObject()
         {
             IConfiguration config = GetConfig();

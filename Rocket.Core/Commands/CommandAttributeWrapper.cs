@@ -10,7 +10,6 @@ namespace Rocket.Core.Commands
     public class CommandAttributeWrapper : ICommand
     {
         private readonly Type[] supportedCallers;
-        public CommandAttribute Attribute { get; }
 
         public CommandAttributeWrapper(object instance, MethodBase method,
                                        CommandAttribute attribute,
@@ -24,14 +23,16 @@ namespace Rocket.Core.Commands
             Aliases = aliases;
         }
 
+        public CommandAttribute Attribute { get; }
+        public object Instance { get; }
+        public MethodBase Method { get; set; }
+
         public string Name => Attribute.Name;
         public string Description => Attribute.Description;
         public string Permission => Attribute.Permission;
         public string Syntax => Attribute.Syntax;
         public ISubCommand[] ChildCommands { get; } //todo
         public string[] Aliases { get; }
-        public object Instance { get; }
-        public MethodBase Method { get; set; }
 
         public bool SupportsCaller(Type commandCaller)
         {
@@ -46,23 +47,33 @@ namespace Rocket.Core.Commands
             List<object> @params = new List<object>();
 
             int index = 0;
-            foreach (var param in Method.GetParameters())
+            foreach (ParameterInfo param in Method.GetParameters())
             {
-                var type = param.ParameterType;
+                Type type = param.ParameterType;
                 if (type == typeof(ICommandContext))
+                {
                     @params.Add(context);
+                }
 
                 else if (type == typeof(ICommandCaller))
+                {
                     @params.Add(context);
+                }
 
                 else if (type == typeof(string[]))
+                {
                     @params.Add(context.Parameters.ToArray());
+                }
 
                 else if (type == typeof(ICommandParameters))
+                {
                     @params.Add(context.Parameters);
+                }
 
                 else if (type == typeof(IDependencyContainer))
+                {
                     @params.Add(context.Container);
+                }
                 else
                 {
                     @params.Add(context.Parameters.Get(index, type));

@@ -11,10 +11,10 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestSyncEventingWithType()
         {
-            var manager = GetEventManager();
-            manager.Subscribe<TestEvent>(GetListener(), (@sender, @event) => @event.ValueChanged = true);
+            IEventManager manager = GetEventManager();
+            manager.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
 
-            var e = new TestEvent(EventExecutionTargetContext.Sync);
+            TestEvent e = new TestEvent(EventExecutionTargetContext.Sync);
             EmitTestEvent(manager, e);
 
             Assert.AreEqual(true, e.ValueChanged, "The subscription callback did not get called");
@@ -23,10 +23,10 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestSyncEventingWithName()
         {
-            var manager = GetEventManager();
-            manager.Subscribe(GetListener(), "test", (@sender, @event) => ((TestEvent)@event).ValueChanged = true);
+            IEventManager manager = GetEventManager();
+            manager.Subscribe(GetListener(), "test", (sender, @event) => ((TestEvent) @event).ValueChanged = true);
 
-            var e = new TestEvent(EventExecutionTargetContext.Sync);
+            TestEvent e = new TestEvent(EventExecutionTargetContext.Sync);
             EmitTestEvent(manager, e);
 
             Assert.AreEqual(true, e.ValueChanged, "The subscription callback did not get called");
@@ -35,31 +35,33 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestCancellationWithoutIgnore()
         {
-            var manager = GetEventManager();
-            manager.Subscribe<TestEvent>(GetListener(), (@sender, @event) => @event.ValueChanged = true);
+            IEventManager manager = GetEventManager();
+            manager.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
 
-            var e = new TestEvent(EventExecutionTargetContext.Sync) { IsCancelled = true };
+            TestEvent e = new TestEvent(EventExecutionTargetContext.Sync) {IsCancelled = true};
             EmitTestEvent(manager, e);
 
-            Assert.AreEqual(false, e.ValueChanged, "The subscription callback was called on a cancelled event when it shouldn't be");
+            Assert.AreEqual(false, e.ValueChanged,
+                "The subscription callback was called on a cancelled event when it shouldn't be");
         }
 
         [TestMethod]
         public virtual void TestCancellationWithIgnore()
         {
-            var manager = GetEventManager();
+            IEventManager manager = GetEventManager();
             manager.Subscribe<TestEvent>(GetListener(), CancelIgnoreEventHandler);
 
-            var e = new TestEvent(EventExecutionTargetContext.Sync) { IsCancelled = true };
+            TestEvent e = new TestEvent(EventExecutionTargetContext.Sync) {IsCancelled = true};
             EmitTestEvent(manager, e);
 
-            Assert.AreEqual(true, e.ValueChanged, "The subscription callback was not called on a cancelled event but it has IgnoreCancelled set to true");
+            Assert.AreEqual(true, e.ValueChanged,
+                "The subscription callback was not called on a cancelled event but it has IgnoreCancelled set to true");
         }
 
         [EventHandler(IgnoreCancelled = true)]
         private void CancelIgnoreEventHandler(IEventEmitter sender, IEvent @event)
         {
-            ((TestEvent)@event).ValueChanged = true;
+            ((TestEvent) @event).ValueChanged = true;
         }
 
         private void EmitTestEvent(IEventManager manager, TestEvent @event)
@@ -70,15 +72,9 @@ namespace Rocket.Tests.Eventing
                 ;
         }
 
-        protected virtual IEventEmitter GetEmitter()
-        {
-            return Runtime.Container.Get<IImplementation>();
-        }
+        protected virtual IEventEmitter GetEmitter() => Runtime.Container.Get<IImplementation>();
 
-        protected virtual ILifecycleObject GetListener()
-        {
-            return Runtime.Container.Get<IRuntime>();
-        }
+        protected virtual ILifecycleObject GetListener() => Runtime.Container.Get<IRuntime>();
 
         protected abstract IEventManager GetEventManager();
     }

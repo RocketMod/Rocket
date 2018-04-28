@@ -6,6 +6,7 @@ namespace Rocket.API.Plugin
 {
     public interface IPluginManager : IEnumerable<IPlugin>, IProxyableService
     {
+        IEnumerable<IPlugin> Plugins { get; }
         IPlugin GetPlugin(string name);
 
         bool PluginExists(string name);
@@ -15,8 +16,6 @@ namespace Rocket.API.Plugin
         bool LoadPlugin(string name);
 
         bool UnloadPlugin(string name);
-
-        IEnumerable<IPlugin> Plugins { get; }
 
         /// <summary>
         ///     Executes code that depends on another plugin being available.

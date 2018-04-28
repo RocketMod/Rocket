@@ -26,7 +26,7 @@ namespace Rocket.Core.Eventing
         {
             Owner = owner;
             Listener = listener;
-            Action = (sender, @event) => method.Invoke(listener, new object[] {sender, @event}); 
+            Action = (sender, @event) => method.Invoke(listener, new object[] {sender, @event});
             Handler = handler;
             TargetEventName = EventManager.GetEventName(type);
             TargetEventType = type;

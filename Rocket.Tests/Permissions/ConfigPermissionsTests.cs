@@ -1,5 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rocket.API.Configuration;
 using Rocket.API.Permissions;
 
 namespace Rocket.Tests.Permissions
@@ -8,8 +7,6 @@ namespace Rocket.Tests.Permissions
     public class ConfigPermissionsTests : PermissionsTestBase
     {
         protected override IPermissionProvider GetPermissionProvider()
-        {
-            return Runtime.Container.Get<IPermissionProvider>("default_permissions");
-        }
+            => Runtime.Container.Get<IPermissionProvider>("default_permissions");
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Globalization;
-using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
 using Rocket.Core.DependencyInjection;
 
@@ -12,10 +11,7 @@ namespace Rocket.Core.Player
         public override bool CanConvertFrom(ITypeDescriptorContext context,
                                             Type sourceType)
         {
-            if (sourceType == typeof(string))
-            {
-                return true;
-            }
+            if (sourceType == typeof(string)) return true;
 
             return base.CanConvertFrom(context, sourceType);
         }
@@ -24,9 +20,7 @@ namespace Rocket.Core.Player
                                            CultureInfo culture, object value)
         {
             if (value is string playerId && context is UnityDescriptorContext ctx)
-            {
                 return ctx.UnityContainer.Get<IPlayerManager>().GetPlayer(playerId);
-            }
 
             return base.ConvertFrom(context, culture, value);
         }

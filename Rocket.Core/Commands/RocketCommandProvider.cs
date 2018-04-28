@@ -10,10 +10,10 @@ namespace Rocket.Core.Commands
     {
         public RocketCommandProvider(IRuntime runtime)
         {
-            var types = runtime.FindTypes<ICommand>(false);
+            IEnumerable<Type> types = runtime.FindTypes<ICommand>(false);
 
-            var list = new List<ICommand>();
-            foreach (var type in types)
+            List<ICommand> list = new List<ICommand>();
+            foreach (Type type in types)
                 list.Add((ICommand) Activator.CreateInstance(type, new object[0]));
             Commands = list;
         }

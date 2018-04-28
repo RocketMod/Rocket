@@ -9,15 +9,10 @@ using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Commands
 {
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public class CommandParameters : ICommandParameters
     {
         private readonly IDependencyContainer container;
-
-        /// <summary>
-        /// The internal stored raw parameter list
-        /// </summary>
-        protected internal string[] Parameters { get; }
 
         /// <param name="container">The IoC container of the <see cref="ICommandContext">command context</see></param>
         /// <param name="parameters">The raw parameters</param>
@@ -27,41 +22,39 @@ namespace Rocket.Core.Commands
             Parameters = parameters;
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        ///     The internal stored raw parameter list
+        /// </summary>
+        protected internal string[] Parameters { get; }
+
+        /// <inheritdoc />
         public string this[int index] => Parameters[index];
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public int Length => Parameters.Length;
 
-        /// <inheritdoc/>
-        public T Get<T>(int index)
-        {
-            return (T) Get(index, typeof(T));
-        }
+        /// <inheritdoc />
+        public T Get<T>(int index) => (T) Get(index, typeof(T));
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public object Get(int index, Type type)
         {
-            if(type == null)
+            if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
             TypeConverter converter = TypeConverterExtensions.GetConverter(type);
 
             if (converter.CanConvertFrom(typeof(string)))
-            {
                 return converter.ConvertFromWithContext(container, Parameters[index]);
-            }
 
-            throw new NotSupportedException($"Converting \"{Parameters[index]}\" to \"{type.FullName}\" is not supported!");
+            throw new NotSupportedException(
+                $"Converting \"{Parameters[index]}\" to \"{type.FullName}\" is not supported!");
         }
 
-        /// <inheritdoc/>
-        public T Get<T>(int index, T defaultValue)
-        {
-            return (T) Get(index, typeof(T), defaultValue);
-        }
+        /// <inheritdoc />
+        public T Get<T>(int index, T defaultValue) => (T) Get(index, typeof(T), defaultValue);
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public object Get(int index, Type type, object defaultValue)
         {
             if (TryGet(index, type, out object val))
@@ -69,15 +62,15 @@ namespace Rocket.Core.Commands
             return defaultValue;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool TryGet<T>(int index, out T value)
         {
-            bool result = TryGet(index, typeof(T), out var tmp);
+            bool result = TryGet(index, typeof(T), out object tmp);
             value = (T) tmp;
             return result;
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool TryGet(int index, Type type, out object value)
         {
             value = null;
@@ -92,28 +85,16 @@ namespace Rocket.Core.Commands
             }
         }
 
-        /// <inheritdoc/>
-        public string[] ToArray()
-        {
-            return Parameters.ToArray(); // send copy
-        }
+        /// <inheritdoc />
+        public string[] ToArray() => Parameters.ToArray();
 
-        /// <inheritdoc/>
-        public List<string> ToList()
-        {
-            return Parameters.ToList(); // send copy
-        }
+        /// <inheritdoc />
+        public List<string> ToList() => Parameters.ToList();
 
-        /// <inheritdoc/>
-        public IEnumerator<string> GetEnumerator()
-        {
-            return ToList().GetEnumerator();
-        }
+        /// <inheritdoc />
+        public IEnumerator<string> GetEnumerator() => ToList().GetEnumerator();
 
-        /// <inheritdoc/>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        /// <inheritdoc />
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

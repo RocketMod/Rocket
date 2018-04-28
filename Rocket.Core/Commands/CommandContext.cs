@@ -5,11 +5,11 @@ namespace Rocket.Core.Commands
 {
     public class CommandContext : ICommandContext
     {
-        public CommandContext(IDependencyContainer container, 
-                              ICommandCaller caller, 
-                              string commandPrefix, 
-                              ICommand command, 
-                              string commandAlias, 
+        public CommandContext(IDependencyContainer container,
+                              ICommandCaller caller,
+                              string commandPrefix,
+                              ICommand command,
+                              string commandAlias,
                               string[] parameters,
                               ICommandContext parentCommandContext)
         {

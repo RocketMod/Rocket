@@ -11,10 +11,7 @@ namespace Rocket.Core.Player
         public override bool CanConvertFrom(ITypeDescriptorContext context,
                                             Type sourceType)
         {
-            if (sourceType == typeof(string))
-            {
-                return true;
-            }
+            if (sourceType == typeof(string)) return true;
 
             return base.CanConvertFrom(context, sourceType);
         }
@@ -23,9 +20,7 @@ namespace Rocket.Core.Player
                                            CultureInfo culture, object value)
         {
             if (value is string nameOrId && context is UnityDescriptorContext ctx)
-            {
                 return ctx.UnityContainer.Get<IPlayerManager>().GetOnlinePlayer(nameOrId);
-            }
 
             return base.ConvertFrom(context, culture, value);
         }

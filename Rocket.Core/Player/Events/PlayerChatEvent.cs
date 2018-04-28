@@ -5,8 +5,6 @@ namespace Rocket.Core.Player.Events
 {
     public class PlayerChatEvent : OnlinePlayerEvent, ICancellableEvent
     {
-        public string Message { get; set; }
-
         public PlayerChatEvent(IOnlinePlayer player, string message) : base(player)
         {
             Message = message;
@@ -30,6 +28,8 @@ namespace Rocket.Core.Player.Events
         {
             Message = message;
         }
+
+        public string Message { get; set; }
 
         public bool IsCancelled { get; set; }
     }

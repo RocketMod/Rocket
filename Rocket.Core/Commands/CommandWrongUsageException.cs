@@ -2,7 +2,8 @@
 using Rocket.API.Commands;
 using Rocket.Core.Exceptions;
 
-namespace Rocket.Core.Commands {
+namespace Rocket.Core.Commands
+{
     public class CommandWrongUsageException : Exception, ICommandFriendlyException
     {
         public CommandWrongUsageException() : base("Command was used wrong") { }

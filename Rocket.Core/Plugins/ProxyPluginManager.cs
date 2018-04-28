@@ -11,24 +11,19 @@ namespace Rocket.Core.Plugins
     public class ProxyPluginManager : ServiceProxy<IPluginManager>, IPluginManager
     {
         public ProxyPluginManager(IDependencyContainer container) : base(container) { }
-        public IEnumerator<IPlugin> GetEnumerator()
-        {
-            return Plugins.GetEnumerator();
-        }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        public IEnumerator<IPlugin> GetEnumerator() => Plugins.GetEnumerator();
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public IPlugin GetPlugin(string name)
         {
-            foreach (var pluginManager in ProxiedServices)
+            foreach (IPluginManager pluginManager in ProxiedServices)
             {
-                if(!pluginManager.PluginExists(name))
+                if (!pluginManager.PluginExists(name))
                     continue;
 
-                var plugin = pluginManager.GetPlugin(name);
+                IPlugin plugin = pluginManager.GetPlugin(name);
                 if (plugin != null)
                     return plugin;
             }
@@ -43,24 +38,19 @@ namespace Rocket.Core.Plugins
 
         public void Init()
         {
-            foreach(var pluginManager in ProxiedServices)
+            foreach (IPluginManager pluginManager in ProxiedServices)
                 pluginManager.Init();
         }
 
         public bool LoadPlugin(string name)
-        {
-            throw new NotSupportedException("Load plugins is not supported through proxy");
-        }
+            => throw new NotSupportedException("Load plugins is not supported through proxy");
 
         public bool UnloadPlugin(string name)
-        {
-            throw new NotSupportedException("Unloading plugins is not supported through proxy");
-        }
+            => throw new NotSupportedException("Unloading plugins is not supported through proxy");
 
         public IEnumerable<IPlugin> Plugins => ProxiedServices.SelectMany(c => c.Plugins);
+
         public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
-        {
-            throw new NotSupportedException("Not supported on proxies");
-        }
+            => throw new NotSupportedException("Not supported on proxies");
     }
 }

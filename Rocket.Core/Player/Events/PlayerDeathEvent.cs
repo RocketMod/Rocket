@@ -6,8 +6,6 @@ namespace Rocket.Core.Player.Events
 {
     public class PlayerDeathEvent : OnlinePlayerEvent
     {
-        public IEntity Killer { get; }
-
         public PlayerDeathEvent(IOnlinePlayer player, IEntity killer = null) : base(player)
         {
             Killer = killer;
@@ -31,5 +29,7 @@ namespace Rocket.Core.Player.Events
         {
             Killer = killer;
         }
+
+        public IEntity Killer { get; }
     }
 }

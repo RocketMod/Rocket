@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Rocket.API.Eventing;
+﻿using Rocket.API.Eventing;
 
 namespace Rocket.API.Plugin
 {

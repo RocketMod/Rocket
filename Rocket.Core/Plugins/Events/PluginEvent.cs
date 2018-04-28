@@ -5,9 +5,6 @@ namespace Rocket.Core.Plugins.Events
 {
     public abstract class PluginEvent : Event
     {
-        public IPluginManager PluginManager { get; }
-        public IPlugin Plugin { get; }
-
         protected PluginEvent(IPluginManager pluginManager, IPlugin plugin, bool global = true) : base(global)
         {
             PluginManager = pluginManager;
@@ -30,5 +27,7 @@ namespace Rocket.Core.Plugins.Events
         }
 
         protected PluginEvent(IPluginManager pluginManager, IPlugin plugin) : this(pluginManager, plugin, true) { }
+        public IPluginManager PluginManager { get; }
+        public IPlugin Plugin { get; }
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using Rocket.API.DependencyInjection;
-using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 
@@ -30,15 +29,18 @@ namespace Rocket.Core.Player
 
             if (format.Equals("health", StringComparison.OrdinalIgnoreCase))
             {
-                var health = entity.Health;
+                double health = entity.Health;
                 return subFormat != null ? health.ToString(subFormat, formatProvider) : health.ToString(formatProvider);
             }
 
             if (format.Equals("maxhealth", StringComparison.OrdinalIgnoreCase))
             {
-                var maxHealth = entity.MaxHealth;
-                return subFormat != null ? maxHealth.ToString(subFormat, formatProvider) : maxHealth.ToString(formatProvider);
+                double maxHealth = entity.MaxHealth;
+                return subFormat != null
+                    ? maxHealth.ToString(subFormat, formatProvider)
+                    : maxHealth.ToString(formatProvider);
             }
+
             return base.ToString(format, formatProvider);
         }
 

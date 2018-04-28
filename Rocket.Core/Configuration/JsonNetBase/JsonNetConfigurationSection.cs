@@ -6,14 +6,13 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public class JsonNetConfigurationSection : JsonNetConfigurationElement, IConfigurationSection
     {
-        private readonly string key;
-
-        public JsonNetConfigurationSection(IConfiguration root, IConfigurationElement parent, JToken node, string key) : base(root, parent, node)
+        public JsonNetConfigurationSection(IConfiguration root, IConfigurationElement parent, JToken node, string key) :
+            base(root, parent, node)
         {
-            this.key = key;
+            Key = key;
         }
 
-        public string Key => key;
+        public string Key { get; }
 
         public override string Path => Node.Path;
 
@@ -21,7 +20,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
         {
             get
             {
-                var node = Node;
+                JToken node = Node;
 
                 if (node is JProperty p)
                     return p.Value.Type == JTokenType.Null;

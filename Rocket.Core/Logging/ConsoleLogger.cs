@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Rocket.API.Logging;
 using Rocket.Core.Extensions;
 
@@ -12,13 +13,6 @@ namespace Rocket.Core.Logging
         private readonly string infoPrefix = "INFO";
         private readonly string tracePrefix = "TRACE";
         private readonly string warnPrefix = "WARN";
-
-        private string FormatMessage(string message, string prefix, params object[] args)
-        {
-            var callingMethod = ReflectionExtensions.GetCallingMethod(typeof(ConsoleLogger), typeof(ProxyLogger));
-            string format = $"[{prefix}] [{callingMethod.ReflectedType?.Name ?? "<anonymous>"}#{callingMethod.Name}] {message}";
-            return string.Format(format, args);
-        }
 
         public bool IsTraceEnabled
         {
@@ -54,7 +48,7 @@ namespace Rocket.Core.Logging
 
         public void LogDebug(string message, params object[] arguments)
         {
-            LogDebug(message, (ConsoleColor?)null, arguments);
+            LogDebug(message, (ConsoleColor?) null, arguments);
         }
 
         public void LogDebug(string message, ConsoleColor? color, params object[] arguments)
@@ -82,12 +76,12 @@ namespace Rocket.Core.Logging
 
         public void LogInformation(string message, params object[] arguments)
         {
-            LogInformation(message, (ConsoleColor?)null, arguments);
+            LogInformation(message, (ConsoleColor?) null, arguments);
         }
 
         public void LogError(string message, params object[] arguments)
         {
-            LogError(message, (ConsoleColor?)null, arguments);
+            LogError(message, (ConsoleColor?) null, arguments);
         }
 
         public void LogError(string message, ConsoleColor? color, params object[] arguments)
@@ -100,7 +94,7 @@ namespace Rocket.Core.Logging
 
         public void LogError(string message, Exception exception, params object[] arguments)
         {
-            LogError(message, (ConsoleColor?)null, arguments);
+            LogError(message, (ConsoleColor?) null, arguments);
         }
 
         public void LogError(string message, Exception exception, ConsoleColor? color, params object[] arguments)
@@ -115,7 +109,7 @@ namespace Rocket.Core.Logging
 
         public void LogFatal(string message, params object[] arguments)
         {
-            LogFatal(message, (ConsoleColor?)null, arguments);
+            LogFatal(message, (ConsoleColor?) null, arguments);
         }
 
         public void LogFatal(string message, ConsoleColor? color, params object[] arguments)
@@ -128,7 +122,7 @@ namespace Rocket.Core.Logging
 
         public void LogFatal(string message, Exception exception, params object[] arguments)
         {
-            LogFatal(message, (ConsoleColor?)null, arguments);
+            LogFatal(message, (ConsoleColor?) null, arguments);
         }
 
         public void LogFatal(string message, Exception exception, ConsoleColor? color, params object[] arguments)
@@ -166,12 +160,12 @@ namespace Rocket.Core.Logging
 
         public void LogWarning(string message, params object[] arguments)
         {
-            LogWarning(message, (ConsoleColor?)null, arguments);
+            LogWarning(message, (ConsoleColor?) null, arguments);
         }
 
         public void LogTrace(string message, params object[] arguments)
         {
-            LogTrace(message, (ConsoleColor?)null, arguments);
+            LogTrace(message, (ConsoleColor?) null, arguments);
         }
 
         public void LogTrace(string message, ConsoleColor? color, params object[] arguments)
@@ -218,6 +212,15 @@ namespace Rocket.Core.Logging
             SetColor(ConsoleColor.Red);
             Console.WriteLine(warnPrefix);
             SetColor(orgCol);
+        }
+
+        private string FormatMessage(string message, string prefix, params object[] args)
+        {
+            MethodBase callingMethod =
+                ReflectionExtensions.GetCallingMethod(typeof(ConsoleLogger), typeof(ProxyLogger));
+            string format =
+                $"[{prefix}] [{callingMethod.ReflectedType?.Name ?? "<anonymous>"}#{callingMethod.Name}] {message}";
+            return string.Format(format, args);
         }
 
         private void SetColor(ConsoleColor color)

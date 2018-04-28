@@ -15,9 +15,7 @@ namespace Rocket.Core.Permissions
         public IConfigurationElement PlayersConfig { get; protected set; }
 
         public bool SupportsPermissible(IPermissible permissible)
-        {
-            return permissible is IPermissionGroup || permissible is ICommandCaller;
-        }
+            => permissible is IPermissionGroup || permissible is ICommandCaller;
 
         public PermissionResult CheckPermission(IPermissible target, string permission)
         {
@@ -28,8 +26,8 @@ namespace Rocket.Core.Permissions
             if (!permission.StartsWith("!") && CheckPermission(target, "!" + permission) == PermissionResult.Grant)
                 return PermissionResult.Deny;
 
-            var permissionTree = BuildPermissionTree(permission);
-            foreach (var permissionNode in permissionTree)
+            IEnumerable<string> permissionTree = BuildPermissionTree(permission);
+            foreach (string permissionNode in permissionTree)
             {
                 string[] groupPermissions = GetConfigSection(target)["Permissions"].Get(new string[0]);
                 if (groupPermissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
@@ -38,9 +36,9 @@ namespace Rocket.Core.Permissions
 
             // check parent group permissions / player group permissions
             IEnumerable<IPermissionGroup> groups = GetGroups(target);
-            foreach (var group in groups)
+            foreach (IPermissionGroup group in groups)
             {
-                var result = CheckPermission(group, permission);
+                PermissionResult result = CheckPermission(group, permission);
                 if (result == PermissionResult.Grant)
                     return PermissionResult.Grant;
 
@@ -59,9 +57,9 @@ namespace Rocket.Core.Permissions
 
             PermissionResult result = PermissionResult.Grant;
 
-            foreach (var permission in permissions)
+            foreach (string permission in permissions)
             {
-                var tmp = CheckPermission(target, permission);
+                PermissionResult tmp = CheckPermission(target, permission);
                 if (tmp == PermissionResult.Deny)
                     return PermissionResult.Deny;
 
@@ -78,9 +76,9 @@ namespace Rocket.Core.Permissions
             GuardPermissions(permissions);
             GuardPermissible(target);
 
-            foreach (var permission in permissions)
+            foreach (string permission in permissions)
             {
-                var result = CheckPermission(target, permission);
+                PermissionResult result = CheckPermission(target, permission);
                 if (result == PermissionResult.Deny)
                     return PermissionResult.Deny;
 
@@ -96,8 +94,8 @@ namespace Rocket.Core.Permissions
             GuardPermission(ref permission);
             GuardPermissible(target);
 
-            var permsSection = GetConfigSection(target)["Permissions"];
-            List<string> groupPermissions = permsSection.Get(defaultValue: new string[0]).ToList();
+            IConfigurationSection permsSection = GetConfigSection(target)["Permissions"];
+            List<string> groupPermissions = permsSection.Get(new string[0]).ToList();
             groupPermissions.Add(permission);
             permsSection.Set(groupPermissions.ToArray());
             return true;
@@ -111,23 +109,11 @@ namespace Rocket.Core.Permissions
             return AddPermission(target, "!" + permission);
         }
 
-        public bool AddPermission(ICommandCaller caller, string permission)
-        {
-            GuardPermission(ref permission);
-            GuardPermissible(caller);
-
-            var permsSection = GetConfigSection(caller)["Permissions"];
-            List<string> groupPermissions = permsSection.Get(defaultValue: new string[0]).ToList();
-            groupPermissions.Add(permission);
-            permsSection.Set(groupPermissions.ToArray());
-            return true;
-        }
-
         public bool RemovePermission(IPermissible target, string permission)
         {
             GuardPermission(ref permission);
-            var permsSection = GetConfigSection(target)["Permissions"];
-            List<string> groupPermissions = permsSection.Get(defaultValue: new string[0]).ToList();
+            IConfigurationSection permsSection = GetConfigSection(target)["Permissions"];
+            List<string> groupPermissions = permsSection.Get(new string[0]).ToList();
             int i = groupPermissions.RemoveAll(c => c.Trim().Equals(permission, StringComparison.OrdinalIgnoreCase));
             permsSection.Set(groupPermissions.ToArray());
             return i > 0;
@@ -141,7 +127,6 @@ namespace Rocket.Core.Permissions
             return RemovePermission(target, "!" + permission);
         }
 
-
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
             GuardLoaded();
@@ -154,7 +139,7 @@ namespace Rocket.Core.Permissions
             GuardPermissible(target);
 
             IConfigurationSection groupsSection = GetGroupsSection(target);
-            string[] groups = groupsSection.Get(defaultValue: new string[0]);
+            string[] groups = groupsSection.Get(new string[0]);
             return groups
                    .Select(GetGroup)
                    .Where(c => c != null);
@@ -173,7 +158,7 @@ namespace Rocket.Core.Permissions
             {
                 PermissionGroup group = new PermissionGroup();
                 group.Id = child.Key;
-                group.Name = child["Name"].Get(defaultValue: child.Key);
+                group.Name = child["Name"].Get(child.Key);
                 group.Priority = child.Get(0);
                 groups.Add(group);
             }
@@ -181,69 +166,69 @@ namespace Rocket.Core.Permissions
             return groups;
         }
 
-        public void UpdateGroup(IPermissionGroup @group)
+        public void UpdateGroup(IPermissionGroup group)
         {
             GuardLoaded();
             GuardPermissible(group);
 
-            if (GetGroup(@group.Id) == null)
-                throw new Exception("Can't update group that does not exist: " + @group.Id);
+            if (GetGroup(group.Id) == null)
+                throw new Exception("Can't update group that does not exist: " + group.Id);
 
-            IConfigurationSection section = GroupsConfig.GetSection($"{@group.Id}");
+            IConfigurationSection section = GroupsConfig.GetSection($"{group.Id}");
 
             if (!section.ChildExists("Name"))
                 section.CreateSection("Name", SectionType.Value);
-            section["Name"].Set(@group.Name);
+            section["Name"].Set(group.Name);
 
             if (!section.ChildExists("Priority"))
                 section.CreateSection("Priority", SectionType.Value);
-            section["Priority"].Set(@group.Priority);
+            section["Priority"].Set(group.Priority);
         }
 
-        public bool AddGroup(IPermissible target, IPermissionGroup @group)
+        public bool AddGroup(IPermissible target, IPermissionGroup group)
         {
             GuardLoaded();
             GuardPermissible(target);
             GuardPermissible(group);
 
             IConfigurationSection groupsSection = GetGroupsSection(target);
-            List<string> groups = groupsSection.Get(defaultValue: new string[0]).ToList();
-            if (!groups.Any(c => c.Equals(@group.Id, StringComparison.OrdinalIgnoreCase)))
-                groups.Add(@group.Id);
+            List<string> groups = groupsSection.Get(new string[0]).ToList();
+            if (!groups.Any(c => c.Equals(group.Id, StringComparison.OrdinalIgnoreCase)))
+                groups.Add(group.Id);
             groupsSection.Set(groups.ToArray());
             return true;
         }
 
-        public bool RemoveGroup(IPermissible target, IPermissionGroup @group)
+        public bool RemoveGroup(IPermissible target, IPermissionGroup group)
         {
             GuardLoaded();
             GuardPermissible(target);
             GuardPermissible(group);
-            
+
             IConfigurationSection groupsSection = GetGroupsSection(target);
-            List<string> groups = groupsSection.Get(defaultValue: new string[0]).ToList();
-            int i = groups.RemoveAll(c => c.Equals(@group.Id, StringComparison.OrdinalIgnoreCase));
+            List<string> groups = groupsSection.Get(new string[0]).ToList();
+            int i = groups.RemoveAll(c => c.Equals(group.Id, StringComparison.OrdinalIgnoreCase));
             groupsSection.Set(groups.ToArray());
             return i > 0;
         }
 
-        public bool CreateGroup(IPermissionGroup @group)
+        public bool CreateGroup(IPermissionGroup group)
         {
             GuardLoaded();
             GuardPermissible(group);
 
-            IConfigurationSection section = GroupsConfig.CreateSection($"{@group.Id}", SectionType.Object);
-            section.CreateSection("Name", SectionType.Value).Set(@group.Name);
-            section.CreateSection("Priority", SectionType.Value).Set(@group.Priority);
+            IConfigurationSection section = GroupsConfig.CreateSection($"{group.Id}", SectionType.Object);
+            section.CreateSection("Name", SectionType.Value).Set(group.Name);
+            section.CreateSection("Priority", SectionType.Value).Set(group.Priority);
             return true;
         }
 
-        public bool DeleteGroup(IPermissionGroup @group)
+        public bool DeleteGroup(IPermissionGroup group)
         {
             GuardLoaded();
             GuardPermissible(group);
 
-            return GroupsConfig.RemoveSection($"{@group.Id}");
+            return GroupsConfig.RemoveSection($"{group.Id}");
         }
 
         public void Load(IConfigurationElement groupsConfig, IConfigurationElement playersConfig)
@@ -264,15 +249,27 @@ namespace Rocket.Core.Permissions
             PlayersConfig.Root?.Save();
         }
 
+        public bool AddPermission(ICommandCaller caller, string permission)
+        {
+            GuardPermission(ref permission);
+            GuardPermissible(caller);
+
+            IConfigurationSection permsSection = GetConfigSection(caller)["Permissions"];
+            List<string> groupPermissions = permsSection.Get(new string[0]).ToList();
+            groupPermissions.Add(permission);
+            permsSection.Set(groupPermissions.ToArray());
+            return true;
+        }
+
         /// <summary>
-        /// Builds a parent permission tree for the given permission <br/>
-        /// If the target has any of these permissions, they will automatically have the given permission too <br/><br/> 
-        /// <b>Example Input:</b>
-        /// <code>
+        ///     Builds a parent permission tree for the given permission <br />
+        ///     If the target has any of these permissions, they will automatically have the given permission too <br /><br />
+        ///     <b>Example Input:</b>
+        ///     <code>
         /// "player.test.sub"
         /// </code>
-        /// <b>Example output:</b>
-        /// <code>
+        ///     <b>Example output:</b>
+        ///     <code>
         /// [
         ///     "*",
         ///     "player.*",
@@ -291,7 +288,7 @@ namespace Rocket.Core.Permissions
             };
 
             string parentPath = "";
-            foreach (var childPath in permission.Split('.'))
+            foreach (string childPath in permission.Split('.'))
             {
                 permissions.Add(parentPath + childPath + ".*");
                 parentPath += childPath + ".";
@@ -318,7 +315,7 @@ namespace Rocket.Core.Permissions
         {
             for (int i = 0; i < permissions.Length; i++)
             {
-                var tmp = permissions[i];
+                string tmp = permissions[i];
                 GuardPermission(ref tmp);
                 permissions[i] = tmp;
             }
@@ -328,9 +325,11 @@ namespace Rocket.Core.Permissions
         {
             GuardPermissible(target);
 
-            var config = target is IPermissionGroup ? GroupsConfig : PlayersConfig;
+            IConfigurationElement config = target is IPermissionGroup ? GroupsConfig : PlayersConfig;
 
-            var basePath = target is IPermissionGroup ? $"{target.Id}" : $"{((ICommandCaller)target).CallerType.Name}.{target.Id}";
+            string basePath = target is IPermissionGroup
+                ? $"{target.Id}"
+                : $"{((ICommandCaller) target).CallerType.Name}.{target.Id}";
             string permissionsPath = basePath + ".Permissions";
             string groupsPath = target is IPermissionGroup ? basePath + ".ParentGroups" : basePath + ".Groups";
 
@@ -350,17 +349,14 @@ namespace Rocket.Core.Permissions
         }
 
         private IConfigurationSection GetGroupsSection(IPermissible target)
-        {
-            return GetConfigSection(target)[target is IPermissionGroup ? "ParentGroups" : "Groups"];
-        }
-
+            => GetConfigSection(target)[target is IPermissionGroup ? "ParentGroups" : "Groups"];
 
         private void GuardLoaded()
         {
-            if (GroupsConfig == null || (GroupsConfig.Root != null && !GroupsConfig.Root.IsLoaded))
+            if (GroupsConfig == null || GroupsConfig.Root != null && !GroupsConfig.Root.IsLoaded)
                 throw new Exception("Groups config not loaded!");
 
-            if (PlayersConfig == null || (PlayersConfig.Root != null && !PlayersConfig.Root.IsLoaded))
+            if (PlayersConfig == null || PlayersConfig.Root != null && !PlayersConfig.Root.IsLoaded)
                 throw new Exception("Players config has not been loaded");
         }
 

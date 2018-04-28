@@ -12,7 +12,7 @@ namespace Rocket.Tests.Plugins
         public void PluginImplementation()
         {
             IPluginManager pluginManager = Runtime.Container.Get<IPluginManager>();
-            TestPlugin plugin = (TestPlugin)pluginManager.GetPlugin("TestPlugin");
+            TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
 
             Assert.IsNull(plugin.Configuration); //No config for test plugin

@@ -1,32 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.ServiceProxies;
 
 namespace Rocket.Core.ServiceProxies
 {
-    public abstract class ServiceProxy<T> : IServiceProxy<T> where T: IProxyableService
+    public abstract class ServiceProxy<T> : IServiceProxy<T> where T : IProxyableService
     {
+        protected ServiceProxy(IDependencyContainer container)
+        {
+            if (!(this is T))
+                throw new Exception("Service proxy has to extend " + typeof(T).FullName + "!");
+            Container = container;
+        }
+
         private IDependencyContainer Container { get; }
 
         public IEnumerable<T> ProxiedServices
         {
             get
             {
-                var providers = Container.GetAll<T>()
-                                         .ToList();
+                List<T> providers = Container.GetAll<T>()
+                                             .ToList();
 
                 ServicePriorityComparer.Sort(providers, true);
                 return providers;
             }
-        }
-        protected ServiceProxy(IDependencyContainer container)
-        {
-            if(!(this is T))
-                throw new Exception("Service proxy has to extend " + typeof(T).FullName + "!");
-            Container = container;
         }
     }
 }
