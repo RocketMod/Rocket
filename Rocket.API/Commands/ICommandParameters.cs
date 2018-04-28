@@ -99,5 +99,11 @@ namespace Rocket.API.Commands
         /// </summary>
         /// <returns>the parameters as string array.</returns>
         string[] ToArray();
+
+        /// <summary>
+        /// Gets the parameters as string list.
+        /// </summary>
+        /// <returns>the parameters as string list.</returns>
+        List<string> ToList();
     }
 }

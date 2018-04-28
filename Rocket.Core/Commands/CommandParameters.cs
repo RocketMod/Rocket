@@ -3,37 +3,43 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Threading;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
-using Rocket.API.Player;
-using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
-using Rocket.Core.Player;
 
 namespace Rocket.Core.Commands
 {
+    /// <inheritdoc/>
     public class CommandParameters : ICommandParameters
     {
         private readonly IDependencyContainer container;
 
+        /// <summary>
+        /// The internal stored raw parameter list
+        /// </summary>
         protected internal string[] Parameters { get; }
 
+        /// <param name="container">The IoC container of the <see cref="ICommandContext">command context</see></param>
+        /// <param name="parameters">The raw parameters</param>
         public CommandParameters(IDependencyContainer container, string[] parameters)
         {
             this.container = container;
             Parameters = parameters;
         }
 
+        /// <inheritdoc/>
         public string this[int index] => Parameters[index];
 
+        /// <inheritdoc/>
         public int Length => Parameters.Length;
 
+        /// <inheritdoc/>
         public T Get<T>(int index)
         {
             return (T) Get(index, typeof(T));
         }
 
+        /// <inheritdoc/>
         public object Get(int index, Type type)
         {
             if(type == null)
@@ -49,11 +55,13 @@ namespace Rocket.Core.Commands
             throw new NotSupportedException($"Converting \"{Parameters[index]}\" to \"{type.FullName}\" is not supported!");
         }
 
+        /// <inheritdoc/>
         public T Get<T>(int index, T defaultValue)
         {
             return (T) Get(index, typeof(T), defaultValue);
         }
 
+        /// <inheritdoc/>
         public object Get(int index, Type type, object defaultValue)
         {
             if (TryGet(index, type, out object val))
@@ -61,6 +69,7 @@ namespace Rocket.Core.Commands
             return defaultValue;
         }
 
+        /// <inheritdoc/>
         public bool TryGet<T>(int index, out T value)
         {
             bool result = TryGet(index, typeof(T), out var tmp);
@@ -68,6 +77,7 @@ namespace Rocket.Core.Commands
             return result;
         }
 
+        /// <inheritdoc/>
         public bool TryGet(int index, Type type, out object value)
         {
             value = null;
@@ -82,16 +92,25 @@ namespace Rocket.Core.Commands
             }
         }
 
+        /// <inheritdoc/>
         public string[] ToArray()
         {
             return Parameters.ToArray(); // send copy
         }
 
-        public IEnumerator<string> GetEnumerator()
+        /// <inheritdoc/>
+        public List<string> ToList()
         {
-            return ToArray().ToList().GetEnumerator();
+            return Parameters.ToList(); // send copy
         }
 
+        /// <inheritdoc/>
+        public IEnumerator<string> GetEnumerator()
+        {
+            return ToList().GetEnumerator();
+        }
+
+        /// <inheritdoc/>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
