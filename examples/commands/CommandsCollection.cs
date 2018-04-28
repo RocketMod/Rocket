@@ -3,6 +3,7 @@ using Rocket.API.Commands;
 using Rocket.API.I18N;
 using Rocket.API.Player;
 using Rocket.Core.Commands;
+using Rocket.Core.I18N;
 using Rocket.Core.Permissions;
 
 namespace Rocket.Examples.CommandsPlugin

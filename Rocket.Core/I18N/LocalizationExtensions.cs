@@ -4,7 +4,7 @@ using Rocket.API.Commands;
 using Rocket.API.I18N;
 using Rocket.API.Player;
 
-namespace Rocket.Core.Permissions
+namespace Rocket.Core.I18N
 {
     public static class LocalizationExtensions
     {

@@ -68,7 +68,7 @@
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />
     <Compile Include="Extensions\TypeConverterExtensions.cs" />
     <Compile Include="Logging\ProxyLogger.cs" />
-    <Compile Include="Permissions\LocalizationExtensions.cs" />
+    <Compile Include="I18N\LocalizationExtensions.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />
