@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading;
@@ -83,6 +85,16 @@ namespace Rocket.Core.Commands
         public string[] ToArray()
         {
             return Parameters.ToArray(); // send copy
+        }
+
+        public IEnumerator<string> GetEnumerator()
+        {
+            return ToArray().ToList().GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }

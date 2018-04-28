@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Rocket.API.Commands
 {
@@ -72,12 +73,12 @@ namespace Rocket.API.Commands
         ISubCommand[] ChildCommands { get; }
 
         /// <summary>
-        /// Defines if this command can be executed by the given caller.
-        /// It is guaranteed that <see cref="Execute"/> can only be called by supported callers.
+        /// Defines if this command can be executed by the given command caller type.
+        /// It is guaranteed that <see cref="Execute"/> can only be called by supported command callers.
         /// </summary>
-        /// <param name="caller">The command caller to check.</param>
-        /// <returns><b>true</b> if the given command caller can execute this command; otherwise, <b>false</b>.</returns>
-        bool SupportsCaller(ICommandCaller caller);
+        /// <param name="commandCaller">The command caller type to check.</param>
+        /// <returns><b>true</b> if the given command caller type can execute this command; otherwise, <b>false</b>.</returns>
+        bool SupportsCaller(Type commandCaller);
 
         /// <summary>
         /// This method is called when a command caller wants to execute this command.<br/><br/>

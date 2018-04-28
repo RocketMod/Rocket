@@ -21,13 +21,13 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true;
         }
     }
 
-    public class RocketSubCommandReload : ISubCommand<CommandPermission>
+    public class RocketSubCommandReload : ISubCommand
     {
         public string Name => "Reload";
         public string Description => "Reload Rocket";
@@ -35,7 +35,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "";
         public ISubCommand[] ChildCommands => null;
         public string[] Aliases => null;
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true;
         }

@@ -37,7 +37,7 @@ namespace Rocket.API.Commands
 
         /// <summary>
         /// The caller of the command.<br/>
-        /// Is guaranteed to be a <see cref="ICommand.SupportsCaller">supported caller</see>.<br/><br/>
+        /// Is guaranteed to be a <see cref="ICommand.SupportsCaller">supported command caller</see>.<br/><br/>
         /// <b>This property will never return null.</b>
         /// </summary>
         ICommandCaller Caller { get; }

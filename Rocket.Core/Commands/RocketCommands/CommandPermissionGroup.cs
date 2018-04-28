@@ -24,13 +24,13 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true;
         }
     }
 
-    public abstract class PermissionGroupSubCommandUpdate : ISubCommand<CommandPermissionGroup>
+    public abstract class PermissionGroupSubCommandUpdate : ISubCommand
     {
         public abstract string Name { get; }
         public abstract string Description { get; }
@@ -40,7 +40,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public ISubCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true;
         }

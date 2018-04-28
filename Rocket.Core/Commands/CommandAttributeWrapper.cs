@@ -12,8 +12,8 @@ namespace Rocket.Core.Commands
         private readonly Type[] supportedCallers;
         public CommandAttribute Attribute { get; }
 
-        public CommandAttributeWrapper(object instance, MethodBase method, 
-                                       CommandAttribute attribute, 
+        public CommandAttributeWrapper(object instance, MethodBase method,
+                                       CommandAttribute attribute,
                                        string[] aliases,
                                        Type[] supportedCallers)
         {
@@ -33,12 +33,12 @@ namespace Rocket.Core.Commands
         public object Instance { get; }
         public MethodBase Method { get; set; }
 
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             if (supportedCallers.Length == 0)
                 return true;
 
-            return supportedCallers.Any(c => c.IsInstanceOfType(caller));
+            return supportedCallers.Any(commandCaller.IsAssignableFrom);
         }
 
         public void Execute(ICommandContext context)

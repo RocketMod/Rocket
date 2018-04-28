@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Rocket.API.Commands;
 using Rocket.API.Player;
 
@@ -12,7 +13,7 @@ namespace Rocket.Examples.CommandsPlugin
         public string Syntax => "<target player> <health>";
         public ISubCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"sh"};
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true; //supports all callers (e.g. Console, Player, etc...)
         }

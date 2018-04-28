@@ -22,12 +22,12 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true;
         }
     }
-    public abstract class PermissionSubCommandUpdate : ISubCommand<CommandPermission>
+    public abstract class PermissionSubCommandUpdate : ISubCommand
     {
         public abstract string Name { get; }
         public abstract string Description { get; }
@@ -37,7 +37,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public ISubCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true;
         }
@@ -132,7 +132,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
     }
 
-    public class PermissionSubCommandReload : ISubCommand<CommandPermission>
+    public class PermissionSubCommandReload : ISubCommand
     {
         public string Name => "Reload";
         public string Description => "Reload permissions";
@@ -140,7 +140,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "";
         public ISubCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"R"};
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true;
         }

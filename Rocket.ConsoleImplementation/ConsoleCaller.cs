@@ -1,5 +1,6 @@
 ﻿using System;
 using Rocket.API.Commands;
+using Rocket.API.I18N;
 using Rocket.API.Permissions;
 
 namespace Rocket.ConsoleImplementation {
@@ -32,12 +33,18 @@ namespace Rocket.ConsoleImplementation {
         public string Id => "Console";
         public string Name => "Console";
         public Type CallerType => typeof(ConsoleCaller);
-        public void SendMessage(string message, ConsoleColor? color)
+        public void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
         {
             var tmp = Console.ForegroundColor;
             Console.ForegroundColor = color ?? tmp;
-            Console.WriteLine("[SendMessage] " + message);
+            Console.WriteLine("[SendMessage] " + message, bindings);
             Console.ForegroundColor = tmp;
+        }
+
+        public void SendLocalizedMessage(ITranslationLocator translations, string translationKey, ConsoleColor? color = null,
+                                         params object[] bindings)
+        {
+            SendMessage(translations.GetLocalizedMessage(translationKey), color, bindings);
         }
 
         public string ToString(string format, IFormatProvider formatProvider)

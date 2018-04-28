@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Rocket.API.Commands
 {
@@ -8,7 +9,7 @@ namespace Rocket.API.Commands
     /// <remarks>
     /// When a command was entered as "/mycommand test 5 b", this class will handle and represent "test", "a" and "b".
     /// </remarks>
-    public interface ICommandParameters
+    public interface ICommandParameters: IEnumerable<string>
     {
         /// <summary>
         /// Returns the n. command parameter.<br/>

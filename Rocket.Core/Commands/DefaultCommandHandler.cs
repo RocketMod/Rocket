@@ -89,7 +89,7 @@ namespace Rocket.Core.Commands
                 string alias = parent.Parameters[0];
                 if (Equals(cmd, alias))
                 {
-                    if (!cmd.SupportsCaller(parent.Caller))
+                    if (!cmd.SupportsCaller(parent.Caller.GetType()))
                     {
                         throw new NotSupportedException(parent.Caller.GetType().Name + " can not use this command.");
                     }
@@ -113,19 +113,19 @@ namespace Rocket.Core.Commands
             return parent;
         }
 
-        public bool SupportsCaller(ICommandCaller caller)
+        public bool SupportsCaller(Type commandCaller)
         {
             return true;
         }
 
-        public ICommand GetCommand(ICommandContext ctx)
+        public ICommand GetCommand(ICommandContext context)
         {
-            GuardCaller(ctx.Caller);
+            GuardCaller(context.Caller);
 
             IEnumerable<ICommand> commands = container.Get<ICommandProvider>().Commands;
             return commands
-                   .Where(c => c.SupportsCaller(ctx.Caller))
-                   .FirstOrDefault(c => Equals(c, ctx.CommandAlias));
+                   .Where(c => c.SupportsCaller(context.Caller.GetType()))
+                   .FirstOrDefault(c => Equals(c, context.CommandAlias));
         }
 
         private bool Equals(ICommand command, string alias)
@@ -136,7 +136,7 @@ namespace Rocket.Core.Commands
 
         private void GuardCaller(ICommandCaller caller)
         {
-            if (!SupportsCaller(caller))
+            if (!SupportsCaller(caller.GetType()))
                 throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
         }
     }

@@ -2,6 +2,7 @@
 {
     public interface IPermissionGroup: IPermissible
     {
+        string Name { get; }
         int Priority { get; }
     }
 }

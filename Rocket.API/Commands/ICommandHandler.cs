@@ -1,4 +1,5 @@
-﻿using Rocket.API.ServiceProxies;
+﻿using System;
+using Rocket.API.ServiceProxies;
 
 namespace Rocket.API.Commands
 {
@@ -21,11 +22,11 @@ namespace Rocket.API.Commands
         bool HandleCommand(ICommandCaller caller, string commandLine, string prefix);
 
         /// <summary>
-        /// Defines if this command handler can handle the given command caller.
+        /// Defines if this command handler can handle the given command caller type.
         /// </summary>
-        /// <param name="caller">The <see cref="ICommandCaller">command caller</see> to check.</param>
-        /// <returns><b>true</b> if the command caller is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsCaller(ICommandCaller caller);
+        /// <param name="commandCaller">The <see cref="ICommandCaller">command caller</see> type to check.</param>
+        /// <returns><b>true</b> if the command caller type is supported; otherwise, <b>false</b>.</returns>
+        bool SupportsCaller(Type commandCaller);
 
         /// <summary>
         /// Gets the associated command instance for the given context.

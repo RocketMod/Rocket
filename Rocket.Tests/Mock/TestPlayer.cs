@@ -24,9 +24,9 @@ namespace Rocket.Tests.Mock
         public override string Name { get; }
         public override Type CallerType => typeof(TestPlayer);
 
-        public override void SendMessage(string message, ConsoleColor? color)
+        public override void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
         {
-            Console.WriteLine("[TestPlayer.SendMessage] " + message);
+            Console.WriteLine("[TestPlayer.SendMessage] " + message, bindings);
         }
 
         public override DateTime SessionConnectTime { get; } = DateTime.Now;

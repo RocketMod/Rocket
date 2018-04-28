@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using Rocket.API.DependencyInjection;
+using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 
@@ -41,9 +42,16 @@ namespace Rocket.Core.Player
             return base.ToString(format, formatProvider);
         }
 
-        public abstract void SendMessage(string message, ConsoleColor? color = null);
         public abstract DateTime SessionConnectTime { get; }
         public abstract DateTime? SessionDisconnectTime { get; }
         public abstract TimeSpan SessionOnlineTime { get; }
+        public string EntityTypeName => "Player";
+        public abstract void SendMessage(string message, ConsoleColor? color = null, params object[] bindings);
+
+        public void SendLocalizedMessage(ITranslationLocator translations, string translationKey, ConsoleColor? color = null,
+                                         params object[] bindings)
+        {
+            SendMessage(translations.GetLocalizedMessage(translationKey), color, bindings);
+        }
     }
 }
