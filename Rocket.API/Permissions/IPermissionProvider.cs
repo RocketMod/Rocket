@@ -17,7 +17,7 @@ namespace Rocket.API.Permissions
         /// </summary>
         /// <param name="target">The target to check.</param>
         /// <returns><b>true</b> if the given target is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsPermissible(IIdentifiable target);
+        bool SupportsTarget(IIdentifiable target);
 
         /// <summary>
         ///     Check if the target has the given permission.

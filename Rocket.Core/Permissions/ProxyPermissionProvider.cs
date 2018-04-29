@@ -15,16 +15,16 @@ namespace Rocket.Core.Permissions
     {
         public ProxyPermissionProvider(IDependencyContainer container) : base(container) { }
 
-        public bool SupportsPermissible(IIdentifiable target)
+        public bool SupportsTarget(IIdentifiable target)
         {
-            return ProxiedServices.Any(c => c.SupportsPermissible(target));
+            return ProxiedServices.Any(c => c.SupportsTarget(target));
         }
 
         public PermissionResult CheckPermission(IIdentifiable target, string permission)
         {
-            GuardPermissible(target);
+            GuardTarget(target);
 
-            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
+            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsTarget(target)))
             {
                 PermissionResult result = provider.CheckPermission(target, permission);
                 if (result == PermissionResult.Default)
@@ -38,9 +38,9 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult CheckHasAllPermissions(IIdentifiable target, params string[] permissions)
         {
-            GuardPermissible(target);
+            GuardTarget(target);
 
-            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
+            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsTarget(target)))
             {
                 PermissionResult result = provider.CheckHasAllPermissions(target, permissions);
                 if (result == PermissionResult.Default)
@@ -54,9 +54,9 @@ namespace Rocket.Core.Permissions
 
         public PermissionResult CheckHasAnyPermission(IIdentifiable target, params string[] permissions)
         {
-            GuardPermissible(target);
+            GuardTarget(target);
 
-            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsPermissible(target)))
+            foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsTarget(target)))
             {
                 PermissionResult result = provider.CheckHasAnyPermission(target, permissions);
                 if (result == PermissionResult.Default)
@@ -83,7 +83,7 @@ namespace Rocket.Core.Permissions
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
         {
             IPermissionGroup group;
-            foreach (IPermissionProvider service in ProxiedServices.Where(c => c.SupportsPermissible(caller)))
+            foreach (IPermissionProvider service in ProxiedServices.Where(c => c.SupportsTarget(caller)))
                 if ((group = service.GetPrimaryGroup(caller)) != null)
                     return group;
 
@@ -97,7 +97,7 @@ namespace Rocket.Core.Permissions
 
         public IEnumerable<IPermissionGroup> GetGroups(IIdentifiable target)
         {
-            return ProxiedServices.Where(c => c.SupportsPermissible(target))
+            return ProxiedServices.Where(c => c.SupportsTarget(target))
                                   .SelectMany(c => c.GetGroups(target));
         }
 
@@ -138,9 +138,9 @@ namespace Rocket.Core.Permissions
             ProxiedServices.ForEach(c => c.Save());
         }
 
-        private void GuardPermissible(IIdentifiable target)
+        private void GuardTarget(IIdentifiable target)
         {
-            if (!SupportsPermissible(target))
+            if (!SupportsTarget(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");
         }
     }

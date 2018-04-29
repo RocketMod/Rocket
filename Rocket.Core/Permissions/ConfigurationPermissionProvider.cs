@@ -4,7 +4,6 @@ using System.Linq;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
-using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.Core.ServiceProxies;
 
@@ -23,14 +22,14 @@ namespace Rocket.Core.Permissions
         public IConfiguration GroupsConfig { get; protected set; }
         public IConfiguration PlayersConfig { get; protected set; }
 
-        public bool SupportsPermissible(IIdentifiable target)
+        public bool SupportsTarget(IIdentifiable target)
             => target is IPermissionGroup || target is ICommandCaller;
 
         public PermissionResult CheckPermission(IIdentifiable target, string permission)
         {
             GuardLoaded();
             GuardPermission(ref permission);
-            GuardPermissible(target);
+            GuardTarget(target);
 
             if (!permission.StartsWith("!") && CheckPermission(target, "!" + permission) == PermissionResult.Grant)
                 return PermissionResult.Deny;
@@ -62,7 +61,7 @@ namespace Rocket.Core.Permissions
         {
             GuardLoaded();
             GuardPermissions(permissions);
-            GuardPermissible(target);
+            GuardTarget(target);
 
             PermissionResult result = PermissionResult.Grant;
 
@@ -83,7 +82,7 @@ namespace Rocket.Core.Permissions
         {
             GuardLoaded();
             GuardPermissions(permissions);
-            GuardPermissible(target);
+            GuardTarget(target);
 
             foreach (string permission in permissions)
             {
@@ -101,7 +100,7 @@ namespace Rocket.Core.Permissions
         public bool AddPermission(IIdentifiable target, string permission)
         {
             GuardPermission(ref permission);
-            GuardPermissible(target);
+            GuardTarget(target);
 
             IConfigurationSection permsSection = GetConfigSection(target)["Permissions"];
             List<string> groupPermissions = permsSection.Get(new string[0]).ToList();
@@ -113,7 +112,7 @@ namespace Rocket.Core.Permissions
         public bool AddDeniedPermission(IIdentifiable target, string permission)
         {
             GuardPermission(ref permission);
-            GuardPermissible(target);
+            GuardTarget(target);
 
             return AddPermission(target, "!" + permission);
         }
@@ -131,7 +130,7 @@ namespace Rocket.Core.Permissions
         public bool RemoveDeniedPermission(IIdentifiable target, string permission)
         {
             GuardPermission(ref permission);
-            GuardPermissible(target);
+            GuardTarget(target);
 
             return RemovePermission(target, "!" + permission);
         }
@@ -145,7 +144,7 @@ namespace Rocket.Core.Permissions
         public IEnumerable<IPermissionGroup> GetGroups(IIdentifiable target)
         {
             GuardLoaded();
-            GuardPermissible(target);
+            GuardTarget(target);
 
             IConfigurationSection groupsSection = GetGroupsSection(target);
             string[] groups = groupsSection.Get(new string[0]);
@@ -178,7 +177,7 @@ namespace Rocket.Core.Permissions
         public void UpdateGroup(IPermissionGroup group)
         {
             GuardLoaded();
-            GuardPermissible(group);
+            GuardTarget(group);
 
             if (GetGroup(group.Id) == null)
                 throw new Exception("Can't update group that does not exist: " + group.Id);
@@ -197,8 +196,8 @@ namespace Rocket.Core.Permissions
         public bool AddGroup(IIdentifiable target, IPermissionGroup group)
         {
             GuardLoaded();
-            GuardPermissible(target);
-            GuardPermissible(group);
+            GuardTarget(target);
+            GuardTarget(group);
 
             IConfigurationSection groupsSection = GetGroupsSection(target);
             List<string> groups = groupsSection.Get(new string[0]).ToList();
@@ -211,8 +210,8 @@ namespace Rocket.Core.Permissions
         public bool RemoveGroup(IIdentifiable target, IPermissionGroup group)
         {
             GuardLoaded();
-            GuardPermissible(target);
-            GuardPermissible(group);
+            GuardTarget(target);
+            GuardTarget(group);
 
             IConfigurationSection groupsSection = GetGroupsSection(target);
             List<string> groups = groupsSection.Get(new string[0]).ToList();
@@ -224,7 +223,7 @@ namespace Rocket.Core.Permissions
         public bool CreateGroup(IPermissionGroup group)
         {
             GuardLoaded();
-            GuardPermissible(group);
+            GuardTarget(group);
 
             IConfigurationSection section = GroupsConfig.CreateSection($"{group.Id}", SectionType.Object);
             section.CreateSection("Name", SectionType.Value).Set(group.Name);
@@ -235,7 +234,7 @@ namespace Rocket.Core.Permissions
         public bool DeleteGroup(IPermissionGroup group)
         {
             GuardLoaded();
-            GuardPermissible(group);
+            GuardTarget(group);
 
             return GroupsConfig.RemoveSection($"{group.Id}");
         }
@@ -266,7 +265,7 @@ namespace Rocket.Core.Permissions
         public bool AddPermission(ICommandCaller caller, string permission)
         {
             GuardPermission(ref permission);
-            GuardPermissible(caller);
+            GuardTarget(caller);
 
             IConfigurationSection permsSection = GetConfigSection(caller)["Permissions"];
             List<string> groupPermissions = permsSection.Get(new string[0]).ToList();
@@ -337,7 +336,7 @@ namespace Rocket.Core.Permissions
 
         private IConfigurationSection GetConfigSection(IIdentifiable target)
         {
-            GuardPermissible(target);
+            GuardTarget(target);
 
             IConfigurationElement config = target is IPermissionGroup ? GroupsConfig : PlayersConfig;
 
@@ -374,10 +373,10 @@ namespace Rocket.Core.Permissions
                 throw new Exception("Players config has not been loaded");
         }
 
-        private void GuardPermissible(IIdentifiable permissible)
+        private void GuardTarget(IIdentifiable target)
         {
-            if (!SupportsPermissible(permissible))
-                throw new NotSupportedException(permissible.GetType().FullName + " is not supported!");
+            if (!SupportsTarget(target))
+                throw new NotSupportedException(target.GetType().FullName + " is not supported!");
         }
 
         public void LoadFromConfig(IConfiguration groupsConfig, IConfiguration playersConfig)

@@ -9,23 +9,23 @@ namespace Rocket.Core.Permissions
 {
     public class ConsolePermissionProvider : IPermissionProvider
     {
-        public bool SupportsPermissible(IIdentifiable target) => target is IConsoleCommandCaller;
+        public bool SupportsTarget(IIdentifiable target) => target is IConsoleCommandCaller;
 
         public PermissionResult CheckPermission(IIdentifiable target, string permission)
         {
-            GuardPermissible(target);
+            GuardTarget(target);
             return PermissionResult.Grant;
         }
 
         public PermissionResult CheckHasAllPermissions(IIdentifiable target, params string[] permissions)
         {
-            GuardPermissible(target);
+            GuardTarget(target);
             return PermissionResult.Grant;
         }
 
         public PermissionResult CheckHasAnyPermission(IIdentifiable target, params string[] permissions)
         {
-            GuardPermissible(target);
+            GuardTarget(target);
             return PermissionResult.Grant;
         }
 
@@ -70,9 +70,9 @@ namespace Rocket.Core.Permissions
             // do nothing
         }
 
-        private void GuardPermissible(IIdentifiable target)
+        private void GuardTarget(IIdentifiable target)
         {
-            if (!SupportsPermissible(target))
+            if (!SupportsTarget(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");
         }
     }
