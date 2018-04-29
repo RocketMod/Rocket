@@ -72,7 +72,6 @@
     <Compile Include="I18N\ITranslatable.cs" />
     <Compile Include="IEnvironmentContext.cs" />
     <Compile Include="Permissions\IIdentifiable.cs" />
-    <Compile Include="Permissions\IPermissible.cs" />
     <Compile Include="Permissions\PermissionResult.cs" />
     <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />

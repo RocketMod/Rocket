@@ -23,10 +23,10 @@ namespace Rocket.Core.Permissions
         public IConfiguration GroupsConfig { get; protected set; }
         public IConfiguration PlayersConfig { get; protected set; }
 
-        public bool SupportsPermissible(IPermissible permissible)
-            => permissible is IPermissionGroup || permissible is ICommandCaller;
+        public bool SupportsPermissible(IIdentifiable target)
+            => target is IPermissionGroup || target is ICommandCaller;
 
-        public PermissionResult CheckPermission(IPermissible target, string permission)
+        public PermissionResult CheckPermission(IIdentifiable target, string permission)
         {
             GuardLoaded();
             GuardPermission(ref permission);
@@ -58,7 +58,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAllPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAllPermissions(IIdentifiable target, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
@@ -79,7 +79,7 @@ namespace Rocket.Core.Permissions
             return result;
         }
 
-        public PermissionResult CheckHasAnyPermission(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAnyPermission(IIdentifiable target, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
@@ -98,7 +98,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public bool AddPermission(IPermissible target, string permission)
+        public bool AddPermission(IIdentifiable target, string permission)
         {
             GuardPermission(ref permission);
             GuardPermissible(target);
@@ -110,7 +110,7 @@ namespace Rocket.Core.Permissions
             return true;
         }
 
-        public bool AddDeniedPermission(IPermissible target, string permission)
+        public bool AddDeniedPermission(IIdentifiable target, string permission)
         {
             GuardPermission(ref permission);
             GuardPermissible(target);
@@ -118,7 +118,7 @@ namespace Rocket.Core.Permissions
             return AddPermission(target, "!" + permission);
         }
 
-        public bool RemovePermission(IPermissible target, string permission)
+        public bool RemovePermission(IIdentifiable target, string permission)
         {
             GuardPermission(ref permission);
             IConfigurationSection permsSection = GetConfigSection(target)["Permissions"];
@@ -128,7 +128,7 @@ namespace Rocket.Core.Permissions
             return i > 0;
         }
 
-        public bool RemoveDeniedPermission(IPermissible target, string permission)
+        public bool RemoveDeniedPermission(IIdentifiable target, string permission)
         {
             GuardPermission(ref permission);
             GuardPermissible(target);
@@ -142,7 +142,7 @@ namespace Rocket.Core.Permissions
             return GetGroups(caller).OrderByDescending(c => c.Priority).FirstOrDefault();
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups(IPermissible target)
+        public IEnumerable<IPermissionGroup> GetGroups(IIdentifiable target)
         {
             GuardLoaded();
             GuardPermissible(target);
@@ -194,7 +194,7 @@ namespace Rocket.Core.Permissions
             section["Priority"].Set(group.Priority);
         }
 
-        public bool AddGroup(IPermissible target, IPermissionGroup group)
+        public bool AddGroup(IIdentifiable target, IPermissionGroup group)
         {
             GuardLoaded();
             GuardPermissible(target);
@@ -208,7 +208,7 @@ namespace Rocket.Core.Permissions
             return true;
         }
 
-        public bool RemoveGroup(IPermissible target, IPermissionGroup group)
+        public bool RemoveGroup(IIdentifiable target, IPermissionGroup group)
         {
             GuardLoaded();
             GuardPermissible(target);
@@ -335,7 +335,7 @@ namespace Rocket.Core.Permissions
             }
         }
 
-        private IConfigurationSection GetConfigSection(IPermissible target)
+        private IConfigurationSection GetConfigSection(IIdentifiable target)
         {
             GuardPermissible(target);
 
@@ -362,7 +362,7 @@ namespace Rocket.Core.Permissions
             return config[basePath];
         }
 
-        private IConfigurationSection GetGroupsSection(IPermissible target)
+        private IConfigurationSection GetGroupsSection(IIdentifiable target)
             => GetConfigSection(target)[target is IPermissionGroup ? "ParentGroups" : "Groups"];
 
         private void GuardLoaded()
@@ -374,7 +374,7 @@ namespace Rocket.Core.Permissions
                 throw new Exception("Players config has not been loaded");
         }
 
-        private void GuardPermissible(IPermissible permissible)
+        private void GuardPermissible(IIdentifiable permissible)
         {
             if (!SupportsPermissible(permissible))
                 throw new NotSupportedException(permissible.GetType().FullName + " is not supported!");

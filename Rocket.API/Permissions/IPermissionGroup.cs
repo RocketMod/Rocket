@@ -3,7 +3,7 @@
     /// <summary>
     ///     A permission group contains a collection of permissions.
     /// </summary>
-    public interface IPermissionGroup : IPermissible
+    public interface IPermissionGroup : IIdentifiable
     {
         /// <summary>
         ///     The priority of this group.

@@ -3,7 +3,7 @@ using Rocket.API.Permissions;
 
 namespace Rocket.API.Player
 {
-    public interface IPlayer : IPermissible
+    public interface IPlayer : IIdentifiable
     {
         bool IsOnline { get; }
 

@@ -66,9 +66,10 @@ namespace Rocket.Tests.Eventing
 
         private void EmitTestEvent(IEventManager manager, TestEvent @event)
         {
-            manager.Emit(GetEmitter(), @event);
+            bool finished = false;
+            manager.Emit(GetEmitter(), @event, e => finished = true);
 
-            while (!manager.HasFinished(@event))
+            while (!finished)
                 ;
         }
 

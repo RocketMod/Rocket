@@ -9,47 +9,47 @@ namespace Rocket.Core.Permissions
 {
     public class ConsolePermissionProvider : IPermissionProvider
     {
-        public bool SupportsPermissible(IPermissible permissible) => permissible is IConsoleCommandCaller;
+        public bool SupportsPermissible(IIdentifiable target) => target is IConsoleCommandCaller;
 
-        public PermissionResult CheckPermission(IPermissible target, string permission)
+        public PermissionResult CheckPermission(IIdentifiable target, string permission)
         {
             GuardPermissible(target);
             return PermissionResult.Grant;
         }
 
-        public PermissionResult CheckHasAllPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAllPermissions(IIdentifiable target, params string[] permissions)
         {
             GuardPermissible(target);
             return PermissionResult.Grant;
         }
 
-        public PermissionResult CheckHasAnyPermission(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAnyPermission(IIdentifiable target, params string[] permissions)
         {
             GuardPermissible(target);
             return PermissionResult.Grant;
         }
 
-        public bool AddPermission(IPermissible target, string permission) => false;
+        public bool AddPermission(IIdentifiable target, string permission) => false;
 
-        public bool AddDeniedPermission(IPermissible target, string permission) => false;
+        public bool AddDeniedPermission(IIdentifiable target, string permission) => false;
 
-        public bool RemovePermission(IPermissible target, string permission) => false;
+        public bool RemovePermission(IIdentifiable target, string permission) => false;
 
-        public bool RemoveDeniedPermission(IPermissible target, string permission) => false;
+        public bool RemoveDeniedPermission(IIdentifiable target, string permission) => false;
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller) => null;
 
         public IPermissionGroup GetGroup(string id) => null;
 
-        public IEnumerable<IPermissionGroup> GetGroups(IPermissible caller) => new IPermissionGroup[0];
+        public IEnumerable<IPermissionGroup> GetGroups(IIdentifiable caller) => new IPermissionGroup[0];
 
         public IEnumerable<IPermissionGroup> GetGroups() => new IPermissionGroup[0];
 
         public void UpdateGroup(IPermissionGroup group) { }
 
-        public bool AddGroup(IPermissible target, IPermissionGroup group) => false;
+        public bool AddGroup(IIdentifiable target, IPermissionGroup group) => false;
 
-        public bool RemoveGroup(IPermissible caller, IPermissionGroup group) => false;
+        public bool RemoveGroup(IIdentifiable caller, IPermissionGroup group) => false;
 
         public bool CreateGroup(IPermissionGroup group) => false;
 
@@ -70,7 +70,7 @@ namespace Rocket.Core.Permissions
             // do nothing
         }
 
-        private void GuardPermissible(IPermissible target)
+        private void GuardPermissible(IIdentifiable target)
         {
             if (!SupportsPermissible(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");

@@ -6,7 +6,7 @@ namespace Rocket.API.Commands
     /// <summary>
     ///     A command caller can execute commands.
     /// </summary>
-    public interface ICommandCaller : IPermissible
+    public interface ICommandCaller : IIdentifiable
     {
         /// <summary>
         ///     The type of the command caller. Wrappers should declare their parents, everything else should declare itself.<br />

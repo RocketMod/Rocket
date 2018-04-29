@@ -43,7 +43,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length != 3)
                 throw new CommandWrongUsageException();
 
-            IPermissible target;
+            IIdentifiable target;
             string permission;
             string permissionFailMessage;
 
@@ -87,7 +87,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
 
         protected abstract void UpdatePermission(ICommandCaller caller, IPermissionProvider permissions,
-                                                 IPermissible target, string permissionToUpdate);
+                                                 IIdentifiable target, string permissionToUpdate);
     }
 
     public class PermissionSubCommandAdd : PermissionSubCommandUpdate
@@ -98,7 +98,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] {"a", "+"};
 
         protected override void UpdatePermission(ICommandCaller caller, IPermissionProvider permissions,
-                                                 IPermissible target, string permissionToUpdate)
+                                                 IIdentifiable target, string permissionToUpdate)
         {
             if (permissions.AddPermission(target, permissionToUpdate))
                 caller.SendMessage($"Successfully added \"{permissionToUpdate}\" to \"{target.Name}\"!",
@@ -116,7 +116,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] {"r", "-"};
 
         protected override void UpdatePermission(ICommandCaller caller, IPermissionProvider permissions,
-                                                 IPermissible target, string permissionToUpdate)
+                                                 IIdentifiable target, string permissionToUpdate)
         {
             if (permissions.RemovePermission(target, permissionToUpdate))
                 caller.SendMessage($"Successfully removed \"{permissionToUpdate}\" from \"{target.Name}\"!",

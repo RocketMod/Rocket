@@ -3,7 +3,7 @@
 namespace Rocket.API.Permissions
 {
     /// <summary>
-    ///     Defines an identifieable object.
+    ///     Defines an identifiable object.
     /// </summary>
     public interface IIdentifiable : IComparable, IComparable<IIdentifiable>, IEquatable<IIdentifiable>,
         IComparable<string>, IEquatable<string>
@@ -12,5 +12,10 @@ namespace Rocket.API.Permissions
         ///     The ID of the object.
         /// </summary>
         string Id { get; }
+
+        /// <summary>
+        ///     The name of the object.
+        /// </summary>
+        string Name { get; }
     }
 }

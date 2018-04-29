@@ -15,12 +15,12 @@ namespace Rocket.Core.Permissions
     {
         public ProxyPermissionProvider(IDependencyContainer container) : base(container) { }
 
-        public bool SupportsPermissible(IPermissible target)
+        public bool SupportsPermissible(IIdentifiable target)
         {
             return ProxiedServices.Any(c => c.SupportsPermissible(target));
         }
 
-        public PermissionResult CheckPermission(IPermissible target, string permission)
+        public PermissionResult CheckPermission(IIdentifiable target, string permission)
         {
             GuardPermissible(target);
 
@@ -36,7 +36,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAllPermissions(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAllPermissions(IIdentifiable target, params string[] permissions)
         {
             GuardPermissible(target);
 
@@ -52,7 +52,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAnyPermission(IPermissible target, params string[] permissions)
+        public PermissionResult CheckHasAnyPermission(IIdentifiable target, params string[] permissions)
         {
             GuardPermissible(target);
 
@@ -68,16 +68,16 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public bool AddPermission(IPermissible target, string permission)
+        public bool AddPermission(IIdentifiable target, string permission)
             => throw new NotSupportedException("Adding permissions from proxy is not supported.");
 
-        public bool AddDeniedPermission(IPermissible target, string permission)
+        public bool AddDeniedPermission(IIdentifiable target, string permission)
             => throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
 
-        public bool RemovePermission(IPermissible target, string permission)
+        public bool RemovePermission(IIdentifiable target, string permission)
             => throw new NotSupportedException("Removing permissions from proxy is not supported.");
 
-        public bool RemoveDeniedPermission(IPermissible target, string permission)
+        public bool RemoveDeniedPermission(IIdentifiable target, string permission)
             => throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
 
         public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
@@ -95,7 +95,7 @@ namespace Rocket.Core.Permissions
             return GetGroups().FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups(IPermissible target)
+        public IEnumerable<IPermissionGroup> GetGroups(IIdentifiable target)
         {
             return ProxiedServices.Where(c => c.SupportsPermissible(target))
                                   .SelectMany(c => c.GetGroups(target));
@@ -111,10 +111,10 @@ namespace Rocket.Core.Permissions
             throw new NotSupportedException("Updating groups from proxy is not supported.");
         }
 
-        public bool AddGroup(IPermissible target, IPermissionGroup group)
+        public bool AddGroup(IIdentifiable target, IPermissionGroup group)
             => throw new NotSupportedException("Adding groups from proxy is not supported.");
 
-        public bool RemoveGroup(IPermissible target, IPermissionGroup group)
+        public bool RemoveGroup(IIdentifiable target, IPermissionGroup group)
             => throw new NotSupportedException("Removing groups from proxy is not supported.");
 
         public bool CreateGroup(IPermissionGroup group)
@@ -138,7 +138,7 @@ namespace Rocket.Core.Permissions
             ProxiedServices.ForEach(c => c.Save());
         }
 
-        private void GuardPermissible(IPermissible target)
+        private void GuardPermissible(IIdentifiable target)
         {
             if (!SupportsPermissible(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");
