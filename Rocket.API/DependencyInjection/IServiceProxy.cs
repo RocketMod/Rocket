@@ -25,10 +25,10 @@ namespace Rocket.API.DependencyInjection
     ///     A service proxy allows to have multiple implementations for the same service. For example,
     ///     we can have multiple implementations for <i>IPermissionProvider</i>. The proxy allows to do this:
     ///     <code>
-    ///         bool hasPermission = container.Get&lt;IPermissionProvider&gt;().CheckPermission(player, "mypermission") == PermissionResult.Grant;
+    ///         bool hasPermission = container.Resolve&lt;IPermissionProvider&gt;().CheckPermission(player, "mypermission") == PermissionResult.Grant;
     ///     </code>
     ///     It looks like the code is only calling one permission provider, but in reality it is calling the the proxy which is calling all of the registered permission providers.<br/>
-    ///     This allows us to avoid having issues with load order of providers and prevents to do always foreach with container.GetAll&lt;&gt;. 
+    ///     This allows us to avoid having issues with load order of providers and prevents to do always foreach with container.ResolveAll&lt;&gt;. 
     /// </remarks>
     public interface IServiceProxy { }
 }

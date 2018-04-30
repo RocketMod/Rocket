@@ -54,7 +54,7 @@ namespace Rocket.Core.Commands
 
             string[] perms = tmp.ToArray();
 
-            IPermissionProvider provider = container.Get<IPermissionProvider>();
+            IPermissionProvider provider = container.Resolve<IPermissionProvider>();
             if (provider.CheckHasAnyPermission(caller, perms) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(caller, perms);
 
@@ -82,7 +82,7 @@ namespace Rocket.Core.Commands
         {
             GuardCaller(context.Caller);
 
-            IEnumerable<ICommand> commands = container.Get<ICommandProvider>().Commands;
+            IEnumerable<ICommand> commands = container.Resolve<ICommandProvider>().Commands;
             return commands
                    .Where(c => c.SupportsCaller(context.Caller.GetType()))
                    .FirstOrDefault(c => Equals(c, context.CommandAlias));

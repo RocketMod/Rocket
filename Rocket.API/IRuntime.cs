@@ -10,7 +10,7 @@ namespace Rocket.API
     public interface IRuntime : IEventEmitter, IConfigurationContext
     {
         /// <summary>
-        ///     The base Ioc container.
+        ///     The base dependency container.
         /// </summary>
         IDependencyContainer Container { get; }
     }

@@ -46,7 +46,7 @@ namespace Rocket.Core.Commands.RocketCommands
             string groupName = context.Parameters.Get<string>(1);
 
             string permission = "Rocket.Permissions.ManageGroups." + groupName;
-            IPermissionProvider permissions = context.Container.Get<IPermissionProvider>("default_permissions");
+            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
 
             if (permissions.CheckPermission(context.Caller, permission) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(context.Caller, permission,

@@ -30,7 +30,7 @@ namespace Rocket.Tests.Mock.Providers
         public void Init(IRuntime runtime)
         {
             logger.LogInformation("Loading implementation");
-            runtime.Container.Get<IPluginManager>().Init();
+            runtime.Container.Resolve<IPluginManager>().Init();
         }
 
         public void Reload()

@@ -13,7 +13,7 @@ namespace Rocket.Core.DependencyInjection
 
         public IDependencyContainer UnityContainer { get; set; }
 
-        public object GetService(Type serviceType) => UnityContainer.Get(serviceType);
+        public object GetService(Type serviceType) => UnityContainer.Resolve(serviceType);
 
         public bool OnComponentChanging() => throw new NotImplementedException();
 

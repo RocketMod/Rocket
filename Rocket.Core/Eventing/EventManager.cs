@@ -195,7 +195,7 @@ namespace Rocket.Core.Eventing
             if (@event == null)
                 throw new ArgumentNullException(nameof(@event));
 
-            container.TryGet(null, out ILogger logger);
+            container.TryResolve(null, out ILogger logger);
             logger?.LogDebug("Emitting event: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
 
             inProgress.Add(@event);
@@ -238,7 +238,7 @@ namespace Rocket.Core.Eventing
                 return;
             }
 
-            container.TryGet(null, out ITaskScheduler scheduler);
+            container.TryResolve(null, out ITaskScheduler scheduler);
             if (scheduler == null && @event.ExecutionTarget != EventExecutionTargetContext.Sync)
             {
                 FinishEvent();

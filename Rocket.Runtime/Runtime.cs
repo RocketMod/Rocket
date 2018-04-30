@@ -18,11 +18,11 @@ namespace Rocket
             Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
 
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
-            Container.Get<ILogger>()
+            Container.Resolve<ILogger>()
                      .LogInformation("Initializing RocketMod " + versionInfo.FileVersion, ConsoleColor.DarkGreen);
 
             Container.Activate(typeof(RegistrationByConvention));
-            Container.Get<IImplementation>().Init(this);
+            Container.Resolve<IImplementation>().Init(this);
         }
 
         public IDependencyResolver Resolver { get; private set; }

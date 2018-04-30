@@ -111,7 +111,7 @@ namespace Rocket.Core.Plugins
             if (@event.IsCancelled)
                 return;
 
-            IEnumerable<IPlugin> plugins = container.GetAll<IPlugin>();
+            IEnumerable<IPlugin> plugins = container.ResolveAll<IPlugin>();
             foreach (IPlugin plugin in plugins)
             {
                 Assembly asm = plugin.GetType().Assembly;
@@ -138,12 +138,12 @@ namespace Rocket.Core.Plugins
 
         public virtual IPlugin GetPlugin(string name)
         {
-            IPlugin pl = container.Get<IPlugin>(name);
+            IPlugin pl = container.Resolve<IPlugin>(name);
             if (pl != null)
                 return pl;
 
             //name may also be path or file name
-            foreach (IPlugin plugin in container.GetAll<IPlugin>())
+            foreach (IPlugin plugin in container.ResolveAll<IPlugin>())
             {
                 Type type = plugin.GetType();
                 string location = GetAssemblyLocationSafe(type.Assembly);
@@ -194,7 +194,7 @@ namespace Rocket.Core.Plugins
             return !plugin.IsAlive;
         }
 
-        public IEnumerable<IPlugin> Plugins => container.GetAll<IPlugin>();
+        public IEnumerable<IPlugin> Plugins => container.ResolveAll<IPlugin>();
 
         public virtual void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
         {
@@ -339,7 +339,7 @@ namespace Rocket.Core.Plugins
 
         ~PluginManager()
         {
-            IEnumerable<IPlugin> plugins = container.GetAll<IPlugin>();
+            IEnumerable<IPlugin> plugins = container.ResolveAll<IPlugin>();
             foreach (IPlugin plugin in plugins) plugin.Deactivate();
         }
     }

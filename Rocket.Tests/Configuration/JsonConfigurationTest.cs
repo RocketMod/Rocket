@@ -30,6 +30,6 @@ namespace Rocket.Tests.Configuration
             AssertSaveException(config);
         }
 
-        protected override IConfiguration GetConfig() => Runtime.Container.Get<IConfiguration>("json");
+        protected override IConfiguration GetConfig() => Runtime.Container.Resolve<IConfiguration>("json");
     }
 }

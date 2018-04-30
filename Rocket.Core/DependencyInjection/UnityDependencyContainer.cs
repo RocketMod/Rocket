@@ -31,7 +31,7 @@ namespace Rocket.Core.DependencyInjection
         {
             get
             {
-                TryGet(null, out ILogger log);
+                TryResolve(null, out ILogger log);
                 return log;
             }
         }
@@ -144,7 +144,7 @@ namespace Rocket.Core.DependencyInjection
                 {
                     Type parameterType = parameterInfo.ParameterType;
                     if (!container.IsRegistered(parameterType)) return null;
-                    objectList.Add(Get(parameterType));
+                    objectList.Add(Resolve(parameterType));
                 }
 
                 return constructor.Invoke(objectList.ToArray());
@@ -161,7 +161,7 @@ namespace Rocket.Core.DependencyInjection
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
-        public T Get<T>(string mappingName = null)
+        public T Resolve<T>(string mappingName = null)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogDebug("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
@@ -176,7 +176,7 @@ namespace Rocket.Core.DependencyInjection
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
-        public T Get<T>(string mappingName, params object[] parameters)
+        public T Resolve<T>(string mappingName, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogDebug("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
@@ -191,7 +191,7 @@ namespace Rocket.Core.DependencyInjection
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
-        public object Get(Type serviceType, string mappingName = null)
+        public object Resolve(Type serviceType, string mappingName = null)
         {
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
                 Logger?.LogDebug("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
@@ -206,7 +206,7 @@ namespace Rocket.Core.DependencyInjection
         ///     Thrown when no instance is resolved for the requested Type and
         ///     Mapping.
         /// </exception>
-        public object Get(Type serviceType, string mappingName, params object[] parameters)
+        public object Resolve(Type serviceType, string mappingName, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
                 Logger?.LogDebug("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
@@ -218,7 +218,7 @@ namespace Rocket.Core.DependencyInjection
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
-        public IEnumerable<T> GetAll<T>()
+        public IEnumerable<T> ResolveAll<T>()
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogDebug("Trying to resolve all: <" + typeof(T).Name + ">");
@@ -232,7 +232,7 @@ namespace Rocket.Core.DependencyInjection
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
-        public IEnumerable<T> GetAll<T>(params object[] parameters)
+        public IEnumerable<T> ResolveAll<T>(params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogDebug("Trying to resolve all: <" + typeof(T).Name + ">");
@@ -246,7 +246,7 @@ namespace Rocket.Core.DependencyInjection
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
-        public IEnumerable<object> GetAll(Type type)
+        public IEnumerable<object> ResolveAll(Type type)
         {
             if (!typeof(ILogger).IsAssignableFrom(type))
                 Logger?.LogDebug("Trying to resolve all: <" + type.Name + ">");
@@ -260,7 +260,7 @@ namespace Rocket.Core.DependencyInjection
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
-        public IEnumerable<object> GetAll(Type type, params object[] parameters)
+        public IEnumerable<object> ResolveAll(Type type, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(type))
                 Logger?.LogDebug("Trying to resolve all: <" + type.Name + ">");
@@ -275,13 +275,13 @@ namespace Rocket.Core.DependencyInjection
 
         #endregion
 
-        #region TryGet Methods
+        #region TryResolve Methods
 
         /// <returns>
         ///     <value>true</value>
         ///     when an instance is resolved.
         /// </returns>
-        public bool TryGet<T>(string mappingName, out T output)
+        public bool TryResolve<T>(string mappingName, out T output)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogDebug("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
@@ -302,7 +302,7 @@ namespace Rocket.Core.DependencyInjection
         ///     <value>true</value>
         ///     when an instance is resolved.
         /// </returns>
-        public bool TryGet<T>(string mappingName, out T output, params object[] parameters)
+        public bool TryResolve<T>(string mappingName, out T output, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogDebug("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
@@ -323,7 +323,7 @@ namespace Rocket.Core.DependencyInjection
         ///     <value>true</value>
         ///     when an instance is resolved.
         /// </returns>
-        public bool TryGet(Type serviceType, string mappingName, out object output)
+        public bool TryResolve(Type serviceType, string mappingName, out object output)
         {
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
                 Logger?.LogDebug("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
@@ -347,7 +347,7 @@ namespace Rocket.Core.DependencyInjection
         ///     <value>true</value>
         ///     when an instance is resolved.
         /// </returns>
-        public bool TryGet(Type serviceType, string mappingName, out object output, params object[] parameters)
+        public bool TryResolve(Type serviceType, string mappingName, out object output, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
                 Logger?.LogDebug("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);

@@ -22,14 +22,14 @@ namespace Rocket.Core.Plugins
         }
 
         protected IDependencyContainer Container { get; }
-        protected IEventManager EventManager => Container.Get<IEventManager>();
-        protected ILogger Logger => Container.Get<ILogger>();
+        protected IEventManager EventManager => Container.Resolve<IEventManager>();
+        protected ILogger Logger => Container.Resolve<ILogger>();
 
-        protected IPluginManager PluginManager => Container.Get<IPluginManager>();
+        protected IPluginManager PluginManager => Container.Resolve<IPluginManager>();
 
-        protected IRuntime Runtime => Container.Get<IRuntime>();
+        protected IRuntime Runtime => Container.Resolve<IRuntime>();
 
-        protected IImplementation Implementation => Container.Get<IImplementation>();
+        protected IImplementation Implementation => Container.Resolve<IImplementation>();
         public IConfiguration Configuration { get; protected set; }
 
         public virtual object DefaultConfiguration
@@ -101,7 +101,7 @@ namespace Rocket.Core.Plugins
 
             if (DefaultConfiguration != null)
             {
-                Configuration = Container.Get<IConfiguration>();
+                Configuration = Container.Resolve<IConfiguration>();
                 Configuration.Load(new ConfigurationContext
                 {
                     WorkingDirectory = WorkingDirectory,
@@ -111,7 +111,7 @@ namespace Rocket.Core.Plugins
 
             if (DefaultTranslations != null)
             {
-                Translations = Container.Get<ITranslationLocator>();
+                Translations = Container.Resolve<ITranslationLocator>();
                 Translations.Load(new ConfigurationContext
                 {
                     WorkingDirectory = WorkingDirectory,

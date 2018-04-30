@@ -20,7 +20,7 @@ namespace Rocket.Core.Player
                                            CultureInfo culture, object value)
         {
             if (value is string nameOrId && context is UnityDescriptorContext ctx)
-                return ctx.UnityContainer.Get<IPlayerManager>().GetOnlinePlayer(nameOrId);
+                return ctx.UnityContainer.Resolve<IPlayerManager>().GetOnlinePlayer(nameOrId);
 
             return base.ConvertFrom(context, culture, value);
         }

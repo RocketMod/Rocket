@@ -11,7 +11,7 @@ namespace Rocket.Tests.Plugins
         [TestMethod]
         public void PluginImplementation()
         {
-            IPluginManager pluginManager = Runtime.Container.Get<IPluginManager>();
+            IPluginManager pluginManager = Runtime.Container.Resolve<IPluginManager>();
             TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
 

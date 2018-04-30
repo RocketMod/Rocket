@@ -97,7 +97,7 @@ namespace Rocket.ConsoleImplementation
             if (!task.Owner.IsAlive)
                 return;
 
-            IEventManager eventManager = container.Get<IEventManager>();
+            IEventManager eventManager = container.Resolve<IEventManager>();
 
             eventManager?.Emit(owner, e, @event =>
             {

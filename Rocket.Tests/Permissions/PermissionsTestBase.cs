@@ -80,7 +80,7 @@ namespace Rocket.Tests.Permissions
             TestPlayer = new TestPlayer(Runtime.Container);
         }
 
-        public virtual IConfiguration GetConfigurationProvider() => Runtime.Container.Get<IConfiguration>();
+        public virtual IConfiguration GetConfigurationProvider() => Runtime.Container.Resolve<IConfiguration>();
 
         [TestMethod]
         public virtual void TestUpdateGroup()

@@ -7,7 +7,7 @@ namespace Rocket.Tests.Configuration
     [TestClass]
     public class XmlConfigurationTests : ConfigurationTestBase
     {
-        protected override IConfiguration GetConfig() => Runtime.Container.Get<IConfiguration>("xml");
+        protected override IConfiguration GetConfig() => Runtime.Container.Resolve<IConfiguration>("xml");
 
         [TestMethod]
         public void TestXmlLoading()

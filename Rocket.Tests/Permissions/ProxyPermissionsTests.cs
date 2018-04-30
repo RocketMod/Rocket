@@ -9,7 +9,7 @@ namespace Rocket.Tests.Permissions
     public class ProxyPermissionsTests : PermissionsTestBase
     {
         protected override IPermissionProvider GetPermissionProvider()
-            => Runtime.Container.Get<IPermissionProvider>("proxy_permissions");
+            => Runtime.Container.Resolve<IPermissionProvider>("proxy_permissions");
         
         protected override IPermissionProvider LoadProvider()
         {

@@ -36,10 +36,10 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public void Execute(ICommandContext context)
         {
-            IPermissionProvider permissions = context.Container.Get<IPermissionProvider>();
+            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
             permissions.Reload();
 
-            foreach (IPlugin plugin in context.Container.Get<IPluginManager>()) plugin.Reload();
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginManager>()) plugin.Reload();
 
             context.Caller.SendMessage("Reload completed.", ConsoleColor.DarkGreen);
         }

@@ -45,7 +45,7 @@ namespace Rocket.API.DependencyInjection
         /// <param name="mappingName">The mapping name.</param>
         /// <returns>the primary service instance implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
         /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
-        T Get<T>(string mappingName = null);
+        T Resolve<T>(string mappingName = null);
 
         /// <summary>
         ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
@@ -54,7 +54,7 @@ namespace Rocket.API.DependencyInjection
         /// <param name="mappingName">The mapping name.</param>
         /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
         /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
-        object Get(Type serviceType, string mappingName = null);
+        object Resolve(Type serviceType, string mappingName = null);
 
         /// <summary>
         ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
@@ -64,7 +64,7 @@ namespace Rocket.API.DependencyInjection
         /// <param name="parameters">The service parameters.</param>
         /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
         /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
-        T Get<T>(string mappingName, params object[] parameters);
+        T Resolve<T>(string mappingName, params object[] parameters);
 
         /// <summary>
         ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
@@ -74,21 +74,21 @@ namespace Rocket.API.DependencyInjection
         /// <param name="parameters">The service parameters.</param>
         /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
         /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
-        object Get(Type serviceType, string mappingName, params object[] parameters);
+        object Resolve(Type serviceType, string mappingName, params object[] parameters);
 
         /// <summary>
         ///     Gets all implementation instances for the given service.
         /// </summary>
         /// <typeparam name="T">The service to get the implementation instances of.</typeparam>
         /// <returns>all implementation instances for the given service.</returns>
-        IEnumerable<T> GetAll<T>();
+        IEnumerable<T> ResolveAll<T>();
 
         /// <summary>
         ///     Gets all implementation instances for the given service.
         /// </summary>
         /// <param name="type">The service to get the implementation instances of.</param>
         /// <returns>all implementation instances for the given service.</returns>
-        IEnumerable<object> GetAll(Type type);
+        IEnumerable<object> ResolveAll(Type type);
 
         /// <summary>
         ///     Gets all implementation instances for the given service.
@@ -96,7 +96,7 @@ namespace Rocket.API.DependencyInjection
         /// <typeparam name="T">The service to get the implementation instances of.</typeparam>
         /// <param name="parameters">The service parameters.</param>
         /// <returns>all implementation instances for the given service.</returns>
-        IEnumerable<T> GetAll<T>(params object[] parameters);
+        IEnumerable<T> ResolveAll<T>(params object[] parameters);
 
         /// <summary>
         ///     Gets all implementation instances for the given service.
@@ -104,7 +104,7 @@ namespace Rocket.API.DependencyInjection
         /// <param name="type">The service to get the implementation instances of.</param>
         /// <param name="parameters">The service parameters.</param>
         /// <returns>all implementation instances for the given service.</returns>
-        IEnumerable<object> GetAll(Type type, params object[] parameters);
+        IEnumerable<object> ResolveAll(Type type, params object[] parameters);
 
         /// <summary>
         ///     Tries to get the primary service implementation instance or the service proxy if one exists.
@@ -113,7 +113,7 @@ namespace Rocket.API.DependencyInjection
         /// <param name="mappingName">The mapping name.</param>
         /// <param name="serviceInstance">The service implementation instance if it was resolved; otherwise, <b>null</b>.</param>
         /// <returns><b>true</b> if the service was resolved; otherwise, <b>false</b>.</returns>
-        bool TryGet<T>(string mappingName, out T serviceInstance);
+        bool TryResolve<T>(string mappingName, out T serviceInstance);
 
         /// <summary>
         ///     Tries to get the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
@@ -122,7 +122,7 @@ namespace Rocket.API.DependencyInjection
         /// <param name="mappingName">The mapping name.</param>
         /// <param name="serviceInstance">The service implementation instance if it was resolved; otherwise, <b>null</b>.</param>
         /// <returns><b>true</b> if the service was resolved; otherwise, <b>false</b>.</returns>
-        bool TryGet(Type serviceType, string mappingName, out object serviceInstance);
+        bool TryResolve(Type serviceType, string mappingName, out object serviceInstance);
 
         /// <summary>
         ///     Tries to get the primary service implementation instance or the service proxy if one exists.
@@ -132,7 +132,7 @@ namespace Rocket.API.DependencyInjection
         /// <param name="serviceInstance">The service implementation instance if it was resolved; otherwise, <b>null</b>.</param>
         /// <param name="parameters">The service parameters.</param>
         /// <returns><b>true</b> if the service was resolved; otherwise, <b>false</b>.</returns>
-        bool TryGet<T>(string mappingName, out T serviceInstance, params object[] parameters);
+        bool TryResolve<T>(string mappingName, out T serviceInstance, params object[] parameters);
 
         /// <summary>
         ///     Tries to get the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
@@ -142,6 +142,6 @@ namespace Rocket.API.DependencyInjection
         /// <param name="serviceInstance">The service implementation instance if it was resolved; otherwise, <b>null</b>.</param>
         /// <param name="parameters">The service parameters.</param>
         /// <returns><b>true</b> if the service was resolved; otherwise, <b>false</b>.</returns>
-        bool TryGet(Type serviceType, string mappingName, out object serviceInstance, params object[] parameters);
+        bool TryResolve(Type serviceType, string mappingName, out object serviceInstance, params object[] parameters);
     }
 }

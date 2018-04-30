@@ -23,7 +23,7 @@ namespace Rocket.Core.Player
             string subFormat = subFormats.Length > 1 ? subFormats[1] : null;
 
             if (format.Equals("group", StringComparison.OrdinalIgnoreCase))
-                return Container.Get<IPermissionProvider>().GetPrimaryGroup(this).Name;
+                return Container.Resolve<IPermissionProvider>().GetPrimaryGroup(this).Name;
 
             if (!(this is ILivingEntity entity))
                 return base.ToString(format, formatProvider);

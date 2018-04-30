@@ -51,7 +51,7 @@ namespace Rocket.Core.Commands.RocketCommands
             string targetName = context.Parameters.Get<string>(1);
             string permissionToUpdate = context.Parameters.Get<string>(2);
 
-            IPermissionProvider permissions = context.Container.Get<IPermissionProvider>("default_permissions");
+            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
 
             switch (type)
             {
@@ -140,7 +140,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public void Execute(ICommandContext context)
         {
-            IPermissionProvider permissions = context.Container.Get<IPermissionProvider>();
+            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
             permissions.Reload();
             context.Caller.SendMessage("Permissions have been reloaded.", ConsoleColor.DarkGreen);
         }

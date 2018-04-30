@@ -6,6 +6,6 @@ namespace Rocket.Tests.Eventing
     [TestClass]
     public class DefaultEventingTests : EventingTestBase
     {
-        protected override IEventManager GetEventManager() => Runtime.Container.Get<IEventManager>();
+        protected override IEventManager GetEventManager() => Runtime.Container.Resolve<IEventManager>();
     }
 }
