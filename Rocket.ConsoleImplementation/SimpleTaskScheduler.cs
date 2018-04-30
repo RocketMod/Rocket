@@ -5,6 +5,7 @@ using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Scheduler;
+using Rocket.Core.Scheduler;
 
 namespace Rocket.ConsoleImplementation
 {
