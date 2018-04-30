@@ -52,5 +52,10 @@ namespace Rocket.API.Economy
         /// <param name="commandCaller">The caller to check</param>
         /// <returns><b>true</b> if the command caller is supported; otherwise, <b>false</b>.</returns>
         bool SupportsCaller(Type commandCaller);
+
+        /// <summary>
+        ///     The current currency name.
+        /// </summary>
+        string CurrencyName { get; }
     }
 }
