@@ -3,7 +3,10 @@ using Rocket.API.Commands;
 
 namespace Rocket.API.Economy
 {
-    public interface EconomyProvider
+    /// <summary>
+    ///     The service responsible for managing economy and currencies.
+    /// </summary>
+    public interface IEconomyProvider
     {
         /// <summary>
         ///     Get a command callers balance.
