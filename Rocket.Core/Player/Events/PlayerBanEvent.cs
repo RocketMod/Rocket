@@ -10,6 +10,7 @@ namespace Rocket.Core.Player.Events
         public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null,
                               TimeSpan? duration = null) : base(true)
         {
+            Player = player;
             Caller = caller;
             Reason = reason;
             Duration = duration;
@@ -18,6 +19,7 @@ namespace Rocket.Core.Player.Events
         public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null,
                               TimeSpan? duration = null, bool global = true) : base(global)
         {
+            Player = player;
             Caller = caller;
             Reason = reason;
             Duration = duration;
@@ -38,12 +40,14 @@ namespace Rocket.Core.Player.Events
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(name, executionTarget, global)
         {
+            Player = player;
             Caller = caller;
             Reason = reason;
             Duration = duration;
         }
 
         public TimeSpan? Duration { get; set; }
+        public IPlayer Player { get; }
         public ICommandCaller Caller { get; }
         public string Reason { get; set; }
 
