@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 
 namespace Rocket.Tests.Mock.Providers
 {

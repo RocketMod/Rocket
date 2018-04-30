@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Rocket.API.DependencyInjection;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Plugins
@@ -43,7 +43,7 @@ namespace Rocket.Core.Plugins
         }
 
         public bool LoadPlugin(string name)
-            => throw new NotSupportedException("Load plugins is not supported through proxy");
+            => throw new NotSupportedException("Activate plugins is not supported through proxy");
 
         public bool UnloadPlugin(string name)
             => throw new NotSupportedException("Unloading plugins is not supported through proxy");

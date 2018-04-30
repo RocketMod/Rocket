@@ -6,7 +6,7 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.I18N;
 using Rocket.API.Logging;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins
@@ -39,12 +39,12 @@ namespace Rocket.Core.Plugins
 
         public virtual string WorkingDirectory { get; set; }
 
-        public void Load()
+        public void Activate()
         {
             Load(false);
         }
 
-        public void Unload()
+        public void Deactivate()
         {
             if (EventManager != null)
             {
@@ -64,7 +64,7 @@ namespace Rocket.Core.Plugins
 
         public void Reload()
         {
-            Unload();
+            Deactivate();
             Configuration?.Reload();
             Translations?.Reload();
             Load(true);

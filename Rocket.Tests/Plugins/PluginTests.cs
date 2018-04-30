@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 using Rocket.Tests.Mock;
 
 namespace Rocket.Tests.Plugins

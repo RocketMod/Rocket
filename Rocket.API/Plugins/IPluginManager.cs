@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using Rocket.API.ServiceProxies;
 
-namespace Rocket.API.Plugin
+namespace Rocket.API.Plugins
 {
     public interface IPluginManager : IEnumerable<IPlugin>, IProxyableService
     {

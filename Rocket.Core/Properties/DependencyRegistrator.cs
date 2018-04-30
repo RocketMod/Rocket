@@ -4,7 +4,7 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.I18N;
 using Rocket.API.Permissions;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 using Rocket.Core.Commands;
 using Rocket.Core.Configuration.Json;
 using Rocket.Core.Configuration.Xml;

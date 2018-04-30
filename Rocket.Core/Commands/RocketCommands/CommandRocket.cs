@@ -1,7 +1,7 @@
 ﻿using System;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 
 namespace Rocket.Core.Commands.RocketCommands
 {

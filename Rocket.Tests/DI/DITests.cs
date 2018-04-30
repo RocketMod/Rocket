@@ -5,7 +5,7 @@ using Rocket.API.Configuration;
 using Rocket.API.Eventing;
 using Rocket.API.I18N;
 using Rocket.API.Permissions;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 
 namespace Rocket.Tests.DI
 {

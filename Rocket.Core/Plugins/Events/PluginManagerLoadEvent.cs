@@ -1,5 +1,5 @@
 ﻿using Rocket.API.Eventing;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 
 namespace Rocket.Core.Plugins.Events
 {

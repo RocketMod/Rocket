@@ -9,7 +9,7 @@ using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
-using Rocket.API.Plugin;
+using Rocket.API.Plugins;
 using Rocket.Core.Commands;
 using Rocket.Core.Extensions;
 using Rocket.Core.Plugins.Events;
@@ -132,7 +132,7 @@ namespace Rocket.Core.Plugins
                         }
                     }
 
-                plugin.Load();
+                plugin.Activate();
             }
         }
 
@@ -165,7 +165,7 @@ namespace Rocket.Core.Plugins
             IPlugin plugin = GetPlugin(name);
             if (plugin != null && !plugin.IsAlive)
             {
-                plugin.Load();
+                plugin.Activate();
                 return plugin.IsAlive;
             }
 
@@ -177,7 +177,7 @@ namespace Rocket.Core.Plugins
                     return false;
 
                 if (!plugin.IsAlive)
-                    plugin.Load();
+                    plugin.Activate();
                 return true;
             }
 
@@ -190,7 +190,7 @@ namespace Rocket.Core.Plugins
             if (plugin == null || !plugin.IsAlive)
                 return false;
 
-            plugin.Unload();
+            plugin.Deactivate();
             return !plugin.IsAlive;
         }
 
@@ -339,7 +339,7 @@ namespace Rocket.Core.Plugins
         ~PluginManager()
         {
             container.TryGetAll(out IEnumerable<IPlugin> plugins);
-            foreach (IPlugin plugin in plugins) plugin.Unload();
+            foreach (IPlugin plugin in plugins) plugin.Deactivate();
         }
     }
 }

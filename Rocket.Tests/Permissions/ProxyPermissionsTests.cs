@@ -16,7 +16,7 @@ namespace Rocket.Tests.Permissions
         {
             IServiceProxy<IPermissionProvider> prov = (IServiceProxy<IPermissionProvider>) GetPermissionProvider();
             foreach (IPermissionProvider proxy in prov.ProxiedServices)
-                proxy.Load(GroupsConfig, PlayersConfig);
+                proxy.Activate(GroupsConfig, PlayersConfig);
 
             return (IPermissionProvider) prov;
         }

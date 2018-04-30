@@ -93,8 +93,8 @@
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Player\IPlayerManager.cs" />
-    <Compile Include="Plugin\IPlugin.cs" />
-    <Compile Include="Plugin\IPluginManager.cs" />
+    <Compile Include="Plugins\IPlugin.cs" />
+    <Compile Include="Plugins\IPluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler\ITaskManager.cs" />
     <Compile Include="Scheduler\TaskScheduleEvent.cs" />
