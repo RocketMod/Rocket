@@ -30,8 +30,9 @@ namespace Rocket.Core.I18N
             if (config.IsLoaded)
                 throw new Exception("Permission provider is already loaded");
 
-            bool isNew = config.Exist(context);
-            config.Load(context, new { });
+            bool isNew = config.Exists(context);
+            config.ConfigurationContext = context;
+            config.LoadEmpty();
 
             if (isNew)
                 foreach (KeyValuePair<string, string> pair in defaultConfiguration)

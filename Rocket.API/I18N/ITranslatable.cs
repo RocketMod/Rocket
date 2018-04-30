@@ -3,7 +3,7 @@
 namespace Rocket.API.I18N
 {
     /// <summary>
-    ///     Defines an object which has its own translations.
+    ///     An object which has translations.
     /// </summary>
     public interface ITranslatable
     {

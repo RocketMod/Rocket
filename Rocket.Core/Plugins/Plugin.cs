@@ -102,11 +102,12 @@ namespace Rocket.Core.Plugins
             if (DefaultConfiguration != null)
             {
                 Configuration = Container.Resolve<IConfiguration>();
-                Configuration.Load(new ConfigurationContext
+                Configuration.ConfigurationContext = new ConfigurationContext
                 {
                     WorkingDirectory = WorkingDirectory,
                     ConfigurationName = Name + ".Configuration"
-                }, DefaultConfiguration);
+                }; 
+                Configuration.Load(DefaultConfiguration);
             }
 
             if (DefaultTranslations != null)

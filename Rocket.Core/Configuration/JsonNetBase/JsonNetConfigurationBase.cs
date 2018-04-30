@@ -8,34 +8,37 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public abstract class JsonNetConfigurationBase : JsonNetConfigurationElement, IConfiguration
     {
-        private string file;
+        public string ConfigurationFile
+        {
+            get
+            {
+                return System.IO.Path.Combine(ConfigurationContext.WorkingDirectory, ConfigurationContext.ConfigurationName + "." + FileEnding);
+            }
+        }
+
+        protected abstract string FileEnding { get; }
 
         protected JsonNetConfigurationBase() : base(null)
         {
             Root = this;
         }
 
-        public bool Exist(IConfigurationContext context)
-            => File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + ".json"));
+        public bool Exists(IConfigurationContext context)
+            => File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + "." + FileEnding));
 
-        public void SetContext(IConfigurationContext context)
+        public virtual void Load(object defaultConfiguration)
         {
-            file = System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + ".json");
-        }
-
-        public virtual void Load(IConfigurationContext context, object defaultConfiguration)
-        {
-            SetContext(context);
-
-            if (!File.Exists(file))
+            if (!File.Exists(ConfigurationFile))
             {
                 LoadFromObject(defaultConfiguration);
                 Save();
                 return;
             }
 
-            LoadFromFile(file);
+            LoadFromFile(ConfigurationFile);
         }
+
+        public IConfigurationContext ConfigurationContext { get; set; }
 
         public void LoadFromObject(object o)
         {
@@ -52,21 +55,21 @@ namespace Rocket.Core.Configuration.JsonNetBase
         public void Reload()
         {
             GuardLoaded();
-            if (file == null)
+            if (ConfigurationFile == null)
                 return;
 
-            LoadFromFile(file);
+            LoadFromFile(ConfigurationFile);
         }
 
         public void Save()
         {
             GuardLoaded();
 
-            if (file == null)
+            if (ConfigurationFile == null)
                 throw new NotSupportedException(
                     "This configuration was not loaded from a file; so it can not be saved!");
 
-            SaveToFile(file);
+            SaveToFile(ConfigurationFile);
         }
 
         public bool IsLoaded { get; protected set; }

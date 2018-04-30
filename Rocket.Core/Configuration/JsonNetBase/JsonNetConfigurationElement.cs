@@ -99,7 +99,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
             return GetSection(path);
         }
 
-        public bool RemoveSection(string path)
+        public bool DeleteSection(string path)
         {
             GuardLoaded();
             GuardPath(path);

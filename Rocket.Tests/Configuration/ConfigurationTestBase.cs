@@ -73,7 +73,7 @@ namespace Rocket.Tests.Configuration
         {
             IConfiguration config = LoadConfigFromObject();
             Assert.IsNotNull(config.GetSection("Test1"));
-            Assert.IsTrue(config.RemoveSection("Test1"));
+            Assert.IsTrue(config.DeleteSection("Test1"));
             Assert.ThrowsException<KeyNotFoundException>(() => config.GetSection("Test1"));
         }
 

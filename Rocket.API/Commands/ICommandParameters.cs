@@ -114,15 +114,15 @@ namespace Rocket.API.Commands
         bool TryGet<T>(int index, out T value);
 
         /// <summary>
-        ///     <inheritdoc cref="TryResolve{T}" />
+        ///     <inheritdoc cref="TryGet{T}" />
         /// </summary>
         /// <param name="index">
-        ///     <inheritdoc cref="TryResolve{T}" />
+        ///     <inheritdoc cref="TryGet{T}" />
         /// </param>
         /// <param name="type">The type to parse the parameters as.</param>
         /// <param name="value">The parsed parameter value.</param>
         /// <returns>
-        ///     <inheritdoc cref="TryResolve{T}" />
+        ///     <inheritdoc cref="TryGet{T}" />
         /// </returns>
         bool TryGet(int index, Type type, out object value);
 

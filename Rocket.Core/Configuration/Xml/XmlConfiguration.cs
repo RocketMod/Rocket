@@ -10,9 +10,11 @@ namespace Rocket.Core.Configuration.Xml
     {
         private const string ConfigRoot = "Config";
 
+        protected override string FileEnding => "xml";
+
         protected override void LoadFromFile(string file)
         {
-            string xml = File.ReadAllText(file);
+            string xml = System.IO.File.ReadAllText(file);
             LoadFromXml(xml);
         }
 
@@ -52,7 +54,7 @@ namespace Rocket.Core.Configuration.Xml
             string json = o.ToString();
 
             XmlDocument doc = JsonConvert.DeserializeXmlNode(json);
-            File.WriteAllText(file, doc.ToString());
+            System.IO.File.WriteAllText(file, doc.ToString());
         }
     }
 }

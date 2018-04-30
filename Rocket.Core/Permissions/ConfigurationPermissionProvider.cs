@@ -236,18 +236,21 @@ namespace Rocket.Core.Permissions
             GuardLoaded();
             GuardTarget(group);
 
-            return GroupsConfig.RemoveSection($"{group.Id}");
+            return GroupsConfig.DeleteSection($"{group.Id}");
         }
 
         public void Load(IConfigurationContext context)
         {
             ConfigurationContext groupsContext = new ConfigurationContext(context);
             groupsContext.ConfigurationName += ".Groups";
-            GroupsConfig.Load(groupsContext, new { });
+            GroupsConfig.ConfigurationContext = groupsContext;
+
+            GroupsConfig.LoadEmpty();
 
             ConfigurationContext playersContext = new ConfigurationContext(context);
             playersContext.ConfigurationName += ".Players";
-            PlayersConfig.Load(playersContext, new { });
+            PlayersConfig.ConfigurationContext = playersContext;
+            PlayersConfig.LoadEmpty();
         }
 
         public void Reload()
@@ -342,7 +345,7 @@ namespace Rocket.Core.Permissions
 
             string basePath = target is IPermissionGroup
                 ? $"{target.Id}"
-                : $"{((ICommandCaller) target).CallerType.Name}.{target.Id}";
+                : $"{((ICommandCaller)target).CallerType.Name}.{target.Id}";
             string permissionsPath = basePath + ".Permissions";
             string groupsPath = target is IPermissionGroup ? basePath + ".ParentGroups" : basePath + ".Groups";
 

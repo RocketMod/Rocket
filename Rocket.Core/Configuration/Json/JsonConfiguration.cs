@@ -18,16 +18,18 @@ namespace Rocket.Core.Configuration.Json
             IsLoaded = true;
         }
 
+        protected override string FileEnding => "json";
+
         protected override void LoadFromFile(string file)
         {
-            string json = File.ReadAllText(file);
+            string json = System.IO.File.ReadAllText(file);
             LoadFromJson(json);
         }
 
         protected override void SaveToFile(string file)
         {
             string json = Node.ToString(Formatting.Indented);
-            File.WriteAllText(file, json);
+            System.IO.File.WriteAllText(file, json);
         }
     }
 }
