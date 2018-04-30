@@ -19,7 +19,7 @@ namespace Rocket.API.Commands
         ///     Send a message to the command caller.
         /// </summary>
         /// <param name="message">The message to send.</param>
-        /// <param name="color">The color of the message. Depending on the caller implementation, it may not be used.</param>
+        /// <param name="color">The color of the message. Depending on the command caller implementation, it may not be used.</param>
         /// <param name="bindings">The bindings for the message. See <see cref="string.Format(string, object[])" /></param>
         void SendMessage(string message, ConsoleColor? color = null, params object[] bindings);
     }

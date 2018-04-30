@@ -49,7 +49,7 @@ namespace Rocket.API.Economy
         /// <summary>
         ///     Defines if this provider supports the given command caller.
         /// </summary>
-        /// <param name="commandCaller">The caller to check</param>
+        /// <param name="commandCaller">The command caller to check.</param>
         /// <returns><b>true</b> if the command caller is supported; otherwise, <b>false</b>.</returns>
         bool SupportsCaller(Type commandCaller);
 
