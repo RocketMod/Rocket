@@ -114,7 +114,6 @@
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="DependencyInjection\NotResolvedException.cs" />
     <Compile Include="Eventing\EventManager.cs" />
     <Compile Include="DependencyInjection\RegistrationByConvention.cs" />
     <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />

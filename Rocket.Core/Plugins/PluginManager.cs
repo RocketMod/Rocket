@@ -74,7 +74,7 @@ namespace Rocket.Core.Plugins
             Directory.CreateDirectory(packagesDirectory);
             packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(packagesDirectory);
 
-            AppDomain.CurrentDomain.AssemblyResolve += delegate(object sender, ResolveEventArgs args)
+            AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
             {
                 if (pluginAssemblies.TryGetValue(args.Name, out string pluginFile))
                     return LoadAssembly(pluginFile);
@@ -82,7 +82,7 @@ namespace Rocket.Core.Plugins
                 if (pluginAssemblies.TryGetValue(args.Name, out string packageFile))
                     return LoadAssembly(packageFile);
 
-                logger.LogDebug(((AppDomain) sender).FriendlyName + " could not find dependency: " + args.Name);
+                logger.LogDebug(((AppDomain)sender).FriendlyName + " could not find dependency: " + args.Name);
                 return null;
             };
 
@@ -111,7 +111,7 @@ namespace Rocket.Core.Plugins
             if (@event.IsCancelled)
                 return;
 
-            container.TryGetAll(out IEnumerable<IPlugin> plugins);
+            IEnumerable<IPlugin> plugins = container.GetAll<IPlugin>();
             foreach (IPlugin plugin in plugins)
             {
                 Assembly asm = plugin.GetType().Assembly;
@@ -194,14 +194,7 @@ namespace Rocket.Core.Plugins
             return !plugin.IsAlive;
         }
 
-        public IEnumerable<IPlugin> Plugins
-        {
-            get
-            {
-                container.TryGetAll(out IEnumerable<IPlugin> plugins);
-                return plugins;
-            }
-        }
+        public IEnumerable<IPlugin> Plugins => container.GetAll<IPlugin>();
 
         public virtual void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
         {
@@ -216,7 +209,7 @@ namespace Rocket.Core.Plugins
             {
                 //ignored
             }
-            catch(MissingMethodException)
+            catch (MissingMethodException)
             {
                 //ignored
             }
@@ -231,7 +224,7 @@ namespace Rocket.Core.Plugins
             foreach (MethodInfo method in o.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 CommandAttribute cmdAttr =
-                    (CommandAttribute) method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
+                    (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
                 IEnumerable<CommandAliasAttribute> aliasAttrs = method
                                                                 .GetCustomAttributes(typeof(CommandAliasAttribute),
                                                                     true)
@@ -313,7 +306,7 @@ namespace Rocket.Core.Plugins
             if (pluginType == null)
                 return null;
 
-            IPlugin pluginInstance = (IPlugin) parentContainer.Activate(pluginType);
+            IPlugin pluginInstance = (IPlugin)parentContainer.Activate(pluginType);
             container.RegisterInstance(pluginInstance, pluginInstance.Name);
 
             IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>(false);
@@ -322,11 +315,11 @@ namespace Rocket.Core.Plugins
             IEnumerable<Type> dependcyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>(false);
 
             foreach (Type registrator in dependcyRegistrators)
-                ((IDependencyRegistrator) Activator.CreateInstance(registrator)).Register(container, resolver);
+                ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(container, resolver);
 
             foreach (Type listener in listeners)
             {
-                IEventListener instance = (IEventListener) Activator.CreateInstance(listener, new object[0]);
+                IEventListener instance = (IEventListener)Activator.CreateInstance(listener, new object[0]);
                 eventManager.AddEventListener(pluginInstance, instance);
             }
 
@@ -338,7 +331,7 @@ namespace Rocket.Core.Plugins
 
             foreach (Type command in commands)
                 if (cmdInstanceList.All(c => c.GetType() != command))
-                    cmdInstanceList.Add((ICommand) Activator.CreateInstance(command, new object[0]));
+                    cmdInstanceList.Add((ICommand)Activator.CreateInstance(command, new object[0]));
 
             this.commands.Add(pluginInstance, cmdInstanceList);
             return pluginInstance;
@@ -346,7 +339,7 @@ namespace Rocket.Core.Plugins
 
         ~PluginManager()
         {
-            container.TryGetAll(out IEnumerable<IPlugin> plugins);
+            IEnumerable<IPlugin> plugins = container.GetAll<IPlugin>();
             foreach (IPlugin plugin in plugins) plugin.Deactivate();
         }
     }

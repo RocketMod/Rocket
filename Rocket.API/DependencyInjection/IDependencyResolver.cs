@@ -3,36 +3,145 @@ using System.Collections.Generic;
 
 namespace Rocket.API.DependencyInjection
 {
+    /// <summary>
+    ///     Resolves dependencies.
+    /// </summary>
     public interface IDependencyResolver
     {
+        /// <summary>
+        ///     Checks if an implementation exists for the given service.
+        /// </summary>
+        /// <typeparam name="T">The service to check.</typeparam>
+        /// <param name="mappingName">The mapping names.</param>
+        /// <returns><b>true</b> if the service was registered; otherwise, <b>false</b>.</returns>
         bool IsRegistered<T>(string mappingName = null);
+
+        /// <summary>
+        ///     Checks if an implementation exists for the given service.
+        /// </summary>
+        /// <param name="type">The service to check.</param>
+        /// <param name="mappingName">The mapping names.</param>
+        /// <returns><b>true</b> if the service was registered; otherwise, <b>false</b>.</returns>
         bool IsRegistered(Type type, string mappingName = null);
 
+        /// <summary>
+        ///     Activates an instance for the given service.
+        /// </summary>
+        /// <typeparam name="T">The service to activate.</typeparam>
+        /// <returns>the activated service instance.</returns>
         T Activate<T>();
+
+        /// <summary>
+        ///     Activates an instance for the given service.
+        /// </summary>
+        /// <param name="type">The service to activate.</param>
+        /// <returns>the activated service instance.</returns>
         object Activate(Type type);
 
+        /// <summary>
+        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        /// </summary>
+        /// <typeparam name="T">The service to get the implementation instance of.</typeparam>
+        /// <param name="mappingName">The mapping name.</param>
+        /// <returns>the primary service instance implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
+        /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
         T Get<T>(string mappingName = null);
+
+        /// <summary>
+        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        /// </summary>
+        /// <param name="serviceType">The service to get the implementation instance of.</param>
+        /// <param name="mappingName">The mapping name.</param>
+        /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
+        /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
         object Get(Type serviceType, string mappingName = null);
 
+        /// <summary>
+        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        /// </summary>
+        /// <typeparam name="T">The service to get the implementation instance of.</typeparam>
+        /// <param name="mappingName">The mapping name.</param>
+        /// <param name="parameters">The service parameters.</param>
+        /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
+        /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
         T Get<T>(string mappingName, params object[] parameters);
+
+        /// <summary>
+        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        /// </summary>
+        /// <param name="serviceType">The service to get the implementation instance of.</param>
+        /// <param name="mappingName">The mapping names.</param>
+        /// <param name="parameters">The service parameters.</param>
+        /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
+        /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
         object Get(Type serviceType, string mappingName, params object[] parameters);
 
+        /// <summary>
+        ///     Gets all implementation instances for the given service.
+        /// </summary>
+        /// <typeparam name="T">The service to get the implementation instances of.</typeparam>
+        /// <returns>all implementation instances for the given service.</returns>
         IEnumerable<T> GetAll<T>();
+
+        /// <summary>
+        ///     Gets all implementation instances for the given service.
+        /// </summary>
+        /// <param name="type">The service to get the implementation instances of.</param>
+        /// <returns>all implementation instances for the given service.</returns>
         IEnumerable<object> GetAll(Type type);
 
+        /// <summary>
+        ///     Gets all implementation instances for the given service.
+        /// </summary>
+        /// <typeparam name="T">The service to get the implementation instances of.</typeparam>
+        /// <param name="parameters">The service parameters.</param>
+        /// <returns>all implementation instances for the given service.</returns>
         IEnumerable<T> GetAll<T>(params object[] parameters);
+
+        /// <summary>
+        ///     Gets all implementation instances for the given service.
+        /// </summary>
+        /// <param name="type">The service to get the implementation instances of.</param>
+        /// <param name="parameters">The service parameters.</param>
+        /// <returns>all implementation instances for the given service.</returns>
         IEnumerable<object> GetAll(Type type, params object[] parameters);
 
-        bool TryGet<T>(string mappingName, out T output);
-        bool TryGet(Type serviceType, string mappingName, out object output);
+        /// <summary>
+        ///     Tries to get the primary service implementation instance or the service proxy if one exists.
+        /// </summary>
+        /// <typeparam name="T">The service to get the implementation instance of.</typeparam>
+        /// <param name="mappingName">The mapping name.</param>
+        /// <param name="serviceInstance">The service implementation instance if it was resolved; otherwise, <b>null</b>.</param>
+        /// <returns><b>true</b> if the service was resolved; otherwise, <b>false</b>.</returns>
+        bool TryGet<T>(string mappingName, out T serviceInstance);
 
-        bool TryGet<T>(string mappingName, out T output, params object[] parameters);
-        bool TryGet(Type serviceType, string mappingName, out object output, params object[] parameters);
+        /// <summary>
+        ///     Tries to get the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        /// </summary>
+        /// <param name="serviceType">The service to get the implementation instance of.</param>
+        /// <param name="mappingName">The mapping name.</param>
+        /// <param name="serviceInstance">The service implementation instance if it was resolved; otherwise, <b>null</b>.</param>
+        /// <returns><b>true</b> if the service was resolved; otherwise, <b>false</b>.</returns>
+        bool TryGet(Type serviceType, string mappingName, out object serviceInstance);
 
-        bool TryGetAll<T>(out IEnumerable<T> output);
-        bool TryGetAll(Type type, out IEnumerable<object> output);
+        /// <summary>
+        ///     Tries to get the primary service implementation instance or the service proxy if one exists.
+        /// </summary>
+        /// <typeparam name="T">The service to get the implementation instance of.</typeparam>
+        /// <param name="mappingName">The mapping name.</param>
+        /// <param name="serviceInstance">The service implementation instance if it was resolved; otherwise, <b>null</b>.</param>
+        /// <param name="parameters">The service parameters.</param>
+        /// <returns><b>true</b> if the service was resolved; otherwise, <b>false</b>.</returns>
+        bool TryGet<T>(string mappingName, out T serviceInstance, params object[] parameters);
 
-        bool TryGetAll<T>(out IEnumerable<T> output, params object[] parameters);
-        bool TryGetAll(Type type, out IEnumerable<object> output, params object[] parameters);
+        /// <summary>
+        ///     Tries to get the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        /// </summary>
+        /// <param name="serviceType">The service to get the implementation instance of.</param>
+        /// <param name="mappingName">The mapping name.</param>
+        /// <param name="serviceInstance">The service implementation instance if it was resolved; otherwise, <b>null</b>.</param>
+        /// <param name="parameters">The service parameters.</param>
+        /// <returns><b>true</b> if the service was resolved; otherwise, <b>false</b>.</returns>
+        bool TryGet(Type serviceType, string mappingName, out object serviceInstance, params object[] parameters);
     }
 }

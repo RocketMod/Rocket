@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Rocket.API.ServiceProxies
+namespace Rocket.API.DependencyInjection
 {
     /// <summary>
     ///     <inheritdoc/><br/><br/>

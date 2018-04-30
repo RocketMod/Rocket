@@ -6,7 +6,6 @@ using System.Reflection;
 using Microsoft.Practices.Unity;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
-using Rocket.API.ServiceProxies;
 
 namespace Rocket.Core.DependencyInjection
 {
@@ -170,7 +169,7 @@ namespace Rocket.Core.DependencyInjection
             if (IsRegistered<T>(mappingName))
                 return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
 
-            throw new NotResolvedException(typeof(T), mappingName);
+            throw new ServiceResolutionFailedException(typeof(T), mappingName);
         }
 
         /// <exception cref="NotResolvedException">
@@ -185,7 +184,7 @@ namespace Rocket.Core.DependencyInjection
             if (IsRegistered<T>(mappingName))
                 return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
 
-            throw new NotResolvedException(typeof(T), mappingName);
+            throw new ServiceResolutionFailedException(typeof(T), mappingName);
         }
 
         /// <exception cref="NotResolvedException">
@@ -200,7 +199,7 @@ namespace Rocket.Core.DependencyInjection
             if (IsRegistered(serviceType, mappingName))
                 return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
 
-            throw new NotResolvedException(serviceType, mappingName);
+            throw new ServiceResolutionFailedException(serviceType, mappingName);
         }
 
         /// <exception cref="NotResolvedException">
@@ -215,7 +214,7 @@ namespace Rocket.Core.DependencyInjection
             if (IsRegistered(serviceType, mappingName))
                 return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
 
-            throw new NotResolvedException(serviceType, mappingName);
+            throw new ServiceResolutionFailedException(serviceType, mappingName);
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
@@ -229,7 +228,7 @@ namespace Rocket.Core.DependencyInjection
 
             if (instances.Count() != 0) return instances;
 
-            throw new NotResolvedException(typeof(T));
+            throw new ServiceResolutionFailedException(typeof(T));
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
@@ -243,7 +242,7 @@ namespace Rocket.Core.DependencyInjection
 
             if (instances.Count() != 0) return instances;
 
-            throw new NotResolvedException(typeof(T));
+            throw new ServiceResolutionFailedException(typeof(T));
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
@@ -257,7 +256,7 @@ namespace Rocket.Core.DependencyInjection
 
             if (instances.Count() != 0) return instances;
 
-            throw new NotResolvedException(type);
+            throw new ServiceResolutionFailedException(type);
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
@@ -271,7 +270,7 @@ namespace Rocket.Core.DependencyInjection
 
             if (instances.Count() != 0) return instances;
 
-            throw new NotResolvedException(type);
+            throw new ServiceResolutionFailedException(type);
         }
 
         #endregion
@@ -367,79 +366,7 @@ namespace Rocket.Core.DependencyInjection
 
             return false;
         }
-
-        /// <returns>
-        ///     <value>true</value>
-        ///     when at least one instance is resolved.
-        /// </returns>
-        public bool TryGetAll<T>(out IEnumerable<T> output)
-        {
-            if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
-                Logger?.LogDebug("Trying to resolve all: <" + typeof(T).Name + ">");
-
-            output = container.ResolveAll<T>()
-                              .Where(c => !(c is IServiceProxy));
-
-            if (output.Count() != 0) return true;
-
-            output = new List<T>();
-            return false;
-        }
-
-        /// <returns>
-        ///     <value>true</value>
-        ///     when at least one instance is resolved.
-        /// </returns>
-        public bool TryGetAll<T>(out IEnumerable<T> output, params object[] parameters)
-        {
-            if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
-                Logger?.LogDebug("Trying to resolve all: <" + typeof(T).Name + ">");
-
-            output = container.ResolveAll<T>(new OrderedParametersOverride(parameters))
-                              .Where(c => !(c is IServiceProxy));
-
-            if (output.Count() != 0) return true;
-
-            output = new List<T>();
-            return false;
-        }
-
-        /// <returns>
-        ///     <value>true</value>
-        ///     when at least one instance is resolved.
-        /// </returns>
-        public bool TryGetAll(Type serviceType, out IEnumerable<object> output)
-        {
-            if (!typeof(ILogger).IsAssignableFrom(serviceType))
-                Logger?.LogDebug("Trying to resolve all: <" + serviceType.Name + ">");
-
-            output = container.ResolveAll(serviceType)
-                              .Where(c => !(c is IServiceProxy));
-
-            if (output.Count() != 0) return true;
-
-            output = new List<object>();
-            return false;
-        }
-
-        /// <returns>
-        ///     <value>true</value>
-        ///     when at least one instance is resolved.
-        /// </returns>
-        public bool TryGetAll(Type serviceType, out IEnumerable<object> output, params object[] parameters)
-        {
-            if (!typeof(ILogger).IsAssignableFrom(serviceType))
-                Logger?.LogDebug("Trying to resolve all: <" + serviceType.Name + ">");
-
-            output = container.ResolveAll(serviceType, new OrderedParametersOverride(parameters))
-                              .Where(c => !(c is IServiceProxy));
-
-            if (output.Count() != 0) return true;
-
-            output = new List<object>();
-            return false;
-        }
-
+        
         #endregion
 
         #endregion

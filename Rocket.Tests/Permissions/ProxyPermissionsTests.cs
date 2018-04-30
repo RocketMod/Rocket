@@ -1,7 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Permissions;
-using Rocket.API.ServiceProxies;
 
 namespace Rocket.Tests.Permissions
 {

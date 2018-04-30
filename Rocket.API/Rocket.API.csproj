@@ -60,6 +60,7 @@
     <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Configuration\IConfigurationSection.cs" />
     <Compile Include="Configuration\SectionType.cs" />
+    <Compile Include="DependencyInjection\ServiceResolutionFailedException.cs" />
     <Compile Include="Economy\IEconomyProvider.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />
@@ -69,7 +70,7 @@
     <Compile Include="Player\IOnlinePlayer.cs" />
     <Compile Include="Permissions\IPermissionGroup.cs" />
     <Compile Include="Player\PlayerNotFoundException.cs" />
-    <Compile Include="ServiceProxies\IProxyableService.cs" />
+    <Compile Include="DependencyInjection\IProxyableService.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\EventExecutionTargetContext.cs" />
     <Compile Include="Eventing\IEventEmitter.cs" />
@@ -98,7 +99,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scheduler\ITaskScheduler.cs" />
     <Compile Include="Scheduler\ITask.cs" />
-    <Compile Include="ServiceProxies\IServiceProxy.cs" />
+    <Compile Include="DependencyInjection\IServiceProxy.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

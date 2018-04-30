@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Rocket.API.ServiceProxies;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.Commands
 {

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Rocket.API.DependencyInjection;
-using Rocket.API.ServiceProxies;
 
 namespace Rocket.Core.ServiceProxies
 {

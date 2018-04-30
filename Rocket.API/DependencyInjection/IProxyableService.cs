@@ -1,4 +1,4 @@
-﻿namespace Rocket.API.ServiceProxies
+﻿namespace Rocket.API.DependencyInjection
 {
     /// <summary>
     ///     Defines a service which can be proxied.
