@@ -10,11 +10,11 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
+using Rocket.Compatibility;
 using Rocket.Core.Commands;
 using Rocket.Core.Extensions;
 using Rocket.Core.Plugins.Events;
 #if NET35
-using Rocket.Compability;
 
 #endif
 

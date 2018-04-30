@@ -7,8 +7,8 @@
     <ProjectGuid>{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rocket.Compability</RootNamespace>
-    <AssemblyName>Rocket.Compability</AssemblyName>
+    <RootNamespace>Rocket.Compatibility</RootNamespace>
+    <AssemblyName>Rocket.Compatibility</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,7 +20,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Rocket.Compability.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,7 +30,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Rocket.Compability.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -48,7 +50,7 @@
     <Compile Include="System\Tuple.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Rocket.Compability.nuspec">
+    <None Include="Rocket.Compatibility.nuspec">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

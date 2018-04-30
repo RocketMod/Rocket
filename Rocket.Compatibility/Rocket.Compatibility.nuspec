@@ -2,7 +2,7 @@
 
 <package>
   <metadata>
-    <id>Rocket.Compability</id>
+    <id>Rocket.Compatibility</id>
     <version>$version$</version>
     <authors>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;, Enes Sadık Özbek &lt;esozbek.me&gt;</authors>
     <owners>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;</owners>
@@ -14,7 +14,6 @@
     <tags>Rocket Mod Unity3D</tags>
   </metadata>
   <files>
-    <file src="Rocket.Compability.dll" target="lib/net35" />
-    <file src="Rocket.Compability.xml" target="lib/net35" />
+    <file src="Rocket.Compatibility.dll" target="lib/net35" />
   </files>
 </package>

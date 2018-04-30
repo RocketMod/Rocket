@@ -1,7 +1,8 @@
 ﻿using System.IO;
 using System.Text;
 #if NET35
-using Rocket.Compability; //backport Stream.CopyTo(...)
+using Rocket.Compatibility;
+//backport Stream.CopyTo(...)
 #endif
 
 namespace Rocket.Core.Extensions

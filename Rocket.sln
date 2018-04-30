@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Runtime", "Rocket.Ru
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.API", "Rocket.API\Rocket.API.csproj", "{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Compability", "Rocket.Compability\Rocket.Compability.csproj", "{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Compatibility", "Rocket.Compatibility\Rocket.Compatibility.csproj", "{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Core", "Rocket.Core\Rocket.Core.csproj", "{A7056AB1-C5F5-493B-8E47-DC42DE69961D}"
 EndProject
@@ -136,7 +136,7 @@ Global
 		{AF4E374A-89FB-4364-8BB6-E5E1A3A10EC7} = {A2E67F6D-7781-46E6-985F-1E024BE3367A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 		SolutionGuid = {44CEEF5D-7AE2-4DF9-91E1-E4B4B0C9EAC1}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 	EndGlobalSection
 EndGlobal

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Rocket.Compability
+namespace Rocket.Compatibility
 {
     public static class StreamExtensions
     {
@@ -9,7 +9,8 @@ namespace Rocket.Compability
             byte[] buffer = new byte[16 * 1024]; // Fairly arbitrary size
             int bytesRead;
 
-            while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0) output.Write(buffer, 0, bytesRead);
+            while ((bytesRead = input.Read(buffer, 0, buffer.Length)) > 0)
+                output.Write(buffer, 0, bytesRead);
         }
     }
 }

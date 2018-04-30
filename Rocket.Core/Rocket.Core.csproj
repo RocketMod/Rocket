@@ -134,9 +134,9 @@
       <Project>{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}</Project>
       <Name>Rocket.API</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rocket.Compability\Rocket.Compability.csproj">
+    <ProjectReference Include="..\Rocket.Compability\Rocket.Compatibility.csproj">
       <Project>{01263b0d-9ce3-4d5a-afcb-165592ef24b5}</Project>
-      <Name>Rocket.Compability</Name>
+      <Name>Rocket.Compatibility</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

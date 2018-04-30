@@ -48,9 +48,9 @@
       <Project>{da356abb-aa77-4b22-9ab1-34a30cf4048a}</Project>
       <Name>Rocket.API</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Rocket.Compability\Rocket.Compability.csproj">
+    <ProjectReference Include="..\Rocket.Compability\Rocket.Compatibility.csproj">
       <Project>{01263b0d-9ce3-4d5a-afcb-165592ef24b5}</Project>
-      <Name>Rocket.Compability</Name>
+      <Name>Rocket.Compatibility</Name>
     </ProjectReference>
     <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj">
       <Project>{A7056AB1-C5F5-493B-8E47-DC42DE69961D}</Project>

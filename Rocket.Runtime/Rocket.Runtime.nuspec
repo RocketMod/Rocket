@@ -15,7 +15,7 @@
     <dependencies>
       <dependency id="Rocket.API" version="$version$" />
       <dependency id="Rocket.Core" version="$version$" />
-      <dependency id="Rocket.Compability" version="$version$" />
+      <dependency id="Rocket.Compatibility" version="$version$" />
     </dependencies>
   </metadata>
   <files>
