@@ -7,7 +7,7 @@ namespace Rocket.ConsoleImplementation
 {
     public class ConsoleImplementation : IImplementation
     {
-        private ConsoleCaller consoleCaller;
+        private ConsoleCommandCaller consoleCommandCaller;
 
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "ConsoleHost";
@@ -28,7 +28,7 @@ namespace Rocket.ConsoleImplementation
 
         public void Reload() { }
 
-        public IConsoleCommandCaller GetConsoleCaller() => consoleCaller;
+        public IConsoleCommandCaller ConsoleCommandCaller => consoleCommandCaller;
 
         public bool IsAlive => true;
 

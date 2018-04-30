@@ -81,7 +81,7 @@
     <Compile Include="Eventing\ICancellableEvent.cs" />
     <Compile Include="Eventing\IEvent.cs" />
     <Compile Include="Eventing\IEventListener.cs" />
-    <Compile Include="ILifecycleController.cs" />
+    <Compile Include="ILifecycleObject.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslations.cs" />
     <Compile Include="IImplementation.cs" />

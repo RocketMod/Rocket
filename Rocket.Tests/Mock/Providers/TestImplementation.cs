@@ -9,13 +9,12 @@ namespace Rocket.Tests.Mock.Providers
 {
     public class TestImplementation : IImplementation
     {
-        private readonly IConsoleCommandCaller consoleCaller;
         private readonly ILogger logger;
 
         public TestImplementation(ILogger logger)
         {
             this.logger = logger;
-            consoleCaller = new TestConsoleCaller();
+            ConsoleCommandCaller = new TestConsoleCaller();
         }
 
         public IEnumerable<string> Capabilities => new List<string>
@@ -39,7 +38,7 @@ namespace Rocket.Tests.Mock.Providers
             logger.LogInformation("Reloading implementation");
         }
 
-        public IConsoleCommandCaller GetConsoleCaller() => consoleCaller;
+        public IConsoleCommandCaller ConsoleCommandCaller { get; }
 
         public void Shutdown()
         {

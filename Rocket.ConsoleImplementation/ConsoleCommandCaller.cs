@@ -4,7 +4,7 @@ using Rocket.API.Permissions;
 
 namespace Rocket.ConsoleImplementation
 {
-    public class ConsoleCaller : IConsoleCommandCaller
+    public class ConsoleCommandCaller : IConsoleCommandCaller
     {
         public int CompareTo(object obj) => throw new NotImplementedException();
 
@@ -18,7 +18,7 @@ namespace Rocket.ConsoleImplementation
 
         public string Id => "Console";
         public string Name => "Console";
-        public Type CallerType => typeof(ConsoleCaller);
+        public Type CallerType => typeof(ConsoleCommandCaller);
 
         public void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
         {

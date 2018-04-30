@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleCaller.cs" />
+    <Compile Include="ConsoleCommandCaller.cs" />
     <Compile Include="ConsoleHost.cs" />
     <Compile Include="ConsoleImplementation.cs" />
     <Compile Include="Program.cs" />
