@@ -1,6 +1,5 @@
 ﻿using System;
 using Rocket.API.Commands;
-using Rocket.Core.Exceptions;
 
 namespace Rocket.Core.Commands
 {

@@ -1,17 +1,59 @@
 ﻿using System;
+using Rocket.API.Commands;
 
 namespace Rocket.API.Player
 {
-    public sealed class PlayerNotFoundException : Exception
+    /// <summary>
+    ///     Thrown when a player was not found using an ID.
+    /// </summary>
+    public class PlayerIdNotFoundException : PlayerNotFoundException
     {
-        public PlayerNotFoundException(string player)
-            : base(string.IsNullOrEmpty(player)
-                ? "The requested player couldn't be found."
-                : $"The requested player: \"{player}\" couldn't be found.")
+        /// <param name="playerId">The player ID.</param>
+        public PlayerIdNotFoundException(string playerId) : base(playerId)
         {
-            Player = player;
+            PlayerId = playerId;
         }
 
-        public string Player { get; }
+        /// <summary>
+        ///     The player ID.
+        /// </summary>
+        public string PlayerId { get; }
+    }
+
+    /// <summary>
+    ///     Thrown when a player was not found using a name.
+    /// </summary>
+    public class PlayerNameNotFoundException : PlayerNotFoundException
+    {
+        ///<param name="playerName">The player name.</param>
+        public PlayerNameNotFoundException(string playerName) : base(playerName)
+        {
+            PlayerName = playerName;
+        }
+
+        /// <summary>
+        ///     The player name.
+        /// </summary>
+        public string PlayerName { get; }
+    }
+
+    /// <summary>
+    ///     Thrown when a player was not found.
+    /// </summary>
+    public abstract class PlayerNotFoundException : Exception, ICommandFriendlyException
+    {
+        /// <param name="nameOrId">The name or ID of the player which was not found.</param>
+        protected PlayerNotFoundException(string nameOrId)
+            : base(string.IsNullOrEmpty(nameOrId)
+                ? "The requested player was not found."
+                : $"The requested player: \"{nameOrId}\" was not found.")
+        {
+        }
+
+        /// <inheritdoc/>
+        public void SendErrorMessage(ICommandContext context)
+        {
+            context.Caller.SendMessage(Message, ConsoleColor.Red);
+        }
     }
 }
