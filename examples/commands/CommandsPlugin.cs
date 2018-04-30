@@ -21,7 +21,7 @@ namespace Rocket.Examples.CommandsPlugin
             {"broadcast", "[{0:Name}] {1}"}
         };
 
-        protected override void OnLoad(bool isReload)
+        protected override void OnActivate(bool isFromReload)
         {
             CommandsCollection commandsObject = new CommandsCollection(chatManager, Translations);
             RegisterCommandsFromObject(commandsObject);

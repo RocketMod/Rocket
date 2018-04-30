@@ -49,12 +49,12 @@ namespace Rocket.Tests.Mock
             return promise.Task;
         }
 
-        protected override void OnLoad(bool isReload)
+        protected override void OnActivate(bool isFromReload)
         {
             Logger.LogInformation("Hello World (From plugin)");
         }
 
-        protected override void OnUnload()
+        protected override void OnDeactivate()
         {
             Logger.LogInformation("Bye World (From plugin)");
         }

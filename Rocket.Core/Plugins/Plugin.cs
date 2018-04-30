@@ -39,20 +39,27 @@ namespace Rocket.Core.Plugins
 
         public virtual string WorkingDirectory { get; set; }
 
-        public void Activate()
+        public bool Activate()
         {
+            if (IsAlive)
+                return false;
+
             Load(false);
+            return true;
         }
 
-        public void Deactivate()
+        public bool Deactivate()
         {
+            if (!IsAlive)
+                return false;
+
             if (EventManager != null)
             {
                 PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
                 EventManager.Emit(Runtime, loadedEvent);
             }
 
-            OnUnload();
+            OnDeactivate();
             IsAlive = false;
 
             if (EventManager != null)
@@ -60,6 +67,8 @@ namespace Rocket.Core.Plugins
                 PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
                 EventManager.Emit(Runtime, loadedEvent);
             }
+
+            return true;
         }
 
         public void Reload()
@@ -110,7 +119,7 @@ namespace Rocket.Core.Plugins
                 }, DefaultTranslations);
             }
 
-            OnLoad(isReload);
+            OnActivate(isReload);
             IsAlive = true;
 
             if (EventManager != null)
@@ -126,8 +135,8 @@ namespace Rocket.Core.Plugins
             p?.RegisterCommands(this, o);
         }
 
-        protected virtual void OnLoad(bool isReload) { }
-        protected virtual void OnUnload() { }
+        protected virtual void OnActivate(bool isFromReload) { }
+        protected virtual void OnDeactivate() { }
 
         public void Subscribe(IEventListener listener)
         {

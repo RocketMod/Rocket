@@ -31,12 +31,12 @@ namespace Rocket.Examples.HelloWorldPlugin
             {"some_translatable_message", "This is some translatable / replaceable text!"}
         };
 
-        protected override void OnLoad(bool isReload)
+        protected override void OnActivate(bool isFromReload)
         {
             Logger.LogInformation("Hello world!");
         }
 
-        protected override void OnUnload()
+        protected override void OnDeactivate()
         {
             Logger.LogInformation("Good bye!");
         }

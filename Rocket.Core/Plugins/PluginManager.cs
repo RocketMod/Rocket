@@ -203,15 +203,23 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public virtual bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
+        public virtual void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
         {
-            if (PluginExists(pluginName))
+            if (!PluginExists(pluginName))
+                return;
+
+            try
             {
                 action(GetPlugin(pluginName));
-                return true;
             }
-
-            return false;
+            catch (TypeLoadException)
+            {
+                //ignored
+            }
+            catch(MissingMethodException)
+            {
+                //ignored
+            }
         }
 
         public virtual IEnumerator<IPlugin> GetEnumerator() => Plugins.GetEnumerator();

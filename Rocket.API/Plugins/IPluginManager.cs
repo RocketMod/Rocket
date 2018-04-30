@@ -4,34 +4,52 @@ using Rocket.API.ServiceProxies;
 
 namespace Rocket.API.Plugins
 {
+    /// <summary>
+    ///     A service which provides plugins and is responsible for managing them.
+    /// </summary>
     public interface IPluginManager : IEnumerable<IPlugin>, IProxyableService
     {
+        /// <summary>
+        ///     The provided plugins.
+        /// </summary>
         IEnumerable<IPlugin> Plugins { get; }
-        IPlugin GetPlugin(string name);
-
-        bool PluginExists(string name);
-
-        void Init();
-
-        bool LoadPlugin(string name);
-
-        bool UnloadPlugin(string name);
 
         /// <summary>
-        ///     Executes code that depends on another plugin being available.
-        ///     Because directly referencing another plugin breaks a plugin if the referenced plugin is unavailable
-        ///     you should pass the name of the expected plugin to this method and write all code dependend on that
-        ///     assembly inside of the delegate you pass to this method.
+        ///     Gets a plugin by name.
         /// </summary>
-        /// <example>
-        ///     pluginManager.ExecutePluginDependendCode("FancyFeast, (IRocketPlugin plugin) =>{
-        ///     Feast pluginInstance = (Feast) plugin;
-        ///     pluginInstance.StartFeast();
-        ///     });
-        /// </example>
-        /// <param name="pluginName">Name of the plugin to look for</param>
-        /// <param name="action">Delegate method to be invoked</param>
-        /// <returns>If true then plugin was found and delegate executed</returns>
-        bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action);
+        /// <param name="name">The name of the plugin.</param>
+        /// <returns>The plugin instance if it was found; otherwise, <b>null</b>.</returns>
+        IPlugin GetPlugin(string name);
+
+        /// <summary>
+        ///     Checks if a plugin exists with the given name.
+        /// </summary>
+        /// <param name="name">The name to check.</param>
+        /// <returns><b>true</b> if the plugin exists; otherwise, <b>false</b>.</returns>
+        bool PluginExists(string name);
+
+        /// <summary>
+        ///     Initializes the plugin manager.
+        /// </summary>
+        void Init();
+
+        /// <summary>
+        ///     Executes soft depend code if the given plugin was loaded.
+        /// </summary>
+        /// <remarks>
+        ///     Directly referencing another plugin breaks the calling plugin when the referenced plugin is not available yet.<br/><br/>
+        ///     The full qualifying type names (types with fully declared namespaces) must be used instead of "using" statements for 
+        ///     namespaces of the referenced plugin.<br/><br/>
+        ///     <b>Example:</b>
+        ///     <code>
+        ///         pluginManager.ExecuteSoftDependCode("FancyFeast, (IRocketPlugin plugin) =>{
+        ///             FancyFeastPlugin.Feast pluginInstance = (FancyFeastPlugin.Feast) plugin;
+        ///             pluginInstance.StartFeast();
+        ///         });
+        ///     </code>       
+        /// </remarks>
+        /// <param name="pluginName">The name of the referenced plugin.</param>
+        /// <param name="action">The action to be invoked when the plugin was found.</param>
+        void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action);
     }
 }

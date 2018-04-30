@@ -50,7 +50,7 @@ namespace Rocket.Core.Plugins
 
         public IEnumerable<IPlugin> Plugins => ProxiedServices.SelectMany(c => c.Plugins);
 
-        public bool ExecutePluginDependendCode(string pluginName, Action<IPlugin> action)
+        public void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
             => throw new NotSupportedException("Not supported on proxies");
     }
 }
