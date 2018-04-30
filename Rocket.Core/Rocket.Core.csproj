@@ -62,7 +62,6 @@
     <Compile Include="Commands\ProxyCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandProvider.cs" />
-    <Compile Include="Commands\CommandParameterMismatchException.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />
@@ -88,6 +87,7 @@
     <Compile Include="Player\Events\PlayerDamageEvent.cs" />
     <Compile Include="Player\Events\PlayerMoveEvent.cs" />
     <Compile Include="Player\Events\PlayerRespawnEvent.cs" />
+    <Compile Include="Player\Events\PlayerUnbanEvent.cs" />
     <Compile Include="Player\OnlinePlayerTypeConverter.cs" />
     <Compile Include="Player\PlayerTypeConverter.cs" />
     <Compile Include="DependencyInjection\UnityDescriptorContext.cs" />
@@ -111,7 +111,6 @@
     <Compile Include="Plugins\Events\PluginManagerLoadEvent.cs" />
     <Compile Include="Plugins\Events\PluginUnloadedEvent.cs" />
     <Compile Include="Plugins\Events\PluginUnloadEvent.cs" />
-    <Compile Include="Exceptions\ICommandFriendlyException.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

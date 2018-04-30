@@ -23,6 +23,9 @@ namespace Rocket.Tests.Mock.Providers
         public bool Ban(IPlayer player, ICommandCaller caller = null, string reason = null, TimeSpan? timeSpan = null)
             => false;
 
+        public bool Unban(IPlayer player, ICommandCaller caller = null)
+            => false;
+
         public IOnlinePlayer GetOnlinePlayer(string nameOrId)
         {
             return OnlinePlayers.FirstOrDefault(c => c.Id.Equals(nameOrId, StringComparison.OrdinalIgnoreCase)

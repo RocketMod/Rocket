@@ -6,6 +6,10 @@ namespace Rocket.API.Chat
      * Do not add stuff like colors, formatting, etc here.
      * Implementations can extend this interface and add additional features like colors, formatting, etc.
      */
+
+    /// <summary>
+    ///     The service responsible for managing chat.
+    /// </summary>
     public interface IChatManager
     {
         /// <summary>

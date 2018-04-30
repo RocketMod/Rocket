@@ -4,7 +4,6 @@ using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
-using Rocket.Core.Exceptions;
 using Rocket.Core.Permissions;
 
 namespace Rocket.Core.Commands

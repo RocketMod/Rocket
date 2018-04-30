@@ -49,6 +49,7 @@
     <Compile Include="Commands\ICommand.cs" />
     <Compile Include="Commands\ICommandCaller.cs" />
     <Compile Include="Commands\ICommandContext.cs" />
+    <Compile Include="Commands\ICommandFriendlyException.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\ICommandParameters.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
@@ -59,7 +60,7 @@
     <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Configuration\IConfigurationSection.cs" />
     <Compile Include="Configuration\SectionType.cs" />
-    <Compile Include="Economy\EconomyProvider.cs" />
+    <Compile Include="Economy\IEconomyProvider.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />
     <Compile Include="Math\RVector2.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Math\RVector4.cs" />
     <Compile Include="Player\IOnlinePlayer.cs" />
     <Compile Include="Permissions\IPermissionGroup.cs" />
+    <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="ServiceProxies\IProxyableService.cs" />
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\EventExecutionTargetContext.cs" />
@@ -75,7 +77,6 @@
     <Compile Include="IEnvironmentContext.cs" />
     <Compile Include="Permissions\IIdentifiable.cs" />
     <Compile Include="Permissions\PermissionResult.cs" />
-    <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />
     <Compile Include="Eventing\ICancellableEvent.cs" />
     <Compile Include="Eventing\IEvent.cs" />
