@@ -62,7 +62,9 @@
     <Compile Include="Economy\EconomyProvider.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />
+    <Compile Include="Math\RVector2.cs" />
     <Compile Include="Math\RVector3.cs" />
+    <Compile Include="Math\RVector4.cs" />
     <Compile Include="Player\IOnlinePlayer.cs" />
     <Compile Include="Permissions\IPermissionGroup.cs" />
     <Compile Include="ServiceProxies\IProxyableService.cs" />
