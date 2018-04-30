@@ -1,4 +1,5 @@
-﻿using Rocket.API.DependencyInjection;
+﻿using Rocket.API.Configuration;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 
 namespace Rocket.API

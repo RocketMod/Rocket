@@ -74,7 +74,7 @@
     <Compile Include="Eventing\EventExecutionTargetContext.cs" />
     <Compile Include="Eventing\IEventEmitter.cs" />
     <Compile Include="I18N\ITranslatable.cs" />
-    <Compile Include="IEnvironmentContext.cs" />
+    <Compile Include="Configuration\IConfigurationContext.cs" />
     <Compile Include="Permissions\IIdentifiable.cs" />
     <Compile Include="Permissions\PermissionResult.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />

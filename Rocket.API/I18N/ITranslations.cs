@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Rocket.API.Configuration;
 
 namespace Rocket.API.I18N
 {

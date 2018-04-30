@@ -1,4 +1,5 @@
 ﻿using Rocket.API;
+using Rocket.API.Configuration;
 
 namespace Rocket.Core
 {

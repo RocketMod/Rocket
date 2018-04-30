@@ -1,4 +1,5 @@
 ﻿using Rocket.API.Commands;
+using Rocket.API.Configuration;
 using Rocket.API.Eventing;
 
 namespace Rocket.API

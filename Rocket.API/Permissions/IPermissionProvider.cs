@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rocket.API.Commands;
+using Rocket.API.Configuration;
 using Rocket.API.ServiceProxies;
 
 namespace Rocket.API.Permissions
