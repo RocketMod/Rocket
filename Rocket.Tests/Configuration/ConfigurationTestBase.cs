@@ -99,6 +99,15 @@ namespace Rocket.Tests.Configuration
             Assert.IsFalse(section.HasValue);
         }
 
+        [TestMethod]
+        public void TestNotLoadedException()
+        {
+            IConfiguration config = GetConfig();
+            Assert.ThrowsException<ConfigurationNotLoadedException>(() => config["a"]);
+            Assert.ThrowsException<ConfigurationNotLoadedException>(() => config.GetSection("A"));
+            Assert.ThrowsException<ConfigurationNotLoadedException>(() => config.Set("ll"));
+        }
+
         public void AssertConfigEquality(IConfiguration config)
         {
             Assert.AreEqual(config.GetSection("Test1").Get<string>(), "A");
@@ -138,7 +147,7 @@ namespace Rocket.Tests.Configuration
         public void AssertSaveException(IConfiguration config)
         {
             // Config has not been loaded from a file so it can not be saved
-            Assert.ThrowsException<NotSupportedException>(() => config.Save());
+            Assert.ThrowsException<ConfigurationContextNotSetException>(() => config.Save());
         }
 
         protected IConfiguration LoadConfigFromObject()

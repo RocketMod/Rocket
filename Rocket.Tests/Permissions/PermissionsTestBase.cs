@@ -263,7 +263,7 @@ namespace Rocket.Tests.Permissions
             // Config of permission provider has not been loaded from a file so it can not be saved
 
             IPermissionProvider permissionProvider = LoadProvider();
-            Assert.ThrowsException<NotSupportedException>(() => permissionProvider.Save());
+            Assert.ThrowsException<ConfigurationContextNotSetException>(() => permissionProvider.Save());
         }
 
         [TestMethod]

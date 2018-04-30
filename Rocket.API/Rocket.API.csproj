@@ -55,6 +55,8 @@
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Commands\IConsoleCommandCaller.cs" />
     <Compile Include="Commands\ISubCommand.cs" />
+    <Compile Include="Configuration\ConfigurationContextNotSetException.cs" />
+    <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
     <Compile Include="Configuration\IConfigurable.cs" />
     <Compile Include="Configuration\IConfigurationElement.cs" />
     <Compile Include="Configuration\IConfiguration.cs" />

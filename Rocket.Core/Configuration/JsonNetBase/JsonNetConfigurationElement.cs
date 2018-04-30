@@ -232,7 +232,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
         public void GuardLoaded()
         {
             if (Node == null)
-                throw new ConfigurationNotLoadedException();
+                throw new ConfigurationNotLoadedException(Root);
         }
 
         public void GuardPath(string path)

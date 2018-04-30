@@ -69,7 +69,6 @@
     <Compile Include="Logging\ProxyLogger.cs" />
     <Compile Include="I18N\LocalizationExtensions.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
-    <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />
     <Compile Include="Configuration\Json\JsonConfiguration.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationSection.cs" />

@@ -12,6 +12,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
         {
             get
             {
+                if (ConfigurationContext == null)
+                    throw new ConfigurationContextNotSetException(this);
                 return System.IO.Path.Combine(ConfigurationContext.WorkingDirectory, ConfigurationContext.ConfigurationName + "." + FileEnding);
             }
         }
