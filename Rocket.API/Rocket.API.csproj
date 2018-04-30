@@ -96,8 +96,6 @@
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\IPluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scheduler\ITaskManager.cs" />
-    <Compile Include="Scheduler\TaskScheduleEvent.cs" />
     <Compile Include="Scheduler\ITaskScheduler.cs" />
     <Compile Include="Scheduler\ITask.cs" />
     <Compile Include="ServiceProxies\IServiceProxy.cs" />

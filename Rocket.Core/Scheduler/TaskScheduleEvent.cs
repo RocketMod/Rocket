@@ -1,6 +1,7 @@
 ﻿using Rocket.API.Eventing;
+using Rocket.API.Scheduler;
 
-namespace Rocket.API.Scheduler
+namespace Rocket.Core.Scheduler
 {
     public class TaskScheduleEvent : Event, ICancellableEvent
     {
