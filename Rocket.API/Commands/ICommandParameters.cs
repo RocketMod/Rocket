@@ -12,38 +12,39 @@ namespace Rocket.API.Commands
     public interface ICommandParameters : IEnumerable<string>
     {
         /// <summary>
-        ///     Returns the n. command parameter.<br />
-        ///     Index must be less than <see cref="Length">length</see> and not negative.<br /><br />
-        ///     This property will never return null.
-        ///     <seealso cref="P:System.Collections.ArrayList.Item(System.Int32)" />
+        ///     Returns the n. command parameter.
+        ///     
+        ///     <para>Index must be less than <see cref="Length">length</see> and not negative.</para>
+        ///     <para>This property will never return null.</para>
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">
-        ///     when <i>index</i> is equal or greater than
+        ///     When <i>index</i> is equal or greater than
         ///     <see cref="Length">length</see> or negative.
         /// </exception>
         /// <param name="index">The zero-based index of the parameter.</param>
-        /// <returns></returns>
+        /// <seealso cref="P:System.Collections.ArrayList.Item(System.Int32)" />
+        /// <returns>the n. command parameter as string.</returns>
         string this[int index] { get; }
 
         /// <summary>
         ///     The length (amount) of the parameters.
-        ///     <br /><br />
-        ///     <b>Example:</b>
-        ///     If the command was entered as "/mycommand test 5 b", it would return "3".
         /// </summary>
+        /// <example>
+        ///     If the command was entered as "/mycommand test 5 b", it would return "3".
+        /// </example>
         int Length { get; }
 
         /// <summary>
-        ///     Gets the parameter value at the given index. The value will parsed to the given type. <br />
-        ///     Types like <i>IPlayer</i>, <i>IOnlinePlayer</i>, etc. are supported.
-        ///     <br /><br />
-        ///     <b>Example:</b>
-        ///     Assume the command was entered as "/mycommand test 5 b". <br />
-        ///     <code>Get&lt;string&gt;(0)</code> would be equal to "test" (string). <br />
-        ///     <code>Get&lt;int&gt;(1)</code> would be equal to 5 (int). <br />
-        ///     <code>Get&lt;string&gt;(1)</code> would be equal to "5" (string). <br />
-        ///     <code>Get&lt;string&gt;(2)</code> would be equal to "b" (string).
+        ///     <para>Gets the parameter value at the given index. The value will parsed to the given type. </para>
+        ///     <para>Types like <i>IPlayer</i>, <i>IOnlinePlayer</i>, etc. are supported.</para>
         /// </summary>
+        /// <example>
+        ///     Assume the command was entered as "/mycommand test 5 b". <br />
+        ///     <c>Get&lt;string&gt;(0)</c> would be equal to "test" (string). <br />
+        ///     <c>Get&lt;int&gt;(1)</c> would be equal to 5 (int). <br />
+        ///     <c>Get&lt;string&gt;(1)</c> would be equal to "5" (string). <br />
+        ///     <c>Get&lt;string&gt;(2)</c> would be equal to "b" (string).
+        /// </example>
         /// <exception cref="ArgumentOutOfRangeException">
         ///     when <i>index</i> is equal or greater than
         ///     <see cref="Length">length</see> or negative.

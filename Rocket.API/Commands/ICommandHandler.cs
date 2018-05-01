@@ -33,7 +33,7 @@ namespace Rocket.API.Commands
 
         /// <summary>
         ///     Gets the associated command instance for the given context.
-        ///     Note that <see cref="ICommandContext.Command" /> might be null.
+        ///     Note that <see cref="ICommandContext.Command">context.Command</see> might be null.
         /// </summary>
         /// <param name="context">The context of the command.</param>
         /// <returns>The associated <see cref="ICommand" /> instance of the context.</returns>

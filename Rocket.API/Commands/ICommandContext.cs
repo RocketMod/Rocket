@@ -8,50 +8,59 @@ namespace Rocket.API.Commands
     public interface ICommandContext
     {
         /// <summary>
-        ///     If the command is a
+        ///     The parent command context for sub commands.
         /// </summary>
+        /// <example>
+        ///     If the command was entered as "/mycommand sub", this will return the parent context with parameters "sub".
+        /// </example>
         ICommandContext ParentCommandContext { get; }
 
         /// <summary>
-        ///     The prefix used to call this command.<br />
-        ///     Useful when sending command usage messages.<br /><br />
-        ///     <b>Example:</b><br />
-        ///     When the command was executed using "/mycommand", it will be "/", when it was executed using "!mycommand", it will
-        ///     be "!".<br /><br />
-        ///     <see cref="ISubCommand">Sub commands</see> include their parents: <br />
-        ///     "/mycommand sub" will return "/mycommand" as prefix.
+        ///     <para>The prefix used to call this (sub) command.</para>
+        ///     <para>Useful when sending command usage messages.</para>
+        ///     <para>
+        ///         <see cref="ISubCommand">Sub commands</see> include their parents.
+        ///     </para>
         /// </summary>
         /// <remarks>
         /// </remarks>
+        /// <example>
+        ///     <para>
+        ///         If the command was executed using "/mycommand", it will be "/", when it was executed using "!mycommand", it will be "!". 
+        ///     </para>
+        ///     <para>
+        ///         If the command was a subcommand "sub", "/mycommand sub" will return "/mycommand" as prefix.
+        ///     </para>
+        /// </example>
         string CommandPrefix { get; }
 
         /// <summary>
-        ///     The alias or name used to execute this command.
+        ///     The alias or name used to execute this (sub) command.
         /// </summary>
         string CommandAlias { get; }
 
         /// <summary>
-        ///     The command associated with the context.
-        ///     <b>This property will never return null.</b>
+        ///     <para>The (sub) command associated with the context.</para>
+        ///     <para><b>This property will never return null.</b></para>
         /// </summary>
         ICommand Command { get; }
 
         /// <summary>
-        ///     The caller of the command.<br />
-        ///     Is guaranteed to be a <see cref="ICommand.SupportsCaller">supported command caller</see>.<br /><br />
-        ///     <b>This property will never return null.</b>
+        ///     <para>The caller of the command.</para>
+        ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsCaller">supported command caller</see>.</para>
+        ///     <para><b>This property will never return null.</b></para>
         /// </summary>
         ICommandCaller Caller { get; }
 
         /// <summary>
-        ///     The parameters of the command.
-        ///     <b>This property will never return null.</b>
+        ///     <para>The parameters of the (sub) command.</para>
+        ///     <para><b>This property will never return null.</b></para>
         /// </summary>
         ICommandParameters Parameters { get; }
 
         /// <summary>
-        ///     The IoC container of the context.
-        ///     <b>This property will never return null.</b>
+        ///     <para>The dependency container of the context.</para>
+        ///     <para><b>This property will never return null.</b></para>
         /// </summary>
         IDependencyContainer Container { get; }
     }

@@ -3,79 +3,98 @@
 namespace Rocket.API.Commands
 {
     /// <summary>
-    ///     Base interface for commands.<br />
-    ///     Commands are usually executed ingame by players or by the console. They are
+    ///     Base interface for commands.
+    ///     <para>
+    ///         Commands are usually executed ingame by players or by the console. They are
     ///     a human interface to plugin functionalities which allow to do specific actions.
-    ///     <br /><br />
-    ///     <b>Example commands: </b>/help, /tp, /heal, etc...
-    ///     <br /><br />
-    ///     In the default implementation, these non abstract classes inheriting this interface are automatically found
-    ///     and registered to the plugin.
-    ///     <br /><br />
-    ///     Usually commands are not called by plugins programatically.
+    ///     </para>
+    ///     <para>
+    ///         <b>Example commands include: </b>/help, !tp, ~heal, etc. (the prefixes like "/", "!", "~" are up to the <see cref="ICommandHandler">command handler</see>).
+    ///     </para>
+    ///     <para> 
+    ///         In the default <see cref="ICommandProvider">command provider</see> implementation, non abstract classes inheriting this interface are automatically found
+    ///         and registered.
+    ///     </para>
+    ///     <para>
+    ///         Usually commands should not be called by plugins programatically.
+    ///     </para>
     /// </summary>
     public interface ICommand
     {
         /// <summary>
-        ///     The primary name of the command, which will be used to execute it.<br />
-        ///     For example, if the name is "Help", the command will be usually be called using "/heal" (or just "heal" in console)
-        ///     <br /><br />
-        ///     The primary name overrides any <see cref="Aliases">aliases</see> of other commands by default.<br /><br />
-        ///     <b>This property must never return null.</b>
+        ///     <para>The primary name of the command, which will be used to execute it.</para>
+        ///     <para>The primary name overrides any <see cref="Aliases">aliases</see> of other commands by default.</para>
+        ///     <para><b>This property must never return null.</b></para>
         /// </summary>
+        /// <example>
+        ///     If the name is "Help", the command will be usually be called using "/heal" (or just "heal" in console)
+        /// </example>
         string Name { get; }
 
         /// <summary>
-        ///     The aliases of the command, which are often shorter versions of the primary name.
-        ///     For example, if the aliases are "h" and "he", the command will be callable using "/h" or "/he" too.<br /><br />
-        ///     <b>This property can return null.</b>
+        ///     <para>The aliases of the command, which are often shorter versions of the primary name.</para>
+        ///     <para><b>This property can return null.</b></para>
         /// </summary>
+        /// <example>
+        ///     If the aliases are "h" and "he", the command will be callable using "/h" or "/he".
+        /// </example>
         string[] Aliases { get; }
 
         /// <summary>
-        ///     The description of the command.<br />
-        ///     Example: <code>"This command heals you or someone else."</code>
-        ///     <b>This proprty can return null</b> but its advised to always include a description for the command.
+        ///     The description of the command. 
+        ///     <para>
+        ///         <b>This proprty can return null</b> but its advised to always include a description for the command.
+        ///     </para>
         /// </summary>
+        /// <example>
+        ///     <c>"This command heals you or someone else."</c>
+        /// </example>
         string Description { get; }
 
         /// <summary>
         ///     The permission required to execute the command.
-        ///     Example: <code>MyPermission.Heal</code>
-        ///     <b>This property can return null.</b><br /><br />
+        ///     <para>
+        ///         <b>This property can return null.</b>
+        ///     </para>
         /// </summary>
         /// <remarks>
         ///     When returning null, the default permission will be used, which depends on the <see cref="ICommandHandler" />
-        ///     implementation.<br />
-        ///     The default CommandHandler uses {PluginName}.{CommandName} (e.g. "MyPlugin.Heal") as permission.
+        ///     implementation.
+        ///     <para>
+        ///         The default CommandHandler uses {PluginName}.{CommandName} (e.g. "MyPlugin.Heal") as permission.
+        ///     </para>
         /// </remarks>
+        /// <example>
+        ///     <c>"MyPermission.Heal"</c>
+        /// </example>
         string Permission { get; }
 
         /// <summary>
         ///     The command syntax will be shown to the <see cref="ICommandCaller" /> when the command was not used correctly.
-        ///     <br /><br />
-        ///     <b>Example usage:</b> <code>"[player] &lt;amount&gt;"</code>
-        ///     An output for the above example could be "/heal [player] &lt;amount&gt;".<br /><br />
-        ///     <b>This property must never return null.</b>
+        ///     <para>An output for the above example could be "/heal [player] &lt;amount&gt;".</para>
+        ///     <para><b>This property must never return null.</b></para>
         /// </summary>
         /// <remarks>
         ///     [...] means optional argument and &lt;...&gt; means required argument, so in this case "player" is an optional
         ///     argument while "amount" is a required one.
         /// </remarks>
+        /// <example>
+        ///     <c>"[player] &lt;amount&gt;"</c>
+        /// </example>
         string Syntax { get; }
 
         /// <summary>
-        ///     The child commands of this command. <br /><br />
-        ///     <b>Example:</b><br />
-        ///     Assume a command was entered as "/mycommand sub". If the <see cref="Name">name</see> or an
+        ///     The child commands of this command. Child commands override the <see cref="Execute"/> method in some cases (see examples).
+        ///     <para><b>This property can return null.</b></para>
+        ///     <seealso cref="ISubCommand" />
+        /// </summary>
+        /// <example>
+        ///     Assume a command was entered as "/mycommand sub 1 2". If the <see cref="Name">name</see> or an
         ///     <see cref="Aliases">alias</see> of this command equals "mycommand" and a child command with the
         ///     <see cref="Name">name</see>
         ///     or an <see cref="Aliases">alias</see> "sub" exists, then the <see cref="Execute">Execute</see> method of the child
-        ///     command will be called.
-        ///     The <see cref="Execute">Execute</see> method of the parent will not be called.<br /><br />
-        ///     <b>This property can return null.</b><br /><br />
-        ///     <seealso cref="ISubCommand" />
-        /// </summary>
+        ///     command will be called with "1" and "2" as parameters, while the <see cref="Execute">Execute</see> method of the parent will not be called.
+        /// </example>
         ISubCommand[] ChildCommands { get; }
 
         /// <summary>
@@ -87,11 +106,13 @@ namespace Rocket.API.Commands
         bool SupportsCaller(Type commandCaller);
 
         /// <summary>
-        ///     This method is called when a command caller wants to execute this command.<br /><br />
-        ///     <b>Example</b><br />
-        ///     Assume a command was entered as "/mycommand". If the <see cref="Name">name</see> or
-        ///     an <see cref="Aliases">alias</see> of this command equals "mycommand", then this method will be executed.
+        ///     Executes the command if no sub command is involved.
         /// </summary>
+        /// <example>
+        ///     Assume a command was entered as "/mycommand" (also assuming the command prefix is "/"). If the <see cref="Name">name</see> or
+        ///     an <see cref="Aliases">alias</see> of this command equals "mycommand", then this method will be executed.
+        /// </example>
+        /// <seealso cref="ChildCommands"/>
         /// <param name="context">The <see cref="ICommandContext">context</see> of the command.</param>
         void Execute(ICommandContext context);
     }

@@ -9,9 +9,9 @@ namespace Rocket.API.Commands
     public interface ICommandCaller : IIdentifiable
     {
         /// <summary>
-        ///     The type of the command caller. Wrappers should declare their parents, everything else should declare itself.<br />
-        ///     <br />
-        ///     <b>This property will never return null.</b>
+        ///     <para>The type of the command caller.</para> 
+        ///     <para>Inheriting classes should declare their parent, everything else should declare itself.</para>
+        ///     <para><b>This property will never return null.</b></para>
         /// </summary>
         Type CallerType { get; }
 
