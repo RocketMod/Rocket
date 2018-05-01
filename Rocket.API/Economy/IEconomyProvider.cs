@@ -116,7 +116,7 @@ namespace Rocket.API.Economy
         bool DeleteAccount(IEconomyAccount account);
 
         /// <summary>
-        ///     All currencies.
+        ///     All currencies. Contains at least one element.
         /// </summary>
         IEnumerable<IEconomyCurrrency> Currencies { get; }
 
@@ -126,5 +126,10 @@ namespace Rocket.API.Economy
         /// <param name="owner">The user whose accounts to get.</param>
         /// <returns>the accounts of the given user</returns>
         IEnumerable<IEconomyAccount> GetAccounts(IIdentifiable owner);
+
+        /// <summary>
+        ///     The default currency. Will never return null.
+        /// </summary>
+        IEconomyCurrrency DefaultCurrrency { get; }
     }
 }
