@@ -63,6 +63,8 @@
     <Compile Include="Configuration\IConfigurationSection.cs" />
     <Compile Include="Configuration\SectionType.cs" />
     <Compile Include="DependencyInjection\ServiceResolutionFailedException.cs" />
+    <Compile Include="Economy\IEconomyAccount.cs" />
+    <Compile Include="Economy\IEconomyCurrrency.cs" />
     <Compile Include="Economy\IEconomyProvider.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />

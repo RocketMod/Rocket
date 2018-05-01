@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rocket.API.Commands;
+using Rocket.API.Permissions;
 
 namespace Rocket.API.Economy
 {
@@ -9,53 +11,120 @@ namespace Rocket.API.Economy
     public interface IEconomyProvider
     {
         /// <summary>
-        ///     Get a command callers balance.
+        ///     Get a command callers total balance.
         /// </summary>
-        /// <param name="caller">the account owner.</param>
+        /// <param name="owner">The account owner.</param>
         /// <returns>the balance of the command caller.</returns>
-        decimal GetBalance(ICommandCaller caller);
+        decimal GetTotalBalance(IIdentifiable owner);
 
         /// <summary>
         ///     Adds balance to the command callers account.
         /// </summary>
-        /// <param name="caller">the account owner.</param>
-        /// <param name="amount">the amount to add. Should not be negative.</param>
-        /// <param name="reason">the reason of transaction.</param>
-        void AddBalance(ICommandCaller caller, decimal amount, string reason = null);
+        /// <param name="owner">The account owner.</param>
+        /// <param name="amount">The amount to add. Should not be negative.</param>
+        /// <param name="reason">The reason of the transaction.</param>
+        void AddBalance(IIdentifiable owner, decimal amount, string reason = null);
+
+        /// <summary>
+        ///     Adds balance to the given account.
+        /// </summary>
+        /// <param name="amount">The amount to add. Should not be negative.</param>
+        /// <param name="account">The account to add balance to.</param>
+        /// <param name="reason">The reason of the transaction.</param>
+        void AddBalance(IEconomyAccount account, decimal amount, string reason = null);
 
         /// <summary>
         ///     Removes balance from the command callers account.
         /// </summary>
-        /// <param name="caller">the account owner.</param>
-        /// <param name="amount">the amount to remove. Should not be negative.</param>
-        /// <param name="reason">the reason of transaction.</param>
+        /// <param name="caller">The account owner.</param>
+        /// <param name="amount">The amount to remove. Should not be negative.</param>
+        /// <param name="reason">The reason of the transaction.</param>
+        /// <seealso cref="SupportsNegativeBalance(Rocket.API.Commands.ICommandCaller)"/>
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
         bool RemoveBalance(ICommandCaller caller, decimal amount, string reason = null);
+
+
+        /// <summary>
+        ///     Removes balance from the command callers account based on a specific currency.
+        /// </summary>
+        /// <param name="amount">The amount to remove. Should not be negative.</param>
+        /// <param name="reason">The reason of the transaction.</param>
+        /// <param name="account">The account to remove balance from.</param>
+        /// <seealso cref="SupportsNegativeBalance(Rocket.API.Commands.ICommandCaller)"/>
+        /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
+        bool RemoveBalance(IEconomyAccount account, decimal amount, string reason = null);
 
         /// <summary>
         ///     Sets the balance of the command callers account.
         /// </summary>
         /// <param name="caller">The account owner.</param>
-        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance"/>.</param>
+        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(ICommandCaller)"/>.</param>
         void SetBalance(ICommandCaller caller, decimal amount);
 
         /// <summary>
-        ///     Defines if the account of the command caller can have negative balance.
+        ///     Sets the balance of the command callers account in a specific currency.
+        /// </summary>
+        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(ICommandCaller)"/>.</param>
+        /// <param name="account">The account to set the balance of.</param>
+        void SetBalance(IEconomyAccount account, decimal amount);
+
+        /// <summary>
+        ///     Checks if the account of the command caller can have negative balance.
         /// </summary>
         /// <param name="caller"></param>
         /// <returns><b>true</b> if the account can have negative balance; otherwise, <b>false</b>.</returns>
         bool SupportsNegativeBalance(ICommandCaller caller);
 
         /// <summary>
-        ///     Defines if this provider supports the given command caller.
+        ///     Checks if the account of the command caller can have negative balance.
         /// </summary>
-        /// <param name="commandCaller">The command caller to check.</param>
-        /// <returns><b>true</b> if the command caller is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsCaller(Type commandCaller);
+        /// <param name="account">Checks if the given account has access.</param>
+        /// <returns><b>true</b> if the account can have negative balance; otherwise, <b>false</b>.</returns>
+        bool SupportsNegativeBalance(IEconomyAccount account);
 
         /// <summary>
-        ///     The current currency name.
+        ///     Defines if this provider supports the given user.
         /// </summary>
-        string CurrencyName { get; }
+        /// <param name="user">The <see cref="IIdentifiable"/> to check.</param>
+        /// <returns><b>true</b> if the command caller is supported; otherwise, <b>false</b>.</returns>
+        bool SupportsUser(Type user);
+
+        /// <summary>
+        ///     Creates an account.
+        /// </summary>
+        /// <param name="owner">The owner of the account.</param>
+        /// <param name="name">The name of the account.</param>
+        /// <param name="account">The account instance if it was created; otherwise, <b>null</b>.</param>
+        /// <returns><b>true</b> if the account could be created; otherwise, <b>false</b>.</returns>
+        bool CreateAccount(IIdentifiable owner, string name, out IEconomyAccount account);
+
+        /// <summary>
+        ///     Creates an account.
+        /// </summary>
+        /// <param name="owner">The owner of the account.</param>
+        /// <param name="name">The name of the account.</param>
+        /// <param name="currency">The accounts currency.</param>
+        /// <param name="account">The account instance if it was created; otherwise, <b>null</b>.</param>
+        /// <returns><b>true</b> if the account could be created; otherwise, <b>false</b>.</returns>
+        bool CreateAccount(IIdentifiable owner, string name, IEconomyCurrrency currency, out IEconomyAccount account);
+
+        /// <summary>
+        ///     Deletes an account.
+        /// </summary>
+        /// <param name="account">The account to delete.</param>
+        /// <returns><b>true</b> if the account could be deleted; otherwise, <b>false</b>.</returns>
+        bool DeleteAccount(IEconomyAccount account);
+
+        /// <summary>
+        ///     All currencies.
+        /// </summary>
+        IEnumerable<IEconomyCurrrency> Currencies { get; }
+
+        /// <summary>
+        ///     Gets the accounts of the given user. Can return an empty set.
+        /// </summary>
+        /// <param name="owner">The user whose accounts to get.</param>
+        /// <returns>the accounts of the given user</returns>
+        IEnumerable<IEconomyAccount> GetAccounts(IIdentifiable owner);
     }
 }
