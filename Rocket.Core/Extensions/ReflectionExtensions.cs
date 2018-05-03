@@ -24,12 +24,15 @@ namespace Rocket.Core.Extensions
 
         public static MethodBase GetCallingMethod(params Type[] skipTypes)
         {
+            var list = skipTypes?.ToList() ?? new List<Type>();
+            list.Add(typeof(ReflectionExtensions));
+
             StackTrace st = new StackTrace();
             StackFrame target = null;
             for (int i = 0; i < st.FrameCount; i++)
             {
                 StackFrame frame = st.GetFrame(i);
-                if (skipTypes.Any(c => c == frame.GetMethod()?.DeclaringType))
+                if (list.Any(c => c == frame.GetMethod()?.DeclaringType))
                     continue;
 
                 target = frame;
