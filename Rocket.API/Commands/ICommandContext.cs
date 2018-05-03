@@ -16,6 +16,11 @@ namespace Rocket.API.Commands
         ICommandContext ParentCommandContext { get; }
 
         /// <summary>
+        ///     The root command context.
+        /// </summary>
+        ICommandContext RootCommandContext { get; }
+
+        /// <summary>
         ///     <para>The prefix used to call this (sub) command.</para>
         ///     <para>Useful when sending command usage messages.</para>
         ///     <para>

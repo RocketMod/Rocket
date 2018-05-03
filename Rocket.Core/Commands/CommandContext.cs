@@ -11,13 +11,15 @@ namespace Rocket.Core.Commands
                               ICommand command,
                               string commandAlias,
                               string[] parameters,
-                              ICommandContext parentCommandContext)
+                              ICommandContext parentCommandContext, 
+                              ICommandContext rootCommandContext)
         {
             Container = container;
             Caller = caller;
             Command = command;
             CommandAlias = commandAlias;
             ParentCommandContext = parentCommandContext;
+            RootCommandContext = rootCommandContext ?? this;
             Parameters = new CommandParameters(container, parameters);
             CommandPrefix = commandPrefix;
         }
@@ -25,6 +27,7 @@ namespace Rocket.Core.Commands
         public ICommand Command { get; internal set; }
         public ICommandCaller Caller { get; }
         public ICommandContext ParentCommandContext { get; }
+        public ICommandContext RootCommandContext { get; }
         public string CommandPrefix { get; }
         public string CommandAlias { get; }
         public ICommandParameters Parameters { get; }

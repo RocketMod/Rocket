@@ -28,7 +28,7 @@ namespace Rocket.Core.Commands
 
             CommandContext context = new CommandContext(contextContainer,
                 caller, prefix, null,
-                args[0], args.Skip(1).ToArray(), null);
+                args[0], args.Skip(1).ToArray(), null, null);
 
             ICommand target = GetCommand(context);
             if (target == null)
@@ -37,7 +37,7 @@ namespace Rocket.Core.Commands
             context.Command = target;
 
             List<ICommand> tree = new List<ICommand> {target};
-            context = GetChild(context, tree);
+            context = GetChild(context, context, tree);
 
             //Builds a defalt permission
             //If the command is "A" with sub command "B", the default permission will be "A.B"
@@ -88,7 +88,7 @@ namespace Rocket.Core.Commands
                    .FirstOrDefault(c => Equals(c, context.CommandAlias));
         }
 
-        private CommandContext GetChild(CommandContext parent, List<ICommand> tree)
+        private CommandContext GetChild(CommandContext root, CommandContext parent, List<ICommand> tree)
         {
             if (parent.Command?.ChildCommands == null || parent.Parameters.Length == 0)
                 return parent;
@@ -110,10 +110,11 @@ namespace Rocket.Core.Commands
                         cmd,
                         alias,
                         ((CommandParameters) parent.Parameters).Parameters.Skip(1).ToArray(),
-                        parent
+                        parent,
+                        root
                     );
 
-                    return GetChild(childContext, tree);
+                    return GetChild(root, childContext, tree);
                 }
             }
 
