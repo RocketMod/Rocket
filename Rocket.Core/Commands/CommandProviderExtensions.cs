@@ -19,7 +19,7 @@ namespace Rocket.Core.Commands
 
             return commands
                    .Where(c => caller == null || c.SupportsCaller(caller.GetType()))
-                   .FirstOrDefault(c => c.Aliases.Any(a => a.Equals(commandName, StringComparison.OrdinalIgnoreCase)));
+                   .FirstOrDefault(c => c.Aliases != null && c.Aliases.Any(a => a.Equals(commandName, StringComparison.OrdinalIgnoreCase)));
         }
     }
 }

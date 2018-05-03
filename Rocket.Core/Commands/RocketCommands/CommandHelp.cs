@@ -39,7 +39,8 @@ namespace Rocket.Core.Commands.RocketCommands
 
                     if (cmd == null || !HasAccess(cmd, context.Caller, permissionProvider))
                     {
-                        throw new CommandWrongUsageException("(Sub-)Command was not found: " + prefix);
+                        context.Caller.SendMessage("Command was not found: " + prefix + commandNode, ConsoleColor.Red);
+                        return;
                     }
 
                     childs = cmd.ChildCommands;
