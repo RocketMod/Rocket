@@ -1,16 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rocket.API;
+using System.Linq;
 using Rocket.API.Commands;
+using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Commands
 {
     public class RocketCommandProvider : ICommandProvider
     {
-        public RocketCommandProvider(IRuntime runtime)
+        public RocketCommandProvider()
         {
-            IEnumerable<Type> types = runtime.FindTypes<ICommand>(false);
+            var types = (typeof(RocketCommandProvider).Assembly.FindTypes<ICommand>())
+                .Where(c => c.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Length == 0);
 
             List<ICommand> list = new List<ICommand>();
             foreach (Type type in types)

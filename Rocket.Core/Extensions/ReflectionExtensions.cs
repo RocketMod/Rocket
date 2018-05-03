@@ -58,6 +58,7 @@ namespace Rocket.Core.Extensions
                                                      bool includeAbstractAndInterfaces = false)
             => @object.GetType().Assembly.FindAllTypes(includeAbstractAndInterfaces);
 
+
         public static IEnumerable<Type> FindAllTypes(this Assembly @object, bool includeAbstractAndInterfaces = false)
         {
             try
@@ -69,6 +70,11 @@ namespace Rocket.Core.Extensions
             {
                 return e.Types.Where(t => t != null);
             }
+        }
+
+        public static IEnumerable<Type> FindTypes<T>(this Assembly @object, bool includeAbstractAndInterfaces = false)
+        {
+            return FindAllTypes(@object).Where(c => typeof(T).IsAssignableFrom(c));
         }
 
         public static IEnumerable<Type> GetTypesWithInterface<TInterface>(this Assembly assembly)
