@@ -27,7 +27,6 @@ namespace Rocket.Core.Plugins
         private readonly IDependencyContainer container;
 
         private readonly IEventManager eventManager;
-        private readonly IImplementation implementation;
         private readonly ILogger logger;
         private readonly IDependencyContainer parentContainer;
         private readonly IDependencyResolver resolver;
@@ -40,11 +39,10 @@ namespace Rocket.Core.Plugins
         private string pluginsDirectory;
        
         public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger,
-                             IEventManager eventManager, IRuntime runtime, IImplementation implementation)
+                             IEventManager eventManager, IRuntime runtime)
         {
             logger.LogFatal("constructing");
             this.runtime = runtime;
-            this.implementation = implementation;
             this.resolver = resolver;
             this.logger = logger;
             this.eventManager = eventManager;
@@ -65,6 +63,8 @@ namespace Rocket.Core.Plugins
 
         public virtual void Init()
         {
+            var implementation = container.Resolve<IImplementation>();
+
             pluginsDirectory = Path.Combine(implementation.WorkingDirectory, "Plugins");
             packagesDirectory = Path.Combine(implementation.WorkingDirectory, "Packages");
 
