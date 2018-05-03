@@ -5,12 +5,13 @@ using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.ServiceProxies
 {
-    public abstract class ServiceProxy<T> : IServiceProxy<T> where T : IProxyableService
+    public abstract class ServiceProxy<T> : IServiceProxy<T> where T : class, IProxyableService
     {
         protected ServiceProxy(IDependencyContainer container)
         {
             if (!(this is T))
-                throw new Exception("Service proxy has to extend " + typeof(T).FullName + "!");
+                throw new Exception($"{GetType().FullName} service proxy has to inherit from {typeof(T).FullName}!");
+
             Container = container;
         }
 

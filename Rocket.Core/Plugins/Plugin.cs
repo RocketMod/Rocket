@@ -25,7 +25,7 @@ namespace Rocket.Core.Plugins
         protected IEventManager EventManager => Container.Resolve<IEventManager>();
         protected ILogger Logger => Container.Resolve<ILogger>();
 
-        protected IPluginManager PluginManager => Container.Resolve<IPluginManager>();
+        protected virtual IPluginManager PluginManager => Container.Resolve<IPluginManager>("default_plugins");
 
         protected IRuntime Runtime => Container.Resolve<IRuntime>();
 
