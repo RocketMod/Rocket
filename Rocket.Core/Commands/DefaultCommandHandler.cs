@@ -90,7 +90,7 @@ namespace Rocket.Core.Commands
 
         private CommandContext GetChild(CommandContext parent, List<ICommand> tree)
         {
-            if (parent.Command?.ChildCommands == null)
+            if (parent.Command?.ChildCommands == null || parent.Parameters.Length == 0)
                 return parent;
 
             foreach (ISubCommand cmd in parent.Command.ChildCommands)
