@@ -244,13 +244,24 @@ namespace Rocket.Core.Permissions
             ConfigurationContext groupsContext = new ConfigurationContext(context);
             groupsContext.ConfigurationName += ".Groups";
             GroupsConfig.ConfigurationContext = groupsContext;
-
-            GroupsConfig.LoadEmpty();
+            GroupsConfig.Load(new
+            {
+                DefaultGroup = new
+                {
+                    Name = "Default",
+                    Priority = 0,
+                    Permissions = new[]
+                    {
+                        "SomePermission",
+                        "SomePermission.Other"
+                    }
+                }
+            });
 
             ConfigurationContext playersContext = new ConfigurationContext(context);
             playersContext.ConfigurationName += ".Players";
             PlayersConfig.ConfigurationContext = playersContext;
-            PlayersConfig.LoadEmpty();
+            PlayersConfig.Load(new { });
         }
 
         public void Reload()

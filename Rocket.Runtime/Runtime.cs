@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
+using Rocket.API.Permissions;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Logging;
 
@@ -22,7 +23,12 @@ namespace Rocket
                      .LogInformation("Initializing RocketMod " + versionInfo.FileVersion, ConsoleColor.DarkGreen);
 
             Container.Activate(typeof(RegistrationByConvention));
-            Container.Resolve<IImplementation>().Init(this);
+
+            var permissions = Container.Resolve<IPermissionProvider>();
+            var impl = Container.Resolve<IImplementation>();
+           
+            permissions.Load(this);
+            impl.Init(this);
         }
 
         public IDependencyResolver Resolver { get; private set; }
@@ -31,7 +37,7 @@ namespace Rocket
 
         public bool IsAlive => true;
         public string Name => "Rocket.Runtime";
-        public string WorkingDirectory { get; } = Environment.CurrentDirectory;
+        public string WorkingDirectory => Container.Resolve<IImplementation>().WorkingDirectory;
         public string ConfigurationName { get; } = "Rocket";
 
         public static IRuntime Bootstrap() => new Runtime();

@@ -125,7 +125,7 @@ namespace Rocket.Core.Permissions
 
         public void Load(IConfigurationContext context)
         {
-            throw new NotSupportedException("Loading from proxy is not supported.");
+            ProxiedServices.ForEach(c => c.Load(context));
         }
 
         public void Reload()
