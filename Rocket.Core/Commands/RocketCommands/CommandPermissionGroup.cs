@@ -8,12 +8,12 @@ namespace Rocket.Core.Commands.RocketCommands
 {
     public class CommandPermissionGroup : ICommand
     {
-        public string Syntax { get; }
+        public string Syntax => "<add/remove> <player> <group>";
 
         public ISubCommand[] ChildCommands => new ISubCommand[]
             {new PermissionGroupSubCommandAdd(), new PermissionGroupSubCommandRemove()};
 
-        public string Description { get; }
+        public string Description => "Manages permission groups";
 
         public string[] Aliases => new[] {"PG"};
 
@@ -69,7 +69,7 @@ namespace Rocket.Core.Commands.RocketCommands
     public class PermissionGroupSubCommandAdd : PermissionGroupSubCommandUpdate
     {
         public override string Name => "Add";
-        public override string Description => "Add a player to a permission group";
+        public override string Description => "Adds a player to a permission group";
         public override string Permission => "Rocket.Permissions.ManageGroups.Add";
         public override string[] Aliases => new[] {"a", "+"};
 
@@ -87,7 +87,7 @@ namespace Rocket.Core.Commands.RocketCommands
     public class PermissionGroupSubCommandRemove : PermissionGroupSubCommandUpdate
     {
         public override string Name => "Remove";
-        public override string Description => "Remove a player from a permission group";
+        public override string Description => "Removes a player from a permission group";
         public override string Permission => "Rocket.Permissions.ManageGroups.Remove";
         public override string[] Aliases => new[] {"r", "-"};
 

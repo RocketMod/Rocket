@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Rocket.ConsoleImplementation
+﻿namespace Rocket.ConsoleImplementation
 {
     internal class Program
     {

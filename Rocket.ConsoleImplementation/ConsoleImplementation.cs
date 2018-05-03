@@ -24,13 +24,15 @@ namespace Rocket.ConsoleImplementation
             runtime.Container.Resolve<IPluginManager>().Init();
             ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
 
-            Console.WriteLine("Loaded; type \"exit\" (without quotes) to exit.");
+            Console.WriteLine("Loaded; type \"help\" for help or \"exit\" to exit.");
+            Console.Write(">");
 
             string line;
             while (!(line = Console.ReadLine())?.Equals("exit", StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 if(!cmdHandler.HandleCommand(ConsoleCommandCaller, line, ""))
                     Console.WriteLine("Command not found: " + line);
+                Console.Write(">");
             }
         }
 

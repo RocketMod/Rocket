@@ -25,11 +25,11 @@ namespace Rocket.Core.Commands.RocketCommands
             var permissionProvider = context.Container.Resolve<IPermissionProvider>();
 
             var rootPrefix = context.RootCommandContext.CommandPrefix;
+            IEnumerable<ICommand> childs = cmdProvider.Commands.OrderBy(c => c.Name);
 
             if (context.Parameters.Length > 0)
             {
                 ICommand cmd = null;
-                IEnumerable<ICommand> childs = cmdProvider.Commands;
                 string prefix = rootPrefix;
 
                 int i = 0;
@@ -43,7 +43,7 @@ namespace Rocket.Core.Commands.RocketCommands
                         return;
                     }
 
-                    childs = cmd.ChildCommands;
+                    childs = cmd.ChildCommands.OrderBy(c => c.Name).Cast<ICommand>();
                     if (i != context.Parameters.Length - 1)
                         prefix += commandNode + " ";
                     i++;
@@ -54,6 +54,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 var childCommands =
                     (cmd.ChildCommands?.Cast<ICommand>().ToList() ?? new List<ICommand>())
                     .Where(c => HasAccess(c, context.Caller, permissionProvider))
+                    .OrderBy(c => c.Name)
                     .ToList();
 
                 if (childCommands.Count == 0)
@@ -68,7 +69,9 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            foreach (var cmd in cmdProvider.Commands)
+            context.Caller.SendMessage("Available commands: ", ConsoleColor.Green);
+
+            foreach (var cmd in cmdProvider.Commands.OrderBy(c => c.Name))
             {
                 if (HasAccess(cmd, context.Caller, permissionProvider))
                     context.Caller.SendMessage(GetCommandUsage(cmd, rootPrefix), ConsoleColor.Blue);

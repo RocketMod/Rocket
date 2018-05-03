@@ -8,10 +8,10 @@ namespace Rocket.Core.Commands.RocketCommands
 {
     public class CommandPermission : ICommand
     {
-        public string Name => "PermissionGroup";
+        public string Name => "Permission";
         public string Permission => "Rocket.Permissions.ManagePermissions";
         public string Syntax => "<add/remove/reload>";
-        public string Description => "Manage rocket permissions";
+        public string Description => "Manages rocket permissions";
 
         public ISubCommand[] ChildCommands => new ISubCommand[]
             {new PermissionSubCommandAdd(), new PermissionSubCommandRemove(), new PermissionSubCommandReload()};
@@ -93,7 +93,7 @@ namespace Rocket.Core.Commands.RocketCommands
     public class PermissionSubCommandAdd : PermissionSubCommandUpdate
     {
         public override string Name => "Add";
-        public override string Description => "Add a permission to a group or player";
+        public override string Description => "Adds a permission to a group or player";
         public override string Permission => "Rocket.Permissions.ManagePermissions.Add";
         public override string[] Aliases => new[] {"a", "+"};
 
@@ -111,7 +111,7 @@ namespace Rocket.Core.Commands.RocketCommands
     public class PermissionSubCommandRemove : PermissionSubCommandUpdate
     {
         public override string Name => "Remove";
-        public override string Description => "Remove permission to a group or player";
+        public override string Description => "Removes permission from a group or player";
         public override string Permission => "Rocket.Permissions.ManagePermissions.Remove";
         public override string[] Aliases => new[] {"r", "-"};
 
@@ -130,7 +130,7 @@ namespace Rocket.Core.Commands.RocketCommands
     public class PermissionSubCommandReload : ISubCommand
     {
         public string Name => "Reload";
-        public string Description => "Reload permissions";
+        public string Description => "Reloads permissions";
         public string Permission => "Rocket.Permissions.ManagePermissions.Reload";
         public string Syntax => "";
         public ISubCommand[] ChildCommands => null;

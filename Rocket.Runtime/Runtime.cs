@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
@@ -19,14 +20,55 @@ namespace Rocket
             Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
 
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
-            Container.Resolve<ILogger>()
-                     .LogInformation("Initializing RocketMod " + versionInfo.FileVersion, ConsoleColor.DarkGreen);
+
+            var logger = Container.Resolve<ILogger>();
+
+            logger.LogInformation("Initializing RocketMod " + versionInfo.FileVersion, ConsoleColor.DarkGreen);
+
+            logger.LogInformation(@"                                    
+									
+                                                           ,:
+                                                         ,' |
+                                                        /   :
+                                                     --'   /
+                                                     \/ />/
+                                                     / <//_\        
+                                                  __/   /           
+                                                  )'-. /
+                                                  ./  :\
+                                                   /.' '
+                                                 '/'
+                                                 +
+                                                '
+                                              `.
+                                          .-"" -
+                                         (    |
+                                      . .- '  '.
+                                     ((.   )8:
+                                 .'    / (_  )
+                                  _. :(.   )8P  `
+                              .  (  `-' (  `.   .
+                               .  :  (   .a8a)
+                              / _`(""a `a. )""'
+                          ((/  .  ' )=='
+                         ((    )  .8""   +
+                           (`'8a.( _(   (
+                        ..-. `8P) `  ) +
+                      -'   (      -ab:  )
+                    '    _  `    (8P""Ya
+                  _((    )b -`.  ) +
+                 (8)(_.aP"" _a   \( \   *
+               +  ) / (8P(88))
+                  (""     `""       `", ConsoleColor.Cyan);
 
             Container.Activate(typeof(RegistrationByConvention));
 
             var permissions = Container.Resolve<IPermissionProvider>();
             var impl = Container.Resolve<IImplementation>();
-           
+
+            if (!Directory.Exists(WorkingDirectory))
+                Directory.CreateDirectory(WorkingDirectory);
+
             permissions.Load(this);
             impl.Init(this);
         }
@@ -37,7 +79,17 @@ namespace Rocket
 
         public bool IsAlive => true;
         public string Name => "Rocket.Runtime";
-        public string WorkingDirectory => Container.Resolve<IImplementation>().WorkingDirectory;
+        public string WorkingDirectory
+        {
+            get
+            {
+                var implDir = Container.Resolve<IImplementation>().WorkingDirectory;
+                if (Path.GetDirectoryName(implDir) != "Rocket")
+                    return Path.Combine(implDir, "Rocket");
+                return implDir;
+            }
+        }
+
         public string ConfigurationName { get; } = "Rocket";
 
         public static IRuntime Bootstrap() => new Runtime();

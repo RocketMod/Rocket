@@ -11,7 +11,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Permission => "Rocket.ManageRocket";
         public string Syntax => "<reload>";
 
-        public string Description => "Manage Rocket";
+        public string Description => "Manages RocketMod";
         public string[] Aliases => null;
         public ISubCommand[] ChildCommands => new ISubCommand[] {new RocketSubCommandReload()};
 
@@ -26,7 +26,7 @@ namespace Rocket.Core.Commands.RocketCommands
     public class RocketSubCommandReload : ISubCommand
     {
         public string Name => "Reload";
-        public string Description => "Reload Rocket";
+        public string Description => "Reloads RocketMod";
         public string Permission => "Rocket.ManageRocket.Reload";
         public string Syntax => "";
         public ISubCommand[] ChildCommands => null;

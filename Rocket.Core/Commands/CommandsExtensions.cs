@@ -5,7 +5,7 @@ using Rocket.API.Commands;
 
 namespace Rocket.Core.Commands
 {
-    public static class CommandProviderExtensions
+    public static class CommandsExtensions
     {
         public static ICommand GetCommand(this IEnumerable<ICommand> commandsEnumerable,string commandName, ICommandCaller caller)
         {
