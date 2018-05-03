@@ -41,7 +41,6 @@ namespace Rocket.Core.Plugins
         public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger,
                              IEventManager eventManager, IRuntime runtime)
         {
-            logger.LogFatal("constructing");
             this.runtime = runtime;
             this.resolver = resolver;
             this.logger = logger;
