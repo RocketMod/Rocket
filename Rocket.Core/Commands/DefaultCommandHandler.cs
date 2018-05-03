@@ -123,7 +123,7 @@ namespace Rocket.Core.Commands
         private bool Equals(ICommand command, string alias)
         {
             return command.Name.Equals(alias, StringComparison.OrdinalIgnoreCase)
-                || command.Aliases.Any(x => x.Equals(alias, StringComparison.OrdinalIgnoreCase));
+                || (command.Aliases?.Any(x => x.Equals(alias, StringComparison.OrdinalIgnoreCase)) ?? false);
         }
 
         private void GuardCaller(ICommandCaller caller)
