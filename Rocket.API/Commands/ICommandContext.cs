@@ -9,6 +9,7 @@ namespace Rocket.API.Commands
     {
         /// <summary>
         ///     The parent command context for sub commands.
+        ///     <para><b>This property can return null.</b></para>
         /// </summary>
         /// <example>
         ///     If the command was entered as "/mycommand sub", this will return the parent context with parameters "sub".
@@ -17,6 +18,7 @@ namespace Rocket.API.Commands
 
         /// <summary>
         ///     The root command context.
+        ///     <para><b>This property will never return null.</b></para>
         /// </summary>
         ICommandContext RootCommandContext { get; }
 

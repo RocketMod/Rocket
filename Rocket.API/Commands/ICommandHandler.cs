@@ -30,13 +30,5 @@ namespace Rocket.API.Commands
         /// <param name="commandCaller">The <see cref="ICommandCaller">command caller</see> type to check.</param>
         /// <returns><b>true</b> if the command caller type is supported; otherwise, <b>false</b>.</returns>
         bool SupportsCaller(Type commandCaller);
-
-        /// <summary>
-        ///     Gets the associated command instance for the given context.
-        ///     Note that <see cref="ICommandContext.Command">context.Command</see> might be null.
-        /// </summary>
-        /// <param name="context">The context of the command.</param>
-        /// <returns>The associated <see cref="ICommand" /> instance of the context.</returns>
-        ICommand GetCommand(ICommandContext context);
     }
 }

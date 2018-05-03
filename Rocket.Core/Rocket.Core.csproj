@@ -63,11 +63,13 @@
     <Compile Include="Commands\CommandCaller.cs" />
     <Compile Include="Commands\CommandContext.cs" />
     <Compile Include="Commands\CommandParameters.cs" />
+    <Compile Include="Commands\CommandProviderExtensions.cs" />
     <Compile Include="Commands\CommandWrongUsageException.cs" />
     <Compile Include="Commands\DefaultCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandProvider.cs" />
+    <Compile Include="Commands\RocketCommands\CommandHelp.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />

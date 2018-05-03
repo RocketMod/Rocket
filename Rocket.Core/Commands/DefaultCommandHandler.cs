@@ -30,7 +30,7 @@ namespace Rocket.Core.Commands
                 caller, prefix, null,
                 args[0], args.Skip(1).ToArray(), null, null);
 
-            ICommand target = GetCommand(context);
+            ICommand target = context.Container.Resolve<ICommandProvider>().Commands.GetCommand(context.CommandAlias, caller);
             if (target == null)
                 return false; // only return false when the command was not found
 
@@ -78,53 +78,34 @@ namespace Rocket.Core.Commands
 
         public bool SupportsCaller(Type commandCaller) => true;
 
-        public ICommand GetCommand(ICommandContext context)
+        private CommandContext GetChild(CommandContext root, CommandContext context, List<ICommand> tree)
         {
-            GuardCaller(context.Caller);
+            if (context.Command?.ChildCommands == null || context.Parameters.Length == 0)
+                return context;
 
-            IEnumerable<ICommand> commands = container.Resolve<ICommandProvider>().Commands;
-            return commands
-                   .Where(c => c.SupportsCaller(context.Caller.GetType()))
-                   .FirstOrDefault(c => Equals(c, context.CommandAlias));
-        }
+            var alias = context.Parameters[0];
+            var cmd = context.Command.ChildCommands.GetCommand(alias, context.Caller);
 
-        private CommandContext GetChild(CommandContext root, CommandContext parent, List<ICommand> tree)
-        {
-            if (parent.Command?.ChildCommands == null || parent.Parameters.Length == 0)
-                return parent;
+            if (cmd == null)
+                return context;
 
-            foreach (ISubCommand cmd in parent.Command.ChildCommands)
-            {
-                string alias = parent.Parameters[0];
-                if (Equals(cmd, alias))
-                {
-                    if (!cmd.SupportsCaller(parent.Caller.GetType()))
-                        throw new NotSupportedException(parent.Caller.GetType().Name + " can not use this command.");
+            if (!cmd.SupportsCaller(context.Caller.GetType()))
+                throw new NotSupportedException(context.Caller.GetType().Name + " can not use this command.");
 
-                    tree.Add(cmd);
+            tree.Add(cmd);
 
-                    CommandContext childContext = new CommandContext(
-                        parent.Container.CreateChildContainer(),
-                        parent.Caller,
-                        parent.CommandPrefix + parent.CommandAlias + " ",
-                        cmd,
-                        alias,
-                        ((CommandParameters) parent.Parameters).Parameters.Skip(1).ToArray(),
-                        parent,
-                        root
-                    );
+            CommandContext childContext = new CommandContext(
+                context.Container.CreateChildContainer(),
+                context.Caller,
+                context.CommandPrefix + context.CommandAlias + " ",
+                cmd,
+                alias,
+                ((CommandParameters)context.Parameters).Parameters.Skip(1).ToArray(),
+                context,
+                root
+            );
 
-                    return GetChild(root, childContext, tree);
-                }
-            }
-
-            return parent;
-        }
-
-        private bool Equals(ICommand command, string alias)
-        {
-            return command.Name.Equals(alias, StringComparison.OrdinalIgnoreCase)
-                || (command.Aliases?.Any(x => x.Equals(alias, StringComparison.OrdinalIgnoreCase)) ?? false);
+            return GetChild(root, childContext, tree);
         }
 
         private void GuardCaller(ICommandCaller caller)

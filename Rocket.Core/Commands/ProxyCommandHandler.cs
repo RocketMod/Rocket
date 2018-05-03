@@ -26,20 +26,6 @@ namespace Rocket.Core.Commands
             return ProxiedServices.Any(c => c.SupportsCaller(commandCaller));
         }
 
-        public ICommand GetCommand(ICommandContext context)
-        {
-            GuardCaller(context.Caller);
-
-            foreach (ICommandHandler provider in ProxiedServices)
-            {
-                ICommand prov = provider.GetCommand(context);
-                if (prov != null)
-                    return prov;
-            }
-
-            return null;
-        }
-
         private void GuardCaller(ICommandCaller caller)
         {
             if (!SupportsCaller(caller.GetType()))
