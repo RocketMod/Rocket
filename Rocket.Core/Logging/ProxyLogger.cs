@@ -15,6 +15,7 @@ namespace Rocket.Core.Logging
         public bool IsWarnEnabled => throw new NotSupportedException("Not supported on proxy");
         public bool IsErrorEnabled => throw new NotSupportedException("Not supported on proxy");
         public bool IsFatalEnabled => throw new NotSupportedException("Not supported on proxy");
+        public bool IsNativeEnabled => throw new NotSupportedException("Not supported on proxy");
 
         public void LogTrace(string message, params object[] arguments)
         {
@@ -158,6 +159,12 @@ namespace Rocket.Core.Logging
         {
             foreach (ILogger logger in ProxiedServices)
                 logger.LogFatal(message, exception, color, arguments);
+        }
+
+        public void LogNative(string message, ConsoleColor? color, params object[] bindings)
+        {
+            foreach (ILogger logger in ProxiedServices)
+                logger.LogNative(message, color, bindings);
         }
     }
 }
