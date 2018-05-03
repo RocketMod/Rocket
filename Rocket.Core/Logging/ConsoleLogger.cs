@@ -46,6 +46,8 @@ namespace Rocket.Core.Logging
 
         public bool IsFatalEnabled => true;
 
+        public bool IsNativeEnabled => false;
+
         public void LogDebug(string message, params object[] arguments)
         {
             LogDebug(message, (ConsoleColor?) null, arguments);
@@ -133,6 +135,11 @@ namespace Rocket.Core.Logging
             SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
             SetColor(orgCol);
+        }
+
+        public void LogNative(string message, ConsoleColor? color, params object[] bindings)
+        {
+            //dont handle native log messages
         }
 
         public void LogInformation(string message, ConsoleColor? color, params object[] arguments)

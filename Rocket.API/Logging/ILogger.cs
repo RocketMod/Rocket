@@ -9,35 +9,39 @@ namespace Rocket.API.Logging
     public interface ILogger : IProxyableService
     {
         /// <summary>
-        ///     Defines if trace messages are enabled.
+        ///     Checks if trace messages are enabled.
         /// </summary>
         bool IsTraceEnabled { get; }
 
         /// <summary>
-        ///     Defines if debug messages are enabled.
+        ///     Checks if debug messages are enabled.
         /// </summary>
         bool IsDebugEnabled { get; }
 
         /// <summary>
-        ///     Defines if info messages are enabled.
+        ///     Checks if info messages are enabled.
         /// </summary>
         bool IsInfoEnabled { get; }
 
         /// <summary>
-        ///     Defines if warn messages are enabled.
+        ///     Checks if warn messages are enabled.
         /// </summary>
         bool IsWarnEnabled { get; }
 
         /// <summary>
-        ///     Defines if error messages are enabled.
+        ///     Checks if error messages are enabled.
         /// </summary>
         bool IsErrorEnabled { get; }
 
         /// <summary>
-        ///     Defines if fatal error messages are enabled.
+        ///     Checks if fatal error messages are enabled.
         /// </summary>
         bool IsFatalEnabled { get; }
 
+        /// <summary>
+        ///     Checks if native game messages are enabled.
+        /// </summary>
+        bool IsNativeEnabled { get; }
 
         /// <summary>
         ///     Logs a trace message.
@@ -233,5 +237,13 @@ namespace Rocket.API.Logging
         /// <param name="color">The color of the message.</param>
         /// <param name="bindings">The bindings of the message. See <see cref="string.Format(string, object[])"/>.</param>
         void LogFatal(string message, Exception exception, ConsoleColor? color, params object[] bindings);
+
+        /// <summary>
+        ///     Logs a native (game) message.
+        /// </summary>
+        /// <param name="message">The message to log.</param>
+        /// <param name="color">The color of the message.</param>
+        /// <param name="bindings">The bindings of the message. See <see cref="string.Format(string, object[])"/>.</param>
+        void LogNative(string message, ConsoleColor? color, params object[] bindings);
     }
 }
