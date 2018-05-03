@@ -108,7 +108,6 @@ namespace Rocket.Core.Logging
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
             Console.WriteLine(FormatMessage(message, errorPrefix, arguments));
-            SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
             SetColor(orgCol);
         }
@@ -124,7 +123,7 @@ namespace Rocket.Core.Logging
                 return;
 
             ConsoleColor orgCol = Console.ForegroundColor;
-            SetColor(color ?? ConsoleColor.Red);
+            SetColor(color ?? ConsoleColor.DarkRed);
             Console.WriteLine(FormatMessage(message, fatalPrefix, arguments));
             SetColor(orgCol);
         }
@@ -140,9 +139,8 @@ namespace Rocket.Core.Logging
                 return;
 
             ConsoleColor orgCol = Console.ForegroundColor;
-            SetColor(color ?? ConsoleColor.Red);
+            SetColor(color ?? ConsoleColor.DarkRed);
             Console.WriteLine(FormatMessage(message, fatalPrefix, arguments));
-            SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
             SetColor(orgCol);
         }
@@ -158,7 +156,7 @@ namespace Rocket.Core.Logging
                 return;
 
             ConsoleColor orgCol = Console.ForegroundColor;
-            SetColor(color ?? ConsoleColor.White);
+            SetColor(color ?? ConsoleColor.DarkGreen);
             Console.WriteLine(FormatMessage(message, infoPrefix, arguments));
             SetColor(orgCol);
         }
@@ -174,7 +172,7 @@ namespace Rocket.Core.Logging
                 return;
 
             ConsoleColor orgCol = Console.ForegroundColor;
-            SetColor(color ?? ConsoleColor.White);
+            SetColor(color ?? ConsoleColor.DarkGreen);
             Console.WriteLine(FormatMessage(message, infoPrefix, arguments));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(infoPrefix);
@@ -197,7 +195,7 @@ namespace Rocket.Core.Logging
                 return;
 
             ConsoleColor orgCol = Console.ForegroundColor;
-            SetColor(color ?? ConsoleColor.Cyan);
+            SetColor(color ?? ConsoleColor.Gray);
             Console.WriteLine(FormatMessage(message, tracePrefix, arguments));
             SetColor(orgCol);
         }
@@ -213,7 +211,7 @@ namespace Rocket.Core.Logging
                 return;
 
             ConsoleColor orgCol = Console.ForegroundColor;
-            SetColor(color ?? ConsoleColor.Cyan);
+            SetColor(color ?? ConsoleColor.Gray);
             Console.WriteLine(FormatMessage(message, tracePrefix, bindings));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
