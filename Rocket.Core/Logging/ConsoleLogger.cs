@@ -7,46 +7,38 @@ namespace Rocket.Core.Logging
 {
     public class ConsoleLogger : ILogger
     {
-        private readonly string debugPrefix = "DEBUG";
-        private readonly string errorPrefix = "ERROR";
-        private readonly string fatalPrefix = "FATAL";
-        private readonly string infoPrefix = "INFO";
-        private readonly string tracePrefix = "TRACE";
-        private readonly string warnPrefix = "WARN";
+        private readonly string debugPrefix = "Debug";
+        private readonly string errorPrefix = "Error";
+        private readonly string fatalPrefix = "Fatal";
+        private readonly string infoPrefix = "Info";
+        private readonly string tracePrefix = "Trace";
+        private readonly string warnPrefix = "Warn";
 
-        public bool IsTraceEnabled
-        {
-            get
-            {
+        public bool IsTraceEnabled { get; set; } =
 #if DEBUG
-                return true;
+            true;
 #else
-                return false;
+            false;
 #endif
-            }
-        }
 
-        public bool IsDebugEnabled
-        {
-            get
-            {
+
+        public bool IsDebugEnabled { get; set; } = 
 #if DEBUG
-                return true;
+            true;
 #else
-                return false;
+            false;
 #endif
-            }
-        }
 
-        public bool IsInfoEnabled => true;
 
-        public bool IsWarnEnabled => true;
+        public bool IsInformationEnabled { get; set; } = true;
 
-        public bool IsErrorEnabled => true;
+        public bool IsWarningEnabled { get; set; } = true;
 
-        public bool IsFatalEnabled => true;
+        public bool IsErrorEnabled { get; set; } = true;
 
-        public bool IsNativeEnabled => false;
+        public bool IsFatalEnabled { get; set; } = true;
+
+        public bool IsNativeEnabled { get; set; } = false;
 
         public void LogDebug(string message, params object[] arguments)
         {
@@ -55,8 +47,11 @@ namespace Rocket.Core.Logging
 
         public void LogDebug(string message, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsDebugEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
-            SetColor(color ?? ConsoleColor.Cyan);
+            SetColor(color ?? ConsoleColor.DarkGray);
             Console.WriteLine(FormatMessage(message, debugPrefix, arguments));
             SetColor(orgCol);
         }
@@ -68,8 +63,11 @@ namespace Rocket.Core.Logging
 
         public void LogDebug(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsDebugEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
-            SetColor(color ?? ConsoleColor.Cyan);
+            SetColor(color ?? ConsoleColor.DarkGray);
             Console.WriteLine(FormatMessage(message, debugPrefix, arguments));
             SetColor(ConsoleColor.Red);
             Console.WriteLine(exception);
@@ -88,6 +86,9 @@ namespace Rocket.Core.Logging
 
         public void LogError(string message, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsErrorEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
             Console.WriteLine(FormatMessage(message, errorPrefix, arguments));
@@ -101,6 +102,9 @@ namespace Rocket.Core.Logging
 
         public void LogError(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsErrorEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
             Console.WriteLine(FormatMessage(message, errorPrefix, arguments));
@@ -116,6 +120,9 @@ namespace Rocket.Core.Logging
 
         public void LogFatal(string message, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsFatalEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
             Console.WriteLine(FormatMessage(message, fatalPrefix, arguments));
@@ -129,6 +136,9 @@ namespace Rocket.Core.Logging
 
         public void LogFatal(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsFatalEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Red);
             Console.WriteLine(FormatMessage(message, fatalPrefix, arguments));
@@ -144,6 +154,9 @@ namespace Rocket.Core.Logging
 
         public void LogInformation(string message, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsInformationEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.White);
             Console.WriteLine(FormatMessage(message, infoPrefix, arguments));
@@ -157,6 +170,9 @@ namespace Rocket.Core.Logging
 
         public void LogInformation(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsInformationEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.White);
             Console.WriteLine(FormatMessage(message, infoPrefix, arguments));
@@ -177,6 +193,9 @@ namespace Rocket.Core.Logging
 
         public void LogTrace(string message, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsTraceEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Cyan);
             Console.WriteLine(FormatMessage(message, tracePrefix, arguments));
@@ -190,6 +209,9 @@ namespace Rocket.Core.Logging
 
         public void LogTrace(string message, Exception exception, ConsoleColor? color, params object[] bindings)
         {
+            if (!IsTraceEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Cyan);
             Console.WriteLine(FormatMessage(message, tracePrefix, bindings));
@@ -200,6 +222,9 @@ namespace Rocket.Core.Logging
 
         public void LogWarning(string message, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsWarningEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Yellow);
             Console.WriteLine(FormatMessage(message, warnPrefix, arguments));
@@ -213,6 +238,9 @@ namespace Rocket.Core.Logging
 
         public void LogWarning(string message, Exception exception, ConsoleColor? color, params object[] arguments)
         {
+            if (!IsWarningEnabled)
+                return;
+
             ConsoleColor orgCol = Console.ForegroundColor;
             SetColor(color ?? ConsoleColor.Yellow);
             Console.WriteLine(FormatMessage(message, warnPrefix, arguments));

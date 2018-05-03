@@ -21,12 +21,12 @@ namespace Rocket.API.Logging
         /// <summary>
         ///     Checks if info messages are enabled.
         /// </summary>
-        bool IsInfoEnabled { get; }
+        bool IsInformationEnabled { get; }
 
         /// <summary>
         ///     Checks if warn messages are enabled.
         /// </summary>
-        bool IsWarnEnabled { get; }
+        bool IsWarningEnabled { get; }
 
         /// <summary>
         ///     Checks if error messages are enabled.

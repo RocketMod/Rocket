@@ -11,8 +11,8 @@ namespace Rocket.Core.Logging
 
         public bool IsTraceEnabled => throw new NotSupportedException("Not supported on proxy");
         public bool IsDebugEnabled => throw new NotSupportedException("Not supported on proxy");
-        public bool IsInfoEnabled => throw new NotSupportedException("Not supported on proxy");
-        public bool IsWarnEnabled => throw new NotSupportedException("Not supported on proxy");
+        public bool IsInformationEnabled => throw new NotSupportedException("Not supported on proxy");
+        public bool IsWarningEnabled => throw new NotSupportedException("Not supported on proxy");
         public bool IsErrorEnabled => throw new NotSupportedException("Not supported on proxy");
         public bool IsFatalEnabled => throw new NotSupportedException("Not supported on proxy");
         public bool IsNativeEnabled => throw new NotSupportedException("Not supported on proxy");
