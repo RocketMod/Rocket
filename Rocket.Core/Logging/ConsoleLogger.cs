@@ -226,7 +226,7 @@ namespace Rocket.Core.Logging
             MethodBase callingMethod =
                 ReflectionExtensions.GetCallingMethod(typeof(ConsoleLogger), typeof(ProxyLogger));
             string format =
-                $"[{prefix}] [{callingMethod.ReflectedType?.Name ?? "<anonymous>"}#{callingMethod.Name}] {message}";
+                $"[{prefix}] [{callingMethod.GetDebugName()}] {message}";
             return string.Format(format, args);
         }
 

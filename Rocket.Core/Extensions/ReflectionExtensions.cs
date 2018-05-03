@@ -33,6 +33,7 @@ namespace Rocket.Core.Extensions
                     continue;
 
                 target = frame;
+                break;
             }
 
             return target?.GetMethod();
@@ -97,6 +98,15 @@ namespace Rocket.Core.Extensions
                 catch { }
 
             return l;
+        }
+        public static string GetDebugName(this MethodBase mb)
+        {
+            if (mb is MemberInfo mi && mi.DeclaringType != null)
+            {
+                return mi.DeclaringType.Name + "." + mi.Name;
+            }
+
+            return "<anonymous>#" + mb.Name;
         }
     }
 }
