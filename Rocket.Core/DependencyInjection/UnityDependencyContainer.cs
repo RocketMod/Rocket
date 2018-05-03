@@ -52,10 +52,22 @@ namespace Rocket.Core.DependencyInjection
                     + "]");
 
             if (mappingNames == null || mappingNames.Length == 0)
-                mappingNames = new string[] {null};
+                mappingNames = new string[] { null };
 
-            foreach (string mappingName in mappingNames)
-                container.RegisterType<TInterface, TClass>(mappingName, new ContainerControlledLifetimeManager());
+            var primaryName = mappingNames.First();
+            container.RegisterType<TInterface, TClass>(primaryName, new ContainerControlledLifetimeManager());
+
+            var pendingNames = mappingNames.Skip(1).ToList();
+            try
+            {
+                var instance = container.Resolve<TInterface>(primaryName);
+                foreach(var name in pendingNames)
+                    RegisterInstance(instance, name);
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
         }
 
         public void RegisterSingletonInstance<TInterface>(TInterface value, params string[] mappingNames)
@@ -70,7 +82,7 @@ namespace Rocket.Core.DependencyInjection
                     + "]");
 
             if (mappingNames == null || mappingNames.Length == 0)
-                mappingNames = new string[] {null};
+                mappingNames = new string[] { null };
 
             foreach (string mappingName in mappingNames)
                 container.RegisterInstance(mappingName, value, new ContainerControlledLifetimeManager());
@@ -88,7 +100,7 @@ namespace Rocket.Core.DependencyInjection
                     + "]");
 
             if (mappingNames == null || mappingNames.Length == 0)
-                mappingNames = new string[] {null};
+                mappingNames = new string[] { null };
 
             foreach (string mappingName in mappingNames)
                 container.RegisterType<TInterface, TClass>(mappingName);
@@ -106,7 +118,7 @@ namespace Rocket.Core.DependencyInjection
                     + "]");
 
             if (mappingNames == null || mappingNames.Length == 0)
-                mappingNames = new string[] {null};
+                mappingNames = new string[] { null };
 
             foreach (string mappingName in mappingNames)
                 container.RegisterInstance(mappingName, value);
@@ -126,7 +138,7 @@ namespace Rocket.Core.DependencyInjection
 
         #region Activate Methods
 
-        public T Activate<T>() => (T) Activate(typeof(T));
+        public T Activate<T>() => (T)Activate(typeof(T));
 
         [DebuggerStepThrough]
         public object Activate(Type type)
@@ -143,7 +155,12 @@ namespace Rocket.Core.DependencyInjection
                 foreach (ParameterInfo parameterInfo in parameters)
                 {
                     Type parameterType = parameterInfo.ParameterType;
-                    if (!container.IsRegistered(parameterType)) return null;
+                    if (!container.IsRegistered(parameterType))
+                    {
+                        if (!typeof(ILogger).IsAssignableFrom(type))
+                            Logger?.LogError($"Failed to activate \"{type.Name}\" because the parameter type \"{parameterType.Name}\" could not be resolved.");
+                        return null;
+                    }
                     objectList.Add(Resolve(parameterType));
                 }
 
@@ -223,12 +240,8 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogDebug("Trying to resolve all: <" + typeof(T).Name + ">");
 
-            IEnumerable<T> instances = container.ResolveAll<T>()
+            return container.ResolveAll<T>()
                                                 .Where(c => !(c is IServiceProxy));
-
-            if (instances.Count() != 0) return instances;
-
-            throw new ServiceResolutionFailedException(typeof(T));
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
@@ -237,12 +250,8 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogDebug("Trying to resolve all: <" + typeof(T).Name + ">");
 
-            IEnumerable<T> instances = container.ResolveAll<T>(new OrderedParametersOverride(parameters))
-                                                .Where(c => !(c is IServiceProxy));
-
-            if (instances.Count() != 0) return instances;
-
-            throw new ServiceResolutionFailedException(typeof(T));
+            return container.ResolveAll<T>(new OrderedParametersOverride(parameters))
+                                                   .Where(c => !(c is IServiceProxy));
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
@@ -251,12 +260,9 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(type))
                 Logger?.LogDebug("Trying to resolve all: <" + type.Name + ">");
 
-            IEnumerable<object> instances = container.ResolveAll(type)
+            return container.ResolveAll(type)
                                                      .Where(c => !(c is IServiceProxy));
 
-            if (instances.Count() != 0) return instances;
-
-            throw new ServiceResolutionFailedException(type);
         }
 
         /// <exception cref="NotResolvedException">Thrown when no instances are resolved for the requested Type.</exception>
@@ -265,12 +271,8 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(type))
                 Logger?.LogDebug("Trying to resolve all: <" + type.Name + ">");
 
-            IEnumerable<object> instances = container.ResolveAll(type, new OrderedParametersOverride(parameters))
+            return container.ResolveAll(type, new OrderedParametersOverride(parameters))
                                                      .Where(c => !(c is IServiceProxy));
-
-            if (instances.Count() != 0) return instances;
-
-            throw new ServiceResolutionFailedException(type);
         }
 
         #endregion
@@ -366,7 +368,7 @@ namespace Rocket.Core.DependencyInjection
 
             return false;
         }
-        
+
         #endregion
 
         #endregion

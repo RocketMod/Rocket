@@ -12,6 +12,7 @@ using Rocket.API.Logging;
 using Rocket.API.Plugins;
 using Rocket.Compatibility;
 using Rocket.Core.Commands;
+using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
 using Rocket.Core.Plugins.Events;
 #if NET35
@@ -37,10 +38,11 @@ namespace Rocket.Core.Plugins
         private string packagesDirectory;
         private Dictionary<string, string> pluginAssemblies;
         private string pluginsDirectory;
-
+       
         public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger,
                              IEventManager eventManager, IRuntime runtime, IImplementation implementation)
         {
+            logger.LogFatal("constructing");
             this.runtime = runtime;
             this.implementation = implementation;
             this.resolver = resolver;
@@ -225,6 +227,10 @@ namespace Rocket.Core.Plugins
             {
                 CommandAttribute cmdAttr =
                     (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
+
+                if(cmdAttr == null)
+                    continue;
+
                 IEnumerable<CommandAliasAttribute> aliasAttrs = method
                                                                 .GetCustomAttributes(typeof(CommandAliasAttribute),
                                                                     true)
@@ -306,12 +312,15 @@ namespace Rocket.Core.Plugins
             if (pluginType == null)
                 return null;
 
+
             IPlugin pluginInstance = (IPlugin)parentContainer.Activate(pluginType);
+
             container.RegisterInstance(pluginInstance, pluginInstance.Name);
 
             IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>(false);
-            IEnumerable<Type> commands =
-                pluginInstance.FindTypes<ICommand>(false, c => !typeof(ISubCommand).IsAssignableFrom(c));
+            IEnumerable<Type> pluginCommands =
+                pluginInstance.FindTypes<ICommand>(false, c => !typeof(ISubCommand).IsAssignableFrom(c) 
+                    && c.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Length == 0);
             IEnumerable<Type> dependcyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>(false);
 
             foreach (Type registrator in dependcyRegistrators)
@@ -329,7 +338,7 @@ namespace Rocket.Core.Plugins
 
             this.commands.Remove(pluginInstance);
 
-            foreach (Type command in commands)
+            foreach (Type command in pluginCommands)
                 if (cmdInstanceList.All(c => c.GetType() != command))
                     cmdInstanceList.Add((ICommand)Activator.CreateInstance(command, new object[0]));
 

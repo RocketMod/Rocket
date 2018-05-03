@@ -28,9 +28,15 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPluginManager, PluginManager>("default_plugins");
             container.RegisterSingletonType<IPluginManager, ProxyPluginManager>("proxy_plugins", null);
 
+            var pluginManager = (PluginManager) container.Resolve<IPluginManager>("default_plugins");
+
+            container.RegisterSingletonInstance<ICommandProvider>(pluginManager, "plugin_cmdprovider");
             container.RegisterSingletonType<ICommandProvider, RocketCommandProvider>("rocket_cmdprovider");
-            container.RegisterSingletonType<ICommandProvider, PluginManager>("plugin_cmdprovider");
             container.RegisterSingletonType<ICommandProvider, ProxyCommandProvider>("proxy_cmdprovider", null);
+
+            container.RegisterType<IConfiguration, JsonConfiguration>();
+            container.RegisterType<IConfiguration, JsonConfiguration>("json");
+            container.RegisterType<IConfiguration, XmlConfiguration>("xml");
 
             container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>(
                 "default_permissions");
@@ -39,10 +45,6 @@ namespace Rocket.Core.Properties
 
             //transient dependencies
             container.RegisterType<ITranslationLocator, TranslationLocator>();
-
-            container.RegisterType<IConfiguration, JsonConfiguration>();
-            container.RegisterType<IConfiguration, JsonConfiguration>("json");
-            container.RegisterType<IConfiguration, XmlConfiguration>("xml");
         }
     }
 }
