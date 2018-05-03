@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Rocket.API;
 using Rocket.API.Configuration;
@@ -44,7 +45,17 @@ namespace Rocket.Core.Plugins
             if (IsAlive)
                 return false;
 
-            Load(false);
+            Logger.LogInformation($"Loading {Name}.");
+
+            try
+            {
+                Load(false);
+                IsAlive = true;
+            }
+            catch(Exception ex)
+            {
+                Logger.LogFatal($"Failed to load {Name}: ", ex);
+            }
             return true;
         }
 
@@ -53,18 +64,27 @@ namespace Rocket.Core.Plugins
             if (!IsAlive)
                 return false;
 
+            Logger.LogInformation($"Unloading {Name}.");
+            
             if (EventManager != null)
             {
-                PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
+                PluginDeactivateEvent loadedEvent = new PluginDeactivateEvent(PluginManager, this);
                 EventManager.Emit(Runtime, loadedEvent);
             }
-
-            OnDeactivate();
+            try
+            {
+                OnDeactivate();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogFatal($"An error occured on unloading {Name}: ", ex);
+            }
+    
             IsAlive = false;
 
             if (EventManager != null)
             {
-                PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
+                PluginDeactivatedEvent loadedEvent = new PluginDeactivatedEvent(PluginManager, this);
                 EventManager.Emit(Runtime, loadedEvent);
             }
 
@@ -90,9 +110,9 @@ namespace Rocket.Core.Plugins
 
             if (EventManager != null)
             {
-                PluginLoadEvent loadEvent = new PluginLoadEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadEvent);
-                if (loadEvent.IsCancelled)
+                PluginActivateEvent activateEvent = new PluginActivateEvent(PluginManager, this);
+                EventManager.Emit(Runtime, activateEvent);
+                if (activateEvent.IsCancelled)
                     return;
             }
 
@@ -125,8 +145,8 @@ namespace Rocket.Core.Plugins
 
             if (EventManager != null)
             {
-                PluginLoadedEvent loadedEvent = new PluginLoadedEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadedEvent);
+                PluginActivatedEvent activatedEvent = new PluginActivatedEvent(PluginManager, this);
+                EventManager.Emit(Runtime, activatedEvent);
             }
         }
 

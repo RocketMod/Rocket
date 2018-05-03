@@ -114,11 +114,11 @@
     <Compile Include="Commands\Events\PreCommandExecutionEvent.cs" />
     <Compile Include="Player\Events\PlayerPreConnectEvent.cs" />
     <Compile Include="Plugins\Events\PluginEvent.cs" />
-    <Compile Include="Plugins\Events\PluginLoadedEvent.cs" />
-    <Compile Include="Plugins\Events\PluginLoadEvent.cs" />
-    <Compile Include="Plugins\Events\PluginManagerLoadEvent.cs" />
-    <Compile Include="Plugins\Events\PluginUnloadedEvent.cs" />
-    <Compile Include="Plugins\Events\PluginUnloadEvent.cs" />
+    <Compile Include="Plugins\Events\PluginActivatedEvent.cs" />
+    <Compile Include="Plugins\Events\PluginActivateEvent.cs" />
+    <Compile Include="Plugins\Events\PluginManagerInitEvent.cs" />
+    <Compile Include="Plugins\Events\PluginDeactivatedEvent.cs" />
+    <Compile Include="Plugins\Events\PluginDeactivateEvent.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
     <Compile Include="Logging\ConsoleLogger.cs" />

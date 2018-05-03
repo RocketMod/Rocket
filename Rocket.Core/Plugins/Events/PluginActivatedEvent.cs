@@ -3,19 +3,19 @@ using Rocket.API.Plugins;
 
 namespace Rocket.Core.Plugins.Events
 {
-    public class PluginLoadedEvent : PluginEvent
+    public class PluginActivatedEvent : PluginEvent
     {
-        public PluginLoadedEvent(IPluginManager pluginManager, IPlugin plugin, bool global = true) : base(pluginManager,
+        public PluginActivatedEvent(IPluginManager pluginManager, IPlugin plugin, bool global = true) : base(pluginManager,
             plugin, global) { }
 
-        public PluginLoadedEvent(IPluginManager pluginManager, IPlugin plugin,
+        public PluginActivatedEvent(IPluginManager pluginManager, IPlugin plugin,
                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                  bool global = true) : base(pluginManager, plugin, executionTarget, global) { }
 
-        public PluginLoadedEvent(IPluginManager pluginManager, IPlugin plugin, string name = null,
+        public PluginActivatedEvent(IPluginManager pluginManager, IPlugin plugin, string name = null,
                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                  bool global = true) : base(pluginManager, plugin, name, executionTarget, global) { }
 
-        public PluginLoadedEvent(IPluginManager pluginManager, IPlugin plugin) : base(pluginManager, plugin) { }
+        public PluginActivatedEvent(IPluginManager pluginManager, IPlugin plugin) : base(pluginManager, plugin) { }
     }
 }
