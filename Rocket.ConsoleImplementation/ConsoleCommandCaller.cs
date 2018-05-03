@@ -24,7 +24,7 @@ namespace Rocket.ConsoleImplementation
         {
             ConsoleColor tmp = Console.ForegroundColor;
             Console.ForegroundColor = color ?? tmp;
-            Console.WriteLine("[SendMessage] " + message, bindings);
+            Console.WriteLine(message, bindings);
             Console.ForegroundColor = tmp;
         }
 

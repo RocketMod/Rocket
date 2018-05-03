@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConsoleChatManager.cs" />
     <Compile Include="ConsoleCommandCaller.cs" />
     <Compile Include="ConsoleHost.cs" />
     <Compile Include="ConsoleImplementation.cs" />

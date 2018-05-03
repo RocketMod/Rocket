@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Plugins;
@@ -13,10 +15,11 @@ namespace Rocket.ConsoleImplementation
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "ConsoleHost";
 
-        public string WorkingDirectory => Environment.CurrentDirectory;
+        public string WorkingDirectory => Path.Combine(Environment.CurrentDirectory, "Rocket");
 
         public void Init(IRuntime runtime)
         {
+
             Console.WriteLine("Loading...");
             runtime.Container.Resolve<IPluginManager>().Init();
             ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
