@@ -7,7 +7,6 @@ namespace Rocket.ConsoleImplementation
         private static void Main(string[] args)
         {
             Runtime.Bootstrap();
-            Console.ReadLine();
         }
     }
 }

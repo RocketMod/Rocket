@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using Rocket.API;
 using Rocket.API.Commands;
+using Rocket.API.Plugins;
 
 namespace Rocket.ConsoleImplementation
 {
     public class ConsoleImplementation : IImplementation
     {
-        private ConsoleCommandCaller consoleCommandCaller;
+        private readonly ConsoleCommandCaller consoleCommandCaller = new ConsoleCommandCaller();
 
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "ConsoleHost";
@@ -17,6 +18,15 @@ namespace Rocket.ConsoleImplementation
         public void Init(IRuntime runtime)
         {
             Console.WriteLine("Loading...");
+            runtime.Container.Resolve<IPluginManager>().Init();
+            ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
+
+            string line;
+            while (!(line = Console.ReadLine())?.Equals("exit", StringComparison.OrdinalIgnoreCase) ?? false)
+            {
+                if(!cmdHandler.HandleCommand(ConsoleCommandCaller, line, ""))
+                    Console.WriteLine("Failed to execute: " + line);
+            }
         }
 
         public void Shutdown()
