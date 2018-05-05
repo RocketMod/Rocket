@@ -109,6 +109,7 @@ namespace Rocket.Core.Commands
                 root
             );
 
+            context.ChildContext = childContext;
             return GetChild(root, childContext, tree);
         }
 

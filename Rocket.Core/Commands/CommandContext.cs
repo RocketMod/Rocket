@@ -27,6 +27,7 @@ namespace Rocket.Core.Commands
 
         public ICommand Command { get; internal set; }
         public ICommandCaller Caller { get; }
+        public ICommandContext ChildContext { get; internal set; }
         public ICommandContext ParentCommandContext { get; }
         public ICommandContext RootCommandContext { get; }
         public string CommandPrefix { get; }

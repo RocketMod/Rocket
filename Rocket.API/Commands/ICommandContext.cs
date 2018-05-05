@@ -17,6 +17,11 @@ namespace Rocket.API.Commands
         ICommandContext ParentCommandContext { get; }
 
         /// <summary>
+        ///     The child context.
+        /// </summary>
+        ICommandContext ChildContext { get; }
+
+        /// <summary>
         ///     The root command context.
         ///     <para><b>This property will never return null.</b></para>
         /// </summary>
