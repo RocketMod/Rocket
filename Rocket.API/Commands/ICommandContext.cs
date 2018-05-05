@@ -70,5 +70,10 @@ namespace Rocket.API.Commands
         ///     <para><b>This property will never return null.</b></para>
         /// </summary>
         IDependencyContainer Container { get; }
+
+        /// <summary>
+        ///     Sends the command usage to the caller.
+        /// </summary>
+        void SendUsage();
     }
 }

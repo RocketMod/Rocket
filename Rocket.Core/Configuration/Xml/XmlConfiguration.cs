@@ -2,6 +2,7 @@
 using System.Xml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Rocket.API.Configuration;
 using Rocket.Core.Configuration.JsonNetBase;
 
 namespace Rocket.Core.Configuration.Xml
@@ -11,6 +12,7 @@ namespace Rocket.Core.Configuration.Xml
         private const string ConfigRoot = "Config";
 
         protected override string FileEnding => "xml";
+        public override string Name => "Xml";
 
         protected override void LoadFromFile(string file)
         {
@@ -38,6 +40,19 @@ namespace Rocket.Core.Configuration.Xml
 
         protected override void SaveToFile(string file)
         {
+            File.WriteAllText(file, ToXml());
+
+        }
+
+        public override IConfigurationElement Clone()
+        {
+            var config = new XmlConfiguration();
+            config.LoadFromXml(ToXml());
+            return config;
+        }
+
+        public string ToXml()
+        {
             JToken clone = Node.DeepClone();
             var xml = new
             {
@@ -54,7 +69,7 @@ namespace Rocket.Core.Configuration.Xml
             string json = o.ToString();
 
             XmlDocument doc = JsonConvert.DeserializeXmlNode(json);
-            System.IO.File.WriteAllText(file, doc.ToString());
+            return doc.ToString();
         }
     }
 }

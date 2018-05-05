@@ -9,6 +9,11 @@ namespace Rocket.API.Configuration
     public interface IConfigurationElement : IEnumerable<IConfigurationSection>
     {
         /// <summary>
+        ///     The section type.
+        /// </summary>
+        SectionType Type { get; }
+
+        /// <summary>
         ///     Gets a child configuration node. See <see cref="GetSection"/>.
         /// </summary>
         /// <param name="path">The configuration path.</param>
@@ -21,7 +26,7 @@ namespace Rocket.API.Configuration
         IConfigurationElement Parent { get; }
 
         /// <summary>
-        ///     The root configuration node.
+        ///     The root configuration node. Can be null.
         /// </summary>
         IConfiguration Root { get; }
 
@@ -76,6 +81,12 @@ namespace Rocket.API.Configuration
         T Get<T>();
 
         /// <summary>
+        ///     GEts the sections value.
+        /// </summary>
+        /// <returns>the sections value.</returns>
+        object Get();
+
+        /// <summary>
         ///     Gets the sections parsed value.
         /// </summary>
         /// <param name="type">The type to parse the value as.</param>
@@ -120,5 +131,11 @@ namespace Rocket.API.Configuration
         /// <param name="path">The relative path to the child section. See <see cref="Path"/>.</param>
         /// <returns></returns>
         bool ChildExists(string path);
+
+        /// <summary>
+        ///     Returns a cloned instance excluding the context.
+        /// </summary>
+        /// <returns>the clone.</returns>
+        IConfigurationElement Clone();
     }
 }

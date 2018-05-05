@@ -12,8 +12,7 @@ namespace Rocket.Core.Commands
         public virtual void SendErrorMessage(ICommandContext context)
         {
             context.Caller.SendMessage(Message, ConsoleColor.DarkRed);
-            context.Caller.SendMessage("Correct usage:", ConsoleColor.DarkBlue);
-            context.Caller.SendMessage(context.CommandPrefix + context.CommandAlias + " " + context.Command.Syntax, ConsoleColor.Blue);
+            context.SendUsage();
         }
     }
 }

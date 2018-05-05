@@ -58,6 +58,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
         }
 
         public IConfigurationContext ConfigurationContext { get; set; }
+        public abstract string Name { get; }
 
         public void LoadFromObject(object o)
         {

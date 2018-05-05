@@ -70,6 +70,7 @@
     <Compile Include="Commands\ProxyCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandProvider.cs" />
     <Compile Include="Commands\RocketCommands\CommandHelp.cs" />
+    <Compile Include="Commands\RocketCommands\CommandMigrateConfig.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />

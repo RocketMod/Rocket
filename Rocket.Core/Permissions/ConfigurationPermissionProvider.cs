@@ -357,7 +357,7 @@ namespace Rocket.Core.Permissions
 
             string basePath = target is IPermissionGroup
                 ? $"{target.Id}"
-                : $"{((ICommandCaller)target).CallerType.Name}.{target.Id}";
+                : $"{((ICommandCaller)target).CallerType.Name}.Id{target.Id}";
             string permissionsPath = basePath + ".Permissions";
             string groupsPath = target is IPermissionGroup ? basePath + ".ParentGroups" : basePath + ".Groups";
 

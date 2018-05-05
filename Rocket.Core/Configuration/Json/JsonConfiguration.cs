@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Rocket.API.Configuration;
 using Rocket.Core.Configuration.JsonNetBase;
 
 namespace Rocket.Core.Configuration.Json
@@ -19,17 +20,30 @@ namespace Rocket.Core.Configuration.Json
         }
 
         protected override string FileEnding => "json";
+        public override string Name => "Json";
 
         protected override void LoadFromFile(string file)
         {
-            string json = System.IO.File.ReadAllText(file);
+            string json = File.ReadAllText(file);
             LoadFromJson(json);
         }
 
         protected override void SaveToFile(string file)
         {
-            string json = Node.ToString(Formatting.Indented);
-            System.IO.File.WriteAllText(file, json);
+            string json = ToJson();
+            File.WriteAllText(file, json);
+        }
+
+        public override IConfigurationElement Clone()
+        {
+            var config = new JsonConfiguration();
+            config.LoadFromJson(ToJson());
+            return config;
+        }
+
+        public string ToJson()
+        {
+            return Node.ToString(Formatting.Indented);
         }
     }
 }

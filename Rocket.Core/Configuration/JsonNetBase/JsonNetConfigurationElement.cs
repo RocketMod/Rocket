@@ -9,11 +9,12 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public abstract class JsonNetConfigurationElement : IConfigurationElement
     {
-        protected JsonNetConfigurationElement(IConfiguration root, IConfigurationElement parent, JToken node)
+        protected JsonNetConfigurationElement(IConfiguration root, IConfigurationElement parent, JToken node, SectionType type)
         {
             Root = root;
             Parent = parent;
             Node = node ?? throw new ArgumentNullException(nameof(node));
+            Type = type;
         }
 
         protected JsonNetConfigurationElement(IConfiguration root)
@@ -22,6 +23,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
         }
 
         public JToken Node { get; protected set; }
+        public SectionType Type { get; }
 
         public IConfigurationSection this[string path] => GetSection(path);
         public IConfigurationElement Parent { get; }
@@ -49,10 +51,19 @@ namespace Rocket.Core.Configuration.JsonNetBase
                 if (childNode is JValue)
                     childNode = childNode.Parent;
 
-                return new JsonNetConfigurationSection(Root, this, childNode, key);
+                SectionType sectionType;
+                if (childNode is JArray)
+                    sectionType = SectionType.Array;
+                else if (childNode is JObject)
+                    sectionType = SectionType.Object;
+                else
+                    sectionType = SectionType.Value;
+
+                return new JsonNetConfigurationSection(Root, this, childNode, key, sectionType);
             }
 
-            foreach (string part in parts) currentNode = (JsonNetConfigurationSection) currentNode.GetSection(part);
+            foreach (string part in parts)
+                currentNode = (JsonNetConfigurationSection) currentNode.GetSection(part);
 
             return (IConfigurationSection) currentNode;
         }
@@ -127,6 +138,11 @@ namespace Rocket.Core.Configuration.JsonNetBase
         public abstract string Path { get; }
 
         public virtual T Get<T>() => Node.ToObject<T>();
+        public object Get()
+        {
+            return Node.ToObject<object>();
+        }
+
         public object Get(Type t) => Node.ToObject(t);
 
         public T Get<T>(T defaultValue)
@@ -225,6 +241,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
             }
         }
 
+        public abstract IConfigurationElement Clone();
+
         public IEnumerator<IConfigurationSection> GetEnumerator() => GetChildren().GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
@@ -237,6 +255,10 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
         public void GuardPath(string path)
         {
+            var parts = path.Split('.');
+            if(parts.Any(c => long.TryParse(c, out var _)))
+                throw new Exception("Paths can not contain sections which are numbers. Path: " + path);
+
             if (string.IsNullOrEmpty(path))
                 throw new ArgumentException("Configuration paths can not be null or empty");
         }

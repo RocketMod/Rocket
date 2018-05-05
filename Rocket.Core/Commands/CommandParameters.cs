@@ -19,22 +19,22 @@ namespace Rocket.Core.Commands
         public CommandParameters(IDependencyContainer container, string[] parameters)
         {
             this.container = container;
-            Parameters = parameters;
+            RawParameters = parameters;
         }
 
         /// <summary>
         ///     The internal stored raw parameter list
         /// </summary>
-        protected internal string[] Parameters { get; }
+        protected internal string[] RawParameters { get; }
 
         /// <inheritdoc />
-        public string this[int index] => Parameters[index];
+        public string this[int index] => ToArray()[index];
 
         /// <inheritdoc />
-        public int Length => Parameters.Length;
+        public int Length => ToArray().Length;
 
         /// <inheritdoc />
-        public T Get<T>(int index) => (T) Get(index, typeof(T));
+        public T Get<T>(int index) => (T)Get(index, typeof(T));
 
         /// <inheritdoc />
         public object Get(int index, Type type)
@@ -45,14 +45,14 @@ namespace Rocket.Core.Commands
             TypeConverter converter = TypeConverterExtensions.GetConverter(type);
 
             if (converter.CanConvertFrom(typeof(string)))
-                return converter.ConvertFromWithContext(container, Parameters[index]);
+                return converter.ConvertFromWithContext(container, ToArray()[index]);
 
             throw new NotSupportedException(
-                $"Converting \"{Parameters[index]}\" to \"{type.FullName}\" is not supported!");
+                $"Converting \"{ToArray()[index]}\" to \"{type.FullName}\" is not supported!");
         }
 
         /// <inheritdoc />
-        public T Get<T>(int index, T defaultValue) => (T) Get(index, typeof(T), defaultValue);
+        public T Get<T>(int index, T defaultValue) => (T)Get(index, typeof(T), defaultValue);
 
         /// <inheritdoc />
         public object Get(int index, Type type, object defaultValue)
@@ -66,9 +66,33 @@ namespace Rocket.Core.Commands
         public bool TryGet<T>(int index, out T value)
         {
             bool result = TryGet(index, typeof(T), out object tmp);
-            value = (T) tmp;
+            value = (T)tmp;
             return result;
         }
+
+        public string GetArgumentLine(int startPosition)
+        {
+            if (startPosition > Length)
+                throw new IndexOutOfRangeException();
+
+            return string.Join(" ", ToArray().Skip(startPosition).ToArray());
+        }
+
+
+        public string GetArgumentLine(int startPosition, int endPosition)
+        {
+            if (startPosition > Length)
+                throw new IndexOutOfRangeException();
+
+            if (endPosition > Length)
+                throw new IndexOutOfRangeException();
+
+            if(endPosition - startPosition < 1)
+                throw new ArgumentException();
+
+            return string.Join(" ", ToArray().Skip(startPosition).Take(endPosition - startPosition).ToArray());
+        }
+
 
         /// <inheritdoc />
         public bool TryGet(int index, Type type, out object value)
@@ -86,10 +110,10 @@ namespace Rocket.Core.Commands
         }
 
         /// <inheritdoc />
-        public string[] ToArray() => Parameters.ToArray();
+        public string[] ToArray() => RawParameters.ToArray();
 
         /// <inheritdoc />
-        public List<string> ToList() => Parameters.ToList();
+        public List<string> ToList() => ToArray().ToList();
 
         /// <inheritdoc />
         public IEnumerator<string> GetEnumerator() => ToList().GetEnumerator();

@@ -115,6 +115,30 @@ namespace Rocket.API.Commands
         bool TryGet<T>(int index, out T value);
 
         /// <summary>
+        ///     Returns the joined arguments starting from the given position.
+        /// </summary>
+        /// <example>
+        ///     If the command was entered as "/mycommand dosomething a bla c" it would return "a bla c" if startPosition was 1.
+        /// </example>
+        /// <param name="startPosition">The zero based position to start from.</param>
+        /// <exception cref="IndexOutOfRangeException">If startPosition is greater than or equal <see cref="Length">length</see>.</exception>
+        /// <returns>he joined arguments starting from the given position</returns>
+        string GetArgumentLine(int startPosition);
+
+        /// <summary>
+        ///     Returns the joined arguments starting at the given position.
+        /// </summary>
+        /// <example>
+        ///     If the command was entered as "/mycommand dosomething a bla c" it would return "a bla" if startPosition was 1 and endPosition was 2.
+        /// </example>
+        /// <param name="startPosition">The zero based position to start from.</param>
+        /// <param name="endPosition">The end position.</param>
+        /// <exception cref="IndexOutOfRangeException">If startPosition or endPosition is greater than or equal <see cref="Length">length</see>.</exception>
+        /// <exception cref="ArgumentException">If startPosition is greater than or equal endPosition.</exception>
+        /// <returns>he joined arguments starting from the given position</returns>
+        string GetArgumentLine(int startPosition, int endPosition);
+
+        /// <summary>
         ///     <inheritdoc cref="TryGet{T}" />
         /// </summary>
         /// <param name="index">

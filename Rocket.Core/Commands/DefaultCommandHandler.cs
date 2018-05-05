@@ -100,7 +100,7 @@ namespace Rocket.Core.Commands
                 context.CommandPrefix + context.CommandAlias + " ",
                 cmd,
                 alias,
-                ((CommandParameters)context.Parameters).Parameters.Skip(1).ToArray(),
+                context.Parameters.ToArray().Skip(1).ToArray(),
                 context,
                 root
             );

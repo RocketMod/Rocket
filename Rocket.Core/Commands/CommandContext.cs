@@ -1,4 +1,5 @@
-﻿using Rocket.API.Commands;
+﻿using System;
+using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.Commands
@@ -32,5 +33,9 @@ namespace Rocket.Core.Commands
         public string CommandAlias { get; }
         public ICommandParameters Parameters { get; }
         public IDependencyContainer Container { get; }
+        public void SendUsage()
+        {
+            Caller.SendMessage("Usage: " + CommandPrefix + CommandAlias + " " + Command.Syntax, ConsoleColor.Blue);
+        }
     }
 }

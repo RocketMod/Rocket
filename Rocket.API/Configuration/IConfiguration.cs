@@ -39,6 +39,11 @@
         IConfigurationContext ConfigurationContext { get; set; }
 
         /// <summary>
+        ///     The configuration type name.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
         ///     Loads a new empty configuration without any context.
         /// </summary>
         void LoadEmpty();
