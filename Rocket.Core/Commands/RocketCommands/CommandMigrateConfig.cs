@@ -12,9 +12,9 @@ namespace Rocket.Core.Commands.RocketCommands
     {
         public string Name => "MigrateConfig";
         public string[] Aliases => null;
-        public string Description => "Migrates configs from one format to another.";
+        public string Description => "Migrates configs from one type to another.";
         public string Permission => "Rocket.MigrateConfig";
-        public string Syntax => "[<from> <to> <path>]";
+        public string Syntax => "[<from type> <to type> <path>]";
         public ISubCommand[] ChildCommands { get; }
         public bool SupportsCaller(Type commandCaller)
         {
