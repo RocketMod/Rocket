@@ -1,7 +1,6 @@
-﻿using Rocket.API;
-using Rocket.API.Configuration;
+﻿using Rocket.API.Configuration;
 
-namespace Rocket.Core
+namespace Rocket.Core.Configuration
 {
     public class ConfigurationContext : IConfigurationContext
     {

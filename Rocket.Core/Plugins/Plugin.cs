@@ -8,6 +8,7 @@ using Rocket.API.Eventing;
 using Rocket.API.I18N;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
+using Rocket.Core.Configuration;
 using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins

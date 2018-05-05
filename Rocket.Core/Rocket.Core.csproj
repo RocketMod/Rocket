@@ -82,7 +82,7 @@
     <Compile Include="Configuration\Json\JsonConfiguration.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationSection.cs" />
     <Compile Include="Configuration\Xml\XmlConfiguration.cs" />
-    <Compile Include="EnvironmentContext.cs" />
+    <Compile Include="Configuration\ConfigurationContext.cs" />
     <Compile Include="Eventing\EventAction.cs" />
     <Compile Include="Eventing\EventHandler.cs" />
     <Compile Include="Eventing\GenericCancellableEvent.cs" />

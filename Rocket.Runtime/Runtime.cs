@@ -70,6 +70,8 @@ namespace Rocket
                 Directory.CreateDirectory(WorkingDirectory);
 
             permissions.Load(this);
+
+            logger.LogInformation($"Initializing implementation: {impl.Name}", ConsoleColor.Green);
             impl.Init(this);
         }
 

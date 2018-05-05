@@ -5,6 +5,7 @@ using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
+using Rocket.Core.Configuration;
 using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions

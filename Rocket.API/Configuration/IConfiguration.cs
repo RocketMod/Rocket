@@ -18,12 +18,20 @@
         bool Exists(IConfigurationContext context);
 
         /// <summary>
-        ///     Loads the configuration from the given context. 
+        ///     Loads the configuration. 
         ///     If the configuration does not exist, it will create oen from the default configuration.<br/><br/>
         ///     <b><see cref="ConfigurationContext"/> must be set before.</b> 
         /// </summary>
         /// <param name="defaultConfiguration">The default configuration to be used if the configuration does not exist already.</param>
-        void Load(object defaultConfiguration);
+        void Load(object defaultConfiguration = null);
+
+        /// <summary>
+        ///     Loads the configuration from the given context. 
+        ///     If the configuration does not exist, it will create oen from the default configuration.<br/><br/>
+        /// </summary>
+        /// <param name="context">The context to load from.</param>
+        /// <param name="defaultConfiguration">The default configuration to be used if the configuration does not exist already.</param>
+        void Load(IConfigurationContext context, object defaultConfiguration = null);
 
         /// <summary>
         ///     The configuration context.

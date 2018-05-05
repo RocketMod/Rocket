@@ -28,8 +28,25 @@ namespace Rocket.Core.Configuration.JsonNetBase
         public bool Exists(IConfigurationContext context)
             => File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + "." + FileEnding));
 
-        public virtual void Load(object defaultConfiguration)
+        public virtual void Load(object defaultConfiguration = null)
         {
+            if (ConfigurationContext == null)
+                throw new Exception("ConfigurationContext is null!");
+
+            if (!File.Exists(ConfigurationFile))
+            {
+                LoadFromObject(defaultConfiguration);
+                Save();
+                return;
+            }
+
+            LoadFromFile(ConfigurationFile);
+        }
+
+        public virtual void Load(IConfigurationContext context, object defaultConfiguration = null)
+        {
+            ConfigurationContext = context ?? throw new ArgumentNullException(nameof(context));
+
             if (!File.Exists(ConfigurationFile))
             {
                 LoadFromObject(defaultConfiguration);
