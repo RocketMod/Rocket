@@ -106,7 +106,7 @@ namespace Rocket.Core.Permissions
             return ProxiedServices.SelectMany(c => c.GetGroups());
         }
 
-        public void UpdateGroup(IPermissionGroup group)
+        public bool UpdateGroup(IPermissionGroup group)
         {
             throw new NotSupportedException("Updating groups from proxy is not supported.");
         }

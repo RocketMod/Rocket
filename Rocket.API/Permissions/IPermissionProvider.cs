@@ -108,7 +108,8 @@ namespace Rocket.API.Permissions
         ///     Updates a group.
         /// </summary>
         /// <param name="group">The group to update.</param>
-        void UpdateGroup(IPermissionGroup group);
+        /// <returns><b>true</b> if the group exists and could be updated; otherwise, <b>false</b>.</returns>
+        bool UpdateGroup(IPermissionGroup group);
 
         /// <summary>
         ///     Adds the given group to the command caller.

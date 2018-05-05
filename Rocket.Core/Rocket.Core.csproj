@@ -78,6 +78,7 @@
     <Compile Include="Extensions\TypeConverterExtensions.cs" />
     <Compile Include="Logging\ProxyLogger.cs" />
     <Compile Include="I18N\LocalizationExtensions.cs" />
+    <Compile Include="Permissions\GroupPermissionSection.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />
     <Compile Include="Configuration\Json\JsonConfiguration.cs" />
@@ -90,6 +91,8 @@
     <Compile Include="Eventing\GenericEvent.cs" />
     <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
     <Compile Include="Permissions\ConsolePermissionProvider.cs" />
+    <Compile Include="Permissions\PermissionSection.cs" />
+    <Compile Include="Permissions\PlayerPermissionSection.cs" />
     <Compile Include="Permissions\ProxyPermissionProvider.cs" />
     <Compile Include="Player\BaseOnlinePlayer.cs" />
     <Compile Include="Player\BasePlayer.cs" />

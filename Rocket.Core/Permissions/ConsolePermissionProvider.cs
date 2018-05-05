@@ -45,7 +45,7 @@ namespace Rocket.Core.Permissions
 
         public IEnumerable<IPermissionGroup> GetGroups() => new IPermissionGroup[0];
 
-        public void UpdateGroup(IPermissionGroup group) { }
+        public bool UpdateGroup(IPermissionGroup group) => false;
 
         public bool AddGroup(IIdentifiable target, IPermissionGroup group) => false;
 

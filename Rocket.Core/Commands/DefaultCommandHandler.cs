@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
@@ -58,7 +59,10 @@ namespace Rocket.Core.Commands
             if (provider.CheckHasAnyPermission(caller, perms) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(caller, perms);
 
-            try
+            if(Debugger.IsAttached) // go to exception directly in VS
+                context.Command.Execute(context);
+            else
+                try
             {
                 context.Command.Execute(context);
             }

@@ -31,11 +31,14 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
         public IConfigurationSection GetSection(string path)
         {
+            if (path.Trim().Equals("") && this is IConfigurationSection section)
+                return section;
+
             GuardLoaded();
             GuardPath(path);
 
             JsonNetConfigurationElement currentNode = this;
-            string[] parts = path.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length == 1)
             {
@@ -63,9 +66,9 @@ namespace Rocket.Core.Configuration.JsonNetBase
             }
 
             foreach (string part in parts)
-                currentNode = (JsonNetConfigurationSection) currentNode.GetSection(part);
+                currentNode = (JsonNetConfigurationSection)currentNode.GetSection(part);
 
-            return (IConfigurationSection) currentNode;
+            return (IConfigurationSection)currentNode;
         }
 
         public IConfigurationSection CreateSection(string path, SectionType type)
@@ -75,7 +78,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
             JToken current = Node;
 
-            string[] parts = path.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
 
             int i = 0;
             foreach (string part in parts)
@@ -91,7 +94,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
                     switch (type)
                     {
                         case SectionType.Value:
-                            o.Add(new JProperty(part, (string) null));
+                            o.Add(new JProperty(part, (string)null));
                             break;
                         case SectionType.Array:
                             o.Add(part, new JArray());
@@ -115,8 +118,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
             GuardLoaded();
             GuardPath(path);
 
-            JToken node = ((JsonNetConfigurationElement) GetSection(path)).Node;
-            JObject parent = (JObject) ((JsonNetConfigurationElement) GetSection(path).Parent).Node;
+            JToken node = ((JsonNetConfigurationElement)GetSection(path)).Node;
+            JObject parent = (JObject)((JsonNetConfigurationElement)GetSection(path).Parent).Node;
             parent.Remove(node.Path.Replace(parent.Path + ".", ""));
             return true;
         }
@@ -137,9 +140,24 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
         public abstract string Path { get; }
 
-        public virtual T Get<T>() => Node.ToObject<T>();
+        public virtual T Get<T>()
+        {
+            //if (Node is JArray array && typeof(T).IsArray)
+            //{
+            //    var elementType = typeof(T).GetElementType();
+            //    return (T)(object)array.Values().Select(c => c.ToObject(elementType)).ToArray();
+            //}
+            return Node.ToObject<T>();
+        }
+
         public object Get()
         {
+            if (Node is JProperty property)
+                return property.Value.ToObject<object>();
+
+            if (Node is JArray array)
+                return array.Values().Select(c => c.ToObject<object>()).ToArray();
+
             return Node.ToObject<object>();
         }
 
@@ -149,7 +167,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
         {
             GuardLoaded();
 
-            if (!TryGet(out T val)) val = defaultValue;
+            if (!TryGet(out T val))
+                val = defaultValue;
 
             return val;
         }
@@ -169,11 +188,20 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
             if (node is JArray array)
             {
-                foreach (JToken child in array.ToList() /* ToList() to make a simple clone */) child.Remove();
+                foreach (JToken child in array.ToList() /* ToList() to make a simple clone */)
+                    child.Remove();
 
                 if (value is IEnumerable enumerable)
                 {
-                    foreach (object child in enumerable) array.Add(new JValue(child));
+                    foreach (object child in enumerable)
+                        try
+                        {
+                            array.Add(new JValue(child));
+                        }
+                        catch
+                        {
+                            array.Add(JObject.FromObject(child));
+                        }
                     return;
                 }
 
@@ -256,7 +284,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
         public void GuardPath(string path)
         {
             var parts = path.Split('.');
-            if(parts.Any(c => long.TryParse(c, out var _)))
+            if (parts.Any(c => long.TryParse(c, out var _)))
                 throw new Exception("Paths can not contain sections which are numbers. Path: " + path);
 
             if (string.IsNullOrEmpty(path))
@@ -275,8 +303,19 @@ namespace Rocket.Core.Configuration.JsonNetBase
                     if (!o.ContainsKey(path))
                         o.Add(child);
                     else
-                        o[path] = child;
+                    {
+                        var c = o[path];
 
+                        if (c is JValue)
+                            c = c.Parent;
+
+                        if (c is JProperty property && child is JProperty)
+                            property.Value = ((JProperty)child).Value;
+                        else if (c is JProperty && child is JValue)
+                            ((JProperty)c).Value = child.DeepClone();
+                        else
+                            o[path] = child;
+                    }
                 DeepCopy(child, to[path]);
             }
         }

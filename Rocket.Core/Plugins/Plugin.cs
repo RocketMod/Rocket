@@ -107,7 +107,7 @@ namespace Rocket.Core.Plugins
 
         public void Load(bool isReload)
         {
-            WorkingDirectory = Path.Combine(Path.Combine(Implementation.WorkingDirectory, "Plugins"), Name);
+            WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
 
             if (EventManager != null)
             {

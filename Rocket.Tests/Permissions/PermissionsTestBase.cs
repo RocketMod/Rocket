@@ -22,40 +22,46 @@ namespace Rocket.Tests.Permissions
 
             object sampleGroupsPermissions = new
             {
-                TestGroup1 = new
+                Groups = new object[]
                 {
-                    Name = "TestGroup",
-                    Priority = 2,
-                    Permissions = new[]
+                    new GroupPermissionSection
                     {
-                        "GroupPermission1"
-                    }
-                },
-                TestGroup2 = new
-                {
-                    Name = "TestGroup2",
-                    Priority = 1,
-                    Permissions = new[]
+                        Id = "TestGroup1",
+                        Name = "TestGroup",
+                        Priority = 2,
+                        Permissions = new[]
+                        {
+                            "GroupPermission1"
+                        }
+                    },
+                    new GroupPermissionSection
                     {
-                        "GroupPermission2",
-                        "GroupPermission2.Child",
-                        "!GroupPermission3"
+                        Id = "TestGroup2",
+                        Name = "TestGroup2",
+                        Priority = 1,
+                        Permissions = new[]
+                        {
+                            "GroupPermission2",
+                            "GroupPermission2.Child",
+                            "!GroupPermission3"
+                        }
+                    },
+                    new GroupPermissionSection
+                    {
+                        Id = "TestGroup3",
+                        Name = "PrimaryGroup",
+                        Priority = 3
                     }
-                },
-                TestGroup3 = new
-                {
-                    Name = "PrimaryGroup",
-                    Priority = 3
                 }
             };
 
             object samplePlayers = new
             {
-                TestPlayer = new
+                TestPlayer = new object[]
                 {
-                    TestPlayerId = new
+                    new PlayerPermissionSection
                     {
-                        LastDisplayName = "Trojaner",
+                        Id = "TestPlayerId",
                         Groups = new[]
                         {
                             "TestGroup3", "TestGroup2",

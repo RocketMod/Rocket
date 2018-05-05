@@ -15,7 +15,7 @@ namespace Rocket.ConsoleImplementation
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "ConsoleHost";
 
-        public string WorkingDirectory => Path.Combine(Environment.CurrentDirectory, "Rocket");
+        public string WorkingDirectory { get; set; } = Path.Combine(Environment.CurrentDirectory, "Rocket");
 
         public void Init(IRuntime runtime)
         {
@@ -23,6 +23,8 @@ namespace Rocket.ConsoleImplementation
             Console.WriteLine("Loading...");
             runtime.Container.Resolve<IPluginManager>().Init();
             ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
+
+            Directory.SetCurrentDirectory(WorkingDirectory);
 
             Console.WriteLine("Loaded; type \"help\" for help or \"exit\" to exit.");
             Console.Write(">");

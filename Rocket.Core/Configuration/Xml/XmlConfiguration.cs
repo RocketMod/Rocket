@@ -16,7 +16,7 @@ namespace Rocket.Core.Configuration.Xml
 
         protected override void LoadFromFile(string file)
         {
-            string xml = System.IO.File.ReadAllText(file);
+            string xml = File.ReadAllText(file);
             LoadFromXml(xml);
         }
 
@@ -28,10 +28,10 @@ namespace Rocket.Core.Configuration.Xml
             string json = JsonConvert.SerializeXmlNode(doc);
 
             Node = JObject.Parse(json, new JsonLoadSettings
-                          {
-                              CommentHandling = CommentHandling.Ignore,
-                              LineInfoHandling = LineInfoHandling.Ignore
-                          })
+            {
+                CommentHandling = CommentHandling.Ignore,
+                LineInfoHandling = LineInfoHandling.Ignore
+            })
                           .GetValue(ConfigRoot)
                           .DeepClone();
 
@@ -41,7 +41,6 @@ namespace Rocket.Core.Configuration.Xml
         protected override void SaveToFile(string file)
         {
             File.WriteAllText(file, ToXml());
-
         }
 
         public override IConfigurationElement Clone()

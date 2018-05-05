@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Newtonsoft.Json.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration;
@@ -22,7 +23,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public void Execute(ICommandContext context)
         {
-            if (context.Parameters.Length != 0 && context.Parameters.Length != 3)
+            if (context.Parameters.Length != 0 && context.Parameters.Length < 3)
             {
                 throw new CommandWrongUsageException();
             }
@@ -70,36 +71,26 @@ namespace Rocket.Core.Commands.RocketCommands
 
             fromProvider.Load(cc);
             toProvider.ConfigurationContext = cc;
-
             toProvider.LoadEmpty();
 
-            IConfigurationElement currentFromNode = fromProvider;
-            IConfigurationElement currentToNode = fromProvider;
+            CopyConfigElement(fromProvider, toProvider);
 
-            while (true)
-            {
-                bool done = false;
-
-                foreach (var fromChild in currentFromNode)
-                {
-                    var toChild = currentToNode.CreateSection(fromChild.Key, fromChild.Type);
-                    currentToNode[fromChild.Key].Set(fromChild.Get());
-
-                    if (currentFromNode.Type == SectionType.Object && !currentFromNode.GetChildren().Any())
-                    {
-                        done = true;
-                        break;
-                    }
-
-                    currentFromNode = fromChild;
-                    currentToNode = toChild;
-                }
-
-                if (done)
-                    break;
-            }
+            toProvider.Save();
 
             context.Caller.SendMessage("Configuration was successfully migrated.");
+        }
+
+        private void CopyConfigElement(IConfigurationElement fromSection, IConfigurationElement toSection)
+        {
+            foreach (var fromChild in fromSection.GetChildren())
+            {
+                var toChild = toSection.CreateSection(fromChild.Key, fromChild.Type);
+
+                if (fromChild.Type != SectionType.Object)
+                    toChild.Set(fromChild.Get());
+                else
+                    CopyConfigElement(fromChild, toChild);
+            }
         }
 
         private string GetConfigTypes(IConfiguration[] configProviders)

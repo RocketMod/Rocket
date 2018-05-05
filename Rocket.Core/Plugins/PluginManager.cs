@@ -62,10 +62,10 @@ namespace Rocket.Core.Plugins
 
         public virtual void Init()
         {
-            var implementation = container.Resolve<IImplementation>();
+            var runtime = container.Resolve<IRuntime>();
 
-            pluginsDirectory = Path.Combine(implementation.WorkingDirectory, "Plugins");
-            packagesDirectory = Path.Combine(implementation.WorkingDirectory, "Packages");
+            pluginsDirectory = Path.Combine(runtime.WorkingDirectory, "Plugins");
+            packagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
 
             commands = new Dictionary<IPlugin, List<ICommand>>();
 
