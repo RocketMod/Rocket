@@ -193,9 +193,9 @@ namespace Rocket.Core.Configuration.JsonNetBase
                     foreach (object child in enumerable)
                         try
                         {
-                            array.Add(new JValue(child));
+                            array.Add(child is JToken ? child : new JValue(child));
                         }
-                        catch
+                        catch(Exception ex)
                         {
                             array.Add(JObject.FromObject(child));
                         }

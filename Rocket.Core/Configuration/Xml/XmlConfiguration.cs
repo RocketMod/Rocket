@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using System.Text;
 using System.Xml;
+using System.Xml.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
@@ -53,22 +55,38 @@ namespace Rocket.Core.Configuration.Xml
         public string ToXml()
         {
             JToken clone = Node.DeepClone();
-            var xml = new
-            {
-                version = "1.0",
-                encoding = "UTF-8",
-                standalone = true
-            };
-            JObject o = new JObject
-            {
-                {"?xml", new JObject(xml)},
-                {ConfigRoot, clone}
-            };
+            string json = clone.ToString();
 
-            string json = o.ToString();
+            //Appends <Config></Config>
+            XmlDocument parent = new XmlDocument();
+            XmlDeclaration xmlDeclaration = parent.CreateXmlDeclaration("1.0", "UTF-8", null);
+            XmlElement root = parent.DocumentElement;
+            parent.InsertBefore(xmlDeclaration, root);
+            XmlElement configElement = parent.CreateElement(string.Empty, ConfigRoot, string.Empty);
+            parent.AppendChild(configElement);
 
-            XmlDocument doc = JsonConvert.DeserializeXmlNode(json);
-            return doc.ToString();
+            XmlDocument jsonDocument = JsonConvert.DeserializeXmlNode(json);
+            foreach (XmlNode elem in jsonDocument)
+            {
+                var copied = parent.ImportNode(elem, true);
+                configElement.AppendChild(copied);
+            }
+
+            //Convert XmlDocument to String with a format
+            StringBuilder sb = new StringBuilder();
+            XmlWriterSettings settings = new XmlWriterSettings
+            {
+                Indent = true,
+                IndentChars = "  ",
+                NewLineChars = "\r\n",
+                NewLineHandling = NewLineHandling.Replace
+            };
+            using (XmlWriter writer = XmlWriter.Create(sb, settings))
+            {
+                parent.Save(writer);
+            }
+            return sb.ToString();
         }
     }
+
 }
