@@ -155,9 +155,6 @@ namespace Rocket.Core.Configuration.JsonNetBase
             if (Node is JProperty property)
                 return property.Value.ToObject<object>();
 
-            if (Node is JArray array)
-                return array.Values().Select(c => c.ToObject<object>()).ToArray();
-
             return Node.ToObject<object>();
         }
 
