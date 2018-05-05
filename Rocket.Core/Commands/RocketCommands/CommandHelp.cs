@@ -43,7 +43,7 @@ namespace Rocket.Core.Commands.RocketCommands
                         return;
                     }
 
-                    childs = cmd.ChildCommands.OrderBy(c => c.Name).Cast<ICommand>();
+                    childs = cmd.ChildCommands?.OrderBy(c => c.Name).Cast<ICommand>();
                     if (i != context.Parameters.Length - 1)
                         prefix += commandNode + " ";
                     i++;
