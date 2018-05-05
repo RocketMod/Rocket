@@ -86,7 +86,8 @@ namespace Rocket
             get
             {
                 var implDir = Container.Resolve<IImplementation>().WorkingDirectory;
-                if (Path.GetDirectoryName(implDir) != "Rocket")
+                string dirName = new DirectoryInfo(implDir).Name;
+                if (dirName != "Rocket")
                     return Path.Combine(implDir, "Rocket");
                 return implDir;
             }
