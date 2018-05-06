@@ -11,21 +11,21 @@ namespace Rocket.Core.Logging
     public class FileLogger : BaseLogger, IDisposable
     {
         private StreamWriter streamWriter;
-        private string file;
+        private string logFile;
 
         public virtual string File
         {
-            get => file;
+            get => logFile;
             set
             {
-                if (value != null && value.Equals(file, StringComparison.OrdinalIgnoreCase))
+                if (value != null && value.Equals(logFile, StringComparison.OrdinalIgnoreCase))
                 {
                     return;
                 }
 
                 if (value == null)
                 {
-                    file = value;
+                    logFile = value;
                     return;
                 }
 
@@ -36,7 +36,15 @@ namespace Rocket.Core.Logging
                     var extension = Path.GetFileName(value).Replace(fileName, string.Empty);
 
                     string ver = $"{DateTime.Now:yyyyMMddTHHmmss}"; //ISO 8601
-                    var backupFile = Path.Combine(directory, fileName + "." + ver + extension);
+                    var backupFileBaseName = Path.Combine(directory, fileName + "." + ver + extension);
+
+                    string backupFile = backupFileBaseName;
+                    int i = 0;
+                    while (System.IO.File.Exists(backupFile))
+                    {
+                        backupFile = backupFileBaseName + "-" + i;
+                        i++;
+                    }
 
                     System.IO.File.Move(value, backupFile);
                 }
@@ -47,8 +55,8 @@ namespace Rocket.Core.Logging
                     streamWriter.Dispose();
                 }
 
-                file = value;
-                streamWriter = System.IO.File.AppendText(file);
+                logFile = value;
+                streamWriter = System.IO.File.AppendText(logFile);
                 streamWriter.AutoFlush = true;
             }
         }
@@ -57,6 +65,9 @@ namespace Rocket.Core.Logging
         public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, ConsoleColor? color = null,
                         params object[] bindings)
         {
+            if(string.IsNullOrEmpty(logFile))
+                throw new FileLoadException("File has not been set.");
+
             if (!IsEnabled(level))
                 return;
 
