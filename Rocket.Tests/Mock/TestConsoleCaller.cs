@@ -1,21 +1,28 @@
 ﻿using System;
 using Rocket.API.Commands;
+using Rocket.API.Logging;
 using Rocket.API.Permissions;
+using Rocket.Core.Logging;
 
 namespace Rocket.Tests.Mock
 {
     public class TestConsoleCaller : IConsoleCommandCaller
     {
+        private readonly ILogger logger;
+
+        public TestConsoleCaller(ILogger logger)
+        {
+            ConsoleLogger.SkipTypeFromLogging(GetType());
+            this.logger = logger;
+        }
+
         public string Id => "Console";
         public string Name => "Console";
         public Type CallerType => typeof(TestConsoleCaller);
 
         public void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
         {
-            ConsoleColor tmp = Console.ForegroundColor;
-            Console.ForegroundColor = color ?? tmp;
-            Console.WriteLine("[SendMessage] " + message, bindings);
-            Console.ForegroundColor = tmp;
+            logger.LogInformation(message, color, bindings);
         }
 
         public int CompareTo(object obj) => throw new NotImplementedException();

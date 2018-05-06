@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using Rocket.API;
 using Rocket.API.DependencyInjection;
@@ -18,13 +20,11 @@ namespace Rocket
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
             Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
-
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
 
             var logger = Container.Resolve<ILogger>();
-
-            logger.LogInformation("Initializing RocketMod " + versionInfo.FileVersion, ConsoleColor.DarkGreen);
-
+            string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
+            logger.LogInformation(rocketInitializeMessage, ConsoleColor.DarkGreen);
             logger.LogInformation(@"                                    
 									
                                                            ,:
@@ -61,7 +61,19 @@ namespace Rocket
                +  ) / (8P(88))
                   (""     `""       `", ConsoleColor.Cyan);
 
+
             Container.Activate(typeof(RegistrationByConvention));
+            
+            if (!Container.IsRegistered<ILogger>("default_file_logger"))
+            {
+                var logsDirectory = Path.Combine(WorkingDirectory, "Logs");
+                if (!Directory.Exists(logsDirectory))
+                    Directory.CreateDirectory(logsDirectory);
+                Container.RegisterSingletonType<ILogger, FileLogger>("default_file_logger");
+                FileLogger fl = (FileLogger) Container.Resolve<ILogger>("default_file_logger");
+                fl.File = Path.Combine(logsDirectory, "Rocket.log");
+                fl.LogInformation(rocketInitializeMessage, ConsoleColor.DarkGreen);
+            }
 
             var permissions = Container.Resolve<IPermissionProvider>();
             var impl = Container.Resolve<IImplementation>();

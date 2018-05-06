@@ -8,7 +8,8 @@ namespace Rocket.Examples.CommandsPlugin
     public class SetHealthCommand : ICommand
     {
         public string Name => "SetHealth";
-        public string Description => "Sets health of players";
+        public string Summary => "Sets health of players.";
+        public string Description => null;
         public string Permission => "Rocket.Examples.SetHealth";
         public string Syntax => "<target player> <health>";
         public ISubCommand[] ChildCommands => null;

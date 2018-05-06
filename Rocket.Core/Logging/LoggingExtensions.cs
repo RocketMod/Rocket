@@ -52,7 +52,7 @@ namespace Rocket.Core.Logging
 
         public static void LogNative(this ILogger logger, string message, ConsoleColor? color, params object[] bindings)
         {
-            logger.LogNative(message, color, null, bindings);
+            logger.LogNative(message, null, color, bindings);
         }
 
         public static void LogNative(this ILogger logger, string message, Exception exception, params object[] bindings)
@@ -132,7 +132,7 @@ namespace Rocket.Core.Logging
 
         public static void LogFatal(this ILogger logger, string message, ConsoleColor? color, params object[] bindings)
         {
-            logger.LogFatal(message, color, null, bindings);
+            logger.LogFatal(message, null, color, bindings);
         }
 
         public static void LogFatal(this ILogger logger, string message, Exception exception, params object[] bindings)

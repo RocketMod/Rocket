@@ -15,7 +15,7 @@ namespace Rocket.Tests.Mock.Providers
         public TestImplementation(ILogger logger)
         {
             this.logger = logger;
-            ConsoleCommandCaller = new TestConsoleCaller();
+            ConsoleCommandCaller = new TestConsoleCaller(logger);
         }
 
         public IEnumerable<string> Capabilities => new List<string>

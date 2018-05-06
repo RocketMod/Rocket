@@ -12,7 +12,8 @@ namespace Rocket.Core.Commands.RocketCommands
     {
         public string Name => "MigrateConfig";
         public string[] Aliases => null;
-        public string Description => "Migrates configs from one type to another.";
+        public string Summary => "Migrates configs from one type to another.";
+        public string Description => null;
         public string Permission => "Rocket.MigrateConfig";
         public string Syntax => "[<from type> <to type> <path>]";
         public ISubCommand[] ChildCommands { get; }

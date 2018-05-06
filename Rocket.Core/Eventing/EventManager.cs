@@ -197,7 +197,7 @@ namespace Rocket.Core.Eventing
                 throw new ArgumentNullException(nameof(@event));
 
             container.TryResolve(null, out ILogger logger);
-            logger?.LogDebug("Emitting event: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
+            logger?.LogTrace("Emitting event: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
 
             inProgress.Add(@event);
 
@@ -223,18 +223,18 @@ namespace Rocket.Core.Eventing
 
             void FinishEvent()
             {
-                logger?.LogDebug("Event finished: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
+                logger?.LogTrace("Event finished: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
                 inProgress.Remove(@event);
                 callback?.Invoke(@event);
             }
 
             if (targetActions.Count == 0)
             {
-                logger?.LogDebug("Omitting event \""
+                logger?.LogTrace("Event \""
                     + @event.Name
-                    + "\" by \""
+                    + "\" of \""
                     + sender.Name
-                    + "\": No target subscriptions found.");
+                    + "\" was not sent: No target subscriptions found.");
                 FinishEvent();
                 return;
             }

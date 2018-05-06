@@ -41,14 +41,20 @@ namespace Rocket.API.Commands
         string[] Aliases { get; }
 
         /// <summary>
-        ///     The description of the command. 
-        ///     <para>
-        ///         <b>This proprty can return null</b> but its advised to always include a description for the command.
-        ///     </para>
+        ///     The command summary.
+        ///     <para><b>This proprty must not return null.</b>.</para>
         /// </summary>
         /// <example>
         ///     <c>"This command heals you or someone else."</c>
         /// </example>
+        string Summary { get; }
+
+        /// <summary>
+        ///     The full description of the command. 
+        ///     <para>
+        ///         <b>This proprty can return null</b>.
+        ///     </para>
+        /// </summary>
         string Description { get; }
 
         /// <summary>
@@ -72,6 +78,7 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     The command syntax will be shown to the <see cref="ICommandCaller" /> when the command was not used correctly.
         ///     <para>An output for the above example could be "/heal [player] &lt;amount&gt;".</para>
+        ///     <para>The syntax should not contain sub command usage.</para>
         ///     <para><b>This property must never return null.</b></para>
         /// </summary>
         /// <remarks>

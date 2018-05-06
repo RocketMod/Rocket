@@ -4,13 +4,15 @@ using System.IO;
 using System.Reflection;
 using Rocket.API;
 using Rocket.API.Commands;
+using Rocket.API.Logging;
 using Rocket.API.Plugins;
+using Rocket.Core.Logging;
 
 namespace Rocket.ConsoleImplementation
 {
     public class ConsoleImplementation : IImplementation
     {
-        private readonly ConsoleCommandCaller consoleCommandCaller = new ConsoleCommandCaller();
+        private ConsoleCommandCaller consoleCommandCaller;
 
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "ConsoleHost";
@@ -19,14 +21,16 @@ namespace Rocket.ConsoleImplementation
 
         public void Init(IRuntime runtime)
         {
-
-            Console.WriteLine("Loading...");
             runtime.Container.Resolve<IPluginManager>().Init();
             ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
 
             Directory.SetCurrentDirectory(WorkingDirectory);
 
-            Console.WriteLine("Loaded; type \"help\" for help or \"exit\" to exit.");
+            ILogger logger = runtime.Container.Resolve<ILogger>();
+            consoleCommandCaller = new ConsoleCommandCaller(logger);
+
+            logger.LogInformation("Loaded; type \"help\" for help or \"exit\" to exit.");
+
             Console.Write(">");
 
             string line;

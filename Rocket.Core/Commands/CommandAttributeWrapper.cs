@@ -47,6 +47,7 @@ namespace Rocket.Core.Commands
         public MethodBase Method { get; set; }
 
         public string Name { get; }
+        public string Summary => Attribute?.Summary;
         public string Description => Attribute?.Description;
         public string Permission => Attribute?.Permission;
         public string Syntax { get; }

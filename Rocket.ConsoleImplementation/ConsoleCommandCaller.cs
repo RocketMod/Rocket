@@ -1,11 +1,21 @@
 ﻿using System;
 using Rocket.API.Commands;
+using Rocket.API.Logging;
 using Rocket.API.Permissions;
+using Rocket.Core.Logging;
 
 namespace Rocket.ConsoleImplementation
 {
     public class ConsoleCommandCaller : IConsoleCommandCaller
     {
+        private readonly ILogger logger;
+
+        public ConsoleCommandCaller(ILogger logger)
+        {
+            ConsoleLogger.SkipTypeFromLogging(GetType());
+            this.logger = logger;
+        }
+
         public int CompareTo(object obj) => throw new NotImplementedException();
 
         public int CompareTo(IIdentifiable other) => throw new NotImplementedException();
@@ -22,10 +32,7 @@ namespace Rocket.ConsoleImplementation
 
         public void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
         {
-            ConsoleColor tmp = Console.ForegroundColor;
-            Console.ForegroundColor = color ?? tmp;
-            Console.WriteLine(message, bindings);
-            Console.ForegroundColor = tmp;
+            logger.LogInformation(message, color, bindings);
         }
 
         public string ToString(string format, IFormatProvider formatProvider) => Id;

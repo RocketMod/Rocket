@@ -19,7 +19,7 @@ namespace Rocket.Examples.CommandsPlugin
             this.translations = translations;
         }
 
-        [Command(Description = "Kills a player")] //By default, name is the same as the method name, and it will support all command callers
+        [Command(Summary = "Kills a player.")] //By default, name is the same as the method name, and it will support all command callers
         public void KillPlayer(ICommandCaller sender, IOnlinePlayer target)
         {
             if (target is ILivingEntity entity)
@@ -28,7 +28,7 @@ namespace Rocket.Examples.CommandsPlugin
                 sender.SendMessage("Target could not be killed :(");
         }
 
-        [Command(Name = "Broadcast", Description = "Broadcasts a message")]
+        [Command(Name = "Broadcast", Summary = "Broadcasts a message.")]
         [CommandAlias("bc")]
         [CommandCaller(typeof(IConsoleCommandCaller))] // only console can call it
         public void Broadcast(ICommandCaller sender, string[] args)
