@@ -74,6 +74,9 @@
     <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />
+    <Compile Include="Configuration\IRocketSettingsProvider.cs" />
+    <Compile Include="Configuration\RocketSettings.cs" />
+    <Compile Include="Configuration\RocketSettingsProvider.cs" />
     <Compile Include="DependencyInjection\DontAutoRegister.cs" />
     <Compile Include="Extensions\TypeConverterExtensions.cs" />
     <Compile Include="Logging\BaseLogger.cs" />

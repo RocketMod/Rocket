@@ -86,6 +86,9 @@ namespace Rocket.Core.Logging
             {
                 try
                 {
+                    var parentDir = Path.GetDirectoryName(logFile);
+                    if (!Directory.Exists(parentDir))
+                        Directory.CreateDirectory(parentDir);
 
                     streamWriter = System.IO.File.AppendText(logFile);
                     streamWriter.AutoFlush = true;

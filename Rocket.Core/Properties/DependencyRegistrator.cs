@@ -6,6 +6,7 @@ using Rocket.API.I18N;
 using Rocket.API.Permissions;
 using Rocket.API.Plugins;
 using Rocket.Core.Commands;
+using Rocket.Core.Configuration;
 using Rocket.Core.Configuration.Json;
 using Rocket.Core.Configuration.Xml;
 using Rocket.Core.Eventing;
@@ -42,8 +43,8 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPermissionProvider, ConsolePermissionProvider>("console_permissions");
             container.RegisterSingletonType<IPermissionProvider, ProxyPermissionProvider>("proxy_permissions", null);
 
-            //transient dependencies
             container.RegisterType<ITranslationLocator, TranslationLocator>();
+            container.RegisterSingletonType<IRocketSettingsProvider, RocketSettingsProvider>();
         }
     }
 }

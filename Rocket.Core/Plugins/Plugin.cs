@@ -116,9 +116,13 @@ namespace Rocket.Core.Plugins
         {
             if (firstInit)
             {
-                WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
-                var pluginLogger = new PluginLogger(Container, this);
-                Container.RegisterSingletonInstance(pluginLogger, "plugin_logger");
+                var rocketSettings = Container.Resolve<IRocketSettingsProvider>();
+                if (rocketSettings.Settings.PluginLogsEnabled)
+                {
+                    WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
+                    var pluginLogger = new PluginLogger(Container, this);
+                    Container.RegisterSingletonInstance(pluginLogger, "plugin_logger");
+                }
                 firstInit = false;
             }
 
