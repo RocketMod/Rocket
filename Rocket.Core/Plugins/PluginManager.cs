@@ -14,8 +14,9 @@ using Rocket.Compatibility;
 using Rocket.Core.Commands;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
+using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
-d
+
 namespace Rocket.Core.Plugins
 {
     public class PluginManager : IPluginManager, ICommandProvider

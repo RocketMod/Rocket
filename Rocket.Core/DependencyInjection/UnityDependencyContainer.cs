@@ -6,6 +6,7 @@ using System.Reflection;
 using Microsoft.Practices.Unity;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
+using Rocket.Core.Logging;
 
 namespace Rocket.Core.DependencyInjection
 {
@@ -43,7 +44,7 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterSingletonType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(TInterface)))
-                Logger?.LogDebug("\t\tRegistering singleton: <"
+                Logger?.LogTrace("\t\tRegistering singleton: <"
                     + typeof(TInterface).Name
                     + ", "
                     + typeof(TClass).Name
@@ -73,7 +74,7 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterSingletonInstance<TInterface>(TInterface value, params string[] mappingNames)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(TInterface)))
-                Logger?.LogDebug("\t\tRegistering singleton instance: <"
+                Logger?.LogTrace("\t\tRegistering singleton instance: <"
                     + typeof(TInterface).Name
                     + ", "
                     + value.GetType().Name
@@ -91,7 +92,7 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(TInterface)))
-                Logger?.LogDebug("\t\tRegistering type: <"
+                Logger?.LogTrace("\t\tRegistering type: <"
                     + typeof(TInterface).Name
                     + ", "
                     + typeof(TClass).Name
@@ -109,7 +110,7 @@ namespace Rocket.Core.DependencyInjection
         public void RegisterInstance<TInterface>(TInterface value, params string[] mappingNames)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(TInterface)))
-                Logger?.LogDebug("\t\tRegistering type instance: <"
+                Logger?.LogTrace("\t\tRegistering type instance: <"
                     + typeof(TInterface).Name
                     + ", "
                     + value.GetType().Name
@@ -144,7 +145,7 @@ namespace Rocket.Core.DependencyInjection
         public object Activate(Type type)
         {
             if (!typeof(ILogger).IsAssignableFrom(type))
-                Logger?.LogDebug("Activating: " + type.Name);
+                Logger?.LogTrace("Activating: " + type.Name);
 
             foreach (ConstructorInfo constructor in type.GetConstructors())
             {
@@ -181,7 +182,7 @@ namespace Rocket.Core.DependencyInjection
         public T Resolve<T>(string mappingName = null)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
-                Logger?.LogDebug("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
+                Logger?.LogTrace("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered<T>(mappingName))
                 return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
@@ -196,7 +197,7 @@ namespace Rocket.Core.DependencyInjection
         public T Resolve<T>(string mappingName, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
-                Logger?.LogDebug("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
+                Logger?.LogTrace("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered<T>(mappingName))
                 return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
@@ -211,7 +212,7 @@ namespace Rocket.Core.DependencyInjection
         public object Resolve(Type serviceType, string mappingName = null)
         {
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
-                Logger?.LogDebug("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
+                Logger?.LogTrace("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered(serviceType, mappingName))
                 return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
@@ -226,7 +227,7 @@ namespace Rocket.Core.DependencyInjection
         public object Resolve(Type serviceType, string mappingName, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
-                Logger?.LogDebug("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
+                Logger?.LogTrace("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered(serviceType, mappingName))
                 return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
@@ -238,7 +239,7 @@ namespace Rocket.Core.DependencyInjection
         public IEnumerable<T> ResolveAll<T>()
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
-                Logger?.LogDebug("Trying to resolve all: <" + typeof(T).Name + ">");
+                Logger?.LogTrace("Trying to resolve all: <" + typeof(T).Name + ">");
 
             return container.ResolveAll<T>()
                                                 .Where(c => !(c is IServiceProxy));
@@ -248,7 +249,7 @@ namespace Rocket.Core.DependencyInjection
         public IEnumerable<T> ResolveAll<T>(params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
-                Logger?.LogDebug("Trying to resolve all: <" + typeof(T).Name + ">");
+                Logger?.LogTrace("Trying to resolve all: <" + typeof(T).Name + ">");
 
             return container.ResolveAll<T>(new OrderedParametersOverride(parameters))
                                                    .Where(c => !(c is IServiceProxy));
@@ -258,7 +259,7 @@ namespace Rocket.Core.DependencyInjection
         public IEnumerable<object> ResolveAll(Type type)
         {
             if (!typeof(ILogger).IsAssignableFrom(type))
-                Logger?.LogDebug("Trying to resolve all: <" + type.Name + ">");
+                Logger?.LogTrace("Trying to resolve all: <" + type.Name + ">");
 
             return container.ResolveAll(type)
                                                      .Where(c => !(c is IServiceProxy));
@@ -269,7 +270,7 @@ namespace Rocket.Core.DependencyInjection
         public IEnumerable<object> ResolveAll(Type type, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(type))
-                Logger?.LogDebug("Trying to resolve all: <" + type.Name + ">");
+                Logger?.LogTrace("Trying to resolve all: <" + type.Name + ">");
 
             return container.ResolveAll(type, new OrderedParametersOverride(parameters))
                                                      .Where(c => !(c is IServiceProxy));
@@ -286,7 +287,7 @@ namespace Rocket.Core.DependencyInjection
         public bool TryResolve<T>(string mappingName, out T output)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
-                Logger?.LogDebug("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
+                Logger?.LogTrace("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered<T>(mappingName))
             {
@@ -307,7 +308,7 @@ namespace Rocket.Core.DependencyInjection
         public bool TryResolve<T>(string mappingName, out T output, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
-                Logger?.LogDebug("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
+                Logger?.LogTrace("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered<T>(mappingName))
             {
@@ -328,7 +329,7 @@ namespace Rocket.Core.DependencyInjection
         public bool TryResolve(Type serviceType, string mappingName, out object output)
         {
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
-                Logger?.LogDebug("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
+                Logger?.LogTrace("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered(serviceType, mappingName))
             {
@@ -352,7 +353,7 @@ namespace Rocket.Core.DependencyInjection
         public bool TryResolve(Type serviceType, string mappingName, out object output, params object[] parameters)
         {
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
-                Logger?.LogDebug("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
+                Logger?.LogTrace("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered(serviceType, mappingName))
             {

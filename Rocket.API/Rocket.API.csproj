@@ -70,6 +70,7 @@
     <Compile Include="Economy\IEconomyProvider.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />
+    <Compile Include="Logging\LogLevel.cs" />
     <Compile Include="Math\RVector2.cs" />
     <Compile Include="Math\RVector3.cs" />
     <Compile Include="Math\RVector4.cs" />

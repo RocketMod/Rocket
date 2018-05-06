@@ -4,6 +4,7 @@ using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
+using Rocket.Core.Logging;
 
 namespace Rocket.Tests.Mock.Providers
 {

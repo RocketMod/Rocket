@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core.ServiceProxies;
@@ -9,162 +10,21 @@ namespace Rocket.Core.Logging
     {
         public ProxyLogger(IDependencyContainer container) : base(container) { }
 
-        public bool IsTraceEnabled => throw new NotSupportedException("Not supported on proxy");
-        public bool IsDebugEnabled => throw new NotSupportedException("Not supported on proxy");
-        public bool IsInformationEnabled => throw new NotSupportedException("Not supported on proxy");
-        public bool IsWarningEnabled => throw new NotSupportedException("Not supported on proxy");
-        public bool IsErrorEnabled => throw new NotSupportedException("Not supported on proxy");
-        public bool IsFatalEnabled => throw new NotSupportedException("Not supported on proxy");
-        public bool IsNativeEnabled => throw new NotSupportedException("Not supported on proxy");
-
-        public void LogTrace(string message, params object[] arguments)
+        public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null, ConsoleColor? color = null,
+                        params object[] bindings)
         {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogTrace(message, arguments);
+            foreach(var service in ProxiedServices)
+                service.Log(message, level, exception, color, bindings);
         }
 
-        public void LogTrace(string message, ConsoleColor? color, params object[] arguments)
+        public bool IsEnabled(LogLevel level)
         {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogTrace(message, color, arguments);
+            return ProxiedServices.Any(c => c.IsEnabled(level));
         }
 
-        public void LogTrace(string message, Exception exception, params object[] arguments)
+        public void SetEnabled(LogLevel level, bool enabled)
         {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogTrace(message, exception, arguments);
-        }
-
-        public void LogTrace(string message, Exception exception, ConsoleColor? color, params object[] bindings)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogTrace(message, exception, color, bindings);
-        }
-
-        public void LogDebug(string message, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogDebug(message, arguments);
-        }
-
-        public void LogDebug(string message, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogDebug(message, color, arguments);
-        }
-
-        public void LogDebug(string message, Exception exception, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogDebug(message, exception, arguments);
-        }
-
-        public void LogDebug(string message, Exception exception, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogDebug(message, exception, color, arguments);
-        }
-
-        public void LogInformation(string message, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogInformation(message, arguments);
-        }
-
-        public void LogInformation(string message, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogInformation(message, color, arguments);
-        }
-
-        public void LogInformation(string message, Exception exception, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogInformation(message, exception, arguments);
-        }
-
-        public void LogInformation(string message, Exception exception, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogInformation(message, exception, color, arguments);
-        }
-
-        public void LogWarning(string message, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogWarning(message, arguments);
-        }
-
-        public void LogWarning(string message, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogWarning(message, color, arguments);
-        }
-
-        public void LogWarning(string message, Exception exception, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogWarning(message, exception, arguments);
-        }
-
-        public void LogWarning(string message, Exception exception, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogWarning(message, exception, color, arguments);
-        }
-
-        public void LogError(string message, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogError(message, arguments);
-        }
-
-        public void LogError(string message, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogError(message, color, arguments);
-        }
-
-        public void LogError(string message, Exception exception, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogError(message, exception, arguments);
-        }
-
-        public void LogError(string message, Exception exception, ConsoleColor? color = null, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogError(message, exception, color, arguments);
-        }
-
-        public void LogFatal(string message, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogFatal(message, arguments);
-        }
-
-        public void LogFatal(string message, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogFatal(message, color, arguments);
-        }
-
-        public void LogFatal(string message, Exception exception, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogFatal(message, exception, arguments);
-        }
-
-        public void LogFatal(string message, Exception exception, ConsoleColor? color, params object[] arguments)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogFatal(message, exception, color, arguments);
-        }
-
-        public void LogNative(string message, ConsoleColor? color, params object[] bindings)
-        {
-            foreach (ILogger logger in ProxiedServices)
-                logger.LogNative(message, color, bindings);
+            throw new NotSupportedException("Not supported on proxy provider.");
         }
     }
 }

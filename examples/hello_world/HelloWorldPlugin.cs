@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Chat;
 using Rocket.API.DependencyInjection;
+using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
 
 namespace Rocket.Examples.HelloWorldPlugin

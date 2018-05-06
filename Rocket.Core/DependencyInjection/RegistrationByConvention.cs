@@ -5,6 +5,7 @@ using System.Reflection;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core.Extensions;
+using Rocket.Core.Logging;
 
 namespace Rocket.Core.DependencyInjection
 {
@@ -20,16 +21,16 @@ namespace Rocket.Core.DependencyInjection
 
             List<Assembly> assemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
 
-            logger.LogDebug("Assemblies: ["
+            logger.LogTrace("Assemblies: ["
                 + string.Join(", ", assemblies.Select(c => c.GetName().Name).ToArray())
                 + "]");
 
             foreach (Assembly assembly in assemblies)
             {
-                logger?.LogDebug("Registering assembly: " + assembly.FullName);
+                logger?.LogTrace("Registering assembly: " + assembly.FullName);
                 foreach (Type type in assembly.GetTypesWithInterface<IDependencyRegistrator>())
                 {
-                    logger?.LogDebug("\tRegistering from IDependencyRegistrator: " + type.FullName);
+                    logger?.LogTrace("\tRegistering from IDependencyRegistrator: " + type.FullName);
                     ((IDependencyRegistrator) Activator.CreateInstance(type)).Register(container, resolver);
                 }
             }

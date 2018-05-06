@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
+using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
 
 namespace Rocket.Tests.Mock
