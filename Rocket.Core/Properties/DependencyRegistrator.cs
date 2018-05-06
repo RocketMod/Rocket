@@ -38,8 +38,7 @@ namespace Rocket.Core.Properties
             container.RegisterType<IConfiguration, JsonConfiguration>("json");
             container.RegisterType<IConfiguration, XmlConfiguration>("xml");
 
-            container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>(
-                "default_permissions");
+            container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>("default_permissions");
             container.RegisterSingletonType<IPermissionProvider, ConsolePermissionProvider>("console_permissions");
             container.RegisterSingletonType<IPermissionProvider, ProxyPermissionProvider>("proxy_permissions", null);
 

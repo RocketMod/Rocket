@@ -114,18 +114,18 @@ namespace Rocket.API.Permissions
         /// <summary>
         ///     Adds the given group to the command caller.
         /// </summary>
-        /// <param name="caller">The command caller.</param>
+        /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to add.</param>
         /// <returns><b>true</b> if the group was successfully added; otherwise, <b>false</b>.</returns>
-        bool AddGroup(IIdentifiable caller, IPermissionGroup group);
+        bool AddGroup(IIdentifiable target, IPermissionGroup group);
 
         /// <summary>
         ///     Removes the given group from the command caller.
         /// </summary>
-        /// <param name="caller">The command caller.</param>
+        /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to remove.</param>
         /// <returns><b>true</b> if the group was successfully removed; otherwise, <b>false</b>.</returns>
-        bool RemoveGroup(IIdentifiable caller, IPermissionGroup group);
+        bool RemoveGroup(IIdentifiable target, IPermissionGroup group);
 
         /// <summary>
         ///     Creates a new permission group.

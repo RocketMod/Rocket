@@ -79,8 +79,15 @@
     <Compile Include="Logging\BaseLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />
     <Compile Include="Logging\LoggingExtensions.cs" />
+    <Compile Include="Logging\PluginLogger.cs" />
     <Compile Include="Logging\ProxyLogger.cs" />
     <Compile Include="I18N\LocalizationExtensions.cs" />
+    <Compile Include="Migration\IMigrationStep.cs" />
+    <Compile Include="Migration\LegacyPermissions\Permission.cs" />
+    <Compile Include="Migration\LegacyPermissions\RocketPermissions.cs" />
+    <Compile Include="Migration\LegacyPermissions\RocketPermissionsGroup.cs" />
+    <Compile Include="Migration\PackagesMigration.cs" />
+    <Compile Include="Migration\PermissionsMigration.cs" />
     <Compile Include="Permissions\GroupPermissionSection.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />
