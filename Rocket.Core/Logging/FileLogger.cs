@@ -104,8 +104,10 @@ namespace Rocket.Core.Logging
 
         public void Dispose()
         {
-            streamWriter?.Close();
+ streamWriter?.Close();
             streamWriter?.Dispose();
+
+            Backup(File);
         }
     }
 }
