@@ -15,10 +15,7 @@ using Rocket.Core.Commands;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
 using Rocket.Core.Plugins.Events;
-#if NET35
-
-#endif
-
+d
 namespace Rocket.Core.Plugins
 {
     public class PluginManager : IPluginManager, ICommandProvider
@@ -83,7 +80,7 @@ namespace Rocket.Core.Plugins
                 if (pluginAssemblies.TryGetValue(args.Name, out string packageFile))
                     return LoadAssembly(packageFile);
 
-                logger.LogDebug(((AppDomain)sender).FriendlyName + " could not find dependency: " + args.Name);
+                logger.LogDebug(((AppDomain)sender).FriendlyName + " could not find dependency: " + args.Name + " for: " + sender);
                 return null;
             };
 
