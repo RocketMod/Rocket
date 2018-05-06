@@ -89,6 +89,10 @@ namespace Rocket.Core.Configuration.JsonNetBase
                 throw new NotSupportedException(
                     "This configuration was not loaded from a file; so it can not be saved!");
 
+            var parentDir = System.IO.Path.GetDirectoryName(ConfigurationFile);
+            if (!Directory.Exists(parentDir))
+                Directory.CreateDirectory(parentDir);
+
             SaveToFile(ConfigurationFile);
         }
 
