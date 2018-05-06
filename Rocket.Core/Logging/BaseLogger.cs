@@ -14,7 +14,7 @@ namespace Rocket.Core.Logging
             SkipTypeFromLogging(GetType());
         }
 
-        private static readonly ICollection<Type> ignoredLoggingTypes = new HashSet<Type> { typeof(ProxyLogger), typeof(LoggingExtensions) };
+        private static readonly ICollection<Type> ignoredLoggingTypes = new HashSet<Type> { typeof(BaseLogger), typeof(ProxyLogger), typeof(LoggingExtensions) };
         public static void SkipTypeFromLogging(Type type)
         {
             ignoredLoggingTypes.Add(type);

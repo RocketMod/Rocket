@@ -12,7 +12,7 @@ namespace Rocket.Tests.Mock
 
         public TestConsoleCaller(ILogger logger)
         {
-            ConsoleLogger.SkipTypeFromLogging(GetType());
+            BaseLogger.SkipTypeFromLogging(GetType());
             this.logger = logger;
         }
 

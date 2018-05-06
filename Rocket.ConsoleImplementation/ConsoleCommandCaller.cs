@@ -12,7 +12,7 @@ namespace Rocket.ConsoleImplementation
 
         public ConsoleCommandCaller(ILogger logger)
         {
-            ConsoleLogger.SkipTypeFromLogging(GetType());
+            BaseLogger.SkipTypeFromLogging(GetType());
             this.logger = logger;
         }
 
