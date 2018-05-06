@@ -40,13 +40,21 @@ namespace Rocket.Core.Logging
 
                     string backupFile = backupFileBaseName;
                     int i = 0;
-                    while (System.IO.File.Exists(backupFile))
+                    while (true)
                     {
-                        backupFile = backupFileBaseName + "-" + i;
-                        i++;
-                    }
+                        if (i > 20)
+                            break;
 
-                    System.IO.File.Move(value, backupFile);
+                        try
+                        {
+                            System.IO.File.Move(value, backupFile);
+                        }
+                        catch
+                        {
+                            backupFile = backupFileBaseName + "-" + i;
+                            i++;
+                        }
+                    }
                 }
 
                 if (streamWriter != null)
@@ -56,8 +64,16 @@ namespace Rocket.Core.Logging
                 }
 
                 logFile = value;
-                streamWriter = System.IO.File.AppendText(logFile);
-                streamWriter.AutoFlush = true;
+
+                try
+                {
+                    streamWriter = System.IO.File.AppendText(logFile);
+                    streamWriter.AutoFlush = true;
+                }
+                catch 
+                {
+                    //todo 
+                }
             }
         }
 
@@ -65,10 +81,10 @@ namespace Rocket.Core.Logging
         public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, ConsoleColor? color = null,
                         params object[] bindings)
         {
-            if(string.IsNullOrEmpty(logFile))
+            if (string.IsNullOrEmpty(logFile))
                 throw new FileLoadException("File has not been set.");
 
-            if (!IsEnabled(level))
+            if (!IsEnabled(level) || streamWriter == null)
                 return;
 
             string callingMethod = GetLoggerCallingMethod().GetDebugName();
