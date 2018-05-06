@@ -125,6 +125,22 @@ namespace Rocket.Core.DependencyInjection
                 container.RegisterInstance(mappingName, value);
         }
 
+        public void UnregisterType<T>(params string[] mappingNames)
+        {
+            UnregisterType(typeof(T), mappingNames);
+        }
+
+        public void UnregisterType(Type type, params string[] mappingNames)
+        {
+            foreach (var registration in container.Registrations
+                                                  .Where(p => p.RegisteredType == type
+                                                      && p.LifetimeManagerType == typeof(ContainerControlledLifetimeManager)
+                                                      && (mappingNames == null || mappingNames.Length == 0 || mappingNames.Any(c => c.Equals(p.Name)))))
+            {
+                registration.LifetimeManager.RemoveValue();
+            }
+        }
+
         #endregion
 
         #region IDependencyResolver Implementation
