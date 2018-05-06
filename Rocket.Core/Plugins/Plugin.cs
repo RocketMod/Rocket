@@ -18,8 +18,12 @@ namespace Rocket.Core.Plugins
     {
         protected Plugin(IDependencyContainer container) : this(null, container) { }
 
+        // The parent logger is used to log stuff that should not be logged to the plugins log.
+        private readonly ILogger parentLogger;
+
         protected Plugin(string name, IDependencyContainer container)
         {
+            parentLogger = container.Resolve<ILogger>();
             Name = name ?? GetType().Name;
             Container = container.CreateChildContainer();
         }
@@ -41,20 +45,21 @@ namespace Rocket.Core.Plugins
         public string Name { get; }
 
         public virtual string WorkingDirectory { get; set; }
+        public string ConfigurationName => Name;
 
         public bool Activate()
         {
             if (IsAlive)
                 return false;
 
-            Logger.LogInformation($"Loading {Name}.");
+            parentLogger.LogInformation($"Loading {Name}.");
 
             try
             {
                 Load(false);
                 IsAlive = true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Logger.LogFatal($"Failed to load {Name}: ", ex);
             }
@@ -66,8 +71,8 @@ namespace Rocket.Core.Plugins
             if (!IsAlive)
                 return false;
 
-            Logger.LogInformation($"Unloading {Name}.");
-            
+            parentLogger.LogInformation($"Unloading {Name}.");
+
             if (EventManager != null)
             {
                 PluginDeactivateEvent loadedEvent = new PluginDeactivateEvent(PluginManager, this);
@@ -81,7 +86,7 @@ namespace Rocket.Core.Plugins
             {
                 Logger.LogFatal($"An error occured on unloading {Name}: ", ex);
             }
-    
+
             IsAlive = false;
 
             if (EventManager != null)
@@ -106,9 +111,16 @@ namespace Rocket.Core.Plugins
         public ITranslationLocator Translations { get; protected set; }
         public virtual Dictionary<string, string> DefaultTranslations => null;
 
+        private bool firstInit = true;
         public void Load(bool isReload)
         {
-            WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
+            if (firstInit)
+            {
+                WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
+                var pluginLogger = new PluginLogger(Container, this);
+                Container.RegisterSingletonInstance(pluginLogger, "plugin_logger");
+                firstInit = false;
+            }
 
             if (EventManager != null)
             {
@@ -124,22 +136,17 @@ namespace Rocket.Core.Plugins
             if (DefaultConfiguration != null)
             {
                 Configuration = Container.Resolve<IConfiguration>();
-                Configuration.ConfigurationContext = new ConfigurationContext
-                {
-                    WorkingDirectory = WorkingDirectory,
-                    ConfigurationName = Name + ".Configuration"
-                }; 
-                Configuration.Load(DefaultConfiguration);
+                var context = new ConfigurationContext(this);
+                context.ConfigurationName = context.ConfigurationName + ".Configuration";
+                Configuration.Load(context, DefaultConfiguration);
             }
 
             if (DefaultTranslations != null)
             {
                 Translations = Container.Resolve<ITranslationLocator>();
-                Translations.Load(new ConfigurationContext
-                {
-                    WorkingDirectory = WorkingDirectory,
-                    ConfigurationName = Name + ".Translations"
-                }, DefaultTranslations);
+                var context = new ConfigurationContext(this);
+                context.ConfigurationName = context.ConfigurationName + ".Translations";
+                Translations.Load(context, DefaultTranslations);
             }
 
             OnActivate(isReload);

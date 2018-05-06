@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using Rocket.API.Logging;
 using Rocket.Core.DependencyInjection;
@@ -25,36 +24,13 @@ namespace Rocket.Core.Logging
 
                 if (value == null)
                 {
-                    logFile = value;
+                    logFile = null;
                     return;
                 }
 
                 if (System.IO.File.Exists(value))
                 {
-                    var directory = Path.GetDirectoryName(value);
-                    var fileName = Path.GetFileNameWithoutExtension(value);
-                    var extension = Path.GetFileName(value).Replace(fileName, string.Empty);
-
-                    string ver = $"{DateTime.Now:yyyyMMddTHHmmss}"; //ISO 8601
-                    var backupFileBaseName = Path.Combine(directory, fileName + "." + ver + extension);
-
-                    string backupFile = backupFileBaseName;
-                    int i = 0;
-                    while (true)
-                    {
-                        if (i > 20)
-                            break;
-
-                        try
-                        {
-                            System.IO.File.Move(value, backupFile);
-                        }
-                        catch
-                        {
-                            backupFile = backupFileBaseName + "-" + i;
-                            i++;
-                        }
-                    }
+                    Backup(value);
                 }
 
                 if (streamWriter != null)
@@ -64,19 +40,37 @@ namespace Rocket.Core.Logging
                 }
 
                 logFile = value;
-
-                try
-                {
-                    streamWriter = System.IO.File.AppendText(logFile);
-                    streamWriter.AutoFlush = true;
-                }
-                catch 
-                {
-                    //todo 
-                }
             }
         }
 
+        // renames old log files
+        public void Backup(string file)
+        {
+            var directory = Path.GetDirectoryName(file);
+            var fileName = Path.GetFileNameWithoutExtension(file);
+            var extension = Path.GetFileName(file).Replace(fileName, string.Empty);
+
+            string ver = $"{DateTime.Now:yyyyMMddTHHmmss}"; //ISO 8601
+            var backupFileBaseName = Path.Combine(directory, fileName + "." + ver + extension);
+
+            string backupFile = backupFileBaseName;
+            int i = 0;
+            while (true)
+            {
+                if (i > 20)
+                    break;
+
+                try
+                {
+                    System.IO.File.Move(file, backupFile);
+                }
+                catch
+                {
+                    backupFile = backupFileBaseName + "-" + i;
+                    i++;
+                }
+            }
+        }
 
         public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, ConsoleColor? color = null,
                         params object[] bindings)
@@ -84,8 +78,24 @@ namespace Rocket.Core.Logging
             if (string.IsNullOrEmpty(logFile))
                 throw new FileLoadException("File has not been set.");
 
-            if (!IsEnabled(level) || streamWriter == null)
+
+            if (!IsEnabled(level))
                 return;
+
+            if (streamWriter == null)
+            {
+                try
+                {
+
+                    streamWriter = System.IO.File.AppendText(logFile);
+                    streamWriter.AutoFlush = true;
+                }
+                catch
+                {
+                    //todo: show error
+                    return;
+                }
+            }
 
             string callingMethod = GetLoggerCallingMethod().GetDebugName();
             string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] [{callingMethod}] {message}";

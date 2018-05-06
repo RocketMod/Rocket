@@ -1,17 +1,13 @@
-﻿using Rocket.API.Eventing;
+﻿using Rocket.API.Configuration;
+using Rocket.API.Eventing;
 
 namespace Rocket.API.Plugins
 {
     /// <summary>
     ///     Represents a RocketMod plugin.
     /// </summary>
-    public interface IPlugin : IEventEmitter
+    public interface IPlugin : IEventEmitter, IConfigurationContext
     {
-        /// <summary>
-        ///     The working directory of the plugin.
-        /// </summary>
-        string WorkingDirectory { get; }
-
         /// <summary>
         ///     Activates the plugin.
         /// </summary>
