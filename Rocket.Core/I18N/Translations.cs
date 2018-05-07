@@ -22,6 +22,8 @@ namespace Rocket.Core.I18N
 
         public void SetFormat(string translationKey, string format)
         {
+            if (!config.ChildExists(translationKey))
+                config.CreateSection(translationKey, SectionType.Value);
             config[translationKey].Set(format);
         }
 
@@ -31,10 +33,10 @@ namespace Rocket.Core.I18N
                 throw new Exception("Permission provider is already loaded");
 
             config.ConfigurationContext = context;
-            config.Load();
+            config.Load(new { });
             foreach (KeyValuePair<string, string> pair in defaultConfiguration)
             {
-                if(config.ChildExists(pair.Key))
+                if (config.ChildExists(pair.Key))
                     continue;
 
                 config.CreateSection(pair.Key, SectionType.Value);

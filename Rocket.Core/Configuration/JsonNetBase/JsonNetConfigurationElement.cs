@@ -132,6 +132,9 @@ namespace Rocket.Core.Configuration.JsonNetBase
             foreach (JToken node in Node.Children())
             {
                 string childPath = node.Path.Replace(Node.Path + ".", "");
+                if(childPath.StartsWith("@"))
+                    continue;
+                
                 sections.Add(GetSection(childPath));
             }
 

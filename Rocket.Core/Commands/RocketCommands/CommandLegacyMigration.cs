@@ -18,7 +18,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Summary => "Migrates from old RocketMod 4";
         public string Description => null;
         public string Permission => "Rocket.Migrate.Legacy";
-        public string Syntax => "";
+        public string Syntax => "[step]";
         public ISubCommand[] ChildCommands => null;
         public bool SupportsCaller(Type commandCaller)
         {
@@ -41,11 +41,17 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
+            var targetStep = context.Parameters.Get<string>(0, null);
+
             foreach (var migrationStep in migrationSteps)
             {
                 IMigrationStep step = (IMigrationStep)Activator.CreateInstance(migrationStep);
-                logger.LogInformation($"Executing migration step \"{step.Name}\".");
 
+                if(targetStep != null && !step.Name.Equals(targetStep, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                logger.LogInformation($"Executing migration step \"{step.Name}\".");
+                
                 if (Debugger.IsAttached)
                     step.Migrate(context.Container, basePath);
                 else
@@ -56,6 +62,7 @@ namespace Rocket.Core.Commands.RocketCommands
                     catch (Exception e)
                     {
                         logger.LogError($"Failed at migration step \"{step.Name}\": ", e);
+                        logger.LogWarning($"Use \"{context.CommandPrefix}{Name} {step.Name}\" to retry.");
                     }
             }
 

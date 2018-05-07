@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using Newtonsoft.Json;
@@ -35,7 +36,9 @@ namespace Rocket.Core.Configuration.Xml
             });
 
             if (!string.IsNullOrEmpty(ConfigurationRoot))
-                tmp = ((JObject)tmp).GetValue(ConfigurationRoot);
+                tmp = ((JObject) tmp).GetValue(ConfigurationRoot);
+            else
+                tmp = tmp.Children().Last().First();
 
             Node = tmp.DeepClone();
             IsLoaded = true;
