@@ -193,5 +193,4 @@ ModelManifest.xml
 .vs
 packages
 TestResults
-Natural_Docs
-Working Data
+docs/site
