@@ -29,12 +29,12 @@ namespace Rocket.API.Economy
         /// <summary>
         ///     Removes balance from the command callers account.
         /// </summary>
-        /// <param name="caller">The account owner.</param>
+        /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to remove. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
         /// <seealso cref="SupportsNegativeBalance(Rocket.API.Commands.ICommandCaller)"/>
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
-        bool RemoveBalance(ICommandCaller caller, decimal amount, string reason = null);
+        bool RemoveBalance(IIdentifiable owner, decimal amount, string reason = null);
 
         /// <summary>
         ///     Removes balance from the command callers account based on a specific currency.
@@ -61,11 +61,11 @@ namespace Rocket.API.Economy
         void SetBalance(IEconomyAccount account, decimal amount);
 
         /// <summary>
-        ///     Checks if the account of the command caller can have negative balance.
+        ///     Checks if the account of the owner can have negative balance.
         /// </summary>
-        /// <param name="caller"></param>
+        /// <param name="owner">The account owner whose account to check.</param>
         /// <returns><b>true</b> if the account can have negative balance; otherwise, <b>false</b>.</returns>
-        bool SupportsNegativeBalance(ICommandCaller caller);
+        bool SupportsNegativeBalance(IIdentifiable owner);
 
         /// <summary>
         ///     Checks if the account of the command caller can have negative balance.
