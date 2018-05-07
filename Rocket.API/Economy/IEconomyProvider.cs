@@ -11,13 +11,6 @@ namespace Rocket.API.Economy
     public interface IEconomyProvider
     {
         /// <summary>
-        ///     Get a command callers total balance.
-        /// </summary>
-        /// <param name="owner">The account owner.</param>
-        /// <returns>the balance of the command caller.</returns>
-        decimal GetTotalBalance(IIdentifiable owner);
-
-        /// <summary>
         ///     Adds balance to the command callers account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
