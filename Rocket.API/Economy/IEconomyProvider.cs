@@ -43,7 +43,6 @@ namespace Rocket.API.Economy
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
         bool RemoveBalance(ICommandCaller caller, decimal amount, string reason = null);
 
-
         /// <summary>
         ///     Removes balance from the command callers account based on a specific currency.
         /// </summary>
@@ -95,7 +94,8 @@ namespace Rocket.API.Economy
         /// <param name="owner">The owner of the account.</param>
         /// <param name="name">The name of the account.</param>
         /// <param name="account">The account instance if it was created; otherwise, <b>null</b>.</param>
-        /// <returns><b>true</b> if the account could be created; otherwise, <b>false</b>.</returns>
+        /// <exception>If the account creation failed because of an internal error.</exception>
+        /// <returns><b>true</b> if account creation is supported and the account didn't exist already, and was created; otherwise, <b>false</b>.</returns>
         bool CreateAccount(IIdentifiable owner, string name, out IEconomyAccount account);
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace Rocket.API.Economy
         /// <param name="name">The name of the account.</param>
         /// <param name="currency">The accounts currency.</param>
         /// <param name="account">The account instance if it was created; otherwise, <b>null</b>.</param>
-        /// <returns><b>true</b> if the account could be created; otherwise, <b>false</b>.</returns>
+        /// <returns><b>true</b> if account creation is supported and the account could be created; otherwise, <b>false</b>.</returns>
         bool CreateAccount(IIdentifiable owner, string name, IEconomyCurrrency currency, out IEconomyAccount account);
 
         /// <summary>
@@ -121,7 +121,15 @@ namespace Rocket.API.Economy
         IEnumerable<IEconomyCurrrency> Currencies { get; }
 
         /// <summary>
-        ///     Gets the accounts of the given user. Can return an empty set.
+        ///     Gets a specific account.
+        /// </summary>
+        /// <param name="owner">The account owner.</param>
+        /// <param name="acccountName">The account name or null for the default account.</param>
+        /// <returns>The requested account or null if it was not found.</returns>
+        IEconomyAccount GetAccount(IIdentifiable owner, string acccountName = null);
+
+        /// <summary>
+        ///     Gets the accounts of the given user. Can return an empty set if no accounts were created yet.
         /// </summary>
         /// <param name="owner">The user whose accounts to get.</param>
         /// <returns>the accounts of the given user</returns>
