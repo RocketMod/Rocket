@@ -58,10 +58,5 @@ namespace Rocket.ConsoleImplementation
         public bool IsAlive => true;
 
         public string ConfigurationName => "ConsoleHost";
-
-        public IConfigurationContext CreateChildConfigurationContext(string childName)
-        {
-            return new ConfigurationContext(this, childName);
-        }
     }
 }

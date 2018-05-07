@@ -15,12 +15,5 @@
         ///     <b>Must never include file endings like .json, .xml etc.</b>
         /// </summary>
         string ConfigurationName { get; }
-
-        /// <summary>
-        ///     Creates a child context.
-        /// </summary>
-        /// <param name="childName">The child name.</param>
-        /// <returns>The child context instance.</returns>
-        IConfigurationContext CreateChildConfigurationContext(string childName);
     }
 }

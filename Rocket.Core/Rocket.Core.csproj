@@ -76,6 +76,7 @@
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />
     <Compile Include="Configuration\ConfigArrayAttribute.cs" />
+    <Compile Include="Configuration\ConfigurationContextExtensions.cs" />
     <Compile Include="Configuration\IRocketSettingsProvider.cs" />
     <Compile Include="Configuration\RocketSettings.cs" />
     <Compile Include="Configuration\RocketSettingsProvider.cs" />

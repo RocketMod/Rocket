@@ -108,10 +108,6 @@ namespace Rocket
         }
 
         public string ConfigurationName { get; } = "Rocket";
-        public IConfigurationContext CreateChildConfigurationContext(string childName)
-        {
-            return new ConfigurationContext(this, childName);
-        }
 
         public static IRuntime Bootstrap() => new Runtime();
     }

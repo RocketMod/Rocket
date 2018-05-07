@@ -51,9 +51,5 @@ namespace Rocket.Tests.Mock.Providers
         public string Name => "TestImplementation";
 
         public string ConfigurationName => "TestImplementation";
-        public IConfigurationContext CreateChildConfigurationContext(string childName)
-        {
-            return new ConfigurationContext(this, childName);
-        }
     }
 }
