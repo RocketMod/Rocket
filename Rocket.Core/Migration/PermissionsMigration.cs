@@ -21,7 +21,7 @@ namespace Rocket.Core.Migration
             ConfigurationPermissionProvider permissions = (ConfigurationPermissionProvider) container.Resolve<IPermissionProvider>("default_permissions");
             var logger = container.Resolve<ILogger>();
             var xmlConfiguration = (XmlConfiguration) container.Resolve<IConfiguration>("xml");
-            xmlConfiguration.ConfigurationRoot = "";
+            xmlConfiguration.ConfigurationRoot = null;
 
             var context = new ConfigurationContext(basePath, "Permissions.config");
             if (!xmlConfiguration.Exists(context))
@@ -30,6 +30,7 @@ namespace Rocket.Core.Migration
                 return;
             }
 
+            xmlConfiguration.Scheme = typeof(RocketPermissions);
             xmlConfiguration.Load(context);
 
             //bug: doesn't deserialize correctly.

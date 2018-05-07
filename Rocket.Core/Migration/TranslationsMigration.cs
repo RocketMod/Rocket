@@ -30,7 +30,8 @@ namespace Rocket.Core.Migration
             
             var logger = container.Resolve<ILogger>();
             var xmlConfiguration = (XmlConfiguration)container.Resolve<IConfiguration>("xml");
-            xmlConfiguration.ConfigurationRoot = null;
+            xmlConfiguration.ConfigurationRoot = "Translations";
+
             var fromContext = new ConfigurationContext(basePath, "Rocket.en.translation");
 
             if (!xmlConfiguration.Exists(fromContext))
@@ -41,7 +42,7 @@ namespace Rocket.Core.Migration
 
             xmlConfiguration.Load(fromContext);
 
-            var translations = (JArray)((JsonNetConfigurationSection)xmlConfiguration["Translation"]).Node;
+            var translations = (JArray)((JsonNetConfigurationSection) xmlConfiguration["Translation"]).Node;
             foreach (var translation in translations)
             {
                 var id = translation["@Id"];

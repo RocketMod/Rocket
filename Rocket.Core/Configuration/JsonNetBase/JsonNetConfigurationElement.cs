@@ -143,7 +143,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
         public abstract string Path { get; }
 
-        public virtual T Get<T>()
+        public virtual T 
+            Get<T>()
         {
             //if (Node is JArray array && typeof(T).IsArray)
             //{

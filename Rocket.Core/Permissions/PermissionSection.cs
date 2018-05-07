@@ -1,11 +1,14 @@
 ﻿using System;
 using Rocket.API.Configuration;
+using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Permissions
 {
     public class PermissionSection
     {
         public virtual string Id { get; set; }
+
+        [ConfigArray(ElementName = "Permission")]
         public virtual string[] Permissions { get; set; } = new string[0];
 
         protected IConfigurationElement element;

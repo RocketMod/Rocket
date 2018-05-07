@@ -75,6 +75,7 @@
     <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />
+    <Compile Include="Configuration\ConfigArrayAttribute.cs" />
     <Compile Include="Configuration\IRocketSettingsProvider.cs" />
     <Compile Include="Configuration\RocketSettings.cs" />
     <Compile Include="Configuration\RocketSettingsProvider.cs" />
@@ -94,6 +95,7 @@
     <Compile Include="Migration\LegacyPermissions\RocketPermissionsGroup.cs" />
     <Compile Include="Migration\PackagesMigration.cs" />
     <Compile Include="Migration\PermissionsMigration.cs" />
+    <Compile Include="Migration\LegacyTranslations\Translation.cs" />
     <Compile Include="Migration\TranslationsMigration.cs" />
     <Compile Include="Permissions\GroupPermissionSection.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />

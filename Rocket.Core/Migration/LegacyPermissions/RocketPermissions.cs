@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
+﻿using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Migration.LegacyPermissions
 {
-    [Serializable]
     public class RocketPermissions
     {
-        [XmlElement("DefaultGroup")]
-        public string DefaultGroup = "default";
+        public string DefaultGroup { get; set; }
 
-        [XmlArray("Groups")]
-        [XmlArrayItem(ElementName = "Group")]
-        public List<RocketPermissionsGroup> Groups = new List<RocketPermissionsGroup>();
+        [ConfigArray(ElementName = "Group")]
+        public RocketPermissionsGroup[] Groups { get; set; }
     }
 }

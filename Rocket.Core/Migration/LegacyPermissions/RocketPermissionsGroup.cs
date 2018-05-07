@@ -1,30 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
+using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Migration.LegacyPermissions
 {
-    [Serializable]
     public class RocketPermissionsGroup
     {
-        [XmlElement("Id")]
-        public string Id;
+        public string Id { get; set; }
+        public string DisplayName { get; set; }
+        public string Color { get; set; }
 
-        [XmlElement("DisplayName")]
-        public string DisplayName;
+        [ConfigArray(ElementName = "Member")]
+        public string[] Members { get; set; }
 
-        [XmlElement("Color")]
-        public string Color = "white";
+        [ConfigArray(ElementName = "Permission")]
+        public Permission[] Permissions { get; set; }
 
-        [XmlArray("Members")]
-        [XmlArrayItem(ElementName = "Member")]
-        public List<string> Members;
-
-        [XmlArray("Permissions")]
-        [XmlArrayItem(ElementName = "Permission")]
-        public List<Permission> Permissions;
-
-        [XmlElement("ParentGroup")]
-        public string ParentGroup;
+        public string ParentGroup { get; set; }
     }
 }

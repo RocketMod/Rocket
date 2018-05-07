@@ -1,7 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
@@ -22,11 +26,46 @@ namespace Rocket.Core.Configuration.Xml
             LoadFromXml(xml);
         }
 
+
+        private void ApplyScheme(XmlElement element, Type scheme, XmlAttribute docAttribute)
+        {
+            foreach (var member in scheme.GetMembers(BindingFlags.Public | BindingFlags.Instance))
+            {
+                if (!(member is PropertyInfo) && !(member is FieldInfo))
+                    continue;
+
+                PropertyInfo pi = member as PropertyInfo;
+                FieldInfo fi = member as FieldInfo;
+
+                var subElement = element
+                                 .ChildNodes
+                                 .Cast<XmlNode>()
+                                 .FirstOrDefault(c => c is XmlElement subElem && subElem.Name.Equals(member.Name));
+
+                if (subElement != null)
+                {
+                    if (member.GetCustomAttributes(typeof(ConfigArrayAttribute), true).Any())
+                    {
+                        subElement.Attributes?.Append(docAttribute);
+                    }
+
+                    var type = pi?.PropertyType ?? fi.FieldType;
+                    ApplyScheme((XmlElement)subElement, type, docAttribute);
+                }
+            }
+        }
+
         public void LoadFromXml(string xml)
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
 
+            var docAttribute = doc.CreateAttribute("json", "Array", "http://james.newtonking.com/projects/json");
+            docAttribute.InnerText = "true";
+
+            if(Scheme != null)
+                ApplyScheme(doc.DocumentElement, Scheme, docAttribute);
+            
             string json = JsonConvert.SerializeXmlNode(doc);
 
             JToken tmp = JObject.Parse(json, new JsonLoadSettings
@@ -36,7 +75,7 @@ namespace Rocket.Core.Configuration.Xml
             });
 
             if (!string.IsNullOrEmpty(ConfigurationRoot))
-                tmp = ((JObject) tmp).GetValue(ConfigurationRoot);
+                tmp = ((JObject)tmp).GetValue(ConfigurationRoot);
             else
                 tmp = tmp.Children().Last().First();
 

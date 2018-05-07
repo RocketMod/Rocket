@@ -1,10 +1,17 @@
-﻿namespace Rocket.API.Configuration
+﻿using System;
+
+namespace Rocket.API.Configuration
 {
     /// <summary>
     ///     A configuration provider. Also represents the root node of the configuration tree.
     /// </summary>
     public interface IConfiguration : IConfigurationElement
     {
+        /// <summary>
+        ///     The configuration scheme. Can be null.
+        /// </summary>
+        Type Scheme { get; set; }
+
         /// <summary>
         ///     Checks if the configuration was loaded.
         /// </summary>

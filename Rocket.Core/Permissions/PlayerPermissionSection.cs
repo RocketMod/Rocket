@@ -1,14 +1,17 @@
 ﻿using System;
 using System.Linq;
 using Rocket.API.Configuration;
+using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Permissions {
     public class PlayerPermissionSection : PermissionSection
     {
         public override string Id { get; set; }
 
+        [ConfigArray(ElementName = "Permission")]
         public override string[] Permissions { get; set; } = new string[0];
 
+        [ConfigArray(ElementName = "Group")]
         public string[] Groups { get; set; } = new string[0];
 
         public PlayerPermissionSection(string id, IConfigurationElement element) : base(id, element)

@@ -3,13 +3,10 @@ using System.Xml.Serialization;
 
 namespace Rocket.Core.Migration.LegacyPermissions
 {
-    [Serializable]
     public class Permission
     {
-        [XmlAttribute]
-        public uint Cooldown = 0;
+        public uint Cooldown { get; set; }
 
-        [XmlText]
-        public string Name = "";
+        public string Name { get; set; }
     }
 }

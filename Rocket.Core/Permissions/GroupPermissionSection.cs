@@ -2,6 +2,7 @@
 using System.Linq;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
+using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Permissions
 {
@@ -11,8 +12,10 @@ namespace Rocket.Core.Permissions
 
         public string Name { get; set; }
 
-        public override string[] Permissions { get; set; } = new string[0]; 
+        [ConfigArray(ElementName = "Permission")]
+        public override string[] Permissions { get; set; } = new string[0];
 
+        [ConfigArray(ElementName = "Group")]
         public string[] ParentGroups { get; set; } = new string[0];
 
         public int Priority { get; set; } = 0;

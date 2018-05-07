@@ -145,6 +145,7 @@ namespace Rocket.Core.Plugins
             {
                 Configuration = Container.Resolve<IConfiguration>();
                 var context = CreateChildConfigurationContext("Configuration");
+                Configuration.Scheme = DefaultConfiguration.GetType();
                 Configuration.Load(context, DefaultConfiguration);
             }
 
@@ -152,7 +153,6 @@ namespace Rocket.Core.Plugins
             {
                 Translations = Container.Resolve<ITranslationLocator>();
                 var context = CreateChildConfigurationContext("Translations");
-
                 Translations.Load(context, DefaultTranslations);
             }
 

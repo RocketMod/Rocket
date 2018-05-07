@@ -8,6 +8,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public abstract class JsonNetConfigurationBase : JsonNetConfigurationElement, IConfiguration
     {
+        public Type Scheme { get; set; }
+
         public string ConfigurationFile
         {
             get
