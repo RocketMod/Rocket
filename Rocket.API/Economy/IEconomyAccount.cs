@@ -26,6 +26,6 @@ namespace Rocket.API.Economy
         /// <summary>
         ///     The accounts currency. Can be null.
         /// </summary>
-        IEconomyCurrrency Currency { get; }
+        IEconomyCurrency Currency { get; }
     }
 }

@@ -99,7 +99,7 @@ namespace Rocket.API.Economy
         /// <param name="currency">The accounts currency.</param>
         /// <param name="account">The account instance if it was created; otherwise, <b>null</b>.</param>
         /// <returns><b>true</b> if account creation is supported and the account could be created; otherwise, <b>false</b>.</returns>
-        bool CreateAccount(IIdentifiable owner, string name, IEconomyCurrrency currency, out IEconomyAccount account);
+        bool CreateAccount(IIdentifiable owner, string name, IEconomyCurrency currency, out IEconomyAccount account);
 
         /// <summary>
         ///     Deletes an account.
@@ -111,15 +111,15 @@ namespace Rocket.API.Economy
         /// <summary>
         ///     All currencies. Contains at least one element.
         /// </summary>
-        IEnumerable<IEconomyCurrrency> Currencies { get; }
+        IEnumerable<IEconomyCurrency> Currencies { get; }
 
         /// <summary>
         ///     Gets a specific account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
-        /// <param name="acccountName">The account name or null for the default account.</param>
+        /// <param name="accountName">The account name or null for the default account.</param>
         /// <returns>The requested account or null if it was not found.</returns>
-        IEconomyAccount GetAccount(IIdentifiable owner, string acccountName = null);
+        IEconomyAccount GetAccount(IIdentifiable owner, string accountName = null);
 
         /// <summary>
         ///     Gets the accounts of the given user. Can return an empty set if no accounts were created yet.
@@ -131,6 +131,6 @@ namespace Rocket.API.Economy
         /// <summary>
         ///     The default currency. Will never return null.
         /// </summary>
-        IEconomyCurrrency DefaultCurrrency { get; }
+        IEconomyCurrency DefaultCurrency { get; }
     }
 }
