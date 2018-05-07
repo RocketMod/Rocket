@@ -32,6 +32,7 @@ namespace Rocket.Core.Migration
 
             xmlConfiguration.Load(context);
 
+            //bug: doesn't deserialize correctly.
             RocketPermissions legacyPermissions = xmlConfiguration.Get<RocketPermissions>();
             foreach (var group in legacyPermissions.Groups)
             {
@@ -79,7 +80,6 @@ namespace Rocket.Core.Migration
             }
 
             //todo migrate players
-            //bug: doesn't really save permissinos
             permissions.Save();
         }
     }

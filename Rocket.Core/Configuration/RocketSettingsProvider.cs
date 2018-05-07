@@ -7,9 +7,7 @@ namespace Rocket.Core.Configuration
     {
         public RocketSettingsProvider(IRuntime runtime, IConfiguration configuration)
         {
-            ConfigurationContext context = new ConfigurationContext(runtime);
-            context.ConfigurationName += ".Config";
-
+            ConfigurationContext context = new ConfigurationContext(runtime, "Configuration");
             var defaultVal = new RocketSettings();
             configuration.Load(context, defaultVal);
             Settings = configuration.Get(defaultVal);

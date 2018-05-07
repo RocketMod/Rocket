@@ -15,8 +15,9 @@ namespace Rocket.Core.Configuration
             ConfigurationName = configurationName;
         }
 
-        public ConfigurationContext(IConfigurationContext context) : this(context.WorkingDirectory, context.ConfigurationName)
+        public ConfigurationContext(IConfigurationContext context, string childName = null) : this(context.WorkingDirectory, context.ConfigurationName)
         {
+            ConfigurationName += "." + childName;
         }
 
         public string WorkingDirectory { get; set; }

@@ -140,16 +140,15 @@ namespace Rocket.Core.Plugins
             if (DefaultConfiguration != null)
             {
                 Configuration = Container.Resolve<IConfiguration>();
-                var context = new ConfigurationContext(this);
-                context.ConfigurationName = context.ConfigurationName + ".Configuration";
+                var context = new ConfigurationContext(this, "Configuration");
                 Configuration.Load(context, DefaultConfiguration);
             }
 
             if (DefaultTranslations != null)
             {
                 Translations = Container.Resolve<ITranslationLocator>();
-                var context = new ConfigurationContext(this);
-                context.ConfigurationName = context.ConfigurationName + ".Translations";
+                var context = new ConfigurationContext(this, "Translations");
+
                 Translations.Load(context, DefaultTranslations);
             }
 

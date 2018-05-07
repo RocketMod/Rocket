@@ -265,8 +265,7 @@ namespace Rocket.Core.Permissions
 
         public void Load(IConfigurationContext context)
         {
-            ConfigurationContext groupsContext = new ConfigurationContext(context);
-            groupsContext.ConfigurationName += ".Groups";
+            ConfigurationContext groupsContext = new ConfigurationContext(context, "Groups");
             GroupsConfig.ConfigurationContext = groupsContext;
             GroupsConfig.Load(new
             {
@@ -287,8 +286,7 @@ namespace Rocket.Core.Permissions
                 }
             });
 
-            ConfigurationContext playersContext = new ConfigurationContext(context);
-            playersContext.ConfigurationName += ".Players";
+            ConfigurationContext playersContext = new ConfigurationContext(context, "Players");
             PlayersConfig.ConfigurationContext = playersContext;
             PlayersConfig.Load(new { });
         }

@@ -94,6 +94,7 @@
     <Compile Include="Migration\LegacyPermissions\RocketPermissionsGroup.cs" />
     <Compile Include="Migration\PackagesMigration.cs" />
     <Compile Include="Migration\PermissionsMigration.cs" />
+    <Compile Include="Migration\TranslationsMigration.cs" />
     <Compile Include="Permissions\GroupPermissionSection.cs" />
     <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />
