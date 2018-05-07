@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using Rocket.API;
 using Rocket.API.Commands;
+using Rocket.API.Configuration;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
+using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 
 namespace Rocket.Tests.Mock.Providers
@@ -49,5 +51,9 @@ namespace Rocket.Tests.Mock.Providers
         public string Name => "TestImplementation";
 
         public string ConfigurationName => "TestImplementation";
+        public IConfigurationContext CreateChildConfigurationContext(string childName)
+        {
+            return new ConfigurationContext(this, childName);
+        }
     }
 }

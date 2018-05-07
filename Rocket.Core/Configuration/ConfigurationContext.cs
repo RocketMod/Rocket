@@ -22,5 +22,9 @@ namespace Rocket.Core.Configuration
 
         public string WorkingDirectory { get; set; }
         public string ConfigurationName { get; set; }
+        public IConfigurationContext CreateChildConfigurationContext(string childName)
+        {
+            return new ConfigurationContext(this, childName);
+        }
     }
 }

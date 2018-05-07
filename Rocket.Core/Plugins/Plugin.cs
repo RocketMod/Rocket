@@ -46,6 +46,10 @@ namespace Rocket.Core.Plugins
 
         public virtual string WorkingDirectory { get; set; }
         public string ConfigurationName => Name;
+        public IConfigurationContext CreateChildConfigurationContext(string childName)
+        {
+            return new ConfigurationContext(this, childName);
+        }
 
         public bool Activate()
         {
@@ -140,14 +144,14 @@ namespace Rocket.Core.Plugins
             if (DefaultConfiguration != null)
             {
                 Configuration = Container.Resolve<IConfiguration>();
-                var context = new ConfigurationContext(this, "Configuration");
+                var context = CreateChildConfigurationContext("Configuration");
                 Configuration.Load(context, DefaultConfiguration);
             }
 
             if (DefaultTranslations != null)
             {
                 Translations = Container.Resolve<ITranslationLocator>();
-                var context = new ConfigurationContext(this, "Translations");
+                var context = CreateChildConfigurationContext("Translations");
 
                 Translations.Load(context, DefaultTranslations);
             }

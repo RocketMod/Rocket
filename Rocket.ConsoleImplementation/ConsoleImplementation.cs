@@ -4,8 +4,10 @@ using System.IO;
 using System.Reflection;
 using Rocket.API;
 using Rocket.API.Commands;
+using Rocket.API.Configuration;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
+using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 
 namespace Rocket.ConsoleImplementation
@@ -56,5 +58,10 @@ namespace Rocket.ConsoleImplementation
         public bool IsAlive => true;
 
         public string ConfigurationName => "ConsoleHost";
+
+        public IConfigurationContext CreateChildConfigurationContext(string childName)
+        {
+            return new ConfigurationContext(this, childName);
+        }
     }
 }
