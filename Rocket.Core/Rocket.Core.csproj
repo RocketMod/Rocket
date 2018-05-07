@@ -70,6 +70,7 @@
     <Compile Include="Commands\ProxyCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandProvider.cs" />
     <Compile Include="Commands\RocketCommands\CommandHelp.cs" />
+    <Compile Include="Commands\RocketCommands\CommandLegacyMigration.cs" />
     <Compile Include="Commands\RocketCommands\CommandMigrateConfig.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
@@ -82,6 +83,8 @@
     <Compile Include="Logging\BaseLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />
     <Compile Include="Logging\LoggingExtensions.cs" />
+    <Compile Include="Migration\DirectoryMigration.cs" />
+    <Compile Include="Migration\LogsMigration.cs" />
     <Compile Include="Logging\PluginLogger.cs" />
     <Compile Include="Logging\ProxyLogger.cs" />
     <Compile Include="I18N\LocalizationExtensions.cs" />

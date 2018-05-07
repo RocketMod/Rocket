@@ -1,21 +1,20 @@
 ﻿using System.IO;
-using Rocket.API;
 using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.Migration
 {
-    public class PackagesMigration : DirectoryMigration
+    public class LogsMigration : DirectoryMigration
     {
         protected override string GetSourcePath(string basePath)
         {
-            return Path.Combine(basePath, "Libraries");
+            return Path.Combine(basePath, "Logs");
         }
 
-        public override string Name => "Packages";
+        public override string Name => "Logs";
 
         protected override string GetTargetPath(string basePath)
         {
-            return Path.Combine(basePath, "Packages");
+            return Path.Combine(basePath, "Logs");
         }
     }
 }

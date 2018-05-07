@@ -14,11 +14,14 @@ namespace Rocket.Core.Migration
 {
     public class PermissionsMigration : IMigrationStep
     {
+        public string Name => "Permissions";
+
         public void Migrate(IDependencyContainer container, string basePath)
         {
-            var permissions = container.Resolve<IPermissionProvider>("default_permissions");
+            ConfigurationPermissionProvider permissions = (ConfigurationPermissionProvider) container.Resolve<IPermissionProvider>("default_permissions");
             var logger = container.Resolve<ILogger>();
             var xmlConfiguration = (XmlConfiguration) container.Resolve<IConfiguration>("xml");
+            xmlConfiguration.ConfigurationRoot = "";
 
             var context = new ConfigurationContext(basePath, "Permissions.config");
             if (!xmlConfiguration.Exists(context))
@@ -65,8 +68,19 @@ namespace Rocket.Core.Migration
                 if(targetGroup == null)
                     continue;
 
+                if (legacyPermissions.DefaultGroup.Equals(group.Id))
+                {
+                    var section = permissions.GetConfigSection<GroupPermissionSection>(sourceGroup, false);
+                    section.AutoAssign = true;
+                    section.Save();
+                }
+                
                 permissions.AddGroup(sourceGroup, targetGroup);
             }
+
+            //todo migrate players
+            //bug: doesn't really save permissinos
+            permissions.Save();
         }
     }
 }

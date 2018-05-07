@@ -389,7 +389,8 @@ namespace Rocket.Core.Permissions
             config.Set(values);
             return i > 0;
         }
-        private T GetConfigSection<T>(IIdentifiable target, bool createIfNotFound) where T : PermissionSection
+
+        public T GetConfigSection<T>(IIdentifiable target, bool createIfNotFound) where T : PermissionSection
         {
             GuardTarget(target);
 

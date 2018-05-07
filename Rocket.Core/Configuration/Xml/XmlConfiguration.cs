@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Text;
 using System.Xml;
-using System.Xml.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
@@ -11,7 +10,7 @@ namespace Rocket.Core.Configuration.Xml
 {
     public class XmlConfiguration : JsonNetConfigurationBase
     {
-        private const string ConfigRoot = "Config";
+        public string ConfigurationRoot { get; set; } = "Config";
 
         protected override string FileEnding => "xml";
         public override string Name => "Xml";
@@ -29,14 +28,16 @@ namespace Rocket.Core.Configuration.Xml
 
             string json = JsonConvert.SerializeXmlNode(doc);
 
-            Node = JObject.Parse(json, new JsonLoadSettings
+            JToken tmp = JObject.Parse(json, new JsonLoadSettings
             {
                 CommentHandling = CommentHandling.Ignore,
                 LineInfoHandling = LineInfoHandling.Ignore
-            })
-                          .GetValue(ConfigRoot)
-                          .DeepClone();
+            });
 
+            if (!string.IsNullOrEmpty(ConfigurationRoot))
+                tmp = ((JObject)tmp).GetValue(ConfigurationRoot);
+
+            Node = tmp.DeepClone();
             IsLoaded = true;
         }
 
@@ -62,8 +63,14 @@ namespace Rocket.Core.Configuration.Xml
             XmlDeclaration xmlDeclaration = parent.CreateXmlDeclaration("1.0", "UTF-8", null);
             XmlElement root = parent.DocumentElement;
             parent.InsertBefore(xmlDeclaration, root);
-            XmlElement configElement = parent.CreateElement(string.Empty, ConfigRoot, string.Empty);
-            parent.AppendChild(configElement);
+
+            XmlElement configElement = root;
+
+            if (!string.IsNullOrEmpty(ConfigurationRoot))
+            {
+                configElement = parent.CreateElement(string.Empty, ConfigurationRoot, string.Empty);
+                parent.AppendChild(configElement);
+            }
 
             XmlDocument jsonDocument = JsonConvert.DeserializeXmlNode(json);
             foreach (XmlNode elem in jsonDocument)
