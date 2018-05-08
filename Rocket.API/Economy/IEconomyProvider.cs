@@ -19,6 +19,16 @@ namespace Rocket.API.Economy
         void AddBalance(IIdentifiable owner, decimal amount, string reason = null);
 
         /// <summary>
+        ///     Makes a transaction from one account to another.
+        /// </summary>
+        /// <param name="source">The source account.</param>
+        /// <param name="target">The target account.</param>
+        /// <param name="amount">The amount to transfer. Must not be negative.</param>
+        /// <param name="reason">The transaction reason (optional).</param>
+        /// <returns><b>True</b> if the transaction was successful; otherwise, <b>false</b>.</returns>
+        bool Transfer(IEconomyAccount source, IEconomyAccount target, decimal amount, string reason = null);
+
+        /// <summary>
         ///     Adds balance to the given account.
         /// </summary>
         /// <param name="amount">The amount to add. Should not be negative.</param>
