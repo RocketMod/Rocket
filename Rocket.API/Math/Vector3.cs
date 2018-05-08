@@ -8,7 +8,7 @@ namespace Rocket.API.Math
     ///     A three dimensional vector.
     /// </summary>
     [Serializable]
-    public class RVector3 : RVector2
+    public class Vector3 : Vector2
     {    
         /// <summary>
         ///     The Z coordinate. 

@@ -6,7 +6,7 @@ namespace Rocket.API.Commands
     /// <summary>
     ///     A command caller can execute commands.
     /// </summary>
-    public interface ICommandCaller : IIdentifiable
+    public interface IPeer : IIdentifiable
     {
         /// <summary>
         ///     <para>The type of the command caller.</para> 

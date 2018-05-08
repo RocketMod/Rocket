@@ -1,4 +1,5 @@
 ﻿using Rocket.API.DependencyInjection;
+using Rocket.API.User;
 
 namespace Rocket.API.Commands
 {
@@ -8,30 +9,30 @@ namespace Rocket.API.Commands
     public interface ICommandContext
     {
         /// <summary>
-        ///     The parent command context for sub commands.
+        ///     The parent command context for Child Commands.
         ///     <para><b>This property can return null.</b></para>
         /// </summary>
         /// <example>
         ///     If the command was entered as "/mycommand sub", this will return the parent context with parameters "sub".
         /// </example>
-        ICommandContext ParentCommandContext { get; }
+        ICommandContext ParentContext { get; }
 
         /// <summary>
-        ///     The child context.
+        ///     The child command context.
         /// </summary>
         ICommandContext ChildContext { get; }
 
         /// <summary>
-        ///     The root command context.
+        ///     The root context.
         ///     <para><b>This property will never return null.</b></para>
         /// </summary>
-        ICommandContext RootCommandContext { get; }
+        ICommandContext RootContext { get; }
 
         /// <summary>
         ///     <para>The prefix used to call this (sub) command.</para>
         ///     <para>Useful when sending command usage messages.</para>
         ///     <para>
-        ///         <see cref="ISubCommand">Sub commands</see> include their parents.
+        ///         <see cref="IChildCommand">Child Commands</see> include their parents.
         ///     </para>
         /// </summary>
         /// <remarks>
@@ -41,7 +42,7 @@ namespace Rocket.API.Commands
         ///         If the command was executed using "/mycommand", it will be "/", when it was executed using "!mycommand", it will be "!". 
         ///     </para>
         ///     <para>
-        ///         If the command was a subcommand "sub", "/mycommand sub" will return "/mycommand" as prefix.
+        ///         If the command was a ChildrenCommand "sub", "/mycommand sub" will return "/mycommand" as prefix.
         ///     </para>
         /// </example>
         string CommandPrefix { get; }
@@ -62,7 +63,7 @@ namespace Rocket.API.Commands
         ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsCaller">supported command caller</see>.</para>
         ///     <para><b>This property will never return null.</b></para>
         /// </summary>
-        ICommandCaller Caller { get; }
+        IUser Caller { get; }
 
         /// <summary>
         ///     <para>The parameters of the (sub) command.</para>
@@ -79,6 +80,6 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     Sends the command usage to the caller.
         /// </summary>
-        void SendUsage();
+        void SendHelpMessage();
     }
 }

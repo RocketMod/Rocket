@@ -37,16 +37,15 @@ namespace Rocket.Core.Logging
             ignoredLoggingTypes.Add(type);
         }
 
-        public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null, ConsoleColor? color = null, params object[] bindings)
+        public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments)
         {
             if (!IsEnabled(level))
                 return;
 
-            OnLog(message, level, exception, color, bindings);
+            OnLog(message, level, exception, arguments);
         }
 
-        public abstract void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                          ConsoleColor? color = null, params object[] bindings);
+        public abstract void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments);
 
         public string GetLogLevelPrefix(LogLevel level)
         {

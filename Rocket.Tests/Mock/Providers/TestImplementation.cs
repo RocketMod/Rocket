@@ -17,7 +17,7 @@ namespace Rocket.Tests.Mock.Providers
         public TestImplementation(ILogger logger)
         {
             this.logger = logger;
-            ConsoleCommandCaller = new TestConsoleCaller(logger);
+            ConsoleUser = new TestConsoleCaller(logger);
         }
 
         public IEnumerable<string> Capabilities => new List<string>
@@ -41,7 +41,7 @@ namespace Rocket.Tests.Mock.Providers
             logger.LogInformation("Reloading implementation");
         }
 
-        public IConsoleCommandCaller ConsoleCommandCaller { get; }
+        public IConsoleUser ConsoleUser { get; }
 
         public void Shutdown()
         {

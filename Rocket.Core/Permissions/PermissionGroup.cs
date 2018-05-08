@@ -23,11 +23,11 @@ namespace Rocket.Core.Permissions
             throw new FormatException($"Unknown format for permission groups: {format}");
         }
 
-        public int CompareTo(object obj) => CompareTo((IIdentifiable) obj);
+        public int CompareTo(object obj) => CompareTo((IIdentity) obj);
 
-        public int CompareTo(IIdentifiable other) => CompareTo(other.Id);
+        public int CompareTo(IIdentity other) => CompareTo(other.Id);
 
-        public bool Equals(IIdentifiable other)
+        public bool Equals(IIdentity other)
         {
             if (other == null)
                 return false;

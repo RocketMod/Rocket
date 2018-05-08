@@ -47,15 +47,14 @@
     <Compile Include="..\Rocket.Core\Properties\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Chat\IChatManager.cs" />
     <Compile Include="Commands\ICommand.cs" />
-    <Compile Include="Commands\ICommandCaller.cs" />
     <Compile Include="Commands\ICommandContext.cs" />
     <Compile Include="Commands\ICommandFriendlyException.cs" />
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\ICommandParameters.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Commands\IConsoleCommandCaller.cs" />
+    <Compile Include="User\IUser.cs" />
     <Compile Include="Commands\ISubCommand.cs" />
     <Compile Include="Configuration\ConfigurationContextNotSetException.cs" />
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
@@ -64,6 +63,7 @@
     <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Configuration\IConfigurationSection.cs" />
     <Compile Include="Configuration\SectionType.cs" />
+    <Compile Include="User\IUserManager.cs" />
     <Compile Include="DependencyInjection\ServiceResolutionFailedException.cs" />
     <Compile Include="Economy\IEconomyAccount.cs" />
     <Compile Include="Economy\IEconomyCurrency.cs" />
@@ -71,11 +71,13 @@
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />
     <Compile Include="Logging\LogLevel.cs" />
-    <Compile Include="Math\RVector2.cs" />
-    <Compile Include="Math\RVector3.cs" />
-    <Compile Include="Math\RVector4.cs" />
-    <Compile Include="Player\IOnlinePlayer.cs" />
+    <Compile Include="Math\Vector2.cs" />
+    <Compile Include="Math\Vector3.cs" />
+    <Compile Include="Math\Vector4.cs" />
+    <Compile Include="User\IIdentity.cs" />
+    <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Permissions\IPermissionGroup.cs" />
+    <Compile Include="Player\PlayerNotOnlineException.cs" />
     <Compile Include="Player\PlayerNotFoundException.cs" />
     <Compile Include="DependencyInjection\IProxyableService.cs" />
     <Compile Include="Eventing\Event.cs" />
@@ -83,7 +85,6 @@
     <Compile Include="Eventing\IEventEmitter.cs" />
     <Compile Include="I18N\ITranslatable.cs" />
     <Compile Include="Configuration\IConfigurationContext.cs" />
-    <Compile Include="Permissions\IIdentifiable.cs" />
     <Compile Include="Permissions\PermissionResult.cs" />
     <Compile Include="Scheduler\ExecutionTargetContext.cs" />
     <Compile Include="Eventing\ICancellableEvent.cs" />
@@ -91,7 +92,7 @@
     <Compile Include="Eventing\IEventListener.cs" />
     <Compile Include="ILifecycleObject.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
-    <Compile Include="I18N\ITranslations.cs" />
+    <Compile Include="I18N\ITranslationCollection.cs" />
     <Compile Include="IImplementation.cs" />
     <Compile Include="DependencyInjection\IDependencyContainer.cs" />
     <Compile Include="DependencyInjection\IDependencyRegistrator.cs" />
@@ -99,7 +100,6 @@
     <Compile Include="IRuntime.cs" />
     <Compile Include="Permissions\IPermissionProvider.cs" />
     <Compile Include="Logging\ILogger.cs" />
-    <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Player\IPlayerManager.cs" />
     <Compile Include="Plugins\IPlugin.cs" />
     <Compile Include="Plugins\IPluginManager.cs" />
@@ -114,6 +114,14 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Chat\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rocket.Compatibility\Rocket.Compatibility.csproj">
+      <Project>{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}</Project>
+      <Name>Rocket.Compatibility</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

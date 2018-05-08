@@ -1,22 +1,24 @@
 ﻿using System;
-using Rocket.API.Permissions;
+using Rocket.API.Commands;
+using Rocket.API.Entities;
+using Rocket.API.User;
 
 namespace Rocket.API.Player
 {
     /// <summary>
-    ///     Represents a game player.
+    ///     <inheritdoc cref="IPlayer"/><br/><br/>
+    ///     This interface represents an online player.
     /// </summary>
-    public interface IPlayer : IIdentifiable, IFormattable
+    public interface IPlayer : IIdentity
     {
         /// <summary>
-        ///     Defines if the player is currently online. Does not guarantee that this is an <see cref="IOnlinePlayer"/> instance.<br/>
-        ///     To get the online player instance, you should use the <see cref="IPlayerManager.GetOnlinePlayer"/> method.
+        /// The User that represents the online player. Might be null if online.
         /// </summary>
-        bool IsOnline { get; }
+        IUser User { get; }
 
         /// <summary>
-        ///     Gets the last time the player was online on the server. Equals null if the player was never online.
+        /// The game object that is linked to this player.
         /// </summary>
-        DateTime? LastSeen { get; }
+        IEntity Entity { get; }
     }
 }

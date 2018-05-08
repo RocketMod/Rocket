@@ -10,7 +10,7 @@ namespace Rocket.API.I18N
         /// <summary>
         ///     The translation source.
         /// </summary>
-        ITranslationLocator Translations { get; }
+        ITranslationCollection Translations { get; }
 
         /// <summary>
         ///     The default translations.

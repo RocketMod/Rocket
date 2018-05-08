@@ -1,11 +1,12 @@
 ﻿using Rocket.API.Commands;
+using Rocket.API.User;
 
 namespace Rocket.API.Entities
 {
     /// <summary>
     ///     Represents a living entity with health.
     /// </summary>
-    public interface ILivingEntity
+    public interface ILivingEntity : IEntity
     {
         /// <summary>
         ///     The max health of the entity.
@@ -32,6 +33,6 @@ namespace Rocket.API.Entities
         ///     <inheritdoc cref="Kill()"/>
         /// </summary>
         /// <param name="killer">the killer of the entity.</param>
-        void Kill(ICommandCaller killer);
+        void Kill(IUser killer);
     }
 }

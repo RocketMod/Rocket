@@ -14,7 +14,7 @@ namespace Rocket.ConsoleImplementation
 {
     public class ConsoleImplementation : IImplementation
     {
-        private ConsoleCommandCaller consoleCommandCaller;
+        private ConsoleUser consoleUser;
 
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "ConsoleHost";
@@ -29,7 +29,7 @@ namespace Rocket.ConsoleImplementation
             Directory.SetCurrentDirectory(WorkingDirectory);
 
             ILogger logger = runtime.Container.Resolve<ILogger>();
-            consoleCommandCaller = new ConsoleCommandCaller(logger);
+            consoleUser = new ConsoleUser(logger);
 
             logger.LogInformation("Loaded; type \"help\" for help or \"exit\" to exit.");
 
@@ -38,7 +38,7 @@ namespace Rocket.ConsoleImplementation
             string line;
             while (!(line = Console.ReadLine())?.Equals("exit", StringComparison.OrdinalIgnoreCase) ?? false)
             {
-                if(!cmdHandler.HandleCommand(ConsoleCommandCaller, line, ""))
+                if(!cmdHandler.HandleCommand(ConsoleUser, line, ""))
                     Console.WriteLine("Command not found: " + line);
                 Console.Write(">");
             }
@@ -53,7 +53,7 @@ namespace Rocket.ConsoleImplementation
 
         public void Reload() { }
 
-        public IConsoleCommandCaller ConsoleCommandCaller => consoleCommandCaller;
+        public IConsoleUser ConsoleUser => consoleUser;
 
         public bool IsAlive => true;
 

@@ -13,9 +13,9 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Summary => "Provides help for all or a specific command.";
         public string Description => null;
         public string Permission => "Rocket.Help";
-        public string Syntax => "[command] [1. sub command] [2. sub command] [...]";
-        public ISubCommand[] ChildCommands => null;
-        public bool SupportsCaller(Type commandCaller)
+        public string Syntax => "[command] [1. Child Command] [2. Child Command] [...]";
+        public IChildCommand[] ChildCommands => null;
+        public bool SupportsCaller(Type User)
         {
             return true;
         }
@@ -25,7 +25,7 @@ namespace Rocket.Core.Commands.RocketCommands
             var cmdProvider = context.Container.Resolve<ICommandProvider>();
             var permissionProvider = context.Container.Resolve<IPermissionProvider>();
 
-            var rootPrefix = context.RootCommandContext.CommandPrefix;
+            var rootPrefix = context.RootContext.CommandPrefix;
             IEnumerable<ICommand> childs = cmdProvider.Commands.OrderBy(c => c.Name);
 
             if (context.Parameters.Length > 0)
@@ -81,7 +81,7 @@ namespace Rocket.Core.Commands.RocketCommands
             }
         }
 
-        public bool HasAccess(ICommand command, ICommandCaller caller, IPermissionProvider permissionProvider)
+        public bool HasAccess(ICommand command, IUser caller, IPermissionProvider permissionProvider)
         {
             return (permissionProvider.CheckPermission(caller, command.Permission ?? command.Name)
                 == PermissionResult.Grant

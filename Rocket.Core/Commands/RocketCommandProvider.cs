@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
@@ -10,15 +9,11 @@ namespace Rocket.Core.Commands
 {
     public class RocketCommandProvider : ICommandProvider
     {
-        private readonly IRuntime runtime;
-
-        public RocketCommandProvider(IRuntime runtime)
+        public RocketCommandProvider()
         {
-            this.runtime = runtime;
-
             var types = (typeof(RocketCommandProvider).Assembly.FindTypes<ICommand>())
                 .Where(c => c.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Length == 0)
-                .Where(c => !typeof(ISubCommand).IsAssignableFrom(c));
+                .Where(c => !typeof(IChildCommand).IsAssignableFrom(c));
 
             List<ICommand> list = new List<ICommand>();
             foreach (Type type in types)
@@ -26,7 +21,6 @@ namespace Rocket.Core.Commands
             Commands = list;
         }
 
-        public ILifecycleObject GetOwner(ICommand command) => runtime;
         public IEnumerable<ICommand> Commands { get; }
     }
 }

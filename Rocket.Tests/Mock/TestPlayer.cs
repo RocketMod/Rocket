@@ -50,14 +50,14 @@ namespace Rocket.Tests.Mock
             throw new NotImplementedException();
         }
 
-        public void Kill(ICommandCaller caller)
+        public void Kill(IUser caller)
         {
             throw new NotImplementedException();
         }
 
-        public override void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
+        public override void SendMessage(string message, params object[] arguments)
         {
-            Console.WriteLine("[TestPlayer.SendMessage] " + message, bindings);
+            Console.WriteLine("[TestPlayer.SendMessage] " + message, arguments);
         }
     }
 }

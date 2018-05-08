@@ -7,7 +7,7 @@ namespace Rocket.Core.Player.Events
 {
     public class PlayerBanEvent : Event, ICancellableEvent
     {
-        public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null,
+        public PlayerBanEvent(IPlayer player, IUser caller = null, string reason = null,
                               TimeSpan? duration = null) : base(true)
         {
             Player = player;
@@ -16,7 +16,7 @@ namespace Rocket.Core.Player.Events
             Duration = duration;
         }
 
-        public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null,
+        public PlayerBanEvent(IPlayer player, IUser caller = null, string reason = null,
                               TimeSpan? duration = null, bool global = true) : base(global)
         {
             Player = player;
@@ -25,7 +25,7 @@ namespace Rocket.Core.Player.Events
             Duration = duration;
         }
 
-        public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null,
+        public PlayerBanEvent(IPlayer player, IUser caller = null, string reason = null,
                               TimeSpan? duration = null,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(executionTarget, global)
@@ -35,7 +35,7 @@ namespace Rocket.Core.Player.Events
             Duration = duration;
         }
 
-        public PlayerBanEvent(IPlayer player, ICommandCaller caller = null, string reason = null,
+        public PlayerBanEvent(IPlayer player, IUser caller = null, string reason = null,
                               TimeSpan? duration = null, string name = null,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(name, executionTarget, global)
@@ -48,7 +48,7 @@ namespace Rocket.Core.Player.Events
 
         public TimeSpan? Duration { get; set; }
         public IPlayer Player { get; }
-        public ICommandCaller Caller { get; }
+        public IUser Caller { get; }
         public string Reason { get; set; }
 
         public bool IsCancelled { get; set; }

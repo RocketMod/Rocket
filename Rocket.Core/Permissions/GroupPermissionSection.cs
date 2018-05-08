@@ -49,12 +49,12 @@ namespace Rocket.Core.Permissions
             throw new System.NotImplementedException();
         }
 
-        public int CompareTo(IIdentifiable other)
+        public int CompareTo(IIdentity other)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool Equals(IIdentifiable other)
+        public bool Equals(IIdentity other)
         {
             throw new System.NotImplementedException();
         }

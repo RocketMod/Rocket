@@ -5,16 +5,16 @@ namespace Rocket.Core.Commands.Events
 {
     public class PreCommandExecutionEvent : Event, ICancellableEvent
     {
-        public PreCommandExecutionEvent(ICommandCaller player, string commandLine) :
+        public PreCommandExecutionEvent(IUser player, string commandLine) :
             this(player, commandLine, false) { }
 
-        public PreCommandExecutionEvent(ICommandCaller player, string commandLine, bool global = true) : base(global)
+        public PreCommandExecutionEvent(IUser player, string commandLine, bool global = true) : base(global)
         {
             Player = player;
             CommandLine = commandLine;
         }
 
-        public PreCommandExecutionEvent(ICommandCaller player, string commandLine,
+        public PreCommandExecutionEvent(IUser player, string commandLine,
                                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                         bool global = true) : base(executionTarget, global)
         {
@@ -22,7 +22,7 @@ namespace Rocket.Core.Commands.Events
             CommandLine = commandLine;
         }
 
-        public PreCommandExecutionEvent(ICommandCaller player, string commandLine, string name = null,
+        public PreCommandExecutionEvent(IUser player, string commandLine, string name = null,
                                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                         bool global = true) : base(name, executionTarget, global)
         {
@@ -30,7 +30,7 @@ namespace Rocket.Core.Commands.Events
             CommandLine = commandLine;
         }
 
-        public ICommandCaller Player { get; }
+        public IUser Player { get; }
         public string CommandLine { get; }
 
         public bool IsCancelled { get; set; }

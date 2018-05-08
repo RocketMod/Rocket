@@ -7,7 +7,7 @@ namespace Rocket.Core.Commands
 {
     public static class CommandsExtensions
     {
-        public static ICommand GetCommand(this IEnumerable<ICommand> commandsEnumerable,string commandName, ICommandCaller caller)
+        public static ICommand GetCommand(this IEnumerable<ICommand> commandsEnumerable,string commandName, IUser caller)
         {
             var commands = commandsEnumerable.ToList();
             var command =

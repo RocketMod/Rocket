@@ -49,6 +49,6 @@ namespace Rocket.Core.Player
         public abstract DateTime? SessionDisconnectTime { get; }
         public abstract TimeSpan SessionOnlineTime { get; }
         public string EntityTypeName => "Player";
-        public abstract void SendMessage(string message, ConsoleColor? color = null, params object[] bindings);
+        public abstract void SendMessage(string message, params object[] arguments);
     }
 }

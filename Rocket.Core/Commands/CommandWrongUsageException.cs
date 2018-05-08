@@ -12,7 +12,7 @@ namespace Rocket.Core.Commands
         public virtual void SendErrorMessage(ICommandContext context)
         {
             context.Caller.SendMessage(Message, ConsoleColor.DarkRed);
-            context.SendUsage();
+            context.SendHelpMessage();
         }
     }
 }

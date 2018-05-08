@@ -15,12 +15,12 @@ namespace Rocket.Core.Permissions
     {
         public ProxyPermissionProvider(IDependencyContainer container) : base(container) { }
 
-        public bool SupportsTarget(IIdentifiable target)
+        public bool SupportsTarget(IIdentity target)
         {
             return ProxiedServices.Any(c => c.SupportsTarget(target));
         }
 
-        public PermissionResult CheckPermission(IIdentifiable target, string permission)
+        public PermissionResult CheckPermission(IIdentity target, string permission)
         {
             GuardTarget(target);
 
@@ -36,7 +36,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAllPermissions(IIdentifiable target, params string[] permissions)
+        public PermissionResult CheckHasAllPermissions(IIdentity target, params string[] permissions)
         {
             GuardTarget(target);
 
@@ -52,7 +52,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAnyPermission(IIdentifiable target, params string[] permissions)
+        public PermissionResult CheckHasAnyPermission(IIdentity target, params string[] permissions)
         {
             GuardTarget(target);
 
@@ -68,19 +68,19 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public bool AddPermission(IIdentifiable target, string permission)
+        public bool AddPermission(IIdentity target, string permission)
             => throw new NotSupportedException("Adding permissions from proxy is not supported.");
 
-        public bool AddDeniedPermission(IIdentifiable target, string permission)
+        public bool AddDeniedPermission(IIdentity target, string permission)
             => throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
 
-        public bool RemovePermission(IIdentifiable target, string permission)
+        public bool RemovePermission(IIdentity target, string permission)
             => throw new NotSupportedException("Removing permissions from proxy is not supported.");
 
-        public bool RemoveDeniedPermission(IIdentifiable target, string permission)
+        public bool RemoveDeniedPermission(IIdentity target, string permission)
             => throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
 
-        public IPermissionGroup GetPrimaryGroup(ICommandCaller caller)
+        public IPermissionGroup GetPrimaryGroup(IUser caller)
         {
             IPermissionGroup group;
             foreach (IPermissionProvider service in ProxiedServices.Where(c => c.SupportsTarget(caller)))
@@ -95,7 +95,7 @@ namespace Rocket.Core.Permissions
             return GetGroups().FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups(IIdentifiable target)
+        public IEnumerable<IPermissionGroup> GetGroups(IIdentity target)
         {
             return ProxiedServices.Where(c => c.SupportsTarget(target))
                                   .SelectMany(c => c.GetGroups(target));
@@ -111,10 +111,10 @@ namespace Rocket.Core.Permissions
             throw new NotSupportedException("Updating groups from proxy is not supported.");
         }
 
-        public bool AddGroup(IIdentifiable target, IPermissionGroup group)
+        public bool AddGroup(IIdentity target, IPermissionGroup group)
             => throw new NotSupportedException("Adding groups from proxy is not supported.");
 
-        public bool RemoveGroup(IIdentifiable target, IPermissionGroup group)
+        public bool RemoveGroup(IIdentity target, IPermissionGroup group)
             => throw new NotSupportedException("Removing groups from proxy is not supported.");
 
         public bool CreateGroup(IPermissionGroup group)
@@ -138,7 +138,7 @@ namespace Rocket.Core.Permissions
             ProxiedServices.ForEach(c => c.Save());
         }
 
-        private void GuardTarget(IIdentifiable target)
+        private void GuardTarget(IIdentity target)
         {
             if (!SupportsTarget(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");

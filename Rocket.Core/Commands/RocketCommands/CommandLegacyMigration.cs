@@ -19,10 +19,10 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Description => null;
         public string Permission => "Rocket.Migrate.Legacy";
         public string Syntax => "[step]";
-        public ISubCommand[] ChildCommands => null;
-        public bool SupportsCaller(Type commandCaller)
+        public IChildCommand[] ChildCommands => null;
+        public bool SupportsCaller(Type User)
         {
-            return typeof(IConsoleCommandCaller).IsAssignableFrom(commandCaller);
+            return typeof(IConsoleUser).IsAssignableFrom(User);
         }
 
         public void Execute(ICommandContext context)

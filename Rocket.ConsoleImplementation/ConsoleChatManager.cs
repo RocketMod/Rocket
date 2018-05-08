@@ -7,20 +7,20 @@ namespace Rocket.ConsoleImplementation
 {
     public class ConsoleChatManager : IChatManager
     {
-        private readonly IConsoleCommandCaller console;
+        private readonly IConsoleUser console;
 
         public ConsoleChatManager(IImplementation impl)
         {
-            console = impl.ConsoleCommandCaller;
+            console = impl.ConsoleUser;
         }
-        public void SendMessage(IOnlinePlayer player, string message, params object[] bindings)
+        public void SendMessage(IOnlinePlayer player, string message, params object[] arguments)
         {
-            console.SendMessage($"[{player.Name}] {message}", null, bindings);
+            console.SendMessage($"[{player.Name}] {message}", null, arguments);
         }
 
-        public void Broadcast(string message, params object[] bindings)
+        public void Broadcast(string message, params object[] arguments)
         {
-            console.SendMessage($"[Broadcast] {message}", null, bindings);
+            console.SendMessage($"[Broadcast] {message}", null, arguments);
         }
     }
 }

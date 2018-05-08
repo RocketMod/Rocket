@@ -3,9 +3,9 @@
 namespace Rocket.Core.Commands
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class CommandCallerAttribute : Attribute
+    public class UserAttribute : Attribute
     {
-        public CommandCallerAttribute(Type supportedCaller)
+        public UserAttribute(Type supportedCaller)
         {
             SupportedCaller = supportedCaller;
         }

@@ -76,9 +76,9 @@ namespace Rocket.API.Commands
         string Permission { get; }
 
         /// <summary>
-        ///     The command syntax will be shown to the <see cref="ICommandCaller" /> when the command was not used correctly.
+        ///     The command syntax will be shown to the <see cref="IUser" /> when the command was not used correctly.
         ///     <para>An output for the above example could be "/heal [player] &lt;amount&gt;".</para>
-        ///     <para>The syntax should not contain sub command usage.</para>
+        ///     <para>The syntax should not contain Child Command usage.</para>
         ///     <para><b>This property must never return null.</b></para>
         /// </summary>
         /// <remarks>
@@ -93,7 +93,7 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     The child commands of this command. Child commands override the <see cref="Execute"/> method in some cases (see examples).
         ///     <para><b>This property can return null.</b></para>
-        ///     <seealso cref="ISubCommand" />
+        ///     <seealso cref="IChildCommand" />
         /// </summary>
         /// <example>
         ///     Assume a command was entered as "/mycommand sub 1 2". If the <see cref="Name">name</see> or an
@@ -102,18 +102,18 @@ namespace Rocket.API.Commands
         ///     or an <see cref="Aliases">alias</see> "sub" exists, then the <see cref="Execute">Execute</see> method of the child
         ///     command will be called with "1" and "2" as parameters, while the <see cref="Execute">Execute</see> method of the parent will not be called.
         /// </example>
-        ISubCommand[] ChildCommands { get; }
+        IChildCommand[] ChildCommands { get; }
 
         /// <summary>
         ///     Defines if this command can be executed by the given command caller type.
         ///     It is guaranteed that <see cref="Execute" /> can only be called by supported command callers.
         /// </summary>
-        /// <param name="commandCaller">The command caller type to check.</param>
+        /// <param name="User">The command caller type to check.</param>
         /// <returns><b>true</b> if the given command caller type can execute this command; otherwise, <b>false</b>.</returns>
-        bool SupportsCaller(Type commandCaller);
+        bool SupportsCaller(Type User);
 
         /// <summary>
-        ///     Executes the command if no sub command is involved.
+        ///     Executes the command if no Child Command is involved.
         /// </summary>
         /// <example>
         ///     Assume a command was entered as "/mycommand" (also assuming the command prefix is "/"). If the <see cref="Name">name</see> or

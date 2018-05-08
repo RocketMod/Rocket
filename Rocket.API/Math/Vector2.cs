@@ -5,7 +5,7 @@ namespace Rocket.API.Math {
     ///     A three dimensional vector.
     /// </summary>
     [Serializable]
-    public class RVector2
+    public class Vector2
     {
         /// <summary>
         ///     The X coordinate. 

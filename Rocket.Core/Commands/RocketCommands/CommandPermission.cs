@@ -14,8 +14,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Summary => "Manages rocket permissions.";
         public string Description => null;
 
-        public ISubCommand[] ChildCommands => new ISubCommand[]
-            {new PermissionSubCommandAdd(), new PermissionSubCommandRemove(), new PermissionSubCommandReload()};
+        public IChildCommand[] ChildCommands => new IChildCommand[]
+            {new PermissionChildrenCommandAdd(), new PermissionChildrenCommandRemove(), new PermissionChildrenCommandReload()};
 
         public string[] Aliases => new[] {"P"};
 
@@ -24,10 +24,10 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(Type commandCaller) => true;
+        public bool SupportsCaller(Type User) => true;
     }
 
-    public abstract class PermissionSubCommandUpdate : ISubCommand
+    public abstract class PermissionChildrenCommandUpdate : IChildCommand
     {
         public abstract string Name { get; }
         public abstract string Summary { get; }
@@ -35,10 +35,10 @@ namespace Rocket.Core.Commands.RocketCommands
         public abstract string Permission { get; }
         public string Syntax => "<[p]layer/[g]roup> [target] [permission]";
 
-        public ISubCommand[] ChildCommands => null;
+        public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsCaller(Type commandCaller) => true;
+        public bool SupportsCaller(Type User) => true;
 
         public void Execute(ICommandContext context)
         {
@@ -88,18 +88,18 @@ namespace Rocket.Core.Commands.RocketCommands
             UpdatePermission(context.Caller, permissions, target, permissionToUpdate);
         }
 
-        protected abstract void UpdatePermission(ICommandCaller caller, IPermissionProvider permissions,
+        protected abstract void UpdatePermission(IUser caller, IPermissionProvider permissions,
                                                  IIdentifiable target, string permissionToUpdate);
     }
 
-    public class PermissionSubCommandAdd : PermissionSubCommandUpdate
+    public class PermissionChildrenCommandAdd : PermissionChildrenCommandUpdate
     {
         public override string Name => "Add";
         public override string Summary => "Adds a permission to a group or player.";
         public override string Permission => "Rocket.Permissions.ManagePermissions.Add";
         public override string[] Aliases => new[] {"a", "+"};
 
-        protected override void UpdatePermission(ICommandCaller caller, IPermissionProvider permissions,
+        protected override void UpdatePermission(IUser caller, IPermissionProvider permissions,
                                                  IIdentifiable target, string permissionToUpdate)
         {
             if (permissions.AddPermission(target, permissionToUpdate))
@@ -110,14 +110,14 @@ namespace Rocket.Core.Commands.RocketCommands
         }
     }
 
-    public class PermissionSubCommandRemove : PermissionSubCommandUpdate
+    public class PermissionChildrenCommandRemove : PermissionChildrenCommandUpdate
     {
         public override string Name => "Remove";
         public override string Summary => "Removes permission from a group or player.";
         public override string Permission => "Rocket.Permissions.ManagePermissions.Remove";
         public override string[] Aliases => new[] {"r", "-"};
 
-        protected override void UpdatePermission(ICommandCaller caller, IPermissionProvider permissions,
+        protected override void UpdatePermission(IUser caller, IPermissionProvider permissions,
                                                  IIdentifiable target, string permissionToUpdate)
         {
             if (permissions.RemovePermission(target, permissionToUpdate))
@@ -129,17 +129,17 @@ namespace Rocket.Core.Commands.RocketCommands
         }
     }
 
-    public class PermissionSubCommandReload : ISubCommand
+    public class PermissionChildrenCommandReload : IChildCommand
     {
         public string Name => "Reload";
         public string Summary => "Reloads permissions.";
         public string Description => null;
         public string Permission => "Rocket.Permissions.ManagePermissions.Reload";
         public string Syntax => "";
-        public ISubCommand[] ChildCommands => null;
+        public IChildCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"R"};
 
-        public bool SupportsCaller(Type commandCaller) => true;
+        public bool SupportsCaller(Type User) => true;
 
         public void Execute(ICommandContext context)
         {

@@ -6,13 +6,13 @@ namespace Rocket.Core.Player.Events
 {
     public class PlayerDamageEvent : OnlinePlayerEvent, ICancellableEvent
     {
-        public PlayerDamageEvent(IOnlinePlayer player, double damage, ICommandCaller damageDealer) : base(player)
+        public PlayerDamageEvent(IOnlinePlayer player, double damage, IUser damageDealer) : base(player)
         {
             Damage = damage;
             DamageDealer = damageDealer;
         }
 
-        public PlayerDamageEvent(IOnlinePlayer player, double damage, ICommandCaller damageDealer, bool global = true) :
+        public PlayerDamageEvent(IOnlinePlayer player, double damage, IUser damageDealer, bool global = true) :
             base(player, global)
         {
             Damage = damage;
@@ -20,7 +20,7 @@ namespace Rocket.Core.Player.Events
             DamageDealer = damageDealer;
         }
 
-        public PlayerDamageEvent(IOnlinePlayer player, double damage, ICommandCaller damageDealer,
+        public PlayerDamageEvent(IOnlinePlayer player, double damage, IUser damageDealer,
                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                  bool global = true) : base(player, executionTarget, global)
         {
@@ -28,7 +28,7 @@ namespace Rocket.Core.Player.Events
             DamageDealer = damageDealer;
         }
 
-        public PlayerDamageEvent(IOnlinePlayer player, double damage, ICommandCaller damageDealer, string name = null,
+        public PlayerDamageEvent(IOnlinePlayer player, double damage, IUser damageDealer, string name = null,
                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                  bool global = true) : base(player, name, executionTarget, global)
         {
@@ -36,7 +36,7 @@ namespace Rocket.Core.Player.Events
             DamageDealer = damageDealer;
         }
 
-        public ICommandCaller DamageDealer { get; }
+        public IUser DamageDealer { get; }
         public double Damage { get; set; }
 
         public bool IsCancelled { get; set; }

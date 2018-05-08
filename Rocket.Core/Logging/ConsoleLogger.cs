@@ -13,8 +13,7 @@ namespace Rocket.Core.Logging
     {
         public ConsoleLogger(IDependencyContainer container) : base(container) { }
 
-        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, ConsoleColor? color = null,
-                                  params object[] bindings)
+        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments)
         {
             ConsoleColor orgCol = Console.ForegroundColor;
 
@@ -39,7 +38,7 @@ namespace Rocket.Core.Logging
                 Console.Write("] ");
             }
 
-            SetColor(color ?? ConsoleColor.White);
+            SetColor(ConsoleColor.White);
             Console.WriteLine(message);
 
             if (exception != null)

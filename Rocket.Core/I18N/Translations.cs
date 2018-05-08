@@ -17,8 +17,8 @@ namespace Rocket.Core.I18N
 
         public string ToString(string format, IFormatProvider formatProvider) => GetLocalizedMessage(format);
 
-        public string GetLocalizedMessage(string translationKey, params object[] bindings)
-            => string.Format(config[translationKey].Get<string>(), bindings);
+        public string GetLocalizedMessage(string translationKey, params object[] arguments)
+            => string.Format(config[translationKey].Get<string>(), arguments);
 
         public void SetFormat(string translationKey, string format)
         {

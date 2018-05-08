@@ -13,27 +13,27 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Summary => "Manages RocketMod.";
         public string Description => null;
         public string[] Aliases => null;
-        public ISubCommand[] ChildCommands => new ISubCommand[] {new RocketSubCommandReload()};
+        public IChildCommand[] ChildCommands => new IChildCommand[] {new RocketChildrenCommandReload()};
 
         public void Execute(ICommandContext context)
         {
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(Type commandCaller) => true;
+        public bool SupportsCaller(Type User) => true;
     }
 
-    public class RocketSubCommandReload : ISubCommand
+    public class RocketChildrenCommandReload : IChildCommand
     {
         public string Name => "Reload";
         public string Summary => "Reloads RocketMod and all plugins.";
         public string Description => null;
         public string Permission => "Rocket.ManageRocket.Reload";
         public string Syntax => "";
-        public ISubCommand[] ChildCommands => null;
+        public IChildCommand[] ChildCommands => null;
         public string[] Aliases => null;
 
-        public bool SupportsCaller(Type commandCaller) => true;
+        public bool SupportsCaller(Type User) => true;
 
         public void Execute(ICommandContext context)
         {

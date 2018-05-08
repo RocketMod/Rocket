@@ -33,7 +33,7 @@ namespace Rocket.Core.Commands
             List<ParameterInfo> parameters = (from param in Method.GetParameters()
                                               let type = param.ParameterType
                                               where type != typeof(ICommandContext)
-                                              where type != typeof(ICommandCaller)
+                                              where type != typeof(IUser)
                                               where type != typeof(string[])
                                               where type != typeof(ICommandParameters)
                                               where type != typeof(IDependencyContainer)
@@ -51,15 +51,15 @@ namespace Rocket.Core.Commands
         public string Description => Attribute?.Description;
         public string Permission => Attribute?.Permission;
         public string Syntax { get; }
-        public ISubCommand[] ChildCommands { get; } //todo
+        public IChildCommand[] ChildCommands { get; } //todo
         public string[] Aliases { get; }
 
-        public bool SupportsCaller(Type commandCaller)
+        public bool SupportsCaller(Type User)
         {
             if (supportedCallers.Length == 0)
                 return true;
 
-            return supportedCallers.Any(c => c.IsAssignableFrom(commandCaller));
+            return supportedCallers.Any(c => c.IsAssignableFrom(User));
         }
 
         public void Execute(ICommandContext context)
@@ -75,7 +75,7 @@ namespace Rocket.Core.Commands
                     @params.Add(context);
                 }
 
-                else if (type == typeof(ICommandCaller))
+                else if (type == typeof(IUser))
                 {
                     @params.Add(context);
                 }

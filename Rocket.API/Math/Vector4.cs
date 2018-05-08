@@ -5,7 +5,7 @@ namespace Rocket.API.Math {
     ///     A four dimensional vector.
     /// </summary>
     [Serializable]
-    public class RVector4 : RVector3
+    public class Vector4 : Vector3
     {
         /// <summary>
         ///     The W coordinate. 

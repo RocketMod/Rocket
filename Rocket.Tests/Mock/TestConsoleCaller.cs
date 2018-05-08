@@ -6,7 +6,7 @@ using Rocket.Core.Logging;
 
 namespace Rocket.Tests.Mock
 {
-    public class TestConsoleCaller : IConsoleCommandCaller
+    public class TestConsoleCaller : IConsoleUser
     {
         private readonly ILogger logger;
 
@@ -20,16 +20,16 @@ namespace Rocket.Tests.Mock
         public string Name => "Console";
         public Type CallerType => typeof(TestConsoleCaller);
 
-        public void SendMessage(string message, ConsoleColor? color = null, params object[] bindings)
+        public void SendMessage(string message, params object[] arguments)
         {
-            logger.LogInformation(message, color, bindings);
+            logger.LogInformation(message, arguments);
         }
 
         public int CompareTo(object obj) => throw new NotImplementedException();
 
-        public int CompareTo(IIdentifiable other) => throw new NotImplementedException();
+        public int CompareTo(IIdentity other) => throw new NotImplementedException();
 
-        public bool Equals(IIdentifiable other) => throw new NotImplementedException();
+        public bool Equals(IIdentity other) => throw new NotImplementedException();
 
         public int CompareTo(string other) => throw new NotImplementedException();
 

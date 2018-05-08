@@ -75,8 +75,7 @@ namespace Rocket.Core.Logging
             }
         }
 
-        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, ConsoleColor? color = null,
-                        params object[] bindings)
+        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments)
         {
             if (string.IsNullOrEmpty(logFile))
                 throw new FileLoadException("File has not been set.");

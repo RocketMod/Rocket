@@ -6,19 +6,19 @@ namespace Rocket.Core.Player.Events
 {
     public class PlayerUnbanEvent: Event, ICancellableEvent
     {
-        public PlayerUnbanEvent(IPlayer player, ICommandCaller caller = null) : base(true)
+        public PlayerUnbanEvent(IPlayer player, IUser caller = null) : base(true)
         {
             Player = player;
             Caller = caller;
         }
 
-        public PlayerUnbanEvent(IPlayer player, ICommandCaller caller = null, bool global = true) : base(global)
+        public PlayerUnbanEvent(IPlayer player, IUser caller = null, bool global = true) : base(global)
         {
             Player = player;
             Caller = caller;
         }
 
-        public PlayerUnbanEvent(IPlayer player, ICommandCaller caller = null,
+        public PlayerUnbanEvent(IPlayer player, IUser caller = null,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(executionTarget, global)
         {
@@ -26,7 +26,7 @@ namespace Rocket.Core.Player.Events
             Caller = caller;
         }
 
-        public PlayerUnbanEvent(IPlayer player, ICommandCaller caller = null, string name = null,
+        public PlayerUnbanEvent(IPlayer player, IUser caller = null, string name = null,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(name, executionTarget, global)
         {
@@ -35,7 +35,7 @@ namespace Rocket.Core.Player.Events
         }
 
         public IPlayer Player { get; }
-        public ICommandCaller Caller { get; }
+        public IUser Caller { get; }
 
         public bool IsCancelled { get; set; }
 
