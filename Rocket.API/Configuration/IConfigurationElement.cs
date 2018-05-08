@@ -14,7 +14,7 @@ namespace Rocket.API.Configuration
         SectionType Type { get; }
 
         /// <summary>
-        ///     Gets a child configuration node. See <see cref="GetSection"/>.
+        ///     Gets a child configuration node. See <see cref="GetSection" />.
         /// </summary>
         /// <param name="path">The configuration path.</param>
         /// <returns>The configuration section.</returns>
@@ -38,7 +38,7 @@ namespace Rocket.API.Configuration
         /// <summary>
         ///     Gets a configuration sub-section with the specified path.
         /// </summary>
-        /// <param name="path">The relative path to the section to get. See <see cref="Path"/>.</param>
+        /// <param name="path">The relative path to the section to get. See <see cref="Path" />.</param>
         /// <returns>The <see cref="IConfigurationSection" />.</returns>
         /// <remarks>
         ///     This method will never return <c>null</c>. If no matching sub-section is found with the specified path,
@@ -49,15 +49,15 @@ namespace Rocket.API.Configuration
         /// <summary>
         ///     Creates a new configuration section.
         /// </summary>
-        /// <param name="path">The relative path to the section to create. See <see cref="Path"/>.</param>
-        /// <param name="type">The section type. See <see cref="SectionType"/>.</param>
+        /// <param name="path">The relative path to the section to create. See <see cref="Path" />.</param>
+        /// <param name="type">The section type. See <see cref="SectionType" />.</param>
         /// <returns>the created section.</returns>
         IConfigurationSection CreateSection(string path, SectionType type);
 
         /// <summary>
         ///     Deletes a configuration section.
         /// </summary>
-        /// <param name="path">The relative path to the section to delete. See <see cref="Path"/>.</param>
+        /// <param name="path">The relative path to the section to delete. See <see cref="Path" />.</param>
         /// <returns><b>true</b> if the section exists and could be deleted; otherwise, <b>false</b>.</returns>
         bool DeleteSection(string path);
 
@@ -128,7 +128,7 @@ namespace Rocket.API.Configuration
         /// <summary>
         ///     Checks if a child exists.
         /// </summary>
-        /// <param name="path">The relative path to the child section. See <see cref="Path"/>.</param>
+        /// <param name="path">The relative path to the child section. See <see cref="Path" />.</param>
         /// <returns></returns>
         bool ChildExists(string path);
 

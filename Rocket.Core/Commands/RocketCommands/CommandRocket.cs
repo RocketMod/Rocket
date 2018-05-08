@@ -22,7 +22,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(Type user)=> true;
+        public bool SupportsUser(Type user) => true;
     }
 
     public class RocketChildrenCommandReload : IChildCommand
@@ -35,22 +35,16 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => null;
 
-        public bool SupportsUser(Type user)=> true;
+        public bool SupportsUser(Type user) => true;
 
         public void Execute(ICommandContext context)
         {
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
             permissions.Reload();
 
-            foreach (IPlugin plugin in context.Container.Resolve<IPluginManager>())
-            {
-                plugin.Unload();
-            }
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginManager>()) plugin.Unload();
 
-            foreach (IPlugin plugin in context.Container.Resolve<IPluginManager>())
-            {
-                plugin.Load(true);
-            }
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginManager>()) plugin.Load(true);
 
             context.User.SendMessage("Reload completed.", Color.DarkGreen);
         }

@@ -14,6 +14,7 @@ namespace Rocket.ConsoleImplementation
     public class RocketConsole : IConsole
     {
         private readonly IDependencyContainer container;
+
         public RocketConsole(IDependencyContainer container)
         {
             SessionConnectTime = DateTime.Now;
@@ -33,8 +34,8 @@ namespace Rocket.ConsoleImplementation
         public string UserType => "Console";
 
         public void WriteLine(string format, params object[] bindings)
-            => WriteLine(LogLevel.Information, format, Color.White, bindings)
-;
+            => WriteLine(LogLevel.Information, format, Color.White, bindings);
+
         public void WriteLine(string format, Color? color = null, params object[] bindings)
             => WriteLine(LogLevel.Information, format, color, bindings);
 
@@ -43,7 +44,7 @@ namespace Rocket.ConsoleImplementation
 
         public void WriteLine(LogLevel level, string format, Color? color = null, params object[] bindings)
         {
-            var rocketSettings = container.Resolve<IRocketSettingsProvider>();
+            IRocketSettingsProvider rocketSettings = container.Resolve<IRocketSettingsProvider>();
             Color orgCol = ConsoleLogger.GetForegroundColor();
 
             SetForegroundColor(Color.White);
@@ -75,19 +76,9 @@ namespace Rocket.ConsoleImplementation
             SetForegroundColor(orgCol);
         }
 
-        private MethodBase GetLoggerCallingMethod()
-        {
-            return ReflectionExtensions.GetCallingMethod(typeof(RocketConsole));
-        }
-
-        private void SetForegroundColor(Color color)
-        {
-            ConsoleLogger.SetForegroundColor(color);
-        }
-
         public void Write(string format, Color? color = null, params object[] bindings)
         {
-            var orgColor = Console.ForegroundColor;
+            ConsoleColor orgColor = Console.ForegroundColor;
             ConsoleLogger.SetForegroundColor(color ?? Color.White);
             Console.Write(format, bindings);
             Console.ForegroundColor = orgColor;
@@ -96,6 +87,13 @@ namespace Rocket.ConsoleImplementation
         public void Write(string format, params object[] bindings)
         {
             Write(format, null, bindings);
+        }
+
+        private MethodBase GetLoggerCallingMethod() => ReflectionExtensions.GetCallingMethod(typeof(RocketConsole));
+
+        private void SetForegroundColor(Color color)
+        {
+            ConsoleLogger.SetForegroundColor(color);
         }
     }
 }

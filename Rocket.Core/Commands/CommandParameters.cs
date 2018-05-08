@@ -34,7 +34,7 @@ namespace Rocket.Core.Commands
         public int Length => ToArray().Length;
 
         /// <inheritdoc />
-        public T Get<T>(int index) => (T)Get(index, typeof(T));
+        public T Get<T>(int index) => (T) Get(index, typeof(T));
 
         /// <inheritdoc />
         public object Get(int index, Type type)
@@ -52,7 +52,7 @@ namespace Rocket.Core.Commands
         }
 
         /// <inheritdoc />
-        public T Get<T>(int index, T defaultValue) => (T)Get(index, typeof(T), defaultValue);
+        public T Get<T>(int index, T defaultValue) => (T) Get(index, typeof(T), defaultValue);
 
         /// <inheritdoc />
         public object Get(int index, Type type, object defaultValue)
@@ -66,7 +66,7 @@ namespace Rocket.Core.Commands
         public bool TryGet<T>(int index, out T value)
         {
             bool result = TryGet(index, typeof(T), out object tmp);
-            value = (T)tmp;
+            value = (T) tmp;
             return result;
         }
 
@@ -78,7 +78,6 @@ namespace Rocket.Core.Commands
             return string.Join(" ", ToArray().Skip(startPosition).ToArray());
         }
 
-
         public string GetArgumentLine(int startPosition, int endPosition)
         {
             if (startPosition > Length)
@@ -87,12 +86,11 @@ namespace Rocket.Core.Commands
             if (endPosition > Length)
                 throw new IndexOutOfRangeException();
 
-            if(endPosition - startPosition < 1)
+            if (endPosition - startPosition < 1)
                 throw new ArgumentException();
 
             return string.Join(" ", ToArray().Skip(startPosition).Take(endPosition - startPosition).ToArray());
         }
-
 
         /// <inheritdoc />
         public bool TryGet(int index, Type type, out object value)

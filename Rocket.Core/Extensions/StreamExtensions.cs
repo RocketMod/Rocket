@@ -3,6 +3,7 @@ using System.Text;
 #if NET35
 //backport Stream.CopyTo(...)
 using Rocket.Compatibility;
+
 #endif
 
 namespace Rocket.Core.Extensions

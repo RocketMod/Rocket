@@ -16,8 +16,8 @@ namespace Rocket.Core.Player.Events
         /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget" /></param>
         /// <param name="global">Defines if the event is emitted globally</param>
         protected PlayerEvent(IPlayer player,
-                                    EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                    bool global = true) : base(player.User, executionTarget, global)
+                              EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                              bool global = true) : base(player.User, executionTarget, global)
         {
             Player = player;
         }
@@ -27,8 +27,8 @@ namespace Rocket.Core.Player.Events
         /// ///
         /// <param name="global">Defines if the event is emitted globally</param>
         protected PlayerEvent(IPlayer player, string name = null,
-                                    EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                    bool global = true) : base(player.User, name, executionTarget, global)
+                              EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                              bool global = true) : base(player.User, name, executionTarget, global)
         {
             Player = player;
         }

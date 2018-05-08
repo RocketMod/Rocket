@@ -10,8 +10,8 @@ namespace Rocket.Core.Commands
     {
         public static ICommand GetCommand(this IEnumerable<ICommand> commandsEnumerable, string commandName, IUser user)
         {
-            var commands = commandsEnumerable.ToList();
-            var command =
+            List<ICommand> commands = commandsEnumerable.ToList();
+            ICommand command =
                 commands
                     .Where(c => user == null || c.SupportsUser(user.GetType()))
                     .FirstOrDefault(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
@@ -20,7 +20,9 @@ namespace Rocket.Core.Commands
 
             return commands
                    .Where(c => user == null || c.SupportsUser(user.GetType()))
-                   .FirstOrDefault(c => c.Aliases != null && c.Aliases.Any(a => a.Equals(commandName, StringComparison.OrdinalIgnoreCase)));
+                   .FirstOrDefault(c
+                       => c.Aliases != null
+                           && c.Aliases.Any(a => a.Equals(commandName, StringComparison.OrdinalIgnoreCase)));
         }
     }
 }

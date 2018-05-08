@@ -13,7 +13,7 @@ namespace Rocket.API.Economy
         IIdentity Owner { get; }
 
         /// <summary>
-        ///     The name of the account. 
+        ///     The name of the account.
         /// </summary>
         string Name { get; }
 
@@ -21,7 +21,7 @@ namespace Rocket.API.Economy
         ///     The accounts balance.
         /// </summary>
         decimal Balance { get; }
-        
+
         /// <summary>
         ///     The accounts currency. Can be null.
         /// </summary>

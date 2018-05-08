@@ -10,7 +10,9 @@ namespace Rocket.API.Commands
     {
         /// <summary>
         ///     The parent command context for Child Commands.
-        ///     <para><b>This property can return null.</b></para>
+        ///     <para>
+        ///         <b>This property can return null.</b>
+        ///     </para>
         /// </summary>
         /// <example>
         ///     If the command was entered as "/mycommand sub", this will return the parent context with parameters "sub".
@@ -24,7 +26,9 @@ namespace Rocket.API.Commands
 
         /// <summary>
         ///     The root context.
-        ///     <para><b>This property will never return null.</b></para>
+        ///     <para>
+        ///         <b>This property will never return null.</b>
+        ///     </para>
         /// </summary>
         ICommandContext RootContext { get; }
 
@@ -39,7 +43,8 @@ namespace Rocket.API.Commands
         /// </remarks>
         /// <example>
         ///     <para>
-        ///         If the command was executed using "/mycommand", it will be "/", when it was executed using "!mycommand", it will be "!". 
+        ///         If the command was executed using "/mycommand", it will be "/", when it was executed using "!mycommand", it
+        ///         will be "!".
         ///     </para>
         ///     <para>
         ///         If the command was a ChildrenCommand "sub", "/mycommand sub" will return "/mycommand" as prefix.
@@ -54,26 +59,34 @@ namespace Rocket.API.Commands
 
         /// <summary>
         ///     <para>The (sub) command associated with the context.</para>
-        ///     <para><b>This property will never return null.</b></para>
+        ///     <para>
+        ///         <b>This property will never return null.</b>
+        ///     </para>
         /// </summary>
         ICommand Command { get; }
 
         /// <summary>
         ///     <para>The user of the command.</para>
         ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsUser">supported user</see>.</para>
-        ///     <para><b>This property will never return null.</b></para>
+        ///     <para>
+        ///         <b>This property will never return null.</b>
+        ///     </para>
         /// </summary>
         IUser User { get; }
 
         /// <summary>
         ///     <para>The parameters of the (sub) command.</para>
-        ///     <para><b>This property will never return null.</b></para>
+        ///     <para>
+        ///         <b>This property will never return null.</b>
+        ///     </para>
         /// </summary>
         ICommandParameters Parameters { get; }
 
         /// <summary>
         ///     <para>The dependency container of the context.</para>
-        ///     <para><b>This property will never return null.</b></para>
+        ///     <para>
+        ///         <b>This property will never return null.</b>
+        ///     </para>
         /// </summary>
         IDependencyContainer Container { get; }
 

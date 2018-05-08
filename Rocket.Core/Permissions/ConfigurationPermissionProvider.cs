@@ -37,16 +37,14 @@ namespace Rocket.Core.Permissions
             IEnumerable<string> permissionTree = BuildPermissionTree(permission);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
+                ? (PermissionSection) GetConfigSection<GroupPermissionSection>(target, false)
                 : GetConfigSection<PlayerPermissionSection>(target, false);
 
             string[] permissions = section?.Permissions ?? new string[0];
 
             foreach (string permissionNode in permissionTree)
-            {
                 if (permissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
                     return PermissionResult.Grant;
-            }
 
             // check parent group permissions / player group permissions
             IEnumerable<IPermissionGroup> groups = GetGroups(target);
@@ -109,7 +107,7 @@ namespace Rocket.Core.Permissions
             GuardTarget(target);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
+                ? (PermissionSection) GetConfigSection<GroupPermissionSection>(target, false)
                 : GetConfigSection<PlayerPermissionSection>(target, false);
 
             if (section == null)
@@ -135,7 +133,7 @@ namespace Rocket.Core.Permissions
             GuardPermission(ref permission);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
+                ? (PermissionSection) GetConfigSection<GroupPermissionSection>(target, false)
                 : GetConfigSection<PlayerPermissionSection>(target, false);
 
             if (section == null)
@@ -168,15 +166,15 @@ namespace Rocket.Core.Permissions
             GuardTarget(target);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
+                ? (PermissionSection) GetConfigSection<GroupPermissionSection>(target, false)
                 : GetConfigSection<PlayerPermissionSection>(target, false);
 
             if (section == null)
                 return new IPermissionGroup[0];
 
             return section.GetGroups()
-                   .Select(GetGroup)
-                   .Where(c => c != null);
+                          .Select(GetGroup)
+                          .Where(c => c != null);
         }
 
         public IPermissionGroup GetGroup(string id)
@@ -187,12 +185,16 @@ namespace Rocket.Core.Permissions
         public IEnumerable<IPermissionGroup> GetGroups()
         {
             GuardLoaded();
-            return GroupsConfig["Groups"].Get<GroupPermissionSection[]>().Select(c => new PermissionGroup
-            {
-                Id = c.Id,
-                Name = c.Name,
-                Priority = c.Priority
-            }).Cast<IPermissionGroup>().ToList();
+            return GroupsConfig["Groups"]
+                   .Get<GroupPermissionSection[]>()
+                   .Select(c => new PermissionGroup
+                   {
+                       Id = c.Id,
+                       Name = c.Name,
+                       Priority = c.Priority
+                   })
+                   .Cast<IPermissionGroup>()
+                   .ToList();
         }
 
         public bool UpdateGroup(IPermissionGroup group)
@@ -217,7 +219,7 @@ namespace Rocket.Core.Permissions
             GuardTarget(group);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, true)
+                ? (PermissionSection) GetConfigSection<GroupPermissionSection>(target, true)
                 : GetConfigSection<PlayerPermissionSection>(target, true);
 
             List<string> groups = section.GetGroups().ToList();
@@ -235,7 +237,7 @@ namespace Rocket.Core.Permissions
             GuardTarget(group);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
+                ? (PermissionSection) GetConfigSection<GroupPermissionSection>(target, false)
                 : GetConfigSection<PlayerPermissionSection>(target, false);
 
             if (section == null)
@@ -269,8 +271,8 @@ namespace Rocket.Core.Permissions
 
         public void Load(IConfigurationContext context)
         {
-            var permissionsContext = context.CreateChildConfigurationContext("Permissions");
-            var groupsContext = permissionsContext.CreateChildConfigurationContext("Groups");
+            IConfigurationContext permissionsContext = context.CreateChildConfigurationContext("Permissions");
+            IConfigurationContext groupsContext = permissionsContext.CreateChildConfigurationContext("Groups");
             GroupsConfig.ConfigurationContext = groupsContext;
             GroupsConfig.Load(new
             {
@@ -291,7 +293,7 @@ namespace Rocket.Core.Permissions
                 }
             });
 
-            var playersContext = permissionsContext.CreateChildConfigurationContext("Players");
+            IConfigurationContext playersContext = permissionsContext.CreateChildConfigurationContext("Players");
             PlayersConfig.ConfigurationContext = playersContext;
             PlayersConfig.Load(new { });
         }
@@ -385,7 +387,7 @@ namespace Rocket.Core.Permissions
         {
             IConfigurationElement config = target is IPermissionGroup
                 ? GroupsConfig["Groups"]
-                : PlayersConfig[((IUser)target).UserType];
+                : PlayersConfig[((IUser) target).UserType];
 
             List<PermissionSection> values = config.Get<PermissionSection[]>().ToList();
             int i = values.RemoveAll(c => c.Id.Equals(target.Id, StringComparison.OrdinalIgnoreCase));
@@ -399,7 +401,7 @@ namespace Rocket.Core.Permissions
 
             IConfigurationElement config = target is IPermissionGroup
                 ? GroupsConfig["Groups"]
-                : PlayersConfig[((IUser)target).UserType];
+                : PlayersConfig[((IUser) target).UserType];
 
             List<PermissionSection> values = config.Get<PermissionSection[]>().ToList();
 

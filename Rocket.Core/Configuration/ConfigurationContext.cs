@@ -4,10 +4,7 @@ namespace Rocket.Core.Configuration
 {
     public class ConfigurationContext : IConfigurationContext
     {
-        public ConfigurationContext()
-        {
-
-        }
+        public ConfigurationContext() { }
 
         public ConfigurationContext(string workingDirectory, string configurationName)
         {
@@ -15,7 +12,8 @@ namespace Rocket.Core.Configuration
             ConfigurationName = configurationName;
         }
 
-        public ConfigurationContext(IConfigurationContext context, string childName = null) : this(context.WorkingDirectory, context.ConfigurationName)
+        public ConfigurationContext(IConfigurationContext context, string childName = null) : this(
+            context.WorkingDirectory, context.ConfigurationName)
         {
             ConfigurationName += "." + childName;
         }

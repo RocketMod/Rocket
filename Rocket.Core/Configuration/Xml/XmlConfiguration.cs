@@ -23,10 +23,10 @@ namespace Rocket.Core.Configuration.Xml
             string xml = File.ReadAllText(file);
             LoadFromXml(xml);
         }
-        
+
         private void ApplyScheme(XmlElement element, Type scheme, XmlAttribute docAttribute)
         {
-            foreach (var member in scheme.GetMembers(BindingFlags.Public | BindingFlags.Instance))
+            foreach (MemberInfo member in scheme.GetMembers(BindingFlags.Public | BindingFlags.Instance))
             {
                 if (!(member is PropertyInfo) && !(member is FieldInfo))
                     continue;
@@ -34,20 +34,18 @@ namespace Rocket.Core.Configuration.Xml
                 PropertyInfo pi = member as PropertyInfo;
                 FieldInfo fi = member as FieldInfo;
 
-                var subElement = element
-                                 .ChildNodes
-                                 .Cast<XmlNode>()
-                                 .FirstOrDefault(c => c is XmlElement subElem && subElem.Name.Equals(member.Name));
+                XmlNode subElement = element
+                                     .ChildNodes
+                                     .Cast<XmlNode>()
+                                     .FirstOrDefault(c => c is XmlElement subElem && subElem.Name.Equals(member.Name));
 
                 if (subElement != null)
                 {
                     if (member.GetCustomAttributes(typeof(ConfigArrayAttribute), true).Any())
-                    {
                         subElement.Attributes?.Append(docAttribute);
-                    }
 
-                    var type = pi?.PropertyType ?? fi.FieldType;
-                    ApplyScheme((XmlElement)subElement, type, docAttribute);
+                    Type type = pi?.PropertyType ?? fi.FieldType;
+                    ApplyScheme((XmlElement) subElement, type, docAttribute);
                 }
             }
         }
@@ -57,12 +55,13 @@ namespace Rocket.Core.Configuration.Xml
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            var docAttribute = doc.CreateAttribute("json", "Array", "http://james.newtonking.com/projects/json");
+            XmlAttribute docAttribute =
+                doc.CreateAttribute("json", "Array", "http://james.newtonking.com/projects/json");
             docAttribute.InnerText = "true";
 
-            if(Scheme != null)
+            if (Scheme != null)
                 ApplyScheme(doc.DocumentElement, Scheme, docAttribute);
-            
+
             string json = JsonConvert.SerializeXmlNode(doc);
 
             JToken tmp = JObject.Parse(json, new JsonLoadSettings
@@ -72,14 +71,14 @@ namespace Rocket.Core.Configuration.Xml
             });
 
             if (!string.IsNullOrEmpty(ConfigurationRoot))
-                tmp = ((JObject)tmp).GetValue(ConfigurationRoot);
+                tmp = ((JObject) tmp).GetValue(ConfigurationRoot);
             else
                 tmp = tmp.Children().Last().First();
 
-            if(Node == null)
+            if (Node == null)
                 LoadEmpty();
 
-            DeepCopy((JObject)tmp, (JObject)Node);
+            DeepCopy((JObject) tmp, (JObject) Node);
             IsLoaded = true;
         }
 
@@ -90,7 +89,7 @@ namespace Rocket.Core.Configuration.Xml
 
         public override IConfigurationElement Clone()
         {
-            var config = new XmlConfiguration();
+            XmlConfiguration config = new XmlConfiguration();
             config.LoadFromXml(ToXml());
             return config;
         }
@@ -117,7 +116,7 @@ namespace Rocket.Core.Configuration.Xml
             XmlDocument jsonDocument = JsonConvert.DeserializeXmlNode(json);
             foreach (XmlNode elem in jsonDocument)
             {
-                var copied = parent.ImportNode(elem, true);
+                XmlNode copied = parent.ImportNode(elem, true);
                 configElement.AppendChild(copied);
             }
 
@@ -134,8 +133,8 @@ namespace Rocket.Core.Configuration.Xml
             {
                 parent.Save(writer);
             }
+
             return sb.ToString();
         }
     }
-
 }

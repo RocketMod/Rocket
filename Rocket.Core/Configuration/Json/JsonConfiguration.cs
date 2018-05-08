@@ -8,9 +8,12 @@ namespace Rocket.Core.Configuration.Json
 {
     public class JsonConfiguration : JsonNetConfigurationBase
     {
+        protected override string FileEnding => "json";
+        public override string Name => "Json";
+
         public void LoadFromJson(string json)
         {
-            var tmp = JObject.Parse(json, new JsonLoadSettings
+            JObject tmp = JObject.Parse(json, new JsonLoadSettings
             {
                 CommentHandling = CommentHandling.Ignore,
                 LineInfoHandling = LineInfoHandling.Ignore
@@ -22,9 +25,6 @@ namespace Rocket.Core.Configuration.Json
             DeepCopy(tmp, (JObject) Node);
             IsLoaded = true;
         }
-
-        protected override string FileEnding => "json";
-        public override string Name => "Json";
 
         protected override void LoadFromFile(string file)
         {
@@ -40,14 +40,11 @@ namespace Rocket.Core.Configuration.Json
 
         public override IConfigurationElement Clone()
         {
-            var config = new JsonConfiguration();
+            JsonConfiguration config = new JsonConfiguration();
             config.LoadFromJson(ToJson());
             return config;
         }
 
-        public string ToJson()
-        {
-            return Node.ToString(Formatting.Indented);
-        }
+        public string ToJson() => Node.ToString(Formatting.Indented);
     }
 }

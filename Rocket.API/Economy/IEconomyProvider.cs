@@ -9,6 +9,16 @@ namespace Rocket.API.Economy
     public interface IEconomyProvider
     {
         /// <summary>
+        ///     All currencies. Contains at least one element.
+        /// </summary>
+        IEnumerable<IEconomyCurrency> Currencies { get; }
+
+        /// <summary>
+        ///     The default currency. Will never return null.
+        /// </summary>
+        IEconomyCurrency DefaultCurrency { get; }
+
+        /// <summary>
         ///     Adds balance to the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
@@ -40,7 +50,7 @@ namespace Rocket.API.Economy
         /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to remove. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
-        /// <seealso cref="SupportsNegativeBalance(IIdentity)"/>
+        /// <seealso cref="SupportsNegativeBalance(IIdentity)" />
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
         bool RemoveBalance(IIdentity owner, decimal amount, string reason = null);
 
@@ -50,7 +60,7 @@ namespace Rocket.API.Economy
         /// <param name="amount">The amount to remove. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
         /// <param name="account">The account to remove balance from.</param>
-        /// <seealso cref="SupportsNegativeBalance(IIdentity)"/>
+        /// <seealso cref="SupportsNegativeBalance(IIdentity)" />
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
         bool RemoveBalance(IEconomyAccount account, decimal amount, string reason = null);
 
@@ -58,13 +68,13 @@ namespace Rocket.API.Economy
         ///     Sets the balance of the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
-        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)"/>.</param>
+        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)" />.</param>
         void SetBalance(IIdentity owner, decimal amount);
 
         /// <summary>
         ///     Sets the balance of the users account in a specific currency.
         /// </summary>
-        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)"/>.</param>
+        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)" />.</param>
         /// <param name="account">The account to set the balance of.</param>
         void SetBalance(IEconomyAccount account, decimal amount);
 
@@ -81,7 +91,7 @@ namespace Rocket.API.Economy
         /// <param name="account">Checks if the given account has access.</param>
         /// <returns><b>true</b> if the account can have negative balance; otherwise, <b>false</b>.</returns>
         bool SupportsNegativeBalance(IEconomyAccount account);
-        
+
         /// <summary>
         ///     Creates an account.
         /// </summary>
@@ -89,7 +99,10 @@ namespace Rocket.API.Economy
         /// <param name="name">The name of the account.</param>
         /// <param name="account">The account instance if it was created; otherwise, <b>null</b>.</param>
         /// <exception>If the account creation failed because of an internal error.</exception>
-        /// <returns><b>true</b> if account creation is supported and the account didn't exist already, and was created; otherwise, <b>false</b>.</returns>
+        /// <returns>
+        ///     <b>true</b> if account creation is supported and the account didn't exist already, and was created; otherwise,
+        ///     <b>false</b>.
+        /// </returns>
         bool CreateAccount(IIdentity owner, string name, out IEconomyAccount account);
 
         /// <summary>
@@ -110,11 +123,6 @@ namespace Rocket.API.Economy
         bool DeleteAccount(IEconomyAccount account);
 
         /// <summary>
-        ///     All currencies. Contains at least one element.
-        /// </summary>
-        IEnumerable<IEconomyCurrency> Currencies { get; }
-
-        /// <summary>
         ///     Gets a specific account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
@@ -128,11 +136,6 @@ namespace Rocket.API.Economy
         /// <param name="owner">The user whose accounts to get.</param>
         /// <returns>the accounts of the given user</returns>
         IEnumerable<IEconomyAccount> GetAccounts(string owner);
-
-        /// <summary>
-        ///     The default currency. Will never return null.
-        /// </summary>
-        IEconomyCurrency DefaultCurrency { get; }
 
         /// <summary>
         ///     Checks if the given identity is supported by the economy provider.

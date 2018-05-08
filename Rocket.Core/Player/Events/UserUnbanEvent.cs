@@ -3,7 +3,7 @@ using Rocket.API.User;
 
 namespace Rocket.Core.Player.Events
 {
-    public class UserUnbanEvent: Event, ICancellableEvent
+    public class UserUnbanEvent : Event, ICancellableEvent
     {
         public UserUnbanEvent(IUserInfo user, IUser unbannedBy = null) : base(true)
         {
@@ -37,6 +37,5 @@ namespace Rocket.Core.Player.Events
         public IUser UnbannedBy { get; }
 
         public bool IsCancelled { get; set; }
-
     }
 }

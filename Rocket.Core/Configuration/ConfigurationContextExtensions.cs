@@ -9,9 +9,7 @@ namespace Rocket.Core.Configuration
         /// </summary>
         /// <param name="childName">The child name.</param>
         /// <returns>The child context instance.</returns>
-        public static IConfigurationContext CreateChildConfigurationContext(this IConfigurationContext context, string childName)
-        {
-            return new ConfigurationContext(context, childName);
-        }
+        public static IConfigurationContext CreateChildConfigurationContext(
+            this IConfigurationContext context, string childName) => new ConfigurationContext(context, childName);
     }
 }

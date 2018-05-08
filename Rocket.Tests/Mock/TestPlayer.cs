@@ -28,6 +28,8 @@ namespace Rocket.Tests.Mock
         public override bool IsOnline => true;
         public override DateTime? LastSeen => DateTime.Now;
 
+        public override IUser User => new TestUser(this);
+
         public double MaxHealth
         {
             get => 100;
@@ -55,14 +57,12 @@ namespace Rocket.Tests.Mock
             throw new NotImplementedException();
         }
 
+        public string EntityTypeName => "Player";
+
         public override void SendMessage(string message, params object[] arguments)
         {
             Console.WriteLine("[TestPlayer.SendMessage] " + message, arguments);
         }
-
-        public override IUser User => new TestUser(this);
-
-        public string EntityTypeName => "Player";
     }
 
     public class TestUser : IPlayerUser

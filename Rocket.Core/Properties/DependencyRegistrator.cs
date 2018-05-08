@@ -37,7 +37,8 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<ICommandProvider, RocketCommandProvider>("rocket_cmdprovider");
             container.RegisterSingletonType<ICommandProvider, ProxyCommandProvider>("proxy_cmdprovider", null);
 
-            container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>("default_permissions");
+            container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>(
+                "default_permissions");
             container.RegisterSingletonType<IPermissionProvider, ConsolePermissionProvider>("console_permissions");
             container.RegisterSingletonType<IPermissionProvider, ProxyPermissionProvider>("proxy_permissions", null);
 

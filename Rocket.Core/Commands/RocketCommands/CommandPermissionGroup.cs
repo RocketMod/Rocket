@@ -29,7 +29,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(Type user)=> true;
+        public bool SupportsUser(Type user) => true;
     }
 
     public abstract class PermissionGroupChildrenCommandUpdate : IChildCommand
@@ -43,7 +43,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsUser(Type user)=> true;
+        public bool SupportsUser(Type user) => true;
 
         public void Execute(ICommandContext context)
         {

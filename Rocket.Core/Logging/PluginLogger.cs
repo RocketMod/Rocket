@@ -10,7 +10,7 @@ namespace Rocket.Core.Logging
     {
         public PluginLogger(IDependencyContainer container, IPlugin plugin) : base(container)
         {
-            var path = Path.Combine(plugin.WorkingDirectory, "Logs");
+            string path = Path.Combine(plugin.WorkingDirectory, "Logs");
             File = Path.Combine(path, plugin.Name + ".log");
         }
     }

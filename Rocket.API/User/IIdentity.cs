@@ -9,14 +9,17 @@
         ///     A console identity.
         /// </summary>
         Console = 0,
+
         /// <summary>
         ///     A player identitiy.
         /// </summary>
         Player = 1,
+
         /// <summary>
         ///     A group identity.
         /// </summary>
         Group = 2,
+
         /// <summary>
         ///     A custom identity.
         /// </summary>
@@ -26,12 +29,13 @@
     /// <summary>
     ///     An identity.
     /// </summary>
-    public interface IIdentity   
+    public interface IIdentity
     {
         /// <summary>
         ///     The unique id.
         /// </summary>
         string Id { get; }
+
         /// <summary>
         ///     The name.
         /// </summary>

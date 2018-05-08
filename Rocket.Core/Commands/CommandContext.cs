@@ -14,7 +14,7 @@ namespace Rocket.Core.Commands
                               ICommand command,
                               string commandAlias,
                               string[] parameters,
-                              ICommandContext parentCommandContext, 
+                              ICommandContext parentCommandContext,
                               ICommandContext rootCommandContext)
         {
             Container = container;
@@ -36,6 +36,7 @@ namespace Rocket.Core.Commands
         public string CommandAlias { get; }
         public ICommandParameters Parameters { get; }
         public IDependencyContainer Container { get; }
+
         public void SendCommandUsage()
         {
             User.SendMessage("Usage: " + CommandPrefix + CommandAlias + " " + Command.Syntax, Color.Blue);

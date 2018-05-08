@@ -20,7 +20,7 @@ namespace Rocket
             Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
 
-            var logger = Container.Resolve<ILogger>();
+            ILogger logger = Container.Resolve<ILogger>();
             string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
             logger.LogInformation(rocketInitializeMessage, Color.DarkGreen);
             logger.LogInformation(@"                                    
@@ -59,12 +59,11 @@ namespace Rocket
                +  ) / (8P(88))
                   (""     `""       `", Color.Cyan);
 
-
             Container.Activate(typeof(RegistrationByConvention));
-            
+
             if (!Container.IsRegistered<ILogger>("default_file_logger"))
             {
-                var logsDirectory = Path.Combine(WorkingDirectory, "Logs");
+                string logsDirectory = Path.Combine(WorkingDirectory, "Logs");
                 if (!Directory.Exists(logsDirectory))
                     Directory.CreateDirectory(logsDirectory);
                 Container.RegisterSingletonType<ILogger, FileLogger>("default_file_logger");
@@ -73,8 +72,8 @@ namespace Rocket
                 fl.LogInformation(rocketInitializeMessage, Color.DarkGreen);
             }
 
-            var permissions = Container.Resolve<IPermissionProvider>();
-            var impl = Container.Resolve<IImplementation>();
+            IPermissionProvider permissions = Container.Resolve<IPermissionProvider>();
+            IImplementation impl = Container.Resolve<IImplementation>();
 
             if (!Directory.Exists(WorkingDirectory))
                 Directory.CreateDirectory(WorkingDirectory);
@@ -91,11 +90,12 @@ namespace Rocket
 
         public bool IsAlive => true;
         public string Name => "Rocket.Runtime";
+
         public string WorkingDirectory
         {
             get
             {
-                var implDir = Container.Resolve<IImplementation>().WorkingDirectory;
+                string implDir = Container.Resolve<IImplementation>().WorkingDirectory;
                 string dirName = new DirectoryInfo(implDir).Name;
                 if (dirName != "Rocket")
                     return Path.Combine(implDir, "Rocket");

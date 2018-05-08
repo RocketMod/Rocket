@@ -14,7 +14,7 @@ namespace Rocket.API.Player
         IEnumerable<IPlayer> OnlinePlayers { get; }
 
         /// <summary>
-        /// Gets an online player by name or id.
+        ///     Gets an online player by name or id.
         /// </summary>
         /// <param name="nameOrId">The name or id of the online player to get.</param>
         /// <returns>The online players instance.</returns>
@@ -22,16 +22,15 @@ namespace Rocket.API.Player
         IPlayer GetOnlinePlayer(string nameOrId);
 
         /// <summary>
-        /// Gets an online player by name.
+        ///     Gets an online player by name.
         /// </summary>
         /// <param name="name">The name of the online player to get.</param>
         /// <returns>The online players instance.</returns>
         /// <exception cref="PlayerNameNotFoundException">When the player was not found.</exception>
-
         IPlayer GetOnlinePlayerByName(string name);
 
         /// <summary>
-        /// Gets an online player by id.
+        ///     Gets an online player by id.
         /// </summary>
         /// <param name="id">The id of the online player to get.</param>
         /// <returns>The online players instance.</returns>
@@ -63,9 +62,9 @@ namespace Rocket.API.Player
         bool TryGetOnlinePlayerByName(string name, out IPlayer output);
 
         /// <summary>
-        ///     Gets an online or offline players instance.<br/><br/>
+        ///     Gets an online or offline players instance.<br /><br />
         ///     <b>This method will never return null, even if the player never connected to the server.</b> You can use
-        ///     <see cref="IUser.LastSeen"/> to check if the player was ever online.
+        ///     <see cref="IUser.LastSeen" /> to check if the player was ever online.
         /// </summary>
         /// <param name="id">The id of the player to get.</param>
         /// <returns>The player instance.</returns>

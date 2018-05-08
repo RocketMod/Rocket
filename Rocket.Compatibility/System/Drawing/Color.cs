@@ -37,11 +37,10 @@ using System.ComponentModel;
 
 namespace System.Drawing
 {
-	[TypeConverter(typeof(ColorConverter))]
+    [TypeConverter(typeof(ColorConverter))]
     [Serializable]
     public struct Color
     {
-
         // Private transparency (A) and R,G,B fields.
         private long value;
 
@@ -59,7 +58,9 @@ namespace System.Drawing
         }
 
         internal short state;
+
         internal short knownColor;
+
         // #if ONLY_1_1
         // Mono bug #324144 is holding this change
         // MS 1.1 requires this member to be present for serialization (not so in 2.0)
@@ -79,41 +80,20 @@ namespace System.Drawing
 #else
                 // name is required for serialization under 1.x, but not under 2.0
                 if (name == null)
-                {
-                    // Can happen with stuff deserialized from MS
                     if (IsNamedColor)
                         name = KnownColors.GetName(knownColor);
                     else
-                        name = String.Format("{0:x}", ToArgb());
-                }
+                        name = string.Format("{0:x}", ToArgb());
                 return name;
 #endif
             }
         }
 
-        public bool IsKnownColor
-        {
-            get
-            {
-                return (state & ((short)ColorType.Known)) != 0;
-            }
-        }
+        public bool IsKnownColor => (state & (short) ColorType.Known) != 0;
 
-        public bool IsSystemColor
-        {
-            get
-            {
-                return (state & ((short)ColorType.System)) != 0;
-            }
-        }
+        public bool IsSystemColor => (state & (short) ColorType.System) != 0;
 
-        public bool IsNamedColor
-        {
-            get
-            {
-                return (state & (short)(ColorType.Known | ColorType.Named)) != 0;
-            }
-        }
+        public bool IsNamedColor => (state & (short) (ColorType.Known | ColorType.Named)) != 0;
 
         internal long Value
         {
@@ -121,62 +101,50 @@ namespace System.Drawing
             {
                 // Optimization for known colors that were deserialized
                 // from an MS serialized stream.  
-                if (value == 0 && IsKnownColor)
-                {
-                    value = FromKnownColor((KnownColor)knownColor).ToArgb() & 0xFFFFFFFF;
-                }
+                if (value == 0 && IsKnownColor) value = FromKnownColor((KnownColor) knownColor).ToArgb() & 0xFFFFFFFF;
                 return value;
             }
-            set { this.value = value; }
+            set => this.value = value;
         }
 
-        public static Color FromArgb(int red, int green, int blue)
-        {
-            return FromArgb(255, red, green, blue);
-        }
+        public static Color FromArgb(int red, int green, int blue) => FromArgb(255, red, green, blue);
 
         public static Color FromArgb(int alpha, int red, int green, int blue)
         {
             CheckARGBValues(alpha, red, green, blue);
             Color color = new Color();
-            color.state = (short)ColorType.ARGB;
-            color.Value = (int)((uint)alpha << 24) + (red << 16) + (green << 8) + blue;
+            color.state = (short) ColorType.ARGB;
+            color.Value = (int) ((uint) alpha << 24) + (red << 16) + (green << 8) + blue;
             return color;
         }
 
-        public int ToArgb()
-        {
-            return (int)Value;
-        }
+        public int ToArgb() => (int) Value;
 
         public static Color FromArgb(int alpha, Color baseColor)
-        {
-            return FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
-        }
+            => FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
 
         public static Color FromArgb(int argb)
-        {
-            return FromArgb((argb >> 24) & 0x0FF, (argb >> 16) & 0x0FF, (argb >> 8) & 0x0FF, argb & 0x0FF);
-        }
+            => FromArgb((argb >> 24) & 0x0FF, (argb >> 16) & 0x0FF, (argb >> 8) & 0x0FF, argb & 0x0FF);
 
         public static Color FromKnownColor(KnownColor color)
         {
             Color c;
-            short n = (short)color;
-            if ((n <= 0) || (n >= KnownColors.ArgbValues.Length))
+            short n = (short) color;
+            if (n <= 0 || n >= KnownColors.ArgbValues.Length)
             {
                 // This is what it returns!
                 c = FromArgb(0, 0, 0, 0);
-                c.state |= (short)ColorType.Named;
+                c.state |= (short) ColorType.Named;
             }
             else
             {
                 c = new Color();
-                c.state = (short)(ColorType.ARGB | ColorType.Known | ColorType.Named);
-                if ((n < 27) || (n > 169))
-                    c.state |= (short)ColorType.System;
+                c.state = (short) (ColorType.ARGB | ColorType.Known | ColorType.Named);
+                if (n < 27 || n > 169)
+                    c.state |= (short) ColorType.System;
                 c.Value = KnownColors.ArgbValues[n];
             }
+
             c.knownColor = n;
             return c;
         }
@@ -185,7 +153,7 @@ namespace System.Drawing
         {
             try
             {
-                KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
+                KnownColor kc = (KnownColor) Enum.Parse(typeof(KnownColor), name, true);
                 return FromKnownColor(kc);
             }
             catch
@@ -193,36 +161,31 @@ namespace System.Drawing
                 // This is what it returns! 	 
                 Color d = FromArgb(0, 0, 0, 0);
                 d.name = name;
-                d.state |= (short)ColorType.Named;
+                d.state |= (short) ColorType.Named;
                 return d;
             }
         }
-
 
         // -----------------------
         // Public Shared Members
         // -----------------------
 
         /// <summary>
-        ///	Empty Shared Field
+        ///     Empty Shared Field
         /// </summary>
-        ///
         /// <remarks>
-        ///	An uninitialized Color Structure
+        ///     An uninitialized Color Structure
         /// </remarks>
-
         public static readonly Color Empty;
 
         /// <summary>
-        ///	Equality Operator
+        ///     Equality Operator
         /// </summary>
-        ///
         /// <remarks>
-        ///	Compares two Color objects. The return value is
-        ///	based on the equivalence of the A,R,G,B properties 
-        ///	of the two Colors.
+        ///     Compares two Color objects. The return value is
+        ///     based on the equivalence of the A,R,G,B properties
+        ///     of the two Colors.
         /// </remarks>
-
         public static bool operator ==(Color left, Color right)
         {
             if (left.Value != right.Value)
@@ -234,42 +197,33 @@ namespace System.Drawing
             if (left.IsEmpty != right.IsEmpty)
                 return false;
             if (left.IsNamedColor)
-            {
-                // then both are named (see previous check) and so we need to compare them
-                // but otherwise we don't as it kills performance (Name calls String.Format)
                 if (left.Name != right.Name)
                     return false;
-            }
             return true;
         }
 
         /// <summary>
-        ///	Inequality Operator
+        ///     Inequality Operator
         /// </summary>
-        ///
         /// <remarks>
-        ///	Compares two Color objects. The return value is
-        ///	based on the equivalence of the A,R,G,B properties 
-        ///	of the two colors.
+        ///     Compares two Color objects. The return value is
+        ///     based on the equivalence of the A,R,G,B properties
+        ///     of the two colors.
         /// </remarks>
-
-        public static bool operator !=(Color left, Color right)
-        {
-            return !(left == right);
-        }
+        public static bool operator !=(Color left, Color right) => !(left == right);
 
         public float GetBrightness()
         {
             byte minval = Math.Min(R, Math.Min(G, B));
             byte maxval = Math.Max(R, Math.Max(G, B));
 
-            return (float)(maxval + minval) / 510;
+            return (float) (maxval + minval) / 510;
         }
 
         public float GetSaturation()
         {
-            byte minval = (byte)Math.Min(R, Math.Min(G, B));
-            byte maxval = (byte)Math.Max(R, Math.Max(G, B));
+            byte minval = Math.Min(R, Math.Min(G, B));
+            byte maxval = Math.Max(R, Math.Max(G, B));
 
             if (maxval == minval)
                 return 0.0f;
@@ -278,7 +232,7 @@ namespace System.Drawing
             if (sum > 255)
                 sum = 510 - sum;
 
-            return (float)(maxval - minval) / sum;
+            return (float) (maxval - minval) / sum;
         }
 
         public float GetHue()
@@ -286,13 +240,13 @@ namespace System.Drawing
             int r = R;
             int g = G;
             int b = B;
-            byte minval = (byte)Math.Min(r, Math.Min(g, b));
-            byte maxval = (byte)Math.Max(r, Math.Max(g, b));
+            byte minval = (byte) Math.Min(r, Math.Min(g, b));
+            byte maxval = (byte) Math.Max(r, Math.Max(g, b));
 
             if (maxval == minval)
                 return 0.0f;
 
-            float diff = (float)(maxval - minval);
+            float diff = maxval - minval;
             float rnorm = (maxval - r) / diff;
             float gnorm = (maxval - g) / diff;
             float bnorm = (maxval - b) / diff;
@@ -315,110 +269,72 @@ namespace System.Drawing
         // -----------------------
 
         /// <summary>
-        ///	ToKnownColor method
+        ///     ToKnownColor method
         /// </summary>
-        ///
         /// <remarks>
-        ///	Returns the KnownColor enum value for this color, 0 if is not known.
+        ///     Returns the KnownColor enum value for this color, 0 if is not known.
         /// </remarks>
-        public KnownColor ToKnownColor()
-        {
-            return (KnownColor)knownColor;
-        }
+        public KnownColor ToKnownColor() => (KnownColor) knownColor;
 
         /// <summary>
-        ///	IsEmpty Property
+        ///     IsEmpty Property
         /// </summary>
-        ///
         /// <remarks>
-        ///	Indicates transparent black. R,G,B = 0; A=0?
+        ///     Indicates transparent black. R,G,B = 0; A=0?
         /// </remarks>
 
-        public bool IsEmpty
-        {
-            get
-            {
-                return state == (short)ColorType.Empty;
-            }
-        }
+        public bool IsEmpty => state == (short) ColorType.Empty;
 
-        public byte A
-        {
-            get { return (byte)(Value >> 24); }
-        }
+        public byte A => (byte) (Value >> 24);
 
-        public byte R
-        {
-            get { return (byte)(Value >> 16); }
-        }
+        public byte R => (byte) (Value >> 16);
 
-        public byte G
-        {
-            get { return (byte)(Value >> 8); }
-        }
+        public byte G => (byte) (Value >> 8);
 
-        public byte B
-        {
-            get { return (byte)Value; }
-        }
+        public byte B => (byte) Value;
 
         /// <summary>
-        ///	Equals Method
+        ///     Equals Method
         /// </summary>
-        ///
         /// <remarks>
-        ///	Checks equivalence of this Color and another object.
+        ///     Checks equivalence of this Color and another object.
         /// </remarks>
-
         public override bool Equals(object obj)
         {
             if (!(obj is Color))
                 return false;
-            Color c = (Color)obj;
+            Color c = (Color) obj;
             return this == c;
         }
 
         /// <summary>
-        ///	Reference Equals Method
-        ///	Is commented out because this is handled by the base class.
-        ///	TODO: Is it correct to let the base class handel reference equals
+        ///     Reference Equals Method
+        ///     Is commented out because this is handled by the base class.
+        ///     TODO: Is it correct to let the base class handel reference equals
         /// </summary>
-        ///
         /// <remarks>
-        ///	Checks equivalence of this Color and another object.
+        ///     Checks equivalence of this Color and another object.
         /// </remarks>
-        //public bool ReferenceEquals (object o)
-        //{
-        //	if (!(o is Color))return false;
-        //	return (this == (Color) o);
-        //}
-
-
-
         /// <summary>
-        ///	GetHashCode Method
+        ///     GetHashCode Method
         /// </summary>
-        ///
         /// <remarks>
-        ///	Calculates a hashing value.
+        ///     Calculates a hashing value.
         /// </remarks>
-
         public override int GetHashCode()
         {
-            int hc = (int)(Value ^ (Value >> 32) ^ state ^ (knownColor >> 16));
+            int hc = (int) (Value ^ (Value >> 32) ^ state ^ (knownColor >> 16));
             if (IsNamedColor)
                 hc ^= Name.GetHashCode();
             return hc;
         }
 
         /// <summary>
-        ///	ToString Method
+        ///     ToString Method
         /// </summary>
-        ///
         /// <remarks>
-        ///	Formats the Color as a string in ARGB notation.
+        ///     Formats the Color as a string in ARGB notation.
         /// </remarks>
-
         public override string ToString()
         {
             if (IsEmpty)
@@ -428,737 +344,311 @@ namespace System.Drawing
             if (IsNamedColor)
                 return "Color [" + Name + "]";
 
-            return String.Format("Color [A={0}, R={1}, G={2}, B={3}]", A, R, G, B);
+            return string.Format("Color [A={0}, R={1}, G={2}, B={3}]", A, R, G, B);
         }
 
         private static void CheckRGBValues(int red, int green, int blue)
         {
-            if ((red > 255) || (red < 0))
+            if (red > 255 || red < 0)
                 throw CreateColorArgumentException(red, "red");
-            if ((green > 255) || (green < 0))
+            if (green > 255 || green < 0)
                 throw CreateColorArgumentException(green, "green");
-            if ((blue > 255) || (blue < 0))
+            if (blue > 255 || blue < 0)
                 throw CreateColorArgumentException(blue, "blue");
         }
 
-        private static ArgumentException CreateColorArgumentException(int value, string color)
-        {
-            return new ArgumentException(string.Format("'{0}' is not a valid"
+        private static ArgumentException CreateColorArgumentException(int value, string color) => new ArgumentException(
+            string.Format("'{0}' is not a valid"
                 + " value for '{1}'. '{1}' should be greater or equal to 0 and"
                 + " less than or equal to 255.", value, color));
-        }
 
         private static void CheckARGBValues(int alpha, int red, int green, int blue)
         {
-            if ((alpha > 255) || (alpha < 0))
+            if (alpha > 255 || alpha < 0)
                 throw CreateColorArgumentException(alpha, "alpha");
             CheckRGBValues(red, green, blue);
         }
 
+        public static Color Transparent => FromKnownColor(KnownColor.Transparent);
 
-        static public Color Transparent
-        {
-            get { return FromKnownColor(KnownColor.Transparent); }
-        }
-
-        static public Color AliceBlue
-        {
-            get { return FromKnownColor(KnownColor.AliceBlue); }
-        }
-
-        static public Color AntiqueWhite
-        {
-            get { return FromKnownColor(KnownColor.AntiqueWhite); }
-        }
-
-        static public Color Aqua
-        {
-            get { return FromKnownColor(KnownColor.Aqua); }
-        }
-
-        static public Color Aquamarine
-        {
-            get { return FromKnownColor(KnownColor.Aquamarine); }
-        }
-
-        static public Color Azure
-        {
-            get { return FromKnownColor(KnownColor.Azure); }
-        }
-
-        static public Color Beige
-        {
-            get { return FromKnownColor(KnownColor.Beige); }
-        }
-
-        static public Color Bisque
-        {
-            get { return FromKnownColor(KnownColor.Bisque); }
-        }
-
-        static public Color Black
-        {
-            get { return FromKnownColor(KnownColor.Black); }
-        }
-
-        static public Color BlanchedAlmond
-        {
-            get { return FromKnownColor(KnownColor.BlanchedAlmond); }
-        }
-
-        static public Color Blue
-        {
-            get { return FromKnownColor(KnownColor.Blue); }
-        }
-
-        static public Color BlueViolet
-        {
-            get { return FromKnownColor(KnownColor.BlueViolet); }
-        }
-
-        static public Color Brown
-        {
-            get { return FromKnownColor(KnownColor.Brown); }
-        }
-
-        static public Color BurlyWood
-        {
-            get { return FromKnownColor(KnownColor.BurlyWood); }
-        }
-
-        static public Color CadetBlue
-        {
-            get { return FromKnownColor(KnownColor.CadetBlue); }
-        }
-
-        static public Color Chartreuse
-        {
-            get { return FromKnownColor(KnownColor.Chartreuse); }
-        }
-
-        static public Color Chocolate
-        {
-            get { return FromKnownColor(KnownColor.Chocolate); }
-        }
-
-        static public Color Coral
-        {
-            get { return FromKnownColor(KnownColor.Coral); }
-        }
-
-        static public Color CornflowerBlue
-        {
-            get { return FromKnownColor(KnownColor.CornflowerBlue); }
-        }
-
-        static public Color Cornsilk
-        {
-            get { return FromKnownColor(KnownColor.Cornsilk); }
-        }
-
-        static public Color Crimson
-        {
-            get { return FromKnownColor(KnownColor.Crimson); }
-        }
-
-        static public Color Cyan
-        {
-            get { return FromKnownColor(KnownColor.Cyan); }
-        }
-
-        static public Color DarkBlue
-        {
-            get { return FromKnownColor(KnownColor.DarkBlue); }
-        }
-
-        static public Color DarkCyan
-        {
-            get { return FromKnownColor(KnownColor.DarkCyan); }
-        }
-
-        static public Color DarkGoldenrod
-        {
-            get { return FromKnownColor(KnownColor.DarkGoldenrod); }
-        }
-
-        static public Color DarkGray
-        {
-            get { return FromKnownColor(KnownColor.DarkGray); }
-        }
-
-        static public Color DarkGreen
-        {
-            get { return FromKnownColor(KnownColor.DarkGreen); }
-        }
-
-        static public Color DarkKhaki
-        {
-            get { return FromKnownColor(KnownColor.DarkKhaki); }
-        }
-
-        static public Color DarkMagenta
-        {
-            get { return FromKnownColor(KnownColor.DarkMagenta); }
-        }
-
-        static public Color DarkOliveGreen
-        {
-            get { return FromKnownColor(KnownColor.DarkOliveGreen); }
-        }
-
-        static public Color DarkOrange
-        {
-            get { return FromKnownColor(KnownColor.DarkOrange); }
-        }
-
-        static public Color DarkOrchid
-        {
-            get { return FromKnownColor(KnownColor.DarkOrchid); }
-        }
-
-        static public Color DarkRed
-        {
-            get { return FromKnownColor(KnownColor.DarkRed); }
-        }
-
-        static public Color DarkSalmon
-        {
-            get { return FromKnownColor(KnownColor.DarkSalmon); }
-        }
-
-        static public Color DarkSeaGreen
-        {
-            get { return FromKnownColor(KnownColor.DarkSeaGreen); }
-        }
-
-        static public Color DarkSlateBlue
-        {
-            get { return FromKnownColor(KnownColor.DarkSlateBlue); }
-        }
-
-        static public Color DarkSlateGray
-        {
-            get { return FromKnownColor(KnownColor.DarkSlateGray); }
-        }
-
-        static public Color DarkTurquoise
-        {
-            get { return FromKnownColor(KnownColor.DarkTurquoise); }
-        }
-
-        static public Color DarkViolet
-        {
-            get { return FromKnownColor(KnownColor.DarkViolet); }
-        }
-
-        static public Color DeepPink
-        {
-            get { return FromKnownColor(KnownColor.DeepPink); }
-        }
-
-        static public Color DeepSkyBlue
-        {
-            get { return FromKnownColor(KnownColor.DeepSkyBlue); }
-        }
-
-        static public Color DimGray
-        {
-            get { return FromKnownColor(KnownColor.DimGray); }
-        }
-
-        static public Color DodgerBlue
-        {
-            get { return FromKnownColor(KnownColor.DodgerBlue); }
-        }
-
-        static public Color Firebrick
-        {
-            get { return FromKnownColor(KnownColor.Firebrick); }
-        }
-
-        static public Color FloralWhite
-        {
-            get { return FromKnownColor(KnownColor.FloralWhite); }
-        }
-
-        static public Color ForestGreen
-        {
-            get { return FromKnownColor(KnownColor.ForestGreen); }
-        }
-
-        static public Color Fuchsia
-        {
-            get { return FromKnownColor(KnownColor.Fuchsia); }
-        }
-
-        static public Color Gainsboro
-        {
-            get { return FromKnownColor(KnownColor.Gainsboro); }
-        }
-
-        static public Color GhostWhite
-        {
-            get { return FromKnownColor(KnownColor.GhostWhite); }
-        }
-
-        static public Color Gold
-        {
-            get { return FromKnownColor(KnownColor.Gold); }
-        }
-
-        static public Color Goldenrod
-        {
-            get { return FromKnownColor(KnownColor.Goldenrod); }
-        }
-
-        static public Color Gray
-        {
-            get { return FromKnownColor(KnownColor.Gray); }
-        }
-
-        static public Color Green
-        {
-            get { return FromKnownColor(KnownColor.Green); }
-        }
-
-        static public Color GreenYellow
-        {
-            get { return FromKnownColor(KnownColor.GreenYellow); }
-        }
-
-        static public Color Honeydew
-        {
-            get { return FromKnownColor(KnownColor.Honeydew); }
-        }
-
-        static public Color HotPink
-        {
-            get { return FromKnownColor(KnownColor.HotPink); }
-        }
-
-        static public Color IndianRed
-        {
-            get { return FromKnownColor(KnownColor.IndianRed); }
-        }
-
-        static public Color Indigo
-        {
-            get { return FromKnownColor(KnownColor.Indigo); }
-        }
-
-        static public Color Ivory
-        {
-            get { return FromKnownColor(KnownColor.Ivory); }
-        }
-
-        static public Color Khaki
-        {
-            get { return FromKnownColor(KnownColor.Khaki); }
-        }
-
-        static public Color Lavender
-        {
-            get { return FromKnownColor(KnownColor.Lavender); }
-        }
-
-        static public Color LavenderBlush
-        {
-            get { return FromKnownColor(KnownColor.LavenderBlush); }
-        }
-
-        static public Color LawnGreen
-        {
-            get { return FromKnownColor(KnownColor.LawnGreen); }
-        }
-
-        static public Color LemonChiffon
-        {
-            get { return FromKnownColor(KnownColor.LemonChiffon); }
-        }
-
-        static public Color LightBlue
-        {
-            get { return FromKnownColor(KnownColor.LightBlue); }
-        }
-
-        static public Color LightCoral
-        {
-            get { return FromKnownColor(KnownColor.LightCoral); }
-        }
-
-        static public Color LightCyan
-        {
-            get { return FromKnownColor(KnownColor.LightCyan); }
-        }
-
-        static public Color LightGoldenrodYellow
-        {
-            get { return FromKnownColor(KnownColor.LightGoldenrodYellow); }
-        }
-
-        static public Color LightGreen
-        {
-            get { return FromKnownColor(KnownColor.LightGreen); }
-        }
-
-        static public Color LightGray
-        {
-            get { return FromKnownColor(KnownColor.LightGray); }
-        }
-
-        static public Color LightPink
-        {
-            get { return FromKnownColor(KnownColor.LightPink); }
-        }
-
-        static public Color LightSalmon
-        {
-            get { return FromKnownColor(KnownColor.LightSalmon); }
-        }
-
-        static public Color LightSeaGreen
-        {
-            get { return FromKnownColor(KnownColor.LightSeaGreen); }
-        }
-
-        static public Color LightSkyBlue
-        {
-            get { return FromKnownColor(KnownColor.LightSkyBlue); }
-        }
-
-        static public Color LightSlateGray
-        {
-            get { return FromKnownColor(KnownColor.LightSlateGray); }
-        }
-
-        static public Color LightSteelBlue
-        {
-            get { return FromKnownColor(KnownColor.LightSteelBlue); }
-        }
-
-        static public Color LightYellow
-        {
-            get { return FromKnownColor(KnownColor.LightYellow); }
-        }
-
-        static public Color Lime
-        {
-            get { return FromKnownColor(KnownColor.Lime); }
-        }
-
-        static public Color LimeGreen
-        {
-            get { return FromKnownColor(KnownColor.LimeGreen); }
-        }
-
-        static public Color Linen
-        {
-            get { return FromKnownColor(KnownColor.Linen); }
-        }
-
-        static public Color Magenta
-        {
-            get { return FromKnownColor(KnownColor.Magenta); }
-        }
-
-        static public Color Maroon
-        {
-            get { return FromKnownColor(KnownColor.Maroon); }
-        }
-
-        static public Color MediumAquamarine
-        {
-            get { return FromKnownColor(KnownColor.MediumAquamarine); }
-        }
-
-        static public Color MediumBlue
-        {
-            get { return FromKnownColor(KnownColor.MediumBlue); }
-        }
-
-        static public Color MediumOrchid
-        {
-            get { return FromKnownColor(KnownColor.MediumOrchid); }
-        }
-
-        static public Color MediumPurple
-        {
-            get { return FromKnownColor(KnownColor.MediumPurple); }
-        }
-
-        static public Color MediumSeaGreen
-        {
-            get { return FromKnownColor(KnownColor.MediumSeaGreen); }
-        }
-
-        static public Color MediumSlateBlue
-        {
-            get { return FromKnownColor(KnownColor.MediumSlateBlue); }
-        }
-
-        static public Color MediumSpringGreen
-        {
-            get { return FromKnownColor(KnownColor.MediumSpringGreen); }
-        }
-
-        static public Color MediumTurquoise
-        {
-            get { return FromKnownColor(KnownColor.MediumTurquoise); }
-        }
-
-        static public Color MediumVioletRed
-        {
-            get { return FromKnownColor(KnownColor.MediumVioletRed); }
-        }
-
-        static public Color MidnightBlue
-        {
-            get { return FromKnownColor(KnownColor.MidnightBlue); }
-        }
-
-        static public Color MintCream
-        {
-            get { return FromKnownColor(KnownColor.MintCream); }
-        }
-
-        static public Color MistyRose
-        {
-            get { return FromKnownColor(KnownColor.MistyRose); }
-        }
-
-        static public Color Moccasin
-        {
-            get { return FromKnownColor(KnownColor.Moccasin); }
-        }
-
-        static public Color NavajoWhite
-        {
-            get { return FromKnownColor(KnownColor.NavajoWhite); }
-        }
-
-        static public Color Navy
-        {
-            get { return FromKnownColor(KnownColor.Navy); }
-        }
-
-        static public Color OldLace
-        {
-            get { return FromKnownColor(KnownColor.OldLace); }
-        }
-
-        static public Color Olive
-        {
-            get { return FromKnownColor(KnownColor.Olive); }
-        }
-
-        static public Color OliveDrab
-        {
-            get { return FromKnownColor(KnownColor.OliveDrab); }
-        }
-
-        static public Color Orange
-        {
-            get { return FromKnownColor(KnownColor.Orange); }
-        }
-
-        static public Color OrangeRed
-        {
-            get { return FromKnownColor(KnownColor.OrangeRed); }
-        }
-
-        static public Color Orchid
-        {
-            get { return FromKnownColor(KnownColor.Orchid); }
-        }
-
-        static public Color PaleGoldenrod
-        {
-            get { return FromKnownColor(KnownColor.PaleGoldenrod); }
-        }
-
-        static public Color PaleGreen
-        {
-            get { return FromKnownColor(KnownColor.PaleGreen); }
-        }
-
-        static public Color PaleTurquoise
-        {
-            get { return FromKnownColor(KnownColor.PaleTurquoise); }
-        }
-
-        static public Color PaleVioletRed
-        {
-            get { return FromKnownColor(KnownColor.PaleVioletRed); }
-        }
-
-        static public Color PapayaWhip
-        {
-            get { return FromKnownColor(KnownColor.PapayaWhip); }
-        }
-
-        static public Color PeachPuff
-        {
-            get { return FromKnownColor(KnownColor.PeachPuff); }
-        }
-
-        static public Color Peru
-        {
-            get { return FromKnownColor(KnownColor.Peru); }
-        }
-
-        static public Color Pink
-        {
-            get { return FromKnownColor(KnownColor.Pink); }
-        }
-
-        static public Color Plum
-        {
-            get { return FromKnownColor(KnownColor.Plum); }
-        }
-
-        static public Color PowderBlue
-        {
-            get { return FromKnownColor(KnownColor.PowderBlue); }
-        }
-
-        static public Color Purple
-        {
-            get { return FromKnownColor(KnownColor.Purple); }
-        }
-
-        static public Color Red
-        {
-            get { return FromKnownColor(KnownColor.Red); }
-        }
-
-        static public Color RosyBrown
-        {
-            get { return FromKnownColor(KnownColor.RosyBrown); }
-        }
-
-        static public Color RoyalBlue
-        {
-            get { return FromKnownColor(KnownColor.RoyalBlue); }
-        }
-
-        static public Color SaddleBrown
-        {
-            get { return FromKnownColor(KnownColor.SaddleBrown); }
-        }
-
-        static public Color Salmon
-        {
-            get { return FromKnownColor(KnownColor.Salmon); }
-        }
-
-        static public Color SandyBrown
-        {
-            get { return FromKnownColor(KnownColor.SandyBrown); }
-        }
-
-        static public Color SeaGreen
-        {
-            get { return FromKnownColor(KnownColor.SeaGreen); }
-        }
-
-        static public Color SeaShell
-        {
-            get { return FromKnownColor(KnownColor.SeaShell); }
-        }
-
-        static public Color Sienna
-        {
-            get { return FromKnownColor(KnownColor.Sienna); }
-        }
-
-        static public Color Silver
-        {
-            get { return FromKnownColor(KnownColor.Silver); }
-        }
-
-        static public Color SkyBlue
-        {
-            get { return FromKnownColor(KnownColor.SkyBlue); }
-        }
-
-        static public Color SlateBlue
-        {
-            get { return FromKnownColor(KnownColor.SlateBlue); }
-        }
-
-        static public Color SlateGray
-        {
-            get { return FromKnownColor(KnownColor.SlateGray); }
-        }
-
-        static public Color Snow
-        {
-            get { return FromKnownColor(KnownColor.Snow); }
-        }
-
-        static public Color SpringGreen
-        {
-            get { return FromKnownColor(KnownColor.SpringGreen); }
-        }
-
-        static public Color SteelBlue
-        {
-            get { return FromKnownColor(KnownColor.SteelBlue); }
-        }
-
-        static public Color Tan
-        {
-            get { return FromKnownColor(KnownColor.Tan); }
-        }
-
-        static public Color Teal
-        {
-            get { return FromKnownColor(KnownColor.Teal); }
-        }
-
-        static public Color Thistle
-        {
-            get { return FromKnownColor(KnownColor.Thistle); }
-        }
-
-        static public Color Tomato
-        {
-            get { return FromKnownColor(KnownColor.Tomato); }
-        }
-
-        static public Color Turquoise
-        {
-            get { return FromKnownColor(KnownColor.Turquoise); }
-        }
-
-        static public Color Violet
-        {
-            get { return FromKnownColor(KnownColor.Violet); }
-        }
-
-        static public Color Wheat
-        {
-            get { return FromKnownColor(KnownColor.Wheat); }
-        }
-
-        static public Color White
-        {
-            get { return FromKnownColor(KnownColor.White); }
-        }
-
-        static public Color WhiteSmoke
-        {
-            get { return FromKnownColor(KnownColor.WhiteSmoke); }
-        }
-
-        static public Color Yellow
-        {
-            get { return FromKnownColor(KnownColor.Yellow); }
-        }
-
-        static public Color YellowGreen
-        {
-            get { return FromKnownColor(KnownColor.YellowGreen); }
-        }
+        public static Color AliceBlue => FromKnownColor(KnownColor.AliceBlue);
+
+        public static Color AntiqueWhite => FromKnownColor(KnownColor.AntiqueWhite);
+
+        public static Color Aqua => FromKnownColor(KnownColor.Aqua);
+
+        public static Color Aquamarine => FromKnownColor(KnownColor.Aquamarine);
+
+        public static Color Azure => FromKnownColor(KnownColor.Azure);
+
+        public static Color Beige => FromKnownColor(KnownColor.Beige);
+
+        public static Color Bisque => FromKnownColor(KnownColor.Bisque);
+
+        public static Color Black => FromKnownColor(KnownColor.Black);
+
+        public static Color BlanchedAlmond => FromKnownColor(KnownColor.BlanchedAlmond);
+
+        public static Color Blue => FromKnownColor(KnownColor.Blue);
+
+        public static Color BlueViolet => FromKnownColor(KnownColor.BlueViolet);
+
+        public static Color Brown => FromKnownColor(KnownColor.Brown);
+
+        public static Color BurlyWood => FromKnownColor(KnownColor.BurlyWood);
+
+        public static Color CadetBlue => FromKnownColor(KnownColor.CadetBlue);
+
+        public static Color Chartreuse => FromKnownColor(KnownColor.Chartreuse);
+
+        public static Color Chocolate => FromKnownColor(KnownColor.Chocolate);
+
+        public static Color Coral => FromKnownColor(KnownColor.Coral);
+
+        public static Color CornflowerBlue => FromKnownColor(KnownColor.CornflowerBlue);
+
+        public static Color Cornsilk => FromKnownColor(KnownColor.Cornsilk);
+
+        public static Color Crimson => FromKnownColor(KnownColor.Crimson);
+
+        public static Color Cyan => FromKnownColor(KnownColor.Cyan);
+
+        public static Color DarkBlue => FromKnownColor(KnownColor.DarkBlue);
+
+        public static Color DarkCyan => FromKnownColor(KnownColor.DarkCyan);
+
+        public static Color DarkGoldenrod => FromKnownColor(KnownColor.DarkGoldenrod);
+
+        public static Color DarkGray => FromKnownColor(KnownColor.DarkGray);
+
+        public static Color DarkGreen => FromKnownColor(KnownColor.DarkGreen);
+
+        public static Color DarkKhaki => FromKnownColor(KnownColor.DarkKhaki);
+
+        public static Color DarkMagenta => FromKnownColor(KnownColor.DarkMagenta);
+
+        public static Color DarkOliveGreen => FromKnownColor(KnownColor.DarkOliveGreen);
+
+        public static Color DarkOrange => FromKnownColor(KnownColor.DarkOrange);
+
+        public static Color DarkOrchid => FromKnownColor(KnownColor.DarkOrchid);
+
+        public static Color DarkRed => FromKnownColor(KnownColor.DarkRed);
+
+        public static Color DarkSalmon => FromKnownColor(KnownColor.DarkSalmon);
+
+        public static Color DarkSeaGreen => FromKnownColor(KnownColor.DarkSeaGreen);
+
+        public static Color DarkSlateBlue => FromKnownColor(KnownColor.DarkSlateBlue);
+
+        public static Color DarkSlateGray => FromKnownColor(KnownColor.DarkSlateGray);
+
+        public static Color DarkTurquoise => FromKnownColor(KnownColor.DarkTurquoise);
+
+        public static Color DarkViolet => FromKnownColor(KnownColor.DarkViolet);
+
+        public static Color DeepPink => FromKnownColor(KnownColor.DeepPink);
+
+        public static Color DeepSkyBlue => FromKnownColor(KnownColor.DeepSkyBlue);
+
+        public static Color DimGray => FromKnownColor(KnownColor.DimGray);
+
+        public static Color DodgerBlue => FromKnownColor(KnownColor.DodgerBlue);
+
+        public static Color Firebrick => FromKnownColor(KnownColor.Firebrick);
+
+        public static Color FloralWhite => FromKnownColor(KnownColor.FloralWhite);
+
+        public static Color ForestGreen => FromKnownColor(KnownColor.ForestGreen);
+
+        public static Color Fuchsia => FromKnownColor(KnownColor.Fuchsia);
+
+        public static Color Gainsboro => FromKnownColor(KnownColor.Gainsboro);
+
+        public static Color GhostWhite => FromKnownColor(KnownColor.GhostWhite);
+
+        public static Color Gold => FromKnownColor(KnownColor.Gold);
+
+        public static Color Goldenrod => FromKnownColor(KnownColor.Goldenrod);
+
+        public static Color Gray => FromKnownColor(KnownColor.Gray);
+
+        public static Color Green => FromKnownColor(KnownColor.Green);
+
+        public static Color GreenYellow => FromKnownColor(KnownColor.GreenYellow);
+
+        public static Color Honeydew => FromKnownColor(KnownColor.Honeydew);
+
+        public static Color HotPink => FromKnownColor(KnownColor.HotPink);
+
+        public static Color IndianRed => FromKnownColor(KnownColor.IndianRed);
+
+        public static Color Indigo => FromKnownColor(KnownColor.Indigo);
+
+        public static Color Ivory => FromKnownColor(KnownColor.Ivory);
+
+        public static Color Khaki => FromKnownColor(KnownColor.Khaki);
+
+        public static Color Lavender => FromKnownColor(KnownColor.Lavender);
+
+        public static Color LavenderBlush => FromKnownColor(KnownColor.LavenderBlush);
+
+        public static Color LawnGreen => FromKnownColor(KnownColor.LawnGreen);
+
+        public static Color LemonChiffon => FromKnownColor(KnownColor.LemonChiffon);
+
+        public static Color LightBlue => FromKnownColor(KnownColor.LightBlue);
+
+        public static Color LightCoral => FromKnownColor(KnownColor.LightCoral);
+
+        public static Color LightCyan => FromKnownColor(KnownColor.LightCyan);
+
+        public static Color LightGoldenrodYellow => FromKnownColor(KnownColor.LightGoldenrodYellow);
+
+        public static Color LightGreen => FromKnownColor(KnownColor.LightGreen);
+
+        public static Color LightGray => FromKnownColor(KnownColor.LightGray);
+
+        public static Color LightPink => FromKnownColor(KnownColor.LightPink);
+
+        public static Color LightSalmon => FromKnownColor(KnownColor.LightSalmon);
+
+        public static Color LightSeaGreen => FromKnownColor(KnownColor.LightSeaGreen);
+
+        public static Color LightSkyBlue => FromKnownColor(KnownColor.LightSkyBlue);
+
+        public static Color LightSlateGray => FromKnownColor(KnownColor.LightSlateGray);
+
+        public static Color LightSteelBlue => FromKnownColor(KnownColor.LightSteelBlue);
+
+        public static Color LightYellow => FromKnownColor(KnownColor.LightYellow);
+
+        public static Color Lime => FromKnownColor(KnownColor.Lime);
+
+        public static Color LimeGreen => FromKnownColor(KnownColor.LimeGreen);
+
+        public static Color Linen => FromKnownColor(KnownColor.Linen);
+
+        public static Color Magenta => FromKnownColor(KnownColor.Magenta);
+
+        public static Color Maroon => FromKnownColor(KnownColor.Maroon);
+
+        public static Color MediumAquamarine => FromKnownColor(KnownColor.MediumAquamarine);
+
+        public static Color MediumBlue => FromKnownColor(KnownColor.MediumBlue);
+
+        public static Color MediumOrchid => FromKnownColor(KnownColor.MediumOrchid);
+
+        public static Color MediumPurple => FromKnownColor(KnownColor.MediumPurple);
+
+        public static Color MediumSeaGreen => FromKnownColor(KnownColor.MediumSeaGreen);
+
+        public static Color MediumSlateBlue => FromKnownColor(KnownColor.MediumSlateBlue);
+
+        public static Color MediumSpringGreen => FromKnownColor(KnownColor.MediumSpringGreen);
+
+        public static Color MediumTurquoise => FromKnownColor(KnownColor.MediumTurquoise);
+
+        public static Color MediumVioletRed => FromKnownColor(KnownColor.MediumVioletRed);
+
+        public static Color MidnightBlue => FromKnownColor(KnownColor.MidnightBlue);
+
+        public static Color MintCream => FromKnownColor(KnownColor.MintCream);
+
+        public static Color MistyRose => FromKnownColor(KnownColor.MistyRose);
+
+        public static Color Moccasin => FromKnownColor(KnownColor.Moccasin);
+
+        public static Color NavajoWhite => FromKnownColor(KnownColor.NavajoWhite);
+
+        public static Color Navy => FromKnownColor(KnownColor.Navy);
+
+        public static Color OldLace => FromKnownColor(KnownColor.OldLace);
+
+        public static Color Olive => FromKnownColor(KnownColor.Olive);
+
+        public static Color OliveDrab => FromKnownColor(KnownColor.OliveDrab);
+
+        public static Color Orange => FromKnownColor(KnownColor.Orange);
+
+        public static Color OrangeRed => FromKnownColor(KnownColor.OrangeRed);
+
+        public static Color Orchid => FromKnownColor(KnownColor.Orchid);
+
+        public static Color PaleGoldenrod => FromKnownColor(KnownColor.PaleGoldenrod);
+
+        public static Color PaleGreen => FromKnownColor(KnownColor.PaleGreen);
+
+        public static Color PaleTurquoise => FromKnownColor(KnownColor.PaleTurquoise);
+
+        public static Color PaleVioletRed => FromKnownColor(KnownColor.PaleVioletRed);
+
+        public static Color PapayaWhip => FromKnownColor(KnownColor.PapayaWhip);
+
+        public static Color PeachPuff => FromKnownColor(KnownColor.PeachPuff);
+
+        public static Color Peru => FromKnownColor(KnownColor.Peru);
+
+        public static Color Pink => FromKnownColor(KnownColor.Pink);
+
+        public static Color Plum => FromKnownColor(KnownColor.Plum);
+
+        public static Color PowderBlue => FromKnownColor(KnownColor.PowderBlue);
+
+        public static Color Purple => FromKnownColor(KnownColor.Purple);
+
+        public static Color Red => FromKnownColor(KnownColor.Red);
+
+        public static Color RosyBrown => FromKnownColor(KnownColor.RosyBrown);
+
+        public static Color RoyalBlue => FromKnownColor(KnownColor.RoyalBlue);
+
+        public static Color SaddleBrown => FromKnownColor(KnownColor.SaddleBrown);
+
+        public static Color Salmon => FromKnownColor(KnownColor.Salmon);
+
+        public static Color SandyBrown => FromKnownColor(KnownColor.SandyBrown);
+
+        public static Color SeaGreen => FromKnownColor(KnownColor.SeaGreen);
+
+        public static Color SeaShell => FromKnownColor(KnownColor.SeaShell);
+
+        public static Color Sienna => FromKnownColor(KnownColor.Sienna);
+
+        public static Color Silver => FromKnownColor(KnownColor.Silver);
+
+        public static Color SkyBlue => FromKnownColor(KnownColor.SkyBlue);
+
+        public static Color SlateBlue => FromKnownColor(KnownColor.SlateBlue);
+
+        public static Color SlateGray => FromKnownColor(KnownColor.SlateGray);
+
+        public static Color Snow => FromKnownColor(KnownColor.Snow);
+
+        public static Color SpringGreen => FromKnownColor(KnownColor.SpringGreen);
+
+        public static Color SteelBlue => FromKnownColor(KnownColor.SteelBlue);
+
+        public static Color Tan => FromKnownColor(KnownColor.Tan);
+
+        public static Color Teal => FromKnownColor(KnownColor.Teal);
+
+        public static Color Thistle => FromKnownColor(KnownColor.Thistle);
+
+        public static Color Tomato => FromKnownColor(KnownColor.Tomato);
+
+        public static Color Turquoise => FromKnownColor(KnownColor.Turquoise);
+
+        public static Color Violet => FromKnownColor(KnownColor.Violet);
+
+        public static Color Wheat => FromKnownColor(KnownColor.Wheat);
+
+        public static Color White => FromKnownColor(KnownColor.White);
+
+        public static Color WhiteSmoke => FromKnownColor(KnownColor.WhiteSmoke);
+
+        public static Color Yellow => FromKnownColor(KnownColor.Yellow);
+
+        public static Color YellowGreen => FromKnownColor(KnownColor.YellowGreen);
     }
 }

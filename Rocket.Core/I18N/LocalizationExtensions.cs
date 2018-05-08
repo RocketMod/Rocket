@@ -14,7 +14,8 @@ namespace Rocket.Core.I18N
         /// <param name="translations">The translations source.</param>
         /// <param name="translationKey">The translation key.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" /></param>
-        public static void SendLocalizedMessage(this IUser User, ITranslationCollection translations, string translationKey, Color? color = null, params object[] arguments)
+        public static void SendLocalizedMessage(this IUser User, ITranslationCollection translations,
+                                                string translationKey, Color? color = null, params object[] arguments)
         {
             User.SendMessage(translations.Get(translationKey, arguments), color);
         }
@@ -27,7 +28,8 @@ namespace Rocket.Core.I18N
         /// <param name="user">The message receiver.</param>
         /// <param name="translationKey">The translation key.</param>
         /// <param name="arguments">The arguments for the message.</param>
-        public static void SendLocalizedMessage(this IUserManager userManager, ITranslationCollection translations, IUser user, string translationKey, params object[] arguments)
+        public static void SendLocalizedMessage(this IUserManager userManager, ITranslationCollection translations,
+                                                IUser user, string translationKey, params object[] arguments)
         {
             userManager.SendMessage(user, translations.Get(translationKey, arguments));
         }
@@ -39,7 +41,8 @@ namespace Rocket.Core.I18N
         /// <param name="translations">The translation soruce</param>
         /// <param name="translationKey">The key of the translated message to send</param>
         /// <param name="arguments">The arguments for the message</param>
-        public static void BroadcastLocalized(this IUserManager userManager, ITranslationCollection translations, string translationKey, params object[] arguments)
+        public static void BroadcastLocalized(this IUserManager userManager, ITranslationCollection translations,
+                                              string translationKey, params object[] arguments)
         {
             userManager.Broadcast(null, translations.Get(translationKey, arguments));
         }

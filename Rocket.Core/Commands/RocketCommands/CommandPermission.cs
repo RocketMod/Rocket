@@ -18,7 +18,10 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Description => null;
 
         public IChildCommand[] ChildCommands => new IChildCommand[]
-            {new PermissionChildrenCommandAdd(), new PermissionChildrenCommandRemove(), new PermissionChildrenCommandReload()};
+        {
+            new PermissionChildrenCommandAdd(), new PermissionChildrenCommandRemove(),
+            new PermissionChildrenCommandReload()
+        };
 
         public string[] Aliases => new[] {"P"};
 
@@ -41,7 +44,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsUser(Type user)=> true;
+        public bool SupportsUser(Type user) => true;
 
         public void Execute(ICommandContext context)
         {

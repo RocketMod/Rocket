@@ -39,40 +39,56 @@ namespace Rocket.API.DependencyInjection
         object Activate(Type type);
 
         /// <summary>
-        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one
+        ///     exists.
         /// </summary>
         /// <typeparam name="T">The service to get the implementation instance of.</typeparam>
         /// <param name="mappingName">The mapping name.</param>
-        /// <returns>the primary service instance implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
+        /// <returns>
+        ///     the primary service instance implementation instance or the <see cref="IServiceProxy">service proxy</see> if
+        ///     one exists.
+        /// </returns>
         /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
         T Resolve<T>(string mappingName = null);
 
         /// <summary>
-        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one
+        ///     exists.
         /// </summary>
         /// <param name="serviceType">The service to get the implementation instance of.</param>
         /// <param name="mappingName">The mapping name.</param>
-        /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
+        /// <returns>
+        ///     the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one
+        ///     exists.
+        /// </returns>
         /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
         object Resolve(Type serviceType, string mappingName = null);
 
         /// <summary>
-        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one
+        ///     exists.
         /// </summary>
         /// <typeparam name="T">The service to get the implementation instance of.</typeparam>
         /// <param name="mappingName">The mapping name.</param>
         /// <param name="parameters">The service parameters.</param>
-        /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
+        /// <returns>
+        ///     the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one
+        ///     exists.
+        /// </returns>
         /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
         T Resolve<T>(string mappingName, params object[] parameters);
 
         /// <summary>
-        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        ///     Gets the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one
+        ///     exists.
         /// </summary>
         /// <param name="serviceType">The service to get the implementation instance of.</param>
         /// <param name="mappingName">The mapping names.</param>
         /// <param name="parameters">The service parameters.</param>
-        /// <returns>the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.</returns>
+        /// <returns>
+        ///     the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one
+        ///     exists.
+        /// </returns>
         /// <exception cref="ServiceResolutionFailedException">When the service could not be resolved.</exception>
         object Resolve(Type serviceType, string mappingName, params object[] parameters);
 
@@ -116,7 +132,8 @@ namespace Rocket.API.DependencyInjection
         bool TryResolve<T>(string mappingName, out T serviceInstance);
 
         /// <summary>
-        ///     Tries to get the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        ///     Tries to get the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if
+        ///     one exists.
         /// </summary>
         /// <param name="serviceType">The service to get the implementation instance of.</param>
         /// <param name="mappingName">The mapping name.</param>
@@ -135,7 +152,8 @@ namespace Rocket.API.DependencyInjection
         bool TryResolve<T>(string mappingName, out T serviceInstance, params object[] parameters);
 
         /// <summary>
-        ///     Tries to get the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if one exists.
+        ///     Tries to get the primary service implementation instance or the <see cref="IServiceProxy">service proxy</see> if
+        ///     one exists.
         /// </summary>
         /// <param name="serviceType">The service to get the implementation instance of.</param>
         /// <param name="mappingName">The mapping name.</param>

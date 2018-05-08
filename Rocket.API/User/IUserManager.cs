@@ -47,7 +47,7 @@ namespace Rocket.API.User
         /// <param name="sender">The sender of the message (optional).</param>
         /// <param name="receiver">The receiver of the message.</param>
         /// <param name="message">The message to send.</param>
-        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])"/>.</param>
+        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
         void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments);
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Rocket.API.User
         /// <param name="sender">The sender of the message (optional).</param>
         /// <param name="receivers">The receivers of the message.</param>
         /// <param name="message">The message to send.</param>
-        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])"/>.</param>
+        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
         void SendMessage(IUser sender, IEnumerable<IUser> receivers, string message, params object[] arguments);
 
         /// <summary>
@@ -64,7 +64,7 @@ namespace Rocket.API.User
         /// </summary>
         /// <param name="sender">The sender of the message.</param>
         /// <param name="message">The message to send.</param>
-        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])"/>.</param>
+        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
         void SendMessage(IUser sender, string message, params object[] arguments);
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace Rocket.API.User
         /// <param name="sender">The sender of the message.</param>
         /// <param name="message">The message to send.</param>
         /// <param name="color">The message color.</param>
-        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])"/>.</param>
+        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
         void SendMessage(IUser sender, string message, Color? color = null, params object[] arguments);
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Rocket.API.User
         /// <param name="sender">The sender of the message.</param>
         /// <param name="message">The message to broadcast.</param>
         /// <param name="color">The message color.</param>
-        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])"/>.</param>
+        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
         void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments);
     }
 }

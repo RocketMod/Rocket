@@ -12,7 +12,7 @@ namespace Rocket.Core.Player.Events
         }
 
         public UserKickEvent(IUser user, IUser kickedBy = null, string reason = null,
-                               bool global = true) : base(user,
+                             bool global = true) : base(user,
             global)
         {
             KickedBy = kickedBy;
@@ -20,17 +20,17 @@ namespace Rocket.Core.Player.Events
         }
 
         public UserKickEvent(IUser user, IUser kickedBy = null, string reason = null,
-                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                               bool global = true) : base(user, executionTarget, global)
+                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                             bool global = true) : base(user, executionTarget, global)
         {
             KickedBy = kickedBy;
             Reason = reason;
         }
 
         public UserKickEvent(IUser user, IUser kickedBy = null, string reason = null,
-                               string name = null,
-                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                               bool global = true) : base(user, name, executionTarget, global)
+                             string name = null,
+                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                             bool global = true) : base(user, name, executionTarget, global)
         {
             KickedBy = kickedBy;
             Reason = reason;

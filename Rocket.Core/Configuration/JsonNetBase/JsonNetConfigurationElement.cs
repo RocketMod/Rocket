@@ -39,7 +39,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
             GuardPath(path);
 
             JsonNetConfigurationElement currentNode = this;
-            string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = path.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length == 1)
             {
@@ -67,9 +67,9 @@ namespace Rocket.Core.Configuration.JsonNetBase
             }
 
             foreach (string part in parts)
-                currentNode = (JsonNetConfigurationSection)currentNode.GetSection(part);
+                currentNode = (JsonNetConfigurationSection) currentNode.GetSection(part);
 
-            return (IConfigurationSection)currentNode;
+            return (IConfigurationSection) currentNode;
         }
 
         public IConfigurationSection CreateSection(string path, SectionType type)
@@ -79,7 +79,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
             JToken current = Node;
 
-            string[] parts = path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
+            string[] parts = path.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries);
 
             int i = 0;
             foreach (string part in parts)
@@ -95,7 +95,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
                     switch (type)
                     {
                         case SectionType.Value:
-                            o.Add(new JProperty(part, (string)null));
+                            o.Add(new JProperty(part, (string) null));
                             break;
                         case SectionType.Array:
                             o.Add(part, new JArray());
@@ -119,8 +119,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
             GuardLoaded();
             GuardPath(path);
 
-            JToken node = ((JsonNetConfigurationElement)GetSection(path)).Node;
-            JObject parent = (JObject)((JsonNetConfigurationElement)GetSection(path).Parent).Node;
+            JToken node = ((JsonNetConfigurationElement) GetSection(path)).Node;
+            JObject parent = (JObject) ((JsonNetConfigurationElement) GetSection(path).Parent).Node;
             parent.Remove(node.Path.Replace(parent.Path + ".", ""));
             return true;
         }
@@ -145,15 +145,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
         public abstract string Path { get; }
 
         public virtual T
-            Get<T>()
-        {
-            //if (Node is JArray array && typeof(T).IsArray)
-            //{
-            //    var elementType = typeof(T).GetElementType();
-            //    return (T)(object)array.Values().Select(c => c.ToObject(elementType)).ToArray();
-            //}
-            return Node.ToObject<T>();
-        }
+            Get<T>() => Node.ToObject<T>();
 
         public object Get()
         {
@@ -286,7 +278,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
         public void GuardPath(string path)
         {
-            var parts = path.Split('.');
+            string[] parts = path.Split('.');
             if (parts.Any(c => long.TryParse(c, out var _)))
                 throw new Exception("Paths can not contain sections which are numbers. Path: " + path);
 
@@ -302,16 +294,16 @@ namespace Rocket.Core.Configuration.JsonNetBase
             foreach (JToken t in fromParent.Children())
             {
                 start:
-                var fromChild = t;
+                JToken fromChild = t;
                 string path = fromChild.Path.Replace(fromParent.Path + ".", "");
-  
+
                 if (!toParent.ContainsKey(path))
                 {
                     toParent.Add(fromChild);
                     continue;
                 }
 
-                var toChild = toParent[path].Parent ?? toParent[path];
+                JToken toChild = toParent[path].Parent ?? toParent[path];
 
                 if (fromChild is JValue || fromChild is JArray)
                     fromChild = toChild.Parent;
@@ -338,6 +330,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
                         toParent.Remove(path);
                         goto start;
                     }
+
                     continue;
                 }
 

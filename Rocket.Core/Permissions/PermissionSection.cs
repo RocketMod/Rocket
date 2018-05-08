@@ -6,11 +6,6 @@ namespace Rocket.Core.Permissions
 {
     public class PermissionSection
     {
-        public virtual string Id { get; set; }
-
-        [ConfigArray(ElementName = "Permission")]
-        public virtual string[] Permissions { get; set; } = new string[0];
-
         protected IConfigurationElement element;
 
         public PermissionSection(string id, IConfigurationElement element)
@@ -20,10 +15,12 @@ namespace Rocket.Core.Permissions
             Permissions = new string[0];
         }
 
-        public PermissionSection()
-        {
+        public PermissionSection() { }
 
-        }
+        public virtual string Id { get; set; }
+
+        [ConfigArray(ElementName = "Permission")]
+        public virtual string[] Permissions { get; set; } = new string[0];
 
         public virtual void Save() => throw new NotSupportedException();
 
@@ -34,6 +31,5 @@ namespace Rocket.Core.Permissions
 
         public virtual string[] GetGroups() => throw new NotSupportedException();
         public virtual void SetGroups(string[] groups) => throw new NotSupportedException();
-
     }
 }

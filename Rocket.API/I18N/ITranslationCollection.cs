@@ -12,7 +12,7 @@ namespace Rocket.API.I18N
         ///     Get a localized message from the given translation key.
         /// </summary>
         /// <param name="translationKey">The translation key.</param>
-        /// <param name="arguments">The arguments. See <see cref="string.Format(string, object[])"/>.</param>
+        /// <param name="arguments">The arguments. See <see cref="string.Format(string, object[])" />.</param>
         /// <returns>the translated message</returns>
         string Get(string translationKey, params object[] arguments);
 
@@ -36,7 +36,7 @@ namespace Rocket.API.I18N
         void Reload();
 
         /// <summary>
-        ///     Saves the changes of <see cref="Set"/>.
+        ///     Saves the changes of <see cref="Set" />.
         /// </summary>
         void Save();
     }

@@ -30,19 +30,17 @@
 
 using System.Collections;
 using System.ComponentModel;
-using System.Globalization;
-using System.Text;
 using System.ComponentModel.Design.Serialization;
+using System.Globalization;
 using System.Reflection;
+using System.Text;
 
 namespace System.Drawing
 {
     public class ColorConverter : TypeConverter
     {
-        static StandardValuesCollection cached;
-        static object creatingCached = new object();
-
-        public ColorConverter() { }
+        private static StandardValuesCollection cached;
+        private static readonly object creatingCached = new object();
 
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
@@ -71,34 +69,35 @@ namespace System.Drawing
                 return Color.Empty;
 
             // Try to process both NamedColor and SystemColors from the KnownColor enumeration
-            if (Char.IsLetter(s[0]))
+            if (char.IsLetter(s[0]))
             {
                 KnownColor kc;
                 try
                 {
-                    kc = (KnownColor)Enum.Parse(typeof(KnownColor), s, true);
+                    kc = (KnownColor) Enum.Parse(typeof(KnownColor), s, true);
                 }
                 catch (Exception e)
                 {
                     // whatever happens MS throws an basic Exception
-                    string msg = String.Format("Invalid color name '{0}'.", s);
+                    string msg = string.Format("Invalid color name '{0}'.", s);
                     throw new Exception(msg, new FormatException(msg, e));
                 }
+
                 return KnownColors.FromKnownColor(kc);
             }
 
-            String numSeparator = culture.TextInfo.ListSeparator;
+            string numSeparator = culture.TextInfo.ListSeparator;
             Color result = Color.Empty;
 
             if (s.IndexOf(numSeparator) == -1)
             {
-                bool sharp = (s[0] == '#');
+                bool sharp = s[0] == '#';
                 int start = sharp ? 1 : 0;
                 bool hex = false;
                 // deal with #hex, 0xhex and #0xhex
-                if ((s.Length > start + 1) && (s[start] == '0'))
+                if (s.Length > start + 1 && s[start] == '0')
                 {
-                    hex = ((s[start + 1] == 'x') || (s[start + 1] == 'X'));
+                    hex = s[start + 1] == 'x' || s[start + 1] == 'X';
                     if (hex)
                         start += 2;
                 }
@@ -109,21 +108,21 @@ namespace System.Drawing
                     int argb;
                     try
                     {
-                        argb = Int32.Parse(s, NumberStyles.HexNumber);
+                        argb = int.Parse(s, NumberStyles.HexNumber);
                     }
                     catch (Exception e)
                     {
                         // whatever happens MS throws an basic Exception
-                        string msg = String.Format("Invalid Int32 value '{0}'.", s);
+                        string msg = string.Format("Invalid Int32 value '{0}'.", s);
                         throw new Exception(msg, e);
                     }
 
                     // note that the default alpha value for a 6 hex digit (i.e. when none are present) is 
                     // 0xFF while shorter string defaults to 0xFF - unless both # an 0x are specified
-                    if ((s.Length < 6) || ((s.Length == 6) && sharp && hex))
+                    if (s.Length < 6 || s.Length == 6 && sharp && hex)
                         argb &= 0x00FFFFFF;
-                    else if ((argb >> 24) == 0)
-                        argb |= unchecked((int)0xFF000000);
+                    else if (argb >> 24 == 0)
+                        argb |= unchecked((int) 0xFF000000);
                     result = Color.FromArgb(argb);
                 }
             }
@@ -131,16 +130,14 @@ namespace System.Drawing
             if (result.IsEmpty)
             {
                 Int32Converter converter = new Int32Converter();
-                String[] components = s.Split(numSeparator.ToCharArray());
+                string[] components = s.Split(numSeparator.ToCharArray());
 
                 // MS seems to convert the indivual component to int before
                 // checking the number of components
                 int[] numComponents = new int[components.Length];
                 for (int i = 0; i < numComponents.Length; i++)
-                {
-                    numComponents[i] = (int)converter.ConvertFrom(context,
+                    numComponents[i] = (int) converter.ConvertFrom(context,
                         culture, components[i]);
-                }
 
                 switch (components.Length)
                 {
@@ -171,10 +168,9 @@ namespace System.Drawing
             return result;
         }
 
-
         public override object ConvertFrom(ITypeDescriptorContext context,
-                            CultureInfo culture,
-                            object value)
+                                           CultureInfo culture,
+                                           object value)
         {
             string s = value as string;
             if (s == null)
@@ -184,13 +180,13 @@ namespace System.Drawing
         }
 
         public override object ConvertTo(ITypeDescriptorContext context,
-                          CultureInfo culture,
-                          object value,
-                          Type destinationType)
+                                         CultureInfo culture,
+                                         object value,
+                                         Type destinationType)
         {
             if (value is Color)
             {
-                Color color = (Color)value;
+                Color color = (Color) value;
                 if (destinationType == typeof(string))
                 {
                     if (color == Color.Empty)
@@ -199,7 +195,7 @@ namespace System.Drawing
                     if (color.IsKnownColor || color.IsNamedColor)
                         return color.Name;
 
-                    String numSeparator = culture.TextInfo.ListSeparator;
+                    string numSeparator = culture.TextInfo.ListSeparator;
 
                     StringBuilder sb = new StringBuilder();
                     if (color.A != 255)
@@ -208,6 +204,7 @@ namespace System.Drawing
                         sb.Append(numSeparator);
                         sb.Append(" ");
                     }
+
                     sb.Append(color.R);
                     sb.Append(numSeparator);
                     sb.Append(" ");
@@ -219,8 +216,8 @@ namespace System.Drawing
                     sb.Append(color.B);
                     return sb.ToString();
                 }
-                else if (destinationType == typeof(InstanceDescriptor))
-                {
+
+                if (destinationType == typeof(InstanceDescriptor))
                     if (color.IsEmpty)
                     {
                         return new InstanceDescriptor(typeof(Color).GetMember("Empty")[0], null);
@@ -235,10 +232,10 @@ namespace System.Drawing
                     }
                     else
                     {
-                        MethodInfo met = typeof(Color).GetMethod("FromArgb", new Type[] { typeof(int), typeof(int), typeof(int), typeof(int) });
-                        return new InstanceDescriptor(met, new object[] { color.A, color.R, color.G, color.B });
+                        MethodInfo met = typeof(Color).GetMethod("FromArgb",
+                            new[] {typeof(int), typeof(int), typeof(int), typeof(int)});
+                        return new InstanceDescriptor(met, new object[] {color.A, color.R, color.G, color.B});
                     }
-                }
             }
 
             return base.ConvertTo(context, culture, value, destinationType);
@@ -252,9 +249,7 @@ namespace System.Drawing
                     return cached;
                 Array colors = Array.CreateInstance(typeof(Color), KnownColors.ArgbValues.Length - 1);
                 for (int i = 1; i < KnownColors.ArgbValues.Length; i++)
-                {
-                    colors.SetValue(KnownColors.FromKnownColor((KnownColor)i), i - 1);
-                }
+                    colors.SetValue(KnownColors.FromKnownColor((KnownColor) i), i - 1);
 
                 Array.Sort(colors, 0, colors.Length, new CompareColors());
                 cached = new StandardValuesCollection(colors);
@@ -263,18 +258,11 @@ namespace System.Drawing
             return cached;
         }
 
-        public override bool GetStandardValuesSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
+        public override bool GetStandardValuesSupported(ITypeDescriptorContext context) => true;
 
-        sealed class CompareColors : IComparer
+        private sealed class CompareColors : IComparer
         {
-
-            public int Compare(object x, object y)
-            {
-                return String.Compare(((Color)x).Name, ((Color)y).Name);
-            }
+            public int Compare(object x, object y) => string.Compare(((Color) x).Name, ((Color) y).Name);
         }
     }
 }

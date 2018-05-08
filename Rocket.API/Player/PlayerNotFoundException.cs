@@ -47,11 +47,9 @@ namespace Rocket.API.Player
         protected PlayerNotFoundException(string nameOrId)
             : base(string.IsNullOrEmpty(nameOrId)
                 ? "The requested player was not found."
-                : $"The requested player: \"{nameOrId}\" was not found.")
-        {
-        }
+                : $"The requested player: \"{nameOrId}\" was not found.") { }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SendErrorMessage(ICommandContext context)
         {
             context.User.UserManager.SendMessage(context.User, Message, Color.Red);

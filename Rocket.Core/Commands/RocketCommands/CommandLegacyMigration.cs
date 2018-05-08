@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -21,19 +22,17 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Permission => "Rocket.Migrate.Legacy";
         public string Syntax => "[step]";
         public IChildCommand[] ChildCommands => null;
-        public bool SupportsUser(Type user)
-        {
-            return typeof(IConsole).IsAssignableFrom(user);
-        }
+
+        public bool SupportsUser(Type user) => typeof(IConsole).IsAssignableFrom(user);
 
         public void Execute(ICommandContext context)
         {
-            var logger = context.Container.Resolve<ILogger>();
-            var runtime = context.Container.Resolve<IRuntime>();
-            var migrationSteps = GetType().Assembly.FindTypes<IMigrationStep>();
+            ILogger logger = context.Container.Resolve<ILogger>();
+            IRuntime runtime = context.Container.Resolve<IRuntime>();
+            IEnumerable<Type> migrationSteps = GetType().Assembly.FindTypes<IMigrationStep>();
 
-            var parentPath = Directory.GetParent(runtime.WorkingDirectory).FullName;
-            var basePath = Path.Combine(parentPath, "Rocket.old");
+            string parentPath = Directory.GetParent(runtime.WorkingDirectory).FullName;
+            string basePath = Path.Combine(parentPath, "Rocket.old");
             basePath = Path.GetFullPath(basePath);
 
             if (!Directory.Exists(basePath))
@@ -42,17 +41,17 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            var targetStep = context.Parameters.Get<string>(0, null);
+            string targetStep = context.Parameters.Get<string>(0, null);
 
-            foreach (var migrationStep in migrationSteps)
+            foreach (Type migrationStep in migrationSteps)
             {
-                IMigrationStep step = (IMigrationStep)Activator.CreateInstance(migrationStep);
+                IMigrationStep step = (IMigrationStep) Activator.CreateInstance(migrationStep);
 
-                if(targetStep != null && !step.Name.Equals(targetStep, StringComparison.OrdinalIgnoreCase))
+                if (targetStep != null && !step.Name.Equals(targetStep, StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 logger.LogInformation($"Executing migration step \"{step.Name}\".");
-                
+
                 if (Debugger.IsAttached)
                     step.Migrate(context.Container, basePath);
                 else

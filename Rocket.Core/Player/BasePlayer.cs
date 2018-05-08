@@ -18,11 +18,11 @@ namespace Rocket.Core.Player
 
         protected IDependencyContainer Container { get; }
 
-        public abstract string Id { get; }
-        public abstract string Name { get; }
-        public IdentityType Type => IdentityType.Player;
-
         public abstract DateTime? LastSeen { get; }
+
+        public abstract DateTime SessionConnectTime { get; }
+        public abstract DateTime? SessionDisconnectTime { get; }
+        public abstract TimeSpan SessionOnlineTime { get; }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
@@ -43,9 +43,8 @@ namespace Rocket.Core.Player
             if (format.Equals("group", StringComparison.OrdinalIgnoreCase))
                 return Container.Resolve<IPermissionProvider>().GetPrimaryGroup(User).Name;
 
-            if (IsOnline && (Entity is ILivingEntity entity))
+            if (IsOnline && Entity is ILivingEntity entity)
             {
-
                 if (format.Equals("health", StringComparison.OrdinalIgnoreCase))
                 {
                     double health = entity.Health;
@@ -66,12 +65,12 @@ namespace Rocket.Core.Player
             throw new FormatException($"\"{format}\" is not a valid format.");
         }
 
-        public abstract DateTime SessionConnectTime { get; }
-        public abstract DateTime? SessionDisconnectTime { get; }
-        public abstract TimeSpan SessionOnlineTime { get; }
-        public abstract void SendMessage(string message, params object[] arguments);
+        public abstract string Id { get; }
+        public abstract string Name { get; }
+        public IdentityType Type => IdentityType.Player;
         public abstract IUser User { get; }
         public abstract IEntity Entity { get; }
         public abstract bool IsOnline { get; }
+        public abstract void SendMessage(string message, params object[] arguments);
     }
 }

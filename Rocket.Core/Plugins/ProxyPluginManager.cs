@@ -42,15 +42,15 @@ namespace Rocket.Core.Plugins
                 pluginManager.Init();
         }
 
+        public IEnumerable<IPlugin> Plugins => ProxiedServices.SelectMany(c => c.Plugins);
+
+        public void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
+            => throw new NotSupportedException("Not supported on proxies");
+
         public bool LoadPlugin(string name)
             => throw new NotSupportedException("Activate plugins is not supported through proxy");
 
         public bool UnloadPlugin(string name)
             => throw new NotSupportedException("Unloading plugins is not supported through proxy");
-
-        public IEnumerable<IPlugin> Plugins => ProxiedServices.SelectMany(c => c.Plugins);
-
-        public void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
-            => throw new NotSupportedException("Not supported on proxies");
     }
 }

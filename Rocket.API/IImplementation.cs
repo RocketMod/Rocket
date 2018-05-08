@@ -15,6 +15,12 @@ namespace Rocket.API
         string InstanceId { get; }
 
         /// <summary>
+        ///     Gets the console. <br />
+        ///     <b>Might return null.</b>
+        /// </summary>
+        IConsole Console { get; }
+
+        /// <summary>
         ///     Initializes the implementation.
         /// </summary>
         /// <param name="runtime">The RocketMod runtime.</param>
@@ -29,11 +35,5 @@ namespace Rocket.API
         ///     Reloads the implementation.
         /// </summary>
         void Reload();
-
-        /// <summary>
-        ///     Gets the console. <br/>
-        ///     <b>Might return null.</b>
-        /// </summary>
-        IConsole Console { get; }
     }
 }

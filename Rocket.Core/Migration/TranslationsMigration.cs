@@ -15,37 +15,41 @@ namespace Rocket.Core.Migration
     public class TranslationsMigration : IMigrationStep
     {
         public string Name => "Translations";
+
         public void Migrate(IDependencyContainer container, string basePath)
         {
-            var implementation = container.Resolve<IImplementation>();
+            IImplementation implementation = container.Resolve<IImplementation>();
 
-            var translationsLocator = container.Resolve<ITranslationCollection>();
+            ITranslationCollection translationsLocator = container.Resolve<ITranslationCollection>();
 
-            var toContext = new ConfigurationContext(implementation.WorkingDirectory, "Rocket.Unturned.Translations");
+            ConfigurationContext toContext =
+                new ConfigurationContext(implementation.WorkingDirectory, "Rocket.Unturned.Translations");
             translationsLocator.Load(toContext, new Dictionary<string, string>());
-            
-            var logger = container.Resolve<ILogger>();
-            var xmlConfiguration = (XmlConfiguration)container.Resolve<IConfiguration>("xml");
+
+            ILogger logger = container.Resolve<ILogger>();
+            XmlConfiguration xmlConfiguration = (XmlConfiguration) container.Resolve<IConfiguration>("xml");
             xmlConfiguration.ConfigurationRoot = "Translations";
 
-            var fromContext = new ConfigurationContext(basePath, "Rocket.en.translation");
+            ConfigurationContext fromContext = new ConfigurationContext(basePath, "Rocket.en.translation");
 
             if (!xmlConfiguration.Exists(fromContext))
             {
-                logger.LogError("Translations migration failed: Rocket.en.translation.xml was not found in: " + basePath);
+                logger.LogError(
+                    "Translations migration failed: Rocket.en.translation.xml was not found in: " + basePath);
                 return;
             }
 
             xmlConfiguration.Load(fromContext);
 
-            var translations = (JArray)((JsonNetConfigurationSection) xmlConfiguration["Translation"]).Node;
-            foreach (var translation in translations)
+            JArray translations = (JArray) ((JsonNetConfigurationSection) xmlConfiguration["Translation"]).Node;
+            foreach (JToken translation in translations)
             {
-                var id = translation["@Id"];
-                var value = translation["@Value"];
+                JToken id = translation["@Id"];
+                JToken value = translation["@Value"];
 
                 translationsLocator.Set(id.Value<string>(), value.Value<string>());
             }
+
             translationsLocator.Save();
         }
     }

@@ -11,6 +11,7 @@ namespace Rocket.Tests.Mock
     public class TestConsole : IConsole
     {
         private readonly IDependencyContainer container;
+
         public TestConsole(IDependencyContainer container)
         {
             SessionConnectTime = DateTime.Now;

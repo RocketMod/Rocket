@@ -106,9 +106,7 @@ namespace Rocket.Core.Permissions
         }
 
         public bool UpdateGroup(IPermissionGroup group)
-        {
-            throw new NotSupportedException("Updating groups from proxy is not supported.");
-        }
+            => throw new NotSupportedException("Updating groups from proxy is not supported.");
 
         public bool AddGroup(IIdentity target, IPermissionGroup group)
             => throw new NotSupportedException("Adding groups from proxy is not supported.");

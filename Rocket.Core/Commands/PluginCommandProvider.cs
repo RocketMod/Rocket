@@ -11,7 +11,7 @@ namespace Rocket.Core.Commands
     public class PluginCommandProvider : ICommandProvider
     {
         private readonly IDependencyContainer pluginContainer;
-        private IPlugin plugin;
+        private readonly IPlugin plugin;
 
         public PluginCommandProvider(IPlugin plugin, IDependencyContainer pluginContainer)
         {

@@ -6,7 +6,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public class JsonNetConfigurationSection : JsonNetConfigurationElement, IConfigurationSection
     {
-        public JsonNetConfigurationSection(IConfiguration root, IConfigurationElement parent, JToken node, string key, SectionType type) :
+        public JsonNetConfigurationSection(IConfiguration root, IConfigurationElement parent, JToken node, string key,
+                                           SectionType type) :
             base(root, parent, node, type)
         {
             GuardPath(key);
@@ -16,9 +17,10 @@ namespace Rocket.Core.Configuration.JsonNetBase
         public string Key { get; }
 
         public override string Path => Node.Path;
+
         public override IConfigurationElement Clone()
         {
-            var node = Node.DeepClone();
+            JToken node = Node.DeepClone();
             return new JsonNetConfigurationSection(null, null, node, Key, Type);
         }
 

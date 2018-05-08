@@ -5,8 +5,6 @@ namespace Rocket.Core.Player.Events
 {
     public class UserDisconnectedEvent : Event
     {
-        public IUserInfo User { get; }
-
         public UserDisconnectedEvent(IUserInfo user) : base(true)
         {
             User = user;
@@ -26,20 +24,22 @@ namespace Rocket.Core.Player.Events
         }
 
         public UserDisconnectedEvent(IUserInfo user, string reason = null,
-                                       EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                       bool global = true) : base(executionTarget, global)
+                                     EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                                     bool global = true) : base(executionTarget, global)
         {
             User = user;
             Reason = reason;
         }
 
         public UserDisconnectedEvent(IUserInfo user, string reason = null, string name = null,
-                                       EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                       bool global = true) : base(name, executionTarget, global)
+                                     EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                                     bool global = true) : base(name, executionTarget, global)
         {
             User = user;
             Reason = reason;
         }
+
+        public IUserInfo User { get; }
 
         public string Reason { get; }
     }

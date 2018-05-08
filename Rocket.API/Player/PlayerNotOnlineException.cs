@@ -9,20 +9,15 @@ namespace Rocket.API.Player
     public class PlayerNotOnlineException : Exception, ICommandFriendlyException
     {
         /// 
-        public PlayerNotOnlineException() : this(null)
-        {
-
-        }
+        public PlayerNotOnlineException() : this(null) { }
 
         /// <param name="nameOrId">The name or ID of the player which was not found.</param>
         public PlayerNotOnlineException(string nameOrId)
             : base(string.IsNullOrEmpty(nameOrId)
                 ? "The requested player is not online."
-                : $"The requested player: \"{nameOrId}\" is not online.")
-        {
-        }
+                : $"The requested player: \"{nameOrId}\" is not online.") { }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public void SendErrorMessage(ICommandContext context)
         {
             context.User.UserManager.SendMessage(context.User, Message, ConsoleColor.Red);

@@ -6,7 +6,7 @@
     public interface IEventListener { }
 
     /// <summary>
-    ///     <inheritdoc/>
+    ///     <inheritdoc />
     /// </summary>
     /// <typeparam name="TEvent">The event to subscribe to.</typeparam>
     public interface IEventListener<in TEvent> : IEventListener where TEvent : IEvent

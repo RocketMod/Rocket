@@ -29,20 +29,6 @@ namespace Rocket.Core.Commands
             Aliases = aliases;
         }
 
-        private string BuildSyntaxFromMethod()
-        {
-            List<ParameterInfo> parameters = (from param in Method.GetParameters()
-                                              let type = param.ParameterType
-                                              where type != typeof(ICommandContext)
-                                              where type != typeof(IUser)
-                                              where type != typeof(string[])
-                                              where type != typeof(ICommandParameters)
-                                              where type != typeof(IDependencyContainer)
-                                              select param).ToList();
-
-            return string.Join(" ", parameters.Select(c => $"<{c.Name}>").ToArray());
-        }
-
         public CommandAttribute Attribute { get; }
         public object Instance { get; }
         public MethodBase Method { get; set; }
@@ -105,11 +91,26 @@ namespace Rocket.Core.Commands
                     {
                         throw new CommandWrongUsageException();
                     }
+
                     index++;
                 }
             }
 
             Method.Invoke(Instance, @params.ToArray());
+        }
+
+        private string BuildSyntaxFromMethod()
+        {
+            List<ParameterInfo> parameters = (from param in Method.GetParameters()
+                                              let type = param.ParameterType
+                                              where type != typeof(ICommandContext)
+                                              where type != typeof(IUser)
+                                              where type != typeof(string[])
+                                              where type != typeof(ICommandParameters)
+                                              where type != typeof(IDependencyContainer)
+                                              select param).ToList();
+
+            return string.Join(" ", parameters.Select(c => $"<{c.Name}>").ToArray());
         }
     }
 }

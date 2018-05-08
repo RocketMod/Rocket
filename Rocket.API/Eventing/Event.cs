@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace Rocket.API.Eventing
 {
-    /// <inheritdoc/>
+    /// <inheritdoc />
     public class Event : IEvent
     {
         /// <param name="global">Defines if the event is emitted globally</param>
@@ -27,8 +27,8 @@ namespace Rocket.API.Eventing
         }
 
         /// <summary>
-        /// <inheritdoc/><br/><br/>
-        /// In this implementation it contains the properties of the class with their respective values.
+        ///     <inheritdoc /><br /><br />
+        ///     In this implementation it contains the properties of the class with their respective values.
         /// </summary>
         public Dictionary<string, object> Arguments
         {
@@ -48,13 +48,13 @@ namespace Rocket.API.Eventing
             }
         }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public string Name { get; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public EventExecutionTargetContext ExecutionTarget { get; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         public bool IsGlobal { get; }
     }
 }

@@ -25,7 +25,7 @@ namespace Rocket.Tests.Mock.Providers
         public bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
             => false;
 
-        public bool Unban(IUser user, IUser unbannedBy = null) 
+        public bool Unban(IUser user, IUser unbannedBy = null)
             => false;
 
         public void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments)

@@ -31,176 +31,74 @@
 
 namespace System.Drawing
 {
-
     public sealed class SystemColors
     {
+        private SystemColors() { }
 
-        private SystemColors()
-        {
-        }
+        public static Color ActiveBorder => KnownColors.FromKnownColor(KnownColor.ActiveBorder);
 
-        static public Color ActiveBorder
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ActiveBorder); }
-        }
+        public static Color ActiveCaption => KnownColors.FromKnownColor(KnownColor.ActiveCaption);
 
-        static public Color ActiveCaption
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ActiveCaption); }
-        }
+        public static Color ActiveCaptionText => KnownColors.FromKnownColor(KnownColor.ActiveCaptionText);
 
-        static public Color ActiveCaptionText
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ActiveCaptionText); }
-        }
+        public static Color AppWorkspace => KnownColors.FromKnownColor(KnownColor.AppWorkspace);
 
-        static public Color AppWorkspace
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.AppWorkspace); }
-        }
+        public static Color Control => KnownColors.FromKnownColor(KnownColor.Control);
 
-        static public Color Control
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Control); }
-        }
+        public static Color ControlDark => KnownColors.FromKnownColor(KnownColor.ControlDark);
 
-        static public Color ControlDark
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ControlDark); }
-        }
+        public static Color ControlDarkDark => KnownColors.FromKnownColor(KnownColor.ControlDarkDark);
 
-        static public Color ControlDarkDark
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ControlDarkDark); }
-        }
+        public static Color ControlLight => KnownColors.FromKnownColor(KnownColor.ControlLight);
 
-        static public Color ControlLight
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ControlLight); }
-        }
+        public static Color ControlLightLight => KnownColors.FromKnownColor(KnownColor.ControlLightLight);
 
-        static public Color ControlLightLight
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ControlLightLight); }
-        }
+        public static Color ControlText => KnownColors.FromKnownColor(KnownColor.ControlText);
 
-        static public Color ControlText
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ControlText); }
-        }
+        public static Color Desktop => KnownColors.FromKnownColor(KnownColor.Desktop);
 
-        static public Color Desktop
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Desktop); }
-        }
+        public static Color GrayText => KnownColors.FromKnownColor(KnownColor.GrayText);
 
-        static public Color GrayText
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.GrayText); }
-        }
+        public static Color Highlight => KnownColors.FromKnownColor(KnownColor.Highlight);
 
-        static public Color Highlight
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Highlight); }
-        }
+        public static Color HighlightText => KnownColors.FromKnownColor(KnownColor.HighlightText);
 
-        static public Color HighlightText
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.HighlightText); }
-        }
+        public static Color HotTrack => KnownColors.FromKnownColor(KnownColor.HotTrack);
 
-        static public Color HotTrack
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.HotTrack); }
-        }
+        public static Color InactiveBorder => KnownColors.FromKnownColor(KnownColor.InactiveBorder);
 
-        static public Color InactiveBorder
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.InactiveBorder); }
-        }
+        public static Color InactiveCaption => KnownColors.FromKnownColor(KnownColor.InactiveCaption);
 
-        static public Color InactiveCaption
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.InactiveCaption); }
-        }
+        public static Color InactiveCaptionText => KnownColors.FromKnownColor(KnownColor.InactiveCaptionText);
 
-        static public Color InactiveCaptionText
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.InactiveCaptionText); }
-        }
+        public static Color Info => KnownColors.FromKnownColor(KnownColor.Info);
 
-        static public Color Info
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Info); }
-        }
+        public static Color InfoText => KnownColors.FromKnownColor(KnownColor.InfoText);
 
-        static public Color InfoText
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.InfoText); }
-        }
+        public static Color Menu => KnownColors.FromKnownColor(KnownColor.Menu);
 
-        static public Color Menu
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Menu); }
-        }
+        public static Color MenuText => KnownColors.FromKnownColor(KnownColor.MenuText);
 
-        static public Color MenuText
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MenuText); }
-        }
+        public static Color ScrollBar => KnownColors.FromKnownColor(KnownColor.ScrollBar);
 
-        static public Color ScrollBar
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ScrollBar); }
-        }
+        public static Color Window => KnownColors.FromKnownColor(KnownColor.Window);
 
-        static public Color Window
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.Window); }
-        }
+        public static Color WindowFrame => KnownColors.FromKnownColor(KnownColor.WindowFrame);
 
-        static public Color WindowFrame
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.WindowFrame); }
-        }
+        public static Color WindowText => KnownColors.FromKnownColor(KnownColor.WindowText);
 
-        static public Color WindowText
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.WindowText); }
-        }
-        static public Color ButtonFace
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ButtonFace); }
-        }
+        public static Color ButtonFace => KnownColors.FromKnownColor(KnownColor.ButtonFace);
 
-        static public Color ButtonHighlight
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ButtonHighlight); }
-        }
+        public static Color ButtonHighlight => KnownColors.FromKnownColor(KnownColor.ButtonHighlight);
 
-        static public Color ButtonShadow
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.ButtonShadow); }
-        }
+        public static Color ButtonShadow => KnownColors.FromKnownColor(KnownColor.ButtonShadow);
 
-        static public Color GradientActiveCaption
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.GradientActiveCaption); }
-        }
+        public static Color GradientActiveCaption => KnownColors.FromKnownColor(KnownColor.GradientActiveCaption);
 
-        static public Color GradientInactiveCaption
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.GradientInactiveCaption); }
-        }
+        public static Color GradientInactiveCaption => KnownColors.FromKnownColor(KnownColor.GradientInactiveCaption);
 
-        static public Color MenuBar
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MenuBar); }
-        }
+        public static Color MenuBar => KnownColors.FromKnownColor(KnownColor.MenuBar);
 
-        static public Color MenuHighlight
-        {
-            get { return KnownColors.FromKnownColor(KnownColor.MenuHighlight); }
-        }
+        public static Color MenuHighlight => KnownColors.FromKnownColor(KnownColor.MenuHighlight);
     }
 }
