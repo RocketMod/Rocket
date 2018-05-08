@@ -11,7 +11,7 @@ namespace Rocket.ConsoleImplementation.Properties
         {
             container.RegisterSingletonType<IImplementation, ConsoleImplementation>();
             container.RegisterSingletonType<ITaskScheduler, SimpleTaskScheduler>();
-            container.RegisterSingletonType<IUserManager, ConsoleUserManager>();
+            container.RegisterSingletonType<IUserManager, ConsoleUserManager>("game");
         }
     }
 }

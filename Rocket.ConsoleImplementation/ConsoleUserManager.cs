@@ -21,10 +21,10 @@ namespace Rocket.ConsoleImplementation
 
         public bool Kick(IUser user, IUser kickedBy = null, string reason = null) => throw new NotSupportedException();
 
-        public bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
             => throw new NotSupportedException();
 
-        public bool Unban(IUser user, IUser unbannedBy = null) => throw new NotSupportedException();
+        public bool Unban(IUserInfo user, IUser unbannedBy = null) => throw new NotSupportedException();
 
         public void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments)
         {

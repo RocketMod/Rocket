@@ -22,10 +22,10 @@ namespace Rocket.Tests.Mock.Providers
         public IEnumerable<IUser> Users => OnlinePlayers.Select(c => c.User);
         public bool Kick(IUser user, IUser kickedBy = null, string reason = null) => false;
 
-        public bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
             => false;
 
-        public bool Unban(IUser user, IUser unbannedBy = null)
+        public bool Unban(IUserInfo user, IUser unbannedBy = null)
             => false;
 
         public void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments)

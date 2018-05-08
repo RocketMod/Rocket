@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.User
 {
     /// <summary>
     ///     The service responsible for managing users.
     /// </summary>
-    public interface IUserManager
+    public interface IUserManager: IProxyableService
     {
         /// <summary>
         ///     The online users.
@@ -31,7 +32,7 @@ namespace Rocket.API.User
         /// <param name="reason">The ban reason which might be shown to the user (optional).</param>
         /// <param name="timeSpan">The ban duration. Will never expire if null.</param>
         /// <returns><b>true</b> if the user could be banned; otherwise, <b>false</b>.</returns>
-        bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null);
+        bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null);
 
         /// <summary>
         ///     Unbans the given user from the server.
@@ -39,7 +40,7 @@ namespace Rocket.API.User
         /// <param name="user">The user to unban.</param>
         /// <param name="unbannedBy">The user which unbans.</param>
         /// <returns><b>true</b> if the user could be unbanned; otherwise, <b>false</b>.</returns>
-        bool Unban(IUser user, IUser unbannedBy = null);
+        bool Unban(IUserInfo user, IUser unbannedBy = null);
 
         /// <summary>
         ///     Sends a message to the given User.

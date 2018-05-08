@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleChatManager.cs" />
+    <Compile Include="ConsoleUserManager.cs" />
     <Compile Include="ConsoleImplementation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
