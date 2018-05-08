@@ -104,7 +104,7 @@ namespace Rocket.Core.Logging
             }
 
             string callingMethod = GetLoggerCallingMethod().GetDebugName();
-            string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] " + (RocketSettings.Settings.IncludeMethodsInLogs ? $"[{callingMethod}] " : "") + $"{message}";
+            string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] " + (RocketSettings?.Settings.IncludeMethodsInLogs ?? true ? $"[{callingMethod}] " : "") + $"{message}";
             streamWriter.WriteLine(formattedLine);
         }
 
