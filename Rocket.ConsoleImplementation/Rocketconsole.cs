@@ -26,7 +26,7 @@ namespace Rocket.ConsoleImplementation
         public string Name => "Console";
         public IdentityType Type => IdentityType.Console;
 
-        public IUserManager UserManager => container.Resolve<IUserManager>("console");
+        public IUserManager UserManager => container.Resolve<IUserManager>("game");
         public bool IsOnline => true;
         public DateTime SessionConnectTime { get; }
         public DateTime? SessionDisconnectTime => null;
