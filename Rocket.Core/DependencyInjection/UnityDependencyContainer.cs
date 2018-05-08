@@ -23,6 +23,7 @@ namespace Rocket.Core.DependencyInjection
 
         private UnityDependencyContainer(UnityDependencyContainer parent)
         {
+            ParentContainer = parent;
             container = parent.container.CreateChildContainer();
             container.RegisterInstance<IDependencyContainer>(this);
             container.RegisterInstance<IDependencyResolver>(this);
@@ -40,6 +41,7 @@ namespace Rocket.Core.DependencyInjection
         #region IDependencyContainer Implementation
 
         public IDependencyContainer CreateChildContainer() => new UnityDependencyContainer(this);
+        public IDependencyContainer ParentContainer { get; }
 
         public void RegisterSingletonType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
@@ -86,7 +88,7 @@ namespace Rocket.Core.DependencyInjection
                 mappingNames = new string[] { null };
 
             foreach (string mappingName in mappingNames)
-                container.RegisterInstance(mappingName, value, new ContainerControlledLifetimeManager());
+                container.RegisterInstance<TInterface>(mappingName, value, new ContainerControlledLifetimeManager());
         }
 
         public void RegisterType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface

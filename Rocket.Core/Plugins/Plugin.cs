@@ -18,15 +18,25 @@ namespace Rocket.Core.Plugins
     {
         protected Plugin(IDependencyContainer container) : this(null, container) { }
 
-        // The parent logger is used to log stuff that should not be logged to the plugins log.
+        // The parent logger is used to log stuff that should not be logged to the plugins own log.
         private readonly ILogger parentLogger;
 
         protected Plugin(string name, IDependencyContainer container)
         {
-            parentLogger = container.Resolve<ILogger>();
+            parentLogger = container.ParentContainer.Resolve<ILogger>();
             Name = name ?? GetType().Name;
-            Container = container.CreateChildContainer();
+
+            Container = container;
+            container.RegisterSingletonInstance<ILogger>(new ProxyLogger(Container), null, "proxy_logger");
             Container.RegisterSingletonInstance<IPlugin>(this);
+
+            WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
+
+            var rocketSettings = Container.Resolve<IRocketSettingsProvider>();
+            if (rocketSettings.Settings.PluginLogsEnabled)
+            {
+                Container.RegisterSingletonType<ILogger, PluginLogger>("plugin_logger");
+            }
         }
 
         protected IDependencyContainer Container { get; }
@@ -112,21 +122,9 @@ namespace Rocket.Core.Plugins
         public ITranslationLocator Translations { get; protected set; }
         public virtual Dictionary<string, string> DefaultTranslations => null;
 
-        private bool firstInit = true;
         public void Load(bool isReload)
         {
-            if (firstInit)
-            {
-                var rocketSettings = Container.Resolve<IRocketSettingsProvider>();
-                if (rocketSettings.Settings.PluginLogsEnabled)
-                {
-                    WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
-                    var pluginLogger = new PluginLogger(Container, this);
-                    Container.RegisterSingletonInstance<ILogger>(pluginLogger, "plugin_logger");
-                }
-                firstInit = false;
-            }
-            
+           
             if (EventManager != null)
             {
                 PluginActivateEvent activateEvent = new PluginActivateEvent(PluginManager, this);

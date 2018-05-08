@@ -35,8 +35,9 @@ namespace Rocket.Core.Plugins
         private string packagesDirectory;
         private Dictionary<string, string> pluginAssemblies;
         private string pluginsDirectory;
-       
-        public PluginManager(IDependencyContainer dependencyContainer, IDependencyResolver resolver, ILogger logger,
+
+        public PluginManager(IDependencyContainer dependencyContainer,
+                             IDependencyResolver resolver, ILogger logger,
                              IEventManager eventManager, IRuntime runtime)
         {
             this.runtime = runtime;
@@ -101,18 +102,24 @@ namespace Rocket.Core.Plugins
                     logger.LogError($"Failed to load plugin assembly at {pluginPath}", ex);
                 }
 
+            List<IDependencyContainer> pluginContainers = new List<IDependencyContainer>();
             foreach (Assembly assembly in assemblies)
-                LoadPluginFromAssembly(assembly);
-
-            PluginManagerInitEvent @event = new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
-            eventManager.Emit(runtime, @event);
-
-            if (@event.IsCancelled)
-                return;
-
-            IEnumerable<IPlugin> plugins = container.ResolveAll<IPlugin>();
-            foreach (IPlugin plugin in plugins)
             {
+                LoadPluginFromAssembly(assembly, out var container);
+                if (container != null)
+                    pluginContainers.Add(container);
+            }
+
+            foreach (var childContainer in pluginContainers)
+            {
+                PluginManagerInitEvent @event = new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
+                eventManager.Emit(runtime, @event);
+
+                if (@event.IsCancelled)
+                    return;
+
+                IPlugin plugin = childContainer.Resolve<IPlugin>();
+
                 Assembly asm = plugin.GetType().Assembly;
                 string pluginDir = plugin.WorkingDirectory;
 
@@ -171,7 +178,7 @@ namespace Rocket.Core.Plugins
             if (File.Exists(name))
             {
                 Assembly asm = LoadAssembly(name);
-                plugin = LoadPluginFromAssembly(asm);
+                plugin = LoadPluginFromAssembly(asm, out IDependencyContainer _);
                 if (plugin == null)
                     return false;
 
@@ -225,7 +232,7 @@ namespace Rocket.Core.Plugins
                 CommandAttribute cmdAttr =
                     (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
 
-                if(cmdAttr == null)
+                if (cmdAttr == null)
                     continue;
 
                 IEnumerable<CommandAliasAttribute> aliasAttrs = method
@@ -278,8 +285,10 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public virtual IPlugin LoadPluginFromAssembly(Assembly pluginAssembly)
+        public virtual IPlugin LoadPluginFromAssembly(Assembly pluginAssembly, out IDependencyContainer childContainer)
         {
+            childContainer = null;
+
             string loc = GetAssemblyLocationSafe(pluginAssembly);
 
             if (!string.IsNullOrEmpty(loc)
@@ -302,7 +311,7 @@ namespace Rocket.Core.Plugins
             {
                 if (type.IsAbstract || type.IsInterface) continue;
 
-                if(type.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Any())
+                if (type.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Any())
                     continue;
 
                 if (pluginType == null && typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type))
@@ -312,18 +321,17 @@ namespace Rocket.Core.Plugins
             if (pluginType == null)
                 return null;
 
-
-            IPlugin pluginInstance = (IPlugin)parentContainer.Activate(pluginType);
-
+            childContainer = container.CreateChildContainer();
+            IPlugin pluginInstance = (IPlugin)childContainer.Activate(pluginType);
             container.RegisterInstance(pluginInstance, pluginInstance.Name);
 
             IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>(false);
             IEnumerable<Type> pluginCommands =
-                pluginInstance.FindTypes<ICommand>(false, c => !typeof(ISubCommand).IsAssignableFrom(c) 
+                pluginInstance.FindTypes<ICommand>(false, c => !typeof(ISubCommand).IsAssignableFrom(c)
                     && c.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Length == 0);
-            IEnumerable<Type> dependcyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>(false);
+            IEnumerable<Type> dependencyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>(false);
 
-            foreach (Type registrator in dependcyRegistrators)
+            foreach (Type registrator in dependencyRegistrators)
                 ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(container, resolver);
 
             foreach (Type listener in listeners)

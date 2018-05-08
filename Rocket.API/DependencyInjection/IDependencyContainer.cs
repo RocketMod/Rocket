@@ -14,6 +14,11 @@ namespace Rocket.API.DependencyInjection
         IDependencyContainer CreateChildContainer();
 
         /// <summary>
+        /// The parent container.
+        /// </summary>
+        IDependencyContainer ParentContainer { get; }
+
+        /// <summary>
         ///     Registers a service implementation. These implementation are not be shared between components.
         /// </summary>
         /// <typeparam name="TInterface">The service interface.</typeparam>

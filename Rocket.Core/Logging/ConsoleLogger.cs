@@ -27,14 +27,17 @@ namespace Rocket.Core.Logging
             SetColor(ConsoleColor.White);
             Console.Write("] ");
 
-            SetColor(ConsoleColor.White);
-            Console.Write("[");
+            if (RocketSettings.Settings.IncludeMethodsInLogs)
+            {
+                SetColor(ConsoleColor.White);
+                Console.Write("[");
 
-            SetColor(ConsoleColor.DarkGray);
-            Console.Write(GetLoggerCallingMethod().GetDebugName());
+                SetColor(ConsoleColor.DarkGray);
+                Console.Write(GetLoggerCallingMethod().GetDebugName());
 
-            SetColor(ConsoleColor.White);
-            Console.Write("] ");
+                SetColor(ConsoleColor.White);
+                Console.Write("] ");
+            }
 
             SetColor(color ?? ConsoleColor.White);
             Console.WriteLine(message);
