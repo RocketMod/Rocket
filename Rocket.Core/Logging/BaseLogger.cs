@@ -2,15 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
+using Rocket.Core.Configuration;
 using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Logging
 {
     public abstract class BaseLogger : ILogger
     {
-        protected BaseLogger()
+        public IDependencyContainer Container { get; }
+        protected IRocketSettingsProvider RocketSettings => Container.Resolve<IRocketSettingsProvider>();
+
+        protected BaseLogger(IDependencyContainer container)
         {
+            Container = container;
             SkipTypeFromLogging(GetType());
         }
 

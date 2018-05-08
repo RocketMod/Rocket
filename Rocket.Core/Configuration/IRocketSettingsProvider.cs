@@ -1,7 +1,7 @@
 ﻿namespace Rocket.Core.Configuration
 {
     /// <summary>
-    ///     Provides settings for RocketMod.
+    ///     Provides general settings for RocketMod and its own services.
     /// </summary>
     public interface IRocketSettingsProvider
     {

@@ -26,6 +26,7 @@ namespace Rocket.Core.Plugins
             parentLogger = container.Resolve<ILogger>();
             Name = name ?? GetType().Name;
             Container = container.CreateChildContainer();
+            Container.RegisterSingletonInstance<IPlugin>(this);
         }
 
         protected IDependencyContainer Container { get; }
@@ -121,7 +122,7 @@ namespace Rocket.Core.Plugins
                 {
                     WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
                     var pluginLogger = new PluginLogger(Container, this);
-                    Container.RegisterSingletonInstance(pluginLogger, "plugin_logger");
+                    Container.RegisterSingletonInstance<ILogger>(pluginLogger, "plugin_logger");
                 }
                 firstInit = false;
             }

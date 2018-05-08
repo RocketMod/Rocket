@@ -6,6 +6,7 @@ using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
+using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
 
@@ -28,7 +29,10 @@ namespace Rocket.Core.Commands
             string[] args = commandLine.Split(' ');
 
             IDependencyContainer contextContainer = container.CreateChildContainer();
-            contextContainer.Resolve<ILogger>().LogInformation($"{caller.Name} executed command: \"{commandLine}\"");
+            var settings = contextContainer.Resolve<IRocketSettingsProvider>();
+            
+            if(settings.Settings.LogCommandExecutions)
+                contextContainer.Resolve<ILogger>().LogInformation($"{caller.Name} executed command: \"{commandLine}\"");
 
             CommandContext context = new CommandContext(contextContainer,
                 caller, prefix, null,

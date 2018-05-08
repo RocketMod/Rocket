@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
+using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
 
@@ -9,6 +11,7 @@ namespace Rocket.Core.Logging
     [DontAutoRegister]
     public class FileLogger : BaseLogger, IDisposable
     {
+        public FileLogger(IDependencyContainer container) : base(container) { }
         private StreamWriter streamWriter;
         private string logFile;
 
@@ -101,7 +104,7 @@ namespace Rocket.Core.Logging
             }
 
             string callingMethod = GetLoggerCallingMethod().GetDebugName();
-            string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] [{callingMethod}] {message}";
+            string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] " + (RocketSettings.Settings.IncludeMethodsInLogs ? $"[{callingMethod}] " : "") + "{message}";
             streamWriter.WriteLine(formattedLine);
         }
 
