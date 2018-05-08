@@ -5,7 +5,7 @@ namespace Rocket.API.DependencyInjection
     /// <summary>
     ///     A dependency container. See <a href="https://msdn.microsoft.com/en-us/library/ff921087.aspx">https://msdn.microsoft.com/en-us/library/ff921087.aspx</a> for more.
     /// </summary>
-    public interface IDependencyContainer : IDependencyResolver
+    public interface IDependencyContainer : IDependencyResolver, IDisposable
     {
         /// <summary>
         ///     Creates a child container.
@@ -64,5 +64,7 @@ namespace Rocket.API.DependencyInjection
         /// <param name="mappingNames">The mapping names to unregister. If null or empty it will unregister everything.</param>
         void UnregisterType(Type type, params string[] mappingNames);
 
+        /// <inheritdoc />
+        void Dispose();
     }
 }

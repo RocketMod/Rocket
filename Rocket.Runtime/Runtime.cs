@@ -110,5 +110,10 @@ namespace Rocket
         public string ConfigurationName { get; } = "Rocket";
 
         public static IRuntime Bootstrap() => new Runtime();
+
+        public void Shutdown()
+        {
+            Container.Dispose();
+        }
     }
 }

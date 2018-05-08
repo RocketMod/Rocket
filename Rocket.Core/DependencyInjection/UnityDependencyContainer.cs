@@ -143,6 +143,11 @@ namespace Rocket.Core.DependencyInjection
             }
         }
 
+        public void Dispose()
+        {
+            (container as UnityContainer)?.Dispose();
+        }
+
         #endregion
 
         #region IDependencyResolver Implementation
