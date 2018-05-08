@@ -105,12 +105,13 @@ namespace Rocket.Core.Logging
 
             string callingMethod = GetLoggerCallingMethod().GetDebugName();
             string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] " + (RocketSettings?.Settings.IncludeMethodsInLogs ?? true ? $"[{callingMethod}] " : "") + $"{message}";
-            streamWriter.WriteLine(formattedLine);
+            if (streamWriter.BaseStream.CanWrite)
+                streamWriter.WriteLine(formattedLine);
         }
 
         public void Dispose()
         {
- streamWriter?.Close();
+            streamWriter?.Close();
             streamWriter?.Dispose();
 
             Backup(File);
