@@ -1,8 +1,5 @@
-﻿using System;
-using System.Drawing;
-using Rocket.API.Commands;
+﻿using System.Drawing;
 using Rocket.API.I18N;
-using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.User;
 

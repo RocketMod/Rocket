@@ -1,5 +1,4 @@
-﻿using Rocket.API.Commands;
-using Rocket.API.User;
+﻿using Rocket.API.User;
 
 namespace Rocket.API.Entities
 {

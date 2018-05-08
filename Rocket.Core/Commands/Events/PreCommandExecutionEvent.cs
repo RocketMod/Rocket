@@ -1,5 +1,4 @@
-﻿using Rocket.API.Commands;
-using Rocket.API.Eventing;
+﻿using Rocket.API.Eventing;
 using Rocket.API.User;
 
 namespace Rocket.Core.Commands.Events

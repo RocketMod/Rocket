@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration;

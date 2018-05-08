@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using Rocket.API;
 using Rocket.API.Configuration;
 
 namespace Rocket.Core.Configuration.JsonNetBase

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Xml.Serialization;
-using Rocket.Core.Configuration;
+﻿using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Migration.LegacyPermissions
 {

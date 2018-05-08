@@ -1,6 +1,4 @@
-﻿using System;
-using Rocket.API.Commands;
-using Rocket.API.Entities;
+﻿using Rocket.API.Entities;
 using Rocket.API.User;
 
 namespace Rocket.API.Player

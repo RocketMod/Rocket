@@ -1,15 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using Rocket.API;
-using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
-using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Logging;
 

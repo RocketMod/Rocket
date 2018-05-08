@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
-using System.Reflection;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
-using Rocket.Core.Configuration;
 using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Logging

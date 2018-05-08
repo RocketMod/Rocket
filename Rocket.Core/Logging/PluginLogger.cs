@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Plugins;
-using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 
 namespace Rocket.Core.Logging

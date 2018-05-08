@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Rocket.API;
-using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
 using Rocket.API.User;

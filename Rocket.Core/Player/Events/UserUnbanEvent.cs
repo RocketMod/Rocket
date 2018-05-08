@@ -1,6 +1,4 @@
-﻿using Rocket.API.Commands;
-using Rocket.API.Eventing;
-using Rocket.API.Player;
+﻿using Rocket.API.Eventing;
 using Rocket.API.User;
 
 namespace Rocket.Core.Player.Events

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ObjectBuilder2;
-using Rocket.API;
-using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;

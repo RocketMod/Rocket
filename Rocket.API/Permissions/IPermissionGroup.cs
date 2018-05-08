@@ -1,5 +1,4 @@
-﻿using Rocket.API.Player;
-using Rocket.API.User;
+﻿using Rocket.API.User;
 
 namespace Rocket.API.Permissions
 {

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Rocket.API.Commands;
-using Rocket.API.Permissions;
-using Rocket.API.Player;
+﻿using System.Collections.Generic;
 using Rocket.API.User;
 
 namespace Rocket.API.Economy

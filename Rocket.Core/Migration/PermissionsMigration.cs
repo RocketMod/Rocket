@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Rocket.API.Configuration;
+﻿using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;

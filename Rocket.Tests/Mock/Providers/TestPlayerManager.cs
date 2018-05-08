@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
 using Rocket.API.User;

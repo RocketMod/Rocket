@@ -1,18 +1,14 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Newtonsoft.Json.Linq;
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.I18N;
 using Rocket.API.Logging;
-using Rocket.API.Permissions;
 using Rocket.Core.Configuration;
 using Rocket.Core.Configuration.JsonNetBase;
 using Rocket.Core.Configuration.Xml;
 using Rocket.Core.Logging;
-using Rocket.Core.Migration.LegacyTranslations;
-using Rocket.Core.Permissions;
 
 namespace Rocket.Core.Migration
 {

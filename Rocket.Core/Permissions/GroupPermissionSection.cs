@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Rocket.API.Configuration;
-using Rocket.API.Permissions;
 using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Permissions

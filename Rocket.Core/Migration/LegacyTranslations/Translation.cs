@@ -1,7 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace Rocket.Core.Migration.LegacyTranslations
+﻿namespace Rocket.Core.Migration.LegacyTranslations
 {
     public class Translation
     {

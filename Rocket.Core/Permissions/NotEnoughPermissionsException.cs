@@ -2,7 +2,6 @@
 using System.Drawing;
 using Rocket.API.Commands;
 using Rocket.API.User;
-using Rocket.Core.Commands;
 using Rocket.Core.User;
 
 namespace Rocket.Core.Permissions

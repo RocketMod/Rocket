@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.Migration
 {
