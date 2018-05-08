@@ -10,7 +10,7 @@ namespace Rocket.Core.Commands
     public class CommandContext : ICommandContext
     {
         public CommandContext(IDependencyContainer container,
-                              IUser caller,
+                              IUser user,
                               string commandPrefix,
                               ICommand command,
                               string commandAlias,
@@ -19,7 +19,7 @@ namespace Rocket.Core.Commands
                               ICommandContext rootCommandContext)
         {
             Container = container;
-            User = caller;
+            User = user;
             Command = command;
             CommandAlias = commandAlias;
             ParentContext = parentCommandContext;

@@ -9,6 +9,9 @@ namespace Rocket.API.Plugins
     /// </summary>
     public interface IPlugin : IEventEmitter, IConfigurationContext
     {
+        /// <summary>
+        ///     The related plugin manager.
+        /// </summary>
         IPluginManager PluginManager { get; }
 
         /// <summary>

@@ -88,7 +88,7 @@ namespace Rocket.Core.Commands
             return true;
         }
 
-        public bool SupportsUser(Type User) => true;
+        public bool SupportsUser(Type user)=> true;
 
         private CommandContext GetChild(CommandContext root, CommandContext context, List<ICommand> tree)
         {
@@ -121,10 +121,10 @@ namespace Rocket.Core.Commands
             return GetChild(root, childContext, tree);
         }
 
-        private void GuardUser(IUser caller)
+        private void GuardUser(IUser user)
         {
-            if (!SupportsUser(caller.GetType()))
-                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
+            if (!SupportsUser(user.GetType()))
+                throw new NotSupportedException(user.GetType().FullName + " is not supported!");
         }
     }
 }

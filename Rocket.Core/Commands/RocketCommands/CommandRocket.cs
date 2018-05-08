@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Plugins;
@@ -21,7 +22,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(Type User) => true;
+        public bool SupportsUser(Type user)=> true;
     }
 
     public class RocketChildrenCommandReload : IChildCommand
@@ -34,7 +35,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => null;
 
-        public bool SupportsUser(Type User) => true;
+        public bool SupportsUser(Type user)=> true;
 
         public void Execute(ICommandContext context)
         {
@@ -51,7 +52,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 plugin.Load(true);
             }
 
-            context.User.SendMessage("Reload completed.", ConsoleColor.DarkGreen);
+            context.User.SendMessage("Reload completed.", Color.DarkGreen);
         }
     }
 }

@@ -63,8 +63,5 @@ namespace Rocket.API.DependencyInjection
         /// <param name="type">The type to unregister.</param>
         /// <param name="mappingNames">The mapping names to unregister. If null or empty it will unregister everything.</param>
         void UnregisterType(Type type, params string[] mappingNames);
-
-        /// <inheritdoc />
-        void Dispose();
     }
 }

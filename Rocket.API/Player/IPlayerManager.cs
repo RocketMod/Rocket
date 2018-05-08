@@ -66,9 +66,8 @@ namespace Rocket.API.Player
 
         /// <summary>
         ///     Gets an online or offline players instance.<br/><br/>
-        ///     <b>It is guaranteed to return <see cref="IOnlinePlayer"/> instances for online players.</b><br/><br/>
         ///     <b>This method will never return null, even if the player never connected to the server.</b> You can use
-        ///     <see cref="IPlayer.LastSeen"/> to check if the player was ever online.
+        ///     <see cref="IUser.LastSeen"/> to check if the player was ever online.
         /// </summary>
         /// <param name="id">The id of the player to get.</param>
         /// <returns>The player instance.</returns>

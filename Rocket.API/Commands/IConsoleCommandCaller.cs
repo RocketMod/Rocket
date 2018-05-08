@@ -1,16 +1,49 @@
-﻿using Rocket.API.User;
+﻿using System;
+using Rocket.API.User;
 using System.Drawing;
+using Rocket.API.Logging;
 
 namespace Rocket.API.Commands
 {
     /// <summary>
-    ///     This <see cref="IUser">command caller</see> is used when executing commands from console.
+    ///     This <see cref="IUser">user</see> is used when executing commands from console.
     ///     <para>Altough plugins could use it to call commands programatically, it is recommended that they implement their own
-    ///     command caller.</para>
+    ///     user.</para>
     /// </summary>
     public interface IConsole : IUser 
     {
-        void WriteLine(string format, Color color, object[] bindings);
-        void Write(string format, Color color, object[] bindings);
+        /// <inheritdoc cref="Console.WriteLine(string, object[])"/>
+        /// <param name="format">The format.</param>
+        /// <param name="bindings">The bindings.</param>
+        void WriteLine(string format, params object[] bindings);
+
+        /// <inheritdoc cref="Console.WriteLine(string, object[])"/>
+        /// <param name="level">The log level.</param>
+        /// <param name="format">The format.</param>
+        /// <param name="bindings">The bindings.</param>
+        void WriteLine(LogLevel level, string format, params object[] bindings);
+
+        /// <inheritdoc cref="Console.WriteLine(string, object[])"/>
+        /// <param name="color">The color to use.</param>
+        /// <param name="level">The log level.</param>
+        /// <param name="format">The format.</param>
+        /// <param name="bindings">The bindings.</param>
+        void WriteLine(LogLevel level, string format, Color? color = null, params object[] bindings);
+
+        /// <inheritdoc cref="Console.WriteLine(string, object[])"/>
+        /// <param name="color">The color to use.</param>
+        /// <param name="format">The format.</param>
+        /// <param name="bindings">The bindings.</param>
+        void WriteLine(string format, Color? color = null, params object[] bindings);
+
+        /// <inheritdoc cref="Console.Write(string, object[])"/>
+        /// <param name="color">The color to use.</param>
+        /// <param name="format">The format.</param>
+        /// <param name="bindings">The bindings.</param>
+        void Write(string format, Color? color = null, params object[] bindings);
+
+
+        /// <inheritdoc cref="Console.Write(string, object[])"/>
+        void Write(string format, params object[] bindings);
     }
 }

@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Diagnostics.Eventing.Reader;
+using System.Drawing;
 using System.IO;
 using Rocket.API;
 using Rocket.API.Configuration;
@@ -26,7 +27,7 @@ namespace Rocket
 
             var logger = Container.Resolve<ILogger>();
             string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
-            logger.LogInformation(rocketInitializeMessage, ConsoleColor.DarkGreen);
+            logger.LogInformation(rocketInitializeMessage, Color.DarkGreen);
             logger.LogInformation(@"                                    
 									
                                                            ,:
@@ -61,7 +62,7 @@ namespace Rocket
                   _((    )b -`.  ) +
                  (8)(_.aP"" _a   \( \   *
                +  ) / (8P(88))
-                  (""     `""       `", ConsoleColor.Cyan);
+                  (""     `""       `", Color.Cyan);
 
 
             Container.Activate(typeof(RegistrationByConvention));
@@ -74,7 +75,7 @@ namespace Rocket
                 Container.RegisterSingletonType<ILogger, FileLogger>("default_file_logger");
                 FileLogger fl = (FileLogger) Container.Resolve<ILogger>("default_file_logger");
                 fl.File = Path.Combine(logsDirectory, "Rocket.log");
-                fl.LogInformation(rocketInitializeMessage, ConsoleColor.DarkGreen);
+                fl.LogInformation(rocketInitializeMessage, Color.DarkGreen);
             }
 
             var permissions = Container.Resolve<IPermissionProvider>();
@@ -85,7 +86,7 @@ namespace Rocket
 
             permissions.Load(this);
 
-            logger.LogInformation($"Initializing implementation: {impl.Name}", ConsoleColor.Green);
+            logger.LogInformation($"Initializing implementation: {impl.Name}", Color.Green);
             impl.Init(this);
         }
 

@@ -11,12 +11,12 @@ namespace Rocket.Core.Commands
     {
         public ProxyCommandHandler(IDependencyContainer container) : base(container) { }
 
-        public bool HandleCommand(IUser caller, string commandLine, string prefix)
+        public bool HandleCommand(IUser user, string commandLine, string prefix)
         {
-            GuardCaller(caller);
+            GuardUser(user);
 
-            foreach (ICommandHandler handler in ProxiedServices.Where(c => c.SupportsUser(caller.GetType())))
-                if (handler.HandleCommand(caller, commandLine, prefix))
+            foreach (ICommandHandler handler in ProxiedServices.Where(c => c.SupportsUser(user.GetType())))
+                if (handler.HandleCommand(user, commandLine, prefix))
                     return true;
 
             return false;
@@ -27,10 +27,10 @@ namespace Rocket.Core.Commands
             return ProxiedServices.Any(c => c.SupportsUser(user));
         }
 
-        private void GuardCaller(IUser caller)
+        private void GuardUser(IUser user)
         {
-            if (!SupportsUser(caller.GetType()))
-                throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
+            if (!SupportsUser(user.GetType()))
+                throw new NotSupportedException(user.GetType().FullName + " is not supported!");
         }
     }
 }

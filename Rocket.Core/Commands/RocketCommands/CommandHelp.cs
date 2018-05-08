@@ -84,11 +84,11 @@ namespace Rocket.Core.Commands.RocketCommands
             }
         }
 
-        public bool HasAccess(ICommand command, IUser caller, IPermissionProvider permissionProvider)
+        public bool HasAccess(ICommand command, IUser user, IPermissionProvider permissionProvider)
         {
-            return (permissionProvider.CheckPermission(caller, command.Permission ?? command.Name)
+            return (permissionProvider.CheckPermission(user, command.Permission ?? command.Name)
                 == PermissionResult.Grant
-                && command.SupportsUser(caller.GetType()));
+                && command.SupportsUser(user.GetType()));
         }
 
         public string GetCommandUsage(ICommand command, string prefix)

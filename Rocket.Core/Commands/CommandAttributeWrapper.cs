@@ -12,14 +12,14 @@ namespace Rocket.Core.Commands
     [DontAutoRegister]
     public class CommandAttributeWrapper : ICommand
     {
-        private readonly Type[] supportedCallers;
+        private readonly Type[] supportedUsers;
 
         public CommandAttributeWrapper(object instance, MethodBase method,
                                        CommandAttribute attribute,
                                        string[] aliases,
-                                       Type[] supportedCallers)
+                                       Type[] supportedUsers)
         {
-            this.supportedCallers = supportedCallers;
+            this.supportedUsers = supportedUsers;
             Instance = instance;
             Method = method;
             Attribute = attribute;
@@ -57,10 +57,10 @@ namespace Rocket.Core.Commands
 
         public bool SupportsUser(Type user)
         {
-            if (supportedCallers.Length == 0)
+            if (supportedUsers.Length == 0)
                 return true;
 
-            return supportedCallers.Any(c => c.IsAssignableFrom(user));
+            return supportedUsers.Any(c => c.IsAssignableFrom(user));
         }
 
         public void Execute(ICommandContext context)

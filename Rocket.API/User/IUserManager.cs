@@ -6,36 +6,42 @@ using System.Text;
 
 namespace Rocket.API.User
 {
+    /// <summary>
+    ///     The service responsible for managing users.
+    /// </summary>
     public interface IUserManager
     {
+        /// <summary>
+        ///     The online users.
+        /// </summary>
         IEnumerable<IUser> Users { get; }
 
         /// <summary>
-        ///     Kicks (disconnects) the given player from the server.
+        ///     Kicks (disconnects) the given user from the server.
         /// </summary>
-        /// <param name="player">The player to kick.</param>
-        /// <param name="caller">The command caller which kicks the player (optional).</param>
-        /// <param name="reason">The kick reason whicht might be shown to the player (optional).</param>
-        /// <returns><b>true</b> if the player could be kicked; otherwise, <b>false</b>.</returns>
-        bool Kick(IUser player, IUser caller = null, string reason = null);
+        /// <param name="user">The user to kick.</param>
+        /// <param name="kickedBy">The user which kicks (optional).</param>
+        /// <param name="reason">The kick reason whicht might be shown to the user (optional).</param>
+        /// <returns><b>true</b> if the user could be kicked; otherwise, <b>false</b>.</returns>
+        bool Kick(IUser user, IUser kickedBy = null, string reason = null);
 
         /// <summary>
-        ///     Bans the given player from the server.
+        ///     Bans the given user from the server.
         /// </summary>
-        /// <param name="player">The player to ban.</param>
-        /// <param name="caller">The command caller which bans the player (optional).</param>
-        /// <param name="reason">The ban reason which might be shown to the player (optional).</param>
+        /// <param name="user">The user to ban.</param>
+        /// <param name="bannedBy">The user which bans (optional).</param>
+        /// <param name="reason">The ban reason which might be shown to the user (optional).</param>
         /// <param name="timeSpan">The ban duration. Will never expire if null.</param>
-        /// <returns><b>true</b> if the player could be banned; otherwise, <b>false</b>.</returns>
-        bool Ban(IUser player, IUser caller = null, string reason = null, TimeSpan? timeSpan = null);
+        /// <returns><b>true</b> if the user could be banned; otherwise, <b>false</b>.</returns>
+        bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null);
 
         /// <summary>
-        ///     Unbans the given player from the server.
+        ///     Unbans the given user from the server.
         /// </summary>
-        /// <param name="player">The player to unban.</param>
-        /// <param name="caller">The command caller which unbans the player.</param>
-        /// <returns><b>true</b> if the player could be unbanned; otherwise, <b>false</b>.</returns>
-        bool Unban(IUser player, IUser caller = null);
+        /// <param name="user">The user to unban.</param>
+        /// <param name="unbannedBy">The user which unbans.</param>
+        /// <returns><b>true</b> if the user could be unbanned; otherwise, <b>false</b>.</returns>
+        bool Unban(IUser user, IUser unbannedBy = null);
 
         /// <summary>
         ///     Sends a message to the given User.

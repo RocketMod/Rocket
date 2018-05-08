@@ -7,8 +7,9 @@ namespace Rocket.API.User
     /// </summary>
     public interface IUser : IUserInfo
     {
-        IUserManager UserManager { get; }
-
+        /// <summary>
+        ///     Checks if the user is online.
+        /// </summary>
         bool IsOnline { get; }
 
         /// <summary>
@@ -21,6 +22,14 @@ namespace Rocket.API.User
         /// </summary>
         DateTime? SessionDisconnectTime { get; }
 
+        /// <summary>
+        ///     Gets the last time the user was online on the server or null if the user was never online before.
+        /// </summary>
+        DateTime? LastSeen { get; }
+
+        /// <summary>
+        ///     The user type (e.g. "DiscordUser", "Unturned", etc...)
+        /// </summary>
         string UserType { get; }
     }
 }

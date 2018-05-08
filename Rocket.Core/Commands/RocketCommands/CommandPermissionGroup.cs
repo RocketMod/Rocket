@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
@@ -28,7 +29,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(Type User) => true;
+        public bool SupportsUser(Type user)=> true;
     }
 
     public abstract class PermissionGroupChildrenCommandUpdate : IChildCommand
@@ -42,7 +43,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsUser(Type User) => true;
+        public bool SupportsUser(Type user)=> true;
 
         public void Execute(ICommandContext context)
         {
@@ -59,7 +60,7 @@ namespace Rocket.Core.Commands.RocketCommands
             IPermissionGroup groupToUpdate = permissions.GetGroup(groupName);
             if (groupToUpdate == null)
             {
-                context.User.SendMessage($"Group \"{groupName}\" was not found.", ConsoleColor.Red);
+                context.User.SendMessage($"Group \"{groupName}\" was not found.", Color.Red);
                 return;
             }
 
@@ -82,9 +83,9 @@ namespace Rocket.Core.Commands.RocketCommands
         {
             if (permissions.AddGroup(targetPlayer, groupToUpdate))
                 user.SendMessage($"Successfully added {targetPlayer:Name} to \"{groupToUpdate:Name}\"!",
-                    ConsoleColor.DarkGreen);
+                    Color.DarkGreen);
             else
-                user.SendMessage($"Failed to add {targetPlayer:Name} to \"{groupToUpdate:Name}\"!", ConsoleColor.Red);
+                user.SendMessage($"Failed to add {targetPlayer:Name} to \"{groupToUpdate:Name}\"!", Color.Red);
         }
     }
 
@@ -100,10 +101,10 @@ namespace Rocket.Core.Commands.RocketCommands
         {
             if (permissions.RemoveGroup(targetPlayer, groupToUpdate))
                 user.SendMessage($"Successfully removed {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
-                    ConsoleColor.DarkGreen);
+                    Color.DarkGreen);
             else
                 user.SendMessage($"Failed to remove {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
-                    ConsoleColor.Red);
+                    Color.Red);
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using Rocket.API;
 using Rocket.API.Commands;
@@ -38,7 +39,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (!Directory.Exists(basePath))
             {
-                context.User.SendMessage($"Migration failed: Path \"{basePath}\" does not exist.", ConsoleColor.Red);
+                context.User.SendMessage($"Migration failed: Path \"{basePath}\" does not exist.", Color.Red);
                 return;
             }
 
@@ -67,7 +68,7 @@ namespace Rocket.Core.Commands.RocketCommands
                     }
             }
 
-            logger.LogInformation("Legacy migration done.", ConsoleColor.DarkGreen);
+            logger.LogInformation("Legacy migration done.", Color.DarkGreen);
         }
     }
 }

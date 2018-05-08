@@ -77,12 +77,12 @@ namespace Rocket.API.Permissions
         bool RemoveDeniedPermission(IIdentity target, string permission);
 
         /// <summary>
-        ///     Gets the primary group of the given command caller.
+        ///     Gets the primary group of the given user.
         /// </summary>
-        /// <param name="caller">The command caller.</param>
+        /// <param name="user">The user wose primary group to get of.</param>
         /// <returns>the primary group if it exists; otherwise, <b>null</b>.</returns>
         [Obsolete("Might be removed")]
-        IPermissionGroup GetPrimaryGroup(IUser caller);
+        IPermissionGroup GetPrimaryGroup(IUser user);
 
         /// <summary>
         ///     Gets the primary group with the given ID.
@@ -112,7 +112,7 @@ namespace Rocket.API.Permissions
         bool UpdateGroup(IPermissionGroup group);
 
         /// <summary>
-        ///     Adds the given group to the command caller.
+        ///     Adds the given group to the user.
         /// </summary>
         /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to add.</param>
@@ -120,7 +120,7 @@ namespace Rocket.API.Permissions
         bool AddGroup(IIdentity target, IPermissionGroup group);
 
         /// <summary>
-        ///     Removes the given group from the command caller.
+        ///     Removes the given group from the user.
         /// </summary>
         /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to remove.</param>

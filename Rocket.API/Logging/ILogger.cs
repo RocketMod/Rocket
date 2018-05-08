@@ -14,7 +14,6 @@ namespace Rocket.API.Logging
         /// <param name="level">Thel log level.</param>
         /// <param name="message">The message to log.</param>
         /// <param name="exception">The related exception if one exists.</param>
-        /// <param name="color">The log color.</param>
         /// <param name="arguments">The message arguments. See <see cref="string.Format(string, object[])"/></param>
         void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments);
 

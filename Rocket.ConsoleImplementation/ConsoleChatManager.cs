@@ -23,17 +23,17 @@ namespace Rocket.ConsoleImplementation
         }
 
         public IEnumerable<IUser> Users { get; }
-        public bool Kick(IUser player, IUser caller = null, string reason = null)
+        public bool Kick(IUser user, IUser kickedBy = null, string reason = null)
         {
             throw new NotSupportedException();
         }
 
-        public bool Ban(IUser player, IUser caller = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
         {
             throw new NotSupportedException();
         }
 
-        public bool Unban(IUser player, IUser caller = null)
+        public bool Unban(IUser user, IUser unbannedBy = null)
         {
             throw new NotSupportedException();
         }

@@ -84,6 +84,7 @@ namespace Rocket.Tests.Mock
         public bool IsOnline => true;
         public DateTime SessionConnectTime { get; }
         public DateTime? SessionDisconnectTime => null;
+        public DateTime? LastSeen => DateTime.Now;
         public string UserType => "TestPlayer";
         public IPlayer Player { get; }
     }

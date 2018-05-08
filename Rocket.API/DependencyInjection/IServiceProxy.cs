@@ -9,7 +9,7 @@ namespace Rocket.API.DependencyInjection
     /// <remarks>
     ///     <inheritdoc/>
     /// </remarks>
-    /// <typeparam name="T">The service to proxy (e.g. IChatManager).</typeparam>
+    /// <typeparam name="T">The service to proxy (e.g. IUserManager).</typeparam>
     public interface IServiceProxy<T> : IServiceProxy where T : IProxyableService
     {
         /// <summary>q

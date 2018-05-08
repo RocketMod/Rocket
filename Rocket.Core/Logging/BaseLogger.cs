@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using Rocket.API.DependencyInjection;
@@ -47,7 +48,7 @@ namespace Rocket.Core.Logging
 
         public abstract void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments);
 
-        public string GetLogLevelPrefix(LogLevel level)
+        public static string GetLogLevelPrefix(LogLevel level)
         {
             switch (level)
             {
@@ -69,24 +70,24 @@ namespace Rocket.Core.Logging
             throw new ArgumentOutOfRangeException(nameof(level), level, null);
         }
 
-        public ConsoleColor GetLogLevelColor(LogLevel level)
+        public static Color GetLogLevelColor(LogLevel level)
         {
             switch (level)
             {
                 case LogLevel.Trace:
-                    return ConsoleColor.DarkGray;
+                    return Color.DarkGray;
                 case LogLevel.Debug:
-                    return ConsoleColor.Gray;
+                    return Color.Gray;
                 case LogLevel.Native:
-                    return ConsoleColor.White;
+                    return Color.White;
                 case LogLevel.Information:
-                    return ConsoleColor.Green;
+                    return Color.Green;
                 case LogLevel.Warning:
-                    return ConsoleColor.Yellow;
+                    return Color.Yellow;
                 case LogLevel.Error:
-                    return ConsoleColor.Red;
+                    return Color.Red;
                 case LogLevel.Fatal:
-                    return ConsoleColor.DarkRed;
+                    return Color.DarkRed;
             }
             throw new ArgumentOutOfRangeException(nameof(level), level, null);
         }

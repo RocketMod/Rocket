@@ -38,11 +38,11 @@ namespace Rocket.Core.Permissions
 
         public bool RemoveDeniedPermission(IIdentity target, string permission) => false;
 
-        public IPermissionGroup GetPrimaryGroup(IUser caller) => null;
+        public IPermissionGroup GetPrimaryGroup(IUser user) => null;
 
         public IPermissionGroup GetGroup(string id) => null;
 
-        public IEnumerable<IPermissionGroup> GetGroups(IIdentity caller) => new IPermissionGroup[0];
+        public IEnumerable<IPermissionGroup> GetGroups(IIdentity target) => new IPermissionGroup[0];
 
         public IEnumerable<IPermissionGroup> GetGroups() => new IPermissionGroup[0];
 
@@ -50,7 +50,7 @@ namespace Rocket.Core.Permissions
 
         public bool AddGroup(IIdentity target, IPermissionGroup group) => false;
 
-        public bool RemoveGroup(IIdentity caller, IPermissionGroup group) => false;
+        public bool RemoveGroup(IIdentity target, IPermissionGroup group) => false;
 
         public bool CreateGroup(IPermissionGroup group) => false;
 

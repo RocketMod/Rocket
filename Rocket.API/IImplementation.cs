@@ -31,7 +31,7 @@ namespace Rocket.API
         void Reload();
 
         /// <summary>
-        ///     Gets the console command caller. <br/>
+        ///     Gets the console. <br/>
         ///     <b>Might return null.</b>
         /// </summary>
         IConsole Console { get; }

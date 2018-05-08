@@ -1,4 +1,5 @@
 ﻿using System;
+using Rocket.API.User;
 
 namespace Rocket.API.Commands
 {
@@ -105,11 +106,11 @@ namespace Rocket.API.Commands
         IChildCommand[] ChildCommands { get; }
 
         /// <summary>
-        ///     Defines if this command can be executed by the given command caller type.
-        ///     It is guaranteed that <see cref="Execute" /> can only be called by supported command callers.
+        ///     Defines if this command can be executed by the given user type.
+        ///     It is guaranteed that <see cref="Execute" /> can only be called by supported users.
         /// </summary>
-        /// <param name="User">The command caller type to check.</param>
-        /// <returns><b>true</b> if the given command caller type can execute this command; otherwise, <b>false</b>.</returns>
+        /// <param name="User">The user type to check.</param>
+        /// <returns><b>true</b> if the given user type can execute this command; otherwise, <b>false</b>.</returns>
         bool SupportsUser(Type User);
 
         /// <summary>

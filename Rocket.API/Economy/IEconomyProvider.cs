@@ -13,7 +13,7 @@ namespace Rocket.API.Economy
     public interface IEconomyProvider
     {
         /// <summary>
-        ///     Adds balance to the command callers account.
+        ///     Adds balance to the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to add. Should not be negative.</param>
@@ -39,7 +39,7 @@ namespace Rocket.API.Economy
         void AddBalance(IEconomyAccount account, decimal amount, string reason = null);
 
         /// <summary>
-        ///     Removes balance from the command callers account.
+        ///     Removes balance from the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to remove. Should not be negative.</param>
@@ -49,7 +49,7 @@ namespace Rocket.API.Economy
         bool RemoveBalance(IIdentity owner, decimal amount, string reason = null);
 
         /// <summary>
-        ///     Removes balance from the command callers account based on a specific currency.
+        ///     Removes balance from the users account based on a specific currency.
         /// </summary>
         /// <param name="amount">The amount to remove. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
@@ -59,14 +59,14 @@ namespace Rocket.API.Economy
         bool RemoveBalance(IEconomyAccount account, decimal amount, string reason = null);
 
         /// <summary>
-        ///     Sets the balance of the command callers account.
+        ///     Sets the balance of the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)"/>.</param>
         void SetBalance(IIdentity owner, decimal amount);
 
         /// <summary>
-        ///     Sets the balance of the command callers account in a specific currency.
+        ///     Sets the balance of the users account in a specific currency.
         /// </summary>
         /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)"/>.</param>
         /// <param name="account">The account to set the balance of.</param>
@@ -80,7 +80,7 @@ namespace Rocket.API.Economy
         bool SupportsNegativeBalance(IIdentity owner);
 
         /// <summary>
-        ///     Checks if the account of the command caller can have negative balance.
+        ///     Checks if the account of the user can have negative balance.
         /// </summary>
         /// <param name="account">Checks if the given account has access.</param>
         /// <returns><b>true</b> if the account can have negative balance; otherwise, <b>false</b>.</returns>
@@ -138,6 +138,11 @@ namespace Rocket.API.Economy
         /// </summary>
         IEconomyCurrency DefaultCurrency { get; }
 
+        /// <summary>
+        ///     Checks if the given identity is supported by the economy provider.
+        /// </summary>
+        /// <param name="identity">The identity to check.</param>
+        /// <returns><b>True</b> if the identity is supported; otherwise, <b>false</b>.</returns>
         bool SupportsIdentity(IIdentity identity);
     }
 }

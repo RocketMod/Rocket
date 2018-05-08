@@ -158,10 +158,10 @@ namespace Rocket.Core.Permissions
             return RemovePermission(target, "!" + permission);
         }
 
-        public IPermissionGroup GetPrimaryGroup(IUser caller)
+        public IPermissionGroup GetPrimaryGroup(IUser user)
         {
             GuardLoaded();
-            return GetGroups(caller).OrderByDescending(c => c.Priority).FirstOrDefault();
+            return GetGroups(user).OrderByDescending(c => c.Priority).FirstOrDefault();
         }
 
         public IEnumerable<IPermissionGroup> GetGroups(IIdentity target)
@@ -310,12 +310,12 @@ namespace Rocket.Core.Permissions
             PlayersConfig.Root?.Save();
         }
 
-        public bool AddPermission(IUser caller, string permission)
+        public bool AddPermission(IUser user, string permission)
         {
             GuardPermission(ref permission);
-            GuardTarget(caller);
+            GuardTarget(user);
 
-            PlayerPermissionSection permsSection = GetConfigSection<PlayerPermissionSection>(caller, true);
+            PlayerPermissionSection permsSection = GetConfigSection<PlayerPermissionSection>(user, true);
             List<string> groupPermissions = permsSection.Permissions.ToList();
             groupPermissions.Add(permission);
             permsSection.Permissions = groupPermissions.ToArray();

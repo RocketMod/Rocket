@@ -59,8 +59,8 @@ namespace Rocket.API.Commands
         ICommand Command { get; }
 
         /// <summary>
-        ///     <para>The caller of the command.</para>
-        ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsCaller">supported command caller</see>.</para>
+        ///     <para>The user of the command.</para>
+        ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsUser">supported user</see>.</para>
         ///     <para><b>This property will never return null.</b></para>
         /// </summary>
         IUser User { get; }
@@ -78,7 +78,7 @@ namespace Rocket.API.Commands
         IDependencyContainer Container { get; }
 
         /// <summary>
-        ///     Sends the command usage to the caller.
+        ///     Sends the command usage to the user.
         /// </summary>
         void SendCommandUsage();
     }

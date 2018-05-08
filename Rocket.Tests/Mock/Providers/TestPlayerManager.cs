@@ -21,12 +21,12 @@ namespace Rocket.Tests.Mock.Providers
         public IEnumerable<IPlayer> OnlinePlayers => new List<IPlayer> {new TestPlayer(Container)};
 
         public IEnumerable<IUser> Users => OnlinePlayers.Select(c => c.User);
-        public bool Kick(IUser player, IUser caller = null, string reason = null) => false;
+        public bool Kick(IUser user, IUser kickedBy = null, string reason = null) => false;
 
-        public bool Ban(IUser player, IUser caller = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
             => false;
 
-        public bool Unban(IUser player, IUser caller = null) 
+        public bool Unban(IUser user, IUser unbannedBy = null) 
             => false;
 
         public void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments)
