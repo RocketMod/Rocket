@@ -125,7 +125,7 @@ namespace Rocket.Core.Plugins
                 }
                 firstInit = false;
             }
-
+            
             if (EventManager != null)
             {
                 PluginActivateEvent activateEvent = new PluginActivateEvent(PluginManager, this);
@@ -133,9 +133,6 @@ namespace Rocket.Core.Plugins
                 if (activateEvent.IsCancelled)
                     return;
             }
-
-            if (!Directory.Exists(WorkingDirectory))
-                Directory.CreateDirectory(WorkingDirectory);
 
             if (DefaultConfiguration != null)
             {
