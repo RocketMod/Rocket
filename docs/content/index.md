@@ -1,6 +1,5 @@
 # Home
 
-Hello World :D ;D
 
 ## Praemia herbida maior oris altus fallere succensaque
 
