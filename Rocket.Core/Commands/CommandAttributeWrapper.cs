@@ -59,7 +59,7 @@ namespace Rocket.Core.Commands
             if (supportedCallers.Length == 0)
                 return true;
 
-            return supportedCallers.Any(commandCaller.IsAssignableFrom);
+            return supportedCallers.Any(c => c.IsAssignableFrom(commandCaller));
         }
 
         public void Execute(ICommandContext context)
