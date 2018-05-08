@@ -7,6 +7,7 @@ using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
+using Rocket.API.User;
 using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions

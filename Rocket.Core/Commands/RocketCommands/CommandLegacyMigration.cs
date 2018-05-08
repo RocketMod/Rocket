@@ -8,6 +8,7 @@ using Rocket.API.Logging;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.Migration;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -20,9 +21,9 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Permission => "Rocket.Migrate.Legacy";
         public string Syntax => "[step]";
         public IChildCommand[] ChildCommands => null;
-        public bool SupportsCaller(Type User)
+        public bool SupportsUser(Type user)
         {
-            return typeof(IConsoleUser).IsAssignableFrom(User);
+            return typeof(IConsole).IsAssignableFrom(user);
         }
 
         public void Execute(ICommandContext context)
@@ -37,7 +38,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (!Directory.Exists(basePath))
             {
-                context.Caller.SendMessage($"Migration failed: Path \"{basePath}\" does not exist.", ConsoleColor.Red);
+                context.User.SendMessage($"Migration failed: Path \"{basePath}\" does not exist.", ConsoleColor.Red);
                 return;
             }
 

@@ -46,7 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConsoleChatManager.cs" />
-    <Compile Include="ConsoleCommandCaller.cs" />
+    <Compile Include="Rocketconsole.cs" />
     <Compile Include="ConsoleImplementation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

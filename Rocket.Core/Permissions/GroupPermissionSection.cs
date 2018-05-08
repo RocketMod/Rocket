@@ -6,7 +6,7 @@ using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Permissions
 {
-    public class GroupPermissionSection : PermissionSection, IPermissionGroup
+    public class GroupPermissionSection : PermissionSection
     {
         public override string Id { get; set; }
 
@@ -18,7 +18,7 @@ namespace Rocket.Core.Permissions
         [ConfigArray(ElementName = "Group")]
         public string[] ParentGroups { get; set; } = new string[0];
 
-        public int Priority { get; set; } = 0;
+        public int Priority { get; set; }
 
         public bool AutoAssign { get; set; } = false;
 
@@ -44,29 +44,5 @@ namespace Rocket.Core.Permissions
         public override string[] GetGroups() => ParentGroups;
 
         public override void SetGroups(string[] groups) => ParentGroups = groups;
-        public int CompareTo(object obj)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public int CompareTo(IIdentity other)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool Equals(IIdentity other)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public int CompareTo(string other)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public bool Equals(string other)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using Rocket.API.Commands;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands
 {
@@ -11,8 +12,8 @@ namespace Rocket.Core.Commands
 
         public virtual void SendErrorMessage(ICommandContext context)
         {
-            context.Caller.SendMessage(Message, ConsoleColor.DarkRed);
-            context.SendHelpMessage();
+            context.User.SendMessage(Message, ConsoleColor.DarkRed);
+            context.SendCommandUsage();
         }
     }
 }

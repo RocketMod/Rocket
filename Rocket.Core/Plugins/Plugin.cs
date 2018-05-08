@@ -43,7 +43,7 @@ namespace Rocket.Core.Plugins
         protected IEventManager EventManager => Container.Resolve<IEventManager>();
         protected ILogger Logger => Container.Resolve<ILogger>();
 
-        protected virtual IPluginManager PluginManager => Container.Resolve<IPluginManager>("default_plugins");
+        public virtual IPluginManager PluginManager => Container.Resolve<IPluginManager>("default_plugins");
 
         protected IRuntime Runtime => Container.Resolve<IRuntime>();
 
@@ -58,16 +58,22 @@ namespace Rocket.Core.Plugins
         public virtual string WorkingDirectory { get; set; }
         public string ConfigurationName => Name;
 
-        public bool Activate()
+        public bool Load(bool isReload)
         {
             if (IsAlive)
                 return false;
 
             parentLogger.LogInformation($"Loading {Name}.");
 
+            if (isReload)
+            {
+                Configuration?.Reload();
+                Translations?.Reload();
+            }
+
             try
             {
-                Load(false);
+                ObLoad(isReload);
                 IsAlive = true;
             }
             catch (Exception ex)
@@ -77,7 +83,7 @@ namespace Rocket.Core.Plugins
             return true;
         }
 
-        public bool Deactivate()
+        public bool Unload()
         {
             if (!IsAlive)
                 return false;
@@ -109,22 +115,14 @@ namespace Rocket.Core.Plugins
             return true;
         }
 
-        public void Reload()
-        {
-            Deactivate();
-            Configuration?.Reload();
-            Translations?.Reload();
-            Load(true);
-        }
-
         public bool IsAlive { get; internal set; }
 
-        public ITranslationLocator Translations { get; protected set; }
+        public ITranslationCollection Translations { get; protected set; }
         public virtual Dictionary<string, string> DefaultTranslations => null;
 
-        public void Load(bool isReload)
+        public void ObLoad(bool isReload)
         {
-           
+
             if (EventManager != null)
             {
                 PluginActivateEvent activateEvent = new PluginActivateEvent(PluginManager, this);
@@ -143,7 +141,7 @@ namespace Rocket.Core.Plugins
 
             if (DefaultTranslations != null)
             {
-                Translations = Container.Resolve<ITranslationLocator>();
+                Translations = Container.Resolve<ITranslationCollection>();
                 var context = this.CreateChildConfigurationContext("Translations");
                 Translations.Load(context, DefaultTranslations);
             }

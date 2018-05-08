@@ -54,6 +54,7 @@
     <Compile Include="Commands\ICommandParameters.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Commands\IConsoleCommandCaller.cs" />
+    <Compile Include="User\IPlayerUser.cs" />
     <Compile Include="User\IUser.cs" />
     <Compile Include="Commands\ISubCommand.cs" />
     <Compile Include="Configuration\ConfigurationContextNotSetException.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Configuration\IConfiguration.cs" />
     <Compile Include="Configuration\IConfigurationSection.cs" />
     <Compile Include="Configuration\SectionType.cs" />
+    <Compile Include="User\IUserInfo.cs" />
     <Compile Include="User\IUserManager.cs" />
     <Compile Include="DependencyInjection\ServiceResolutionFailedException.cs" />
     <Compile Include="Economy\IEconomyAccount.cs" />

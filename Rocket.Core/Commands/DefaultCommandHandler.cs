@@ -6,6 +6,7 @@ using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
+using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
@@ -21,9 +22,9 @@ namespace Rocket.Core.Commands
             this.container = container;
         }
 
-        public bool HandleCommand(IUser caller, string commandLine, string prefix)
+        public bool HandleCommand(IUser user, string commandLine, string prefix)
         {
-            GuardCaller(caller);
+            GuardUser(user);
 
             commandLine = commandLine.Trim();
             string[] args = commandLine.Split(' ');
@@ -32,13 +33,13 @@ namespace Rocket.Core.Commands
             var settings = contextContainer.Resolve<IRocketSettingsProvider>();
             
             if(settings.Settings.LogCommandExecutions)
-                contextContainer.Resolve<ILogger>().LogInformation($"{caller.Name} executed command: \"{commandLine}\"");
+                contextContainer.Resolve<ILogger>().LogInformation($"{user.Name} executed command: \"{commandLine}\"");
 
             CommandContext context = new CommandContext(contextContainer,
-                caller, prefix, null,
+                user, prefix, null,
                 args[0], args.Skip(1).ToArray(), null, null);
 
-            ICommand target = context.Container.Resolve<ICommandProvider>().Commands.GetCommand(context.CommandAlias, caller);
+            ICommand target = context.Container.Resolve<ICommandProvider>().Commands.GetCommand(context.CommandAlias, user);
             if (target == null)
                 return false; // only return false when the command was not found
 
@@ -63,8 +64,8 @@ namespace Rocket.Core.Commands
             string[] perms = tmp.ToArray();
 
             IPermissionProvider provider = container.Resolve<IPermissionProvider>();
-            if (provider.CheckHasAnyPermission(caller, perms) != PermissionResult.Grant)
-                throw new NotEnoughPermissionsException(caller, perms);
+            if (provider.CheckHasAnyPermission(user, perms) != PermissionResult.Grant)
+                throw new NotEnoughPermissionsException(user, perms);
 
             if(Debugger.IsAttached) // go to exception directly in VS
                 context.Command.Execute(context);
@@ -87,7 +88,7 @@ namespace Rocket.Core.Commands
             return true;
         }
 
-        public bool SupportsCaller(Type User) => true;
+        public bool SupportsUser(Type User) => true;
 
         private CommandContext GetChild(CommandContext root, CommandContext context, List<ICommand> tree)
         {
@@ -95,19 +96,19 @@ namespace Rocket.Core.Commands
                 return context;
 
             var alias = context.Parameters[0];
-            var cmd = context.Command.ChildCommands.GetCommand(alias, context.Caller);
+            var cmd = context.Command.ChildCommands.GetCommand(alias, context.User);
 
             if (cmd == null)
                 return context;
 
-            if (!cmd.SupportsCaller(context.Caller.GetType()))
-                throw new NotSupportedException(context.Caller.GetType().Name + " can not use this command.");
+            if (!cmd.SupportsUser(context.User.GetType()))
+                throw new NotSupportedException(context.User.GetType().Name + " can not use this command.");
 
             tree.Add(cmd);
 
             CommandContext childContext = new CommandContext(
                 context.Container.CreateChildContainer(),
-                context.Caller,
+                context.User,
                 context.CommandPrefix + context.CommandAlias + " ",
                 cmd,
                 alias,
@@ -120,9 +121,9 @@ namespace Rocket.Core.Commands
             return GetChild(root, childContext, tree);
         }
 
-        private void GuardCaller(IUser caller)
+        private void GuardUser(IUser caller)
         {
-            if (!SupportsCaller(caller.GetType()))
+            if (!SupportsUser(caller.GetType()))
                 throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
         }
     }

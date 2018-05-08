@@ -23,7 +23,7 @@ namespace Rocket.Tests.DI
         public void CoreDependenciesAvailable()
         {
             Assert.IsNotNull(Runtime.Container.Resolve<IEventManager>());
-            Assert.IsNotNull(Runtime.Container.Resolve<ITranslationLocator>());
+            Assert.IsNotNull(Runtime.Container.Resolve<ITranslationCollection>());
 
             Assert.IsNotNull(Runtime.Container.Resolve<IPermissionProvider>());
             Assert.IsNotNull(Runtime.Container.Resolve<IPermissionProvider>("proxy_permissions"));

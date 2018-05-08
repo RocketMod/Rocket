@@ -6,21 +6,21 @@ using Rocket.API.I18N;
 
 namespace Rocket.Core.I18N
 {
-    public class TranslationLocator : ITranslationLocator, IFormattable
+    public class TranslationCollection : ITranslationCollection, IFormattable
     {
         private readonly IConfiguration config;
 
-        public TranslationLocator(IConfiguration config)
+        public TranslationCollection(IConfiguration config)
         {
             this.config = config;
         }
 
-        public string ToString(string format, IFormatProvider formatProvider) => GetLocalizedMessage(format);
+        public string ToString(string format, IFormatProvider formatProvider) => Get(format);
 
-        public string GetLocalizedMessage(string translationKey, params object[] arguments)
+        public string Get(string translationKey, params object[] arguments)
             => string.Format(config[translationKey].Get<string>(), arguments);
 
-        public void SetFormat(string translationKey, string format)
+        public void Set(string translationKey, string format)
         {
             if (!config.ChildExists(translationKey))
                 config.CreateSection(translationKey, SectionType.Value);

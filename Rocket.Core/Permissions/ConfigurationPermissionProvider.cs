@@ -5,6 +5,7 @@ using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
+using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.ServiceProxies;
 
@@ -188,7 +189,12 @@ namespace Rocket.Core.Permissions
         public IEnumerable<IPermissionGroup> GetGroups()
         {
             GuardLoaded();
-            return GroupsConfig["Groups"].Get<GroupPermissionSection[]>().Cast<IPermissionGroup>().ToList();
+            return GroupsConfig["Groups"].Get<GroupPermissionSection[]>().Select(c => new PermissionGroup
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Priority = c.Priority
+            }).Cast<IPermissionGroup>().ToList();
         }
 
         public bool UpdateGroup(IPermissionGroup group)
@@ -381,7 +387,7 @@ namespace Rocket.Core.Permissions
         {
             IConfigurationElement config = target is IPermissionGroup
                 ? GroupsConfig["Groups"]
-                : PlayersConfig[((IUser)target).CallerType.Name];
+                : PlayersConfig[((IUser)target).UserType];
 
             List<PermissionSection> values = config.Get<PermissionSection[]>().ToList();
             int i = values.RemoveAll(c => c.Id.Equals(target.Id, StringComparison.OrdinalIgnoreCase));
@@ -395,7 +401,7 @@ namespace Rocket.Core.Permissions
 
             IConfigurationElement config = target is IPermissionGroup
                 ? GroupsConfig["Groups"]
-                : PlayersConfig[((IUser)target).CallerType.Name];
+                : PlayersConfig[((IUser)target).UserType];
 
             List<PermissionSection> values = config.Get<PermissionSection[]>().ToList();
 

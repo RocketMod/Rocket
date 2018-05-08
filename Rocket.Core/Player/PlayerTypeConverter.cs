@@ -19,8 +19,8 @@ namespace Rocket.Core.Player
         public override object ConvertFrom(ITypeDescriptorContext context,
                                            CultureInfo culture, object value)
         {
-            if (value is string playerId && context is UnityDescriptorContext ctx)
-                return ctx.UnityContainer.Resolve<IPlayerManager>().GetPlayer(playerId);
+            if (value is string nameOrId && context is UnityDescriptorContext ctx)
+                return ctx.UnityContainer.Resolve<IPlayerManager>().GetPlayer(nameOrId);
 
             return base.ConvertFrom(context, culture, value);
         }

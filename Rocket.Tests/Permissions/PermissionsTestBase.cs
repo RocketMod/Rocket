@@ -3,6 +3,7 @@ using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
+using Rocket.API.User;
 using Rocket.Core.Permissions;
 using Rocket.Tests.Mock;
 
@@ -13,7 +14,7 @@ namespace Rocket.Tests.Permissions
     {
         protected IConfiguration PlayersConfig { get; private set; }
         protected IConfiguration GroupsConfig { get; private set; }
-        protected TestPlayer TestPlayer { get; private set; }
+        protected IUser TestPlayer { get; private set; }
 
         [TestInitialize]
         public override void Bootstrap()
@@ -83,7 +84,7 @@ namespace Rocket.Tests.Permissions
             GroupsConfig = GetConfigurationProvider();
             GroupsConfig.LoadFromObject(sampleGroupsPermissions);
 
-            TestPlayer = new TestPlayer(Runtime.Container);
+            TestPlayer = new TestPlayer(Runtime.Container).User;
         }
 
         public virtual IConfiguration GetConfigurationProvider() => Runtime.Container.Resolve<IConfiguration>();

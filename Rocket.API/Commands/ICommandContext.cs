@@ -63,7 +63,7 @@ namespace Rocket.API.Commands
         ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsCaller">supported command caller</see>.</para>
         ///     <para><b>This property will never return null.</b></para>
         /// </summary>
-        IUser Caller { get; }
+        IUser User { get; }
 
         /// <summary>
         ///     <para>The parameters of the (sub) command.</para>
@@ -80,6 +80,6 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     Sends the command usage to the caller.
         /// </summary>
-        void SendHelpMessage();
+        void SendCommandUsage();
     }
 }

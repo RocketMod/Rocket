@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 
@@ -61,5 +62,23 @@ namespace Rocket.API.User
         /// <param name="message">The message to send.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])"/>.</param>
         void SendMessage(IUser sender, string message, params object[] arguments);
+
+        /// <summary>
+        ///     Sends a message to all Users.
+        /// </summary>
+        /// <param name="sender">The sender of the message.</param>
+        /// <param name="message">The message to send.</param>
+        /// <param name="color">The message color.</param>
+        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])"/>.</param>
+        void SendMessage(IUser sender, string message, Color? color = null, params object[] arguments);
+
+        /// <summary>
+        ///     Broadcasts the given message.
+        /// </summary>
+        /// <param name="sender">The sender of the message.</param>
+        /// <param name="message">The message to broadcast.</param>
+        /// <param name="color">The message color.</param>
+        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])"/>.</param>
+        void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments);
     }
 }

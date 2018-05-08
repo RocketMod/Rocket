@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
 using Rocket.Core.Configuration;
@@ -14,10 +15,10 @@ namespace Rocket.Tests.Mock.Providers
     {
         private readonly ILogger logger;
 
-        public TestImplementation(ILogger logger)
+        public TestImplementation(IDependencyContainer container, ILogger logger)
         {
             this.logger = logger;
-            ConsoleUser = new TestConsoleCaller(logger);
+            Console = new TestConsole(container);
         }
 
         public IEnumerable<string> Capabilities => new List<string>
@@ -41,7 +42,7 @@ namespace Rocket.Tests.Mock.Providers
             logger.LogInformation("Reloading implementation");
         }
 
-        public IConsoleUser ConsoleUser { get; }
+        public IConsole Console { get; }
 
         public void Shutdown()
         {

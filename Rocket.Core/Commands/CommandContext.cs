@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Drawing;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.User;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands
 {
@@ -17,7 +19,7 @@ namespace Rocket.Core.Commands
                               ICommandContext rootCommandContext)
         {
             Container = container;
-            Caller = caller;
+            User = caller;
             Command = command;
             CommandAlias = commandAlias;
             ParentContext = parentCommandContext;
@@ -27,7 +29,7 @@ namespace Rocket.Core.Commands
         }
 
         public ICommand Command { get; internal set; }
-        public IUser Caller { get; }
+        public IUser User { get; }
         public ICommandContext ChildContext { get; internal set; }
         public ICommandContext ParentContext { get; }
         public ICommandContext RootContext { get; }
@@ -35,9 +37,9 @@ namespace Rocket.Core.Commands
         public string CommandAlias { get; }
         public ICommandParameters Parameters { get; }
         public IDependencyContainer Container { get; }
-        public void SendUsage()
+        public void SendCommandUsage()
         {
-            Caller.SendMessage("Usage: " + CommandPrefix + CommandAlias + " " + Command.Syntax, ConsoleColor.Blue);
+            User.SendMessage("Usage: " + CommandPrefix + CommandAlias + " " + Command.Syntax, Color.Blue);
         }
     }
 }

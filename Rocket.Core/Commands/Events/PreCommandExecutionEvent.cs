@@ -1,36 +1,37 @@
 ﻿using Rocket.API.Commands;
 using Rocket.API.Eventing;
+using Rocket.API.User;
 
 namespace Rocket.Core.Commands.Events
 {
     public class PreCommandExecutionEvent : Event, ICancellableEvent
     {
-        public PreCommandExecutionEvent(IUser player, string commandLine) :
-            this(player, commandLine, false) { }
+        public PreCommandExecutionEvent(IUser user, string commandLine) :
+            this(user, commandLine, false) { }
 
-        public PreCommandExecutionEvent(IUser player, string commandLine, bool global = true) : base(global)
+        public PreCommandExecutionEvent(IUser user, string commandLine, bool global = true) : base(global)
         {
-            Player = player;
+            User = user;
             CommandLine = commandLine;
         }
 
-        public PreCommandExecutionEvent(IUser player, string commandLine,
+        public PreCommandExecutionEvent(IUser user, string commandLine,
                                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                         bool global = true) : base(executionTarget, global)
         {
-            Player = player;
+            User = user;
             CommandLine = commandLine;
         }
 
-        public PreCommandExecutionEvent(IUser player, string commandLine, string name = null,
+        public PreCommandExecutionEvent(IUser user, string commandLine, string name = null,
                                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                         bool global = true) : base(name, executionTarget, global)
         {
-            Player = player;
+            User = user;
             CommandLine = commandLine;
         }
 
-        public IUser Player { get; }
+        public IUser User { get; }
         public string CommandLine { get; }
 
         public bool IsCancelled { get; set; }

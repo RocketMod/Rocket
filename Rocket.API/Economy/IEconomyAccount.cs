@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Permissions;
 using Rocket.API.Player;
+using Rocket.API.User;
 
 namespace Rocket.API.Economy
 {

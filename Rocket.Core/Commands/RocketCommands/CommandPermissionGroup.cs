@@ -2,7 +2,9 @@
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
+using Rocket.API.User;
 using Rocket.Core.Permissions;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -26,7 +28,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(Type User) => true;
+        public bool SupportsUser(Type User) => true;
     }
 
     public abstract class PermissionGroupChildrenCommandUpdate : IChildCommand
@@ -40,7 +42,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsCaller(Type User) => true;
+        public bool SupportsUser(Type User) => true;
 
         public void Execute(ICommandContext context)
         {
@@ -50,21 +52,21 @@ namespace Rocket.Core.Commands.RocketCommands
             string permission = "Rocket.Permissions.ManageGroups." + groupName;
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
 
-            if (permissions.CheckPermission(context.Caller, permission) != PermissionResult.Grant)
-                throw new NotEnoughPermissionsException(context.Caller, permission,
+            if (permissions.CheckPermission(context.User, permission) != PermissionResult.Grant)
+                throw new NotEnoughPermissionsException(context.User, permission,
                     "You don't have permissions to manage this group.");
 
             IPermissionGroup groupToUpdate = permissions.GetGroup(groupName);
             if (groupToUpdate == null)
             {
-                context.Caller.SendMessage($"Group \"{groupName}\" was not found.", ConsoleColor.Red);
+                context.User.SendMessage($"Group \"{groupName}\" was not found.", ConsoleColor.Red);
                 return;
             }
 
-            UpdateGroup(context.Caller, permissions, targetPlayer, groupToUpdate);
+            UpdateGroup(context.User, permissions, targetPlayer, groupToUpdate);
         }
 
-        protected abstract void UpdateGroup(IUser caller, IPermissionProvider permissions,
+        protected abstract void UpdateGroup(IUser user, IPermissionProvider permissions,
                                             IPlayer targetPlayer, IPermissionGroup groupToUpdate);
     }
 
@@ -75,14 +77,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Permission => "Rocket.Permissions.ManageGroups.Add";
         public override string[] Aliases => new[] {"a", "+"};
 
-        protected override void UpdateGroup(IUser caller, IPermissionProvider permissions,
+        protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
                                             IPlayer targetPlayer, IPermissionGroup groupToUpdate)
         {
             if (permissions.AddGroup(targetPlayer, groupToUpdate))
-                caller.SendMessage($"Successfully added {targetPlayer:Name} to \"{groupToUpdate:Name}\"!",
+                user.SendMessage($"Successfully added {targetPlayer:Name} to \"{groupToUpdate:Name}\"!",
                     ConsoleColor.DarkGreen);
             else
-                caller.SendMessage($"Failed to add {targetPlayer:Name} to \"{groupToUpdate:Name}\"!", ConsoleColor.Red);
+                user.SendMessage($"Failed to add {targetPlayer:Name} to \"{groupToUpdate:Name}\"!", ConsoleColor.Red);
         }
     }
 
@@ -93,14 +95,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Permission => "Rocket.Permissions.ManageGroups.Remove";
         public override string[] Aliases => new[] {"r", "-"};
 
-        protected override void UpdateGroup(IUser caller, IPermissionProvider permissions,
+        protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
                                             IPlayer targetPlayer, IPermissionGroup groupToUpdate)
         {
             if (permissions.RemoveGroup(targetPlayer, groupToUpdate))
-                caller.SendMessage($"Successfully removed {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
+                user.SendMessage($"Successfully removed {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
                     ConsoleColor.DarkGreen);
             else
-                caller.SendMessage($"Failed to remove {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
+                user.SendMessage($"Failed to remove {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
                     ConsoleColor.Red);
         }
     }

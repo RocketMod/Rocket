@@ -5,6 +5,7 @@ using Newtonsoft.Json.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -17,9 +18,9 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Permission => "Rocket.Migrate.Config";
         public string Syntax => "[<from type> <to type> <path>]";
         public IChildCommand[] ChildCommands { get; }
-        public bool SupportsCaller(Type User)
+        public bool SupportsUser(Type user)
         {
-            return typeof(IConsoleUser).IsAssignableFrom(User);
+            return typeof(IConsole).IsAssignableFrom(user);
         }
 
         public void Execute(ICommandContext context)
@@ -33,8 +34,8 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (context.Parameters.Length == 0)
             {
-                context.Caller.SendMessage(GetConfigTypes(configProviders));
-                context.SendUsage();
+                context.User.SendMessage(GetConfigTypes(configProviders));
+                context.SendCommandUsage();
                 return;
             }
 
@@ -44,7 +45,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (from.Equals(to, StringComparison.OrdinalIgnoreCase))
             {
-                context.Caller.SendMessage("\"from\" and \"to\" can not be the same config type!");
+                context.User.SendMessage("\"from\" and \"to\" can not be the same config type!");
                 return;
             }
 
@@ -78,7 +79,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
             toProvider.Save();
 
-            context.Caller.SendMessage("Configuration was successfully migrated.");
+            context.User.SendMessage("Configuration was successfully migrated.");
         }
 
         private void CopyConfigElement(IConfigurationElement fromSection, IConfigurationElement toSection)

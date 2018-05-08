@@ -1,28 +1,30 @@
 ﻿using System;
 using Rocket.API.Commands;
+using Rocket.API.User;
 using Rocket.Core.Commands;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Permissions
 {
     public class NotEnoughPermissionsException : Exception, ICommandFriendlyException
     {
-        public NotEnoughPermissionsException(IUser caller, string[] permissions) : this(caller, permissions,
+        public NotEnoughPermissionsException(IUser user, string[] permissions) : this(user, permissions,
             "You don't have enough permissions to do that.") { }
 
-        public NotEnoughPermissionsException(IUser caller, string[] permissions, string friendlyErrorMessage)
+        public NotEnoughPermissionsException(IUser user, string[] permissions, string friendlyErrorMessage)
         {
-            Caller = caller;
+            User = user;
             Permissions = permissions;
             FriendlyErrorMessage = friendlyErrorMessage;
         }
 
-        public NotEnoughPermissionsException(IUser caller, string permission, string friendlyErrorMessage) :
-            this(caller, new[] {permission}, friendlyErrorMessage) { }
+        public NotEnoughPermissionsException(IUser user, string permission, string friendlyErrorMessage) :
+            this(user, new[] {permission}, friendlyErrorMessage) { }
 
-        public NotEnoughPermissionsException(IUser caller, string permission) : this(caller,
+        public NotEnoughPermissionsException(IUser user, string permission) : this(user,
             new[] {permission}) { }
 
-        public IUser Caller { get; }
+        public IUser User { get; }
         public string[] Permissions { get; }
         public string FriendlyErrorMessage { get; }
 
@@ -30,7 +32,7 @@ namespace Rocket.Core.Permissions
         {
             get
             {
-                string message = $"{Caller.Name} does not have the following permissions: ";
+                string message = $"{User.Name} does not have the following permissions: ";
                 message += Environment.NewLine;
                 foreach (string perm in Permissions) message += "* " + perm + Environment.NewLine;
 
@@ -40,7 +42,7 @@ namespace Rocket.Core.Permissions
 
         public void SendErrorMessage(ICommandContext context)
         {
-            context.Caller.SendMessage(FriendlyErrorMessage, ConsoleColor.Red);
+            context.User.SendMessage(FriendlyErrorMessage, ConsoleColor.Red);
         }
     }
 }

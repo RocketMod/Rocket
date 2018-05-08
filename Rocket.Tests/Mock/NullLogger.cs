@@ -1,7 +1,8 @@
 ﻿using System;
 using Rocket.API.Logging;
 
-namespace Rocket.Tests.Mock {
+namespace Rocket.Tests.Mock
+{
     public class NullLogger: ILogger {
         public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments)
         {

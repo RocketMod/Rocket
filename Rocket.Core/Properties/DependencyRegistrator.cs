@@ -41,7 +41,7 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPermissionProvider, ConsolePermissionProvider>("console_permissions");
             container.RegisterSingletonType<IPermissionProvider, ProxyPermissionProvider>("proxy_permissions", null);
 
-            container.RegisterType<ITranslationLocator, TranslationLocator>();
+            container.RegisterType<ITranslationCollection, TranslationCollection>();
         }
     }
 }

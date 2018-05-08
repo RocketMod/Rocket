@@ -34,6 +34,6 @@ namespace Rocket.API
         ///     Gets the console command caller. <br/>
         ///     <b>Might return null.</b>
         /// </summary>
-        IConsole ConsoleUser { get; }
+        IConsole Console { get; }
     }
 }

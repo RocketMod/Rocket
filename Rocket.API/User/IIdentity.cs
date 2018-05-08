@@ -1,6 +1,6 @@
 ﻿namespace Rocket.API.User
 {
-    public enum IdentityType { Player = 0, Group = 1 }
+    public enum IdentityType { Console = 0, Player = 1, Group = 2, Custom = 3 }
 
     public interface IIdentity   
     {

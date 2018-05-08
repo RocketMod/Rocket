@@ -2,6 +2,7 @@
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
+using Rocket.API.User;
 using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Commands
@@ -14,21 +15,21 @@ namespace Rocket.Core.Commands
         {
             GuardCaller(caller);
 
-            foreach (ICommandHandler handler in ProxiedServices.Where(c => c.SupportsCaller(caller.GetType())))
+            foreach (ICommandHandler handler in ProxiedServices.Where(c => c.SupportsUser(caller.GetType())))
                 if (handler.HandleCommand(caller, commandLine, prefix))
                     return true;
 
             return false;
         }
 
-        public bool SupportsCaller(Type User)
+        public bool SupportsUser(Type user)
         {
-            return ProxiedServices.Any(c => c.SupportsCaller(User));
+            return ProxiedServices.Any(c => c.SupportsUser(user));
         }
 
         private void GuardCaller(IUser caller)
         {
-            if (!SupportsCaller(caller.GetType()))
+            if (!SupportsUser(caller.GetType()))
                 throw new NotSupportedException(caller.GetType().FullName + " is not supported!");
         }
     }

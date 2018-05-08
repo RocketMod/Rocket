@@ -110,7 +110,7 @@ namespace Rocket.API.Commands
         /// </summary>
         /// <param name="User">The command caller type to check.</param>
         /// <returns><b>true</b> if the given command caller type can execute this command; otherwise, <b>false</b>.</returns>
-        bool SupportsCaller(Type User);
+        bool SupportsUser(Type User);
 
         /// <summary>
         ///     Executes the command if no Child Command is involved.

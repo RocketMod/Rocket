@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
+using Rocket.API.User;
 using Rocket.Core.DependencyInjection;
 
 namespace Rocket.Core.Commands
@@ -54,12 +55,12 @@ namespace Rocket.Core.Commands
         public IChildCommand[] ChildCommands { get; } //todo
         public string[] Aliases { get; }
 
-        public bool SupportsCaller(Type User)
+        public bool SupportsUser(Type user)
         {
             if (supportedCallers.Length == 0)
                 return true;
 
-            return supportedCallers.Any(c => c.IsAssignableFrom(User));
+            return supportedCallers.Any(c => c.IsAssignableFrom(user));
         }
 
         public void Execute(ICommandContext context)
@@ -77,7 +78,7 @@ namespace Rocket.Core.Commands
 
                 else if (type == typeof(IUser))
                 {
-                    @params.Add(context);
+                    @params.Add(context.User);
                 }
 
                 else if (type == typeof(string[]))

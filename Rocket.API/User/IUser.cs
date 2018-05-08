@@ -5,7 +5,7 @@ namespace Rocket.API.User
     /// <summary>
     ///     A message communication User.
     /// </summary>
-    public interface IUser : IIdentity
+    public interface IUser : IUserInfo
     {
         IUserManager UserManager { get; }
 
@@ -14,11 +14,13 @@ namespace Rocket.API.User
         /// <summary>
         ///     The User connect time.
         /// </summary>
-        DateTime? SessionConnectTime { get; }
+        DateTime SessionConnectTime { get; }
 
         /// <summary>
         ///     The User disconnect time.
         /// </summary>
         DateTime? SessionDisconnectTime { get; }
+
+        string UserType { get; }
     }
 }

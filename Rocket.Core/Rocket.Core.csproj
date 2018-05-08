@@ -115,13 +115,12 @@
     <Compile Include="Permissions\PermissionSection.cs" />
     <Compile Include="Permissions\PlayerPermissionSection.cs" />
     <Compile Include="Permissions\ProxyPermissionProvider.cs" />
-    <Compile Include="Player\BaseOnlinePlayer.cs" />
     <Compile Include="Player\BasePlayer.cs" />
     <Compile Include="Player\Events\PlayerDamageEvent.cs" />
     <Compile Include="Player\Events\PlayerMoveEvent.cs" />
     <Compile Include="Player\Events\PlayerRespawnEvent.cs" />
-    <Compile Include="Player\Events\PlayerUnbanEvent.cs" />
-    <Compile Include="Player\OnlinePlayerTypeConverter.cs" />
+    <Compile Include="Player\Events\UserUnbanEvent.cs" />
+    <Compile Include="Player\Events\UserEvent.cs" />
     <Compile Include="Player\PlayerTypeConverter.cs" />
     <Compile Include="DependencyInjection\UnityDescriptorContext.cs" />
     <Compile Include="Plugins\ProxyPluginManager.cs" />
@@ -129,13 +128,13 @@
     <Compile Include="ServiceProxies\ServicePriorityAttribute.cs" />
     <Compile Include="ServiceProxies\ServicePriorityComparer.cs" />
     <Compile Include="Implementation\Events\ImplementationReadyEvent.cs" />
-    <Compile Include="Player\Events\PlayerBanEvent.cs" />
-    <Compile Include="Player\Events\PlayerChatEvent.cs" />
-    <Compile Include="Player\Events\PlayerConnectedEvent.cs" />
+    <Compile Include="Player\Events\UserBanEvent.cs" />
+    <Compile Include="Player\Events\UserChatEvent.cs" />
+    <Compile Include="Player\Events\UserConnectedEvent.cs" />
     <Compile Include="Player\Events\PlayerDeathEvent.cs" />
-    <Compile Include="Player\Events\PlayerDisconnectedEvent.cs" />
-    <Compile Include="Player\Events\OnlinePlayerEvent.cs" />
-    <Compile Include="Player\Events\PlayerKickEvent.cs" />
+    <Compile Include="Player\Events\UserDisconnectedEvent.cs" />
+    <Compile Include="Player\Events\PlayerEvent.cs" />
+    <Compile Include="Player\Events\UserKickEvent.cs" />
     <Compile Include="Commands\Events\PreCommandExecutionEvent.cs" />
     <Compile Include="Player\Events\PlayerPreConnectEvent.cs" />
     <Compile Include="Plugins\Events\PluginEvent.cs" />
@@ -162,6 +161,7 @@
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="ServiceProxies\ServiceProxy.cs" />
     <Compile Include="Scheduler\TaskScheduleEvent.cs" />
+    <Compile Include="User\UserExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
+using Rocket.API.User;
 
 namespace Rocket.Tests.Mock.Providers
 {
@@ -16,33 +18,59 @@ namespace Rocket.Tests.Mock.Providers
 
         public IDependencyContainer Container { get; }
 
-        public IEnumerable<IOnlinePlayer> OnlinePlayers => new List<IOnlinePlayer> {new TestPlayer(Container)};
+        public IEnumerable<IPlayer> OnlinePlayers => new List<IPlayer> {new TestPlayer(Container)};
 
-        public bool Kick(IOnlinePlayer player, IUser caller = null, string reason = null) => false;
+        public IEnumerable<IUser> Users => OnlinePlayers.Select(c => c.User);
+        public bool Kick(IUser player, IUser caller = null, string reason = null) => false;
 
-        public bool Ban(IPlayer player, IUser caller = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IUser player, IUser caller = null, string reason = null, TimeSpan? timeSpan = null)
             => false;
 
-        public bool Unban(IPlayer player, IUser caller = null)
+        public bool Unban(IUser player, IUser caller = null) 
             => false;
 
-        public IOnlinePlayer GetOnlinePlayer(string nameOrId)
+        public void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendMessage(IUser sender, IEnumerable<IUser> receivers, string message, params object[] arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendMessage(IUser sender, string message, params object[] arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SendMessage(IUser sender, string message, Color? color = null, params object[] arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPlayer GetOnlinePlayer(string nameOrId)
         {
             return OnlinePlayers.FirstOrDefault(c => c.Id.Equals(nameOrId, StringComparison.OrdinalIgnoreCase)
                 || c.Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IOnlinePlayer GetOnlinePlayerByName(string name) => GetOnlinePlayer(name);
+        public IPlayer GetOnlinePlayerByName(string name) => GetOnlinePlayer(name);
 
-        public IOnlinePlayer GetOnlinePlayerById(string id) => GetOnlinePlayer(id);
+        public IPlayer GetOnlinePlayerById(string id) => GetOnlinePlayer(id);
 
-        public bool TryGetOnlinePlayer(string nameOrId, out IOnlinePlayer output)
+        public bool TryGetOnlinePlayer(string nameOrId, out IPlayer output)
             => throw new NotImplementedException();
 
-        public bool TryGetOnlinePlayerById(string uniqueID, out IOnlinePlayer output)
+        public bool TryGetOnlinePlayerById(string uniqueID, out IPlayer output)
             => throw new NotImplementedException();
 
-        public bool TryGetOnlinePlayerByName(string displayName, out IOnlinePlayer output)
+        public bool TryGetOnlinePlayerByName(string displayName, out IPlayer output)
             => throw new NotImplementedException();
 
         public IPlayer GetPlayer(string id) => GetOnlinePlayer(id);

@@ -23,7 +23,7 @@ namespace Rocket.Core.Migration
         {
             var implementation = container.Resolve<IImplementation>();
 
-            var translationsLocator = container.Resolve<ITranslationLocator>();
+            var translationsLocator = container.Resolve<ITranslationCollection>();
 
             var toContext = new ConfigurationContext(implementation.WorkingDirectory, "Rocket.Unturned.Translations");
             translationsLocator.Load(toContext, new Dictionary<string, string>());
@@ -48,7 +48,7 @@ namespace Rocket.Core.Migration
                 var id = translation["@Id"];
                 var value = translation["@Value"];
 
-                translationsLocator.SetFormat(id.Value<string>(), value.Value<string>());
+                translationsLocator.Set(id.Value<string>(), value.Value<string>());
             }
             translationsLocator.Save();
         }

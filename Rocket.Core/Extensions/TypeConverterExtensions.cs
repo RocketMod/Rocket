@@ -12,10 +12,8 @@ namespace Rocket.Core.Extensions
     {
         public static TypeConverter GetConverter(Type type)
         {
-            if (typeof(IPlayer).IsAssignableFrom(type)) return new PlayerTypeConverter();
-
-            if (typeof(IOnlinePlayer).IsAssignableFrom(type)) return new OnlinePlayerTypeConverter();
-
+            if (typeof(IPlayer).IsAssignableFrom(type))
+                return new PlayerTypeConverter();
             return TypeDescriptor.GetConverter(type);
         }
 

@@ -2,7 +2,9 @@
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
+using Rocket.API.User;
 using Rocket.Core.Permissions;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -24,7 +26,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsCaller(Type User) => true;
+        public bool SupportsUser(Type User) => true;
     }
 
     public abstract class PermissionChildrenCommandUpdate : IChildCommand
@@ -38,14 +40,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsCaller(Type User) => true;
+        public bool SupportsUser(Type User) => true;
 
         public void Execute(ICommandContext context)
         {
             if (context.Parameters.Length != 3)
                 throw new CommandWrongUsageException();
 
-            IIdentifiable target;
+            IIdentity target;
             string permission;
             string permissionFailMessage;
 
@@ -65,7 +67,7 @@ namespace Rocket.Core.Commands.RocketCommands
                     target = permissions.GetGroup(targetName);
                     if (target == null)
                     {
-                        context.Caller.SendMessage($"Group \"{targetName}\" was not found.", ConsoleColor.Red);
+                        context.User.SendMessage($"Group \"{targetName}\" was not found.", ConsoleColor.Red);
                         return;
                     }
 
@@ -82,14 +84,14 @@ namespace Rocket.Core.Commands.RocketCommands
                     throw new CommandWrongUsageException();
             }
 
-            if (permissions.CheckPermission(context.Caller, permission) != PermissionResult.Grant)
-                throw new NotEnoughPermissionsException(context.Caller, permission, permissionFailMessage);
+            if (permissions.CheckPermission(context.User, permission) != PermissionResult.Grant)
+                throw new NotEnoughPermissionsException(context.User, permission, permissionFailMessage);
 
-            UpdatePermission(context.Caller, permissions, target, permissionToUpdate);
+            UpdatePermission(context.User, permissions, target, permissionToUpdate);
         }
 
         protected abstract void UpdatePermission(IUser caller, IPermissionProvider permissions,
-                                                 IIdentifiable target, string permissionToUpdate);
+                                                 IIdentity target, string permissionToUpdate);
     }
 
     public class PermissionChildrenCommandAdd : PermissionChildrenCommandUpdate
@@ -100,7 +102,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] {"a", "+"};
 
         protected override void UpdatePermission(IUser caller, IPermissionProvider permissions,
-                                                 IIdentifiable target, string permissionToUpdate)
+                                                 IIdentity target, string permissionToUpdate)
         {
             if (permissions.AddPermission(target, permissionToUpdate))
                 caller.SendMessage($"Successfully added \"{permissionToUpdate}\" to \"{target.Name}\"!",
@@ -118,7 +120,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] {"r", "-"};
 
         protected override void UpdatePermission(IUser caller, IPermissionProvider permissions,
-                                                 IIdentifiable target, string permissionToUpdate)
+                                                 IIdentity target, string permissionToUpdate)
         {
             if (permissions.RemovePermission(target, permissionToUpdate))
                 caller.SendMessage($"Successfully removed \"{permissionToUpdate}\" from \"{target.Name}\"!",
@@ -139,13 +141,13 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"R"};
 
-        public bool SupportsCaller(Type User) => true;
+        public bool SupportsUser(Type User) => true;
 
         public void Execute(ICommandContext context)
         {
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
             permissions.Reload();
-            context.Caller.SendMessage("Permissions have been reloaded.", ConsoleColor.DarkGreen);
+            context.User.SendMessage("Permissions have been reloaded.", ConsoleColor.DarkGreen);
         }
     }
 }

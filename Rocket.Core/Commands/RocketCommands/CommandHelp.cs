@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
+using Rocket.API.User;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -15,7 +18,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Permission => "Rocket.Help";
         public string Syntax => "[command] [1. Child Command] [2. Child Command] [...]";
         public IChildCommand[] ChildCommands => null;
-        public bool SupportsCaller(Type User)
+        public bool SupportsUser(Type User)
         {
             return true;
         }
@@ -36,11 +39,11 @@ namespace Rocket.Core.Commands.RocketCommands
                 int i = 0;
                 foreach (string commandNode in context.Parameters)
                 {
-                    cmd = childs?.GetCommand(commandNode, context.Caller);
+                    cmd = childs?.GetCommand(commandNode, context.User);
 
-                    if (cmd == null || !HasAccess(cmd, context.Caller, permissionProvider))
+                    if (cmd == null || !HasAccess(cmd, context.User, permissionProvider))
                     {
-                        context.Caller.SendMessage("Command was not found: " + prefix + commandNode, ConsoleColor.Red);
+                        context.User.SendMessage("Command was not found: " + prefix + commandNode, Color.Red);
                         return;
                     }
 
@@ -50,14 +53,14 @@ namespace Rocket.Core.Commands.RocketCommands
                     i++;
                 }
 
-                context.Caller.SendMessage(GetCommandUsage(cmd, prefix), ConsoleColor.Blue);
+                context.User.SendMessage(GetCommandUsage(cmd, prefix), Color.Blue);
 
                 if(cmd.Description != null)
-                    context.Caller.SendMessage(cmd.Description, ConsoleColor.Cyan);
+                    context.User.SendMessage(cmd.Description, Color.Cyan);
 
                 var childCommands =
                     (cmd.ChildCommands?.Cast<ICommand>().ToList() ?? new List<ICommand>())
-                    .Where(c => HasAccess(c, context.Caller, permissionProvider))
+                    .Where(c => HasAccess(c, context.User, permissionProvider))
                     .OrderBy(c => c.Name)
                     .ToList();
 
@@ -66,18 +69,18 @@ namespace Rocket.Core.Commands.RocketCommands
 
                 foreach (var subCmd in childCommands)
                 {
-                    context.Caller.SendMessage(GetCommandUsage(subCmd, rootPrefix + cmd.Name.ToLower() + " "), ConsoleColor.Blue);
+                    context.User.SendMessage(GetCommandUsage(subCmd, rootPrefix + cmd.Name.ToLower() + " "), Color.Blue);
                 }
 
                 return;
             }
 
-            context.Caller.SendMessage("Available commands: ", ConsoleColor.Green);
+            context.User.SendMessage("Available commands: ", Color.Green);
 
             foreach (var cmd in cmdProvider.Commands.OrderBy(c => c.Name))
             {
-                if (HasAccess(cmd, context.Caller, permissionProvider))
-                    context.Caller.SendMessage(GetCommandUsage(cmd, rootPrefix), ConsoleColor.Blue);
+                if (HasAccess(cmd, context.User, permissionProvider))
+                    context.User.SendMessage(GetCommandUsage(cmd, rootPrefix), Color.Blue);
             }
         }
 
@@ -85,7 +88,7 @@ namespace Rocket.Core.Commands.RocketCommands
         {
             return (permissionProvider.CheckPermission(caller, command.Permission ?? command.Name)
                 == PermissionResult.Grant
-                && command.SupportsCaller(caller.GetType()));
+                && command.SupportsUser(caller.GetType()));
         }
 
         public string GetCommandUsage(ICommand command, string prefix)

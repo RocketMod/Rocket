@@ -54,7 +54,7 @@ namespace Rocket.API.Player
         /// <inheritdoc/>
         public void SendErrorMessage(ICommandContext context)
         {
-            context.Caller.UserManager.SendMessage(context.Caller, Message, Color.Red);
+            context.User.UserManager.SendMessage(context.User, Message, Color.Red);
         }
     }
 }

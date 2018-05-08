@@ -4,12 +4,13 @@ using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
+using Rocket.API.User;
 
 namespace Rocket.Core.Permissions
 {
     public class ConsolePermissionProvider : IPermissionProvider
     {
-        public bool SupportsTarget(IIdentity target) => target is IConsoleUser;
+        public bool SupportsTarget(IIdentity target) => target is IConsole;
 
         public PermissionResult CheckPermission(IIdentity target, string permission)
         {

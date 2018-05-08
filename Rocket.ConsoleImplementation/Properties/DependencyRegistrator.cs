@@ -1,7 +1,7 @@
 ﻿using Rocket.API;
-using Rocket.API.Chat;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Scheduler;
+using Rocket.API.User;
 
 namespace Rocket.ConsoleImplementation.Properties
 {
@@ -11,7 +11,7 @@ namespace Rocket.ConsoleImplementation.Properties
         {
             container.RegisterSingletonType<IImplementation, ConsoleImplementation>();
             container.RegisterSingletonType<ITaskScheduler, SimpleTaskScheduler>();
-            container.RegisterSingletonType<IChatManager, ConsoleChatManager>();
+            container.RegisterSingletonType<IUserManager, ConsoleUserManager>();
         }
     }
 }
