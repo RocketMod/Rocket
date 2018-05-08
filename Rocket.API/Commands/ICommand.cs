@@ -121,9 +121,9 @@ namespace Rocket.API.Commands
         ///     Defines if this command can be executed by the given user type.
         ///     It is guaranteed that <see cref="Execute" /> can only be called by supported users.
         /// </summary>
-        /// <param name="User">The user type to check.</param>
+        /// <param name="user">The user type to check.</param>
         /// <returns><b>true</b> if the given user type can execute this command; otherwise, <b>false</b>.</returns>
-        bool SupportsUser(Type User);
+        bool SupportsUser(Type user);
 
         /// <summary>
         ///     Executes the command if no Child Command is involved.

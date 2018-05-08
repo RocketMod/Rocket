@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
-using Rocket.API.Chat;
 using Rocket.API.DependencyInjection;
+using Rocket.API.User;
 using Rocket.Core.Plugins;
 
 namespace Rocket.Examples.CommandsPlugin
 {
     public class CommandsPlugin : Plugin
     {
-        private readonly IChatManager chatManager;
+        private readonly IUserManager userManager;
 
         public CommandsPlugin(
             IDependencyContainer container,
-            IChatManager chatManager) : base(container)
+            IUserManager userManager) : base(container)
         {
-            this.chatManager = chatManager;
+            this.userManager = userManager;
         }
 
         public override Dictionary<string, string> DefaultTranslations => new Dictionary<string, string>
@@ -23,7 +23,7 @@ namespace Rocket.Examples.CommandsPlugin
 
         protected override void OnActivate(bool isFromReload)
         {
-            CommandsCollection commandsObject = new CommandsCollection(chatManager, Translations);
+            CommandsCollection commandsObject = new CommandsCollection(userManager, Translations);
             RegisterCommandsFromObject(commandsObject);
         }
     }
