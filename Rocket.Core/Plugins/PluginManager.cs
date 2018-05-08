@@ -78,7 +78,7 @@ namespace Rocket.Core.Plugins
                 if (pluginAssemblies.TryGetValue(args.Name, out string pluginFile))
                     return LoadAssembly(pluginFile);
 
-                if (pluginAssemblies.TryGetValue(args.Name, out string packageFile))
+                if (packageAssemblies.TryGetValue(args.Name, out string packageFile))
                     return LoadAssembly(packageFile);
 
                 logger.LogDebug(((AppDomain)sender).FriendlyName + " could not find dependency: " + args.Name + " for: " + sender);
@@ -301,6 +301,9 @@ namespace Rocket.Core.Plugins
             foreach (Type type in types.Where(t => t != null))
             {
                 if (type.IsAbstract || type.IsInterface) continue;
+
+                if(type.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Any())
+                    continue;
 
                 if (pluginType == null && typeof(IPlugin) != type && typeof(IPlugin).IsAssignableFrom(type))
                     pluginType = type;
