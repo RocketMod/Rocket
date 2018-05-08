@@ -30,7 +30,7 @@ namespace Rocket.Core.I18N
         public void Load(IConfigurationContext context, Dictionary<string, string> defaultConfiguration)
         {
             if (config.IsLoaded)
-                throw new Exception("Permission provider is already loaded");
+                throw new Exception("Translation locator was already loaded");
 
             config.ConfigurationContext = context;
             config.Load(new { });
