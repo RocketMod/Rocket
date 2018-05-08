@@ -10,12 +10,16 @@ namespace Rocket.Core.Configuration.Json
     {
         public void LoadFromJson(string json)
         {
-            Node = JObject.Parse(json, new JsonLoadSettings
+            var tmp = JObject.Parse(json, new JsonLoadSettings
             {
                 CommentHandling = CommentHandling.Ignore,
                 LineInfoHandling = LineInfoHandling.Ignore
             });
 
+            if (Node == null)
+                LoadEmpty();
+
+            DeepCopy(tmp, (JObject) Node);
             IsLoaded = true;
         }
 

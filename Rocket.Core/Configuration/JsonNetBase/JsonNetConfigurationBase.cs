@@ -35,28 +35,22 @@ namespace Rocket.Core.Configuration.JsonNetBase
             if (ConfigurationContext == null)
                 throw new Exception("ConfigurationContext is null!");
 
-            if (!File.Exists(ConfigurationFile))
+            if (defaultConfiguration != null)
             {
+                // Load model changes 
                 LoadFromObject(defaultConfiguration);
-                Save();
-                return;
             }
 
-            LoadFromFile(ConfigurationFile);
+            if (File.Exists(ConfigurationFile))
+                LoadFromFile(ConfigurationFile);
+
+            Save(); // save model changes
         }
 
         public virtual void Load(IConfigurationContext context, object defaultConfiguration = null)
         {
             ConfigurationContext = context ?? throw new ArgumentNullException(nameof(context));
-
-            if (!File.Exists(ConfigurationFile))
-            {
-                LoadFromObject(defaultConfiguration);
-                Save();
-                return;
-            }
-
-            LoadFromFile(ConfigurationFile);
+            Load(defaultConfiguration);
         }
 
         public IConfigurationContext ConfigurationContext { get; set; }

@@ -9,7 +9,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public abstract class JsonNetConfigurationElement : IConfigurationElement
     {
-        protected JsonNetConfigurationElement(IConfiguration root, IConfigurationElement parent, JToken node, SectionType type)
+        protected JsonNetConfigurationElement(IConfiguration root, IConfigurationElement parent, JToken node,
+                                              SectionType type)
         {
             Root = root;
             Parent = parent;
@@ -132,9 +133,9 @@ namespace Rocket.Core.Configuration.JsonNetBase
             foreach (JToken node in Node.Children())
             {
                 string childPath = node.Path.Replace(Node.Path + ".", "");
-                if(childPath.StartsWith("@"))
+                if (childPath.StartsWith("@"))
                     continue;
-                
+
                 sections.Add(GetSection(childPath));
             }
 
@@ -143,7 +144,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
         public abstract string Path { get; }
 
-        public virtual T 
+        public virtual T
             Get<T>()
         {
             //if (Node is JArray array && typeof(T).IsArray)
@@ -199,10 +200,11 @@ namespace Rocket.Core.Configuration.JsonNetBase
                         {
                             array.Add(child is JToken ? child : new JValue(child));
                         }
-                        catch(Exception ex)
+                        catch (Exception ex)
                         {
                             array.Add(JObject.FromObject(child));
                         }
+
                     return;
                 }
 
@@ -292,32 +294,54 @@ namespace Rocket.Core.Configuration.JsonNetBase
                 throw new ArgumentException("Configuration paths can not be null or empty");
         }
 
-        public static void DeepCopy(JToken from, JToken to)
+        public static void DeepCopy(JObject fromParent, JObject toParent, bool overrideOnTypeMismatch = true)
         {
-            if (from.Type != to.Type)
+            if (fromParent.Type != toParent.Type)
                 return;
 
-            foreach (JToken child in from)
+            foreach (JToken t in fromParent.Children())
             {
-                string path = child.Path.Replace(from.Path + ".", "");
-                if (to is JObject o)
-                    if (!o.ContainsKey(path))
-                        o.Add(child);
-                    else
+                start:
+                var fromChild = t;
+                string path = fromChild.Path.Replace(fromParent.Path + ".", "");
+  
+                if (!toParent.ContainsKey(path))
+                {
+                    toParent.Add(fromChild);
+                    continue;
+                }
+
+                var toChild = toParent[path].Parent ?? toParent[path];
+
+                if (fromChild is JValue || fromChild is JArray)
+                    fromChild = toChild.Parent;
+
+                if (toChild is JValue || toChild is JArray)
+                    toChild = toChild.Parent;
+
+                if (fromChild is JObject fromObj && toChild is JObject toObj)
+                {
+                    DeepCopy(fromObj, toObj);
+                    continue;
+                }
+
+                if (fromChild is JProperty fromProperty && toChild is JProperty toProperty)
+                {
+                    toProperty.Value = fromProperty.Value;
+                    continue;
+                }
+
+                if (fromChild.GetType() != toChild.GetType())
+                {
+                    if (overrideOnTypeMismatch)
                     {
-                        var c = o[path];
-
-                        if (c is JValue)
-                            c = c.Parent;
-
-                        if (c is JProperty property && child is JProperty)
-                            property.Value = ((JProperty)child).Value;
-                        else if (c is JProperty && child is JValue)
-                            ((JProperty)c).Value = child.DeepClone();
-                        else
-                            o[path] = child;
+                        toParent.Remove(path);
+                        goto start;
                     }
-                DeepCopy(child, to[path]);
+                    continue;
+                }
+
+                throw new Exception("Copy not copy: from \"" + fromChild.Type + "\" to \"" + toChild.Type + "\"");
             }
         }
     }

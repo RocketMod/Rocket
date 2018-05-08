@@ -25,8 +25,7 @@ namespace Rocket.Core.Configuration.Xml
             string xml = File.ReadAllText(file);
             LoadFromXml(xml);
         }
-
-
+        
         private void ApplyScheme(XmlElement element, Type scheme, XmlAttribute docAttribute)
         {
             foreach (var member in scheme.GetMembers(BindingFlags.Public | BindingFlags.Instance))
@@ -79,7 +78,10 @@ namespace Rocket.Core.Configuration.Xml
             else
                 tmp = tmp.Children().Last().First();
 
-            Node = tmp.DeepClone();
+            if(Node == null)
+                LoadEmpty();
+
+            DeepCopy((JObject)tmp, (JObject)Node);
             IsLoaded = true;
         }
 
