@@ -1,4 +1,5 @@
 ﻿using Rocket.API.Configuration;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 
 namespace Rocket.API.Plugins
@@ -24,5 +25,10 @@ namespace Rocket.API.Plugins
         ///     Reloads the plugin and all related components (e.g. configurations, translations, permissions...).
         /// </summary>
         void Reload();
+
+        /// <summary>
+        ///     The dependency container;
+        /// </summary>
+        IDependencyContainer Container { get; }
     }
 }
