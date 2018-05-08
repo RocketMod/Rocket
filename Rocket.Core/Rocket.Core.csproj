@@ -66,6 +66,7 @@
     <Compile Include="Commands\CommandsExtensions.cs" />
     <Compile Include="Commands\CommandWrongUsageException.cs" />
     <Compile Include="Commands\DefaultCommandHandler.cs" />
+    <Compile Include="Commands\PluginCommandProvider.cs" />
     <Compile Include="Commands\ProxyCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandProvider.cs" />

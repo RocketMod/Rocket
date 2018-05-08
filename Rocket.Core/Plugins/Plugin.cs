@@ -39,7 +39,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        protected IDependencyContainer Container { get; }
+        public IDependencyContainer Container { get; }
         protected IEventManager EventManager => Container.Resolve<IEventManager>();
         protected ILogger Logger => Container.Resolve<ILogger>();
 
@@ -161,7 +161,7 @@ namespace Rocket.Core.Plugins
         public void RegisterCommandsFromObject(object o)
         {
             PluginManager p = PluginManager as PluginManager;
-            p?.RegisterCommands(this, o);
+            p?.RegisterCommands(Container, o);
         }
 
         protected virtual void OnActivate(bool isFromReload) { }

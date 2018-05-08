@@ -34,9 +34,6 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPluginManager, PluginManager>("default_plugins");
             container.RegisterSingletonType<IPluginManager, ProxyPluginManager>("proxy_plugins", null);
 
-            var pluginManager = (PluginManager)container.Resolve<IPluginManager>("default_plugins");
-
-            container.RegisterSingletonInstance<ICommandProvider>(pluginManager, "plugin_cmdprovider");
             container.RegisterSingletonType<ICommandProvider, RocketCommandProvider>("rocket_cmdprovider");
             container.RegisterSingletonType<ICommandProvider, ProxyCommandProvider>("proxy_cmdprovider", null);
 

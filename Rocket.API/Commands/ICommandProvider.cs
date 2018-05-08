@@ -9,9 +9,10 @@ namespace Rocket.API.Commands
     public interface ICommandProvider : IProxyableService
     {
         /// <summary>
-        ///     The owner of the commands.
+        ///     The owner of the command.
         /// </summary>
-        ILifecycleObject Owner { get; }
+        /// <param name="command">The command to get the owner of.</param>
+        ILifecycleObject GetOwner(ICommand command);
 
         /// <summary>
         ///     The commands of this provider.
