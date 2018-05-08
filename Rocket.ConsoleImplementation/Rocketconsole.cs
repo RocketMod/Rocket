@@ -68,7 +68,7 @@ namespace Rocket.ConsoleImplementation
                 Console.Write("] ");
             }
 
-            SetForegroundColor(Color.White);
+            SetForegroundColor(color ?? Color.White);
 
             string line = string.Format(format, bindings);
             Console.WriteLine(line);

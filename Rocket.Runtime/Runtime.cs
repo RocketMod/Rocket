@@ -20,10 +20,14 @@ namespace Rocket
             Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
 
+            Container.Activate(typeof(RegistrationByConvention));
+
             ILogger logger = Container.Resolve<ILogger>();
+            IImplementation impl = Container.Resolve<IImplementation>();
+
             string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
-            logger.LogInformation(rocketInitializeMessage, Color.DarkGreen);
-            logger.LogInformation(@"                                    
+            impl.Console.WriteLine(rocketInitializeMessage, Color.DarkGreen);
+            impl.Console.WriteLine(@"                                    
 									
                                                            ,:
                                                          ,' |
@@ -59,7 +63,6 @@ namespace Rocket
                +  ) / (8P(88))
                   (""     `""       `", Color.Cyan);
 
-            Container.Activate(typeof(RegistrationByConvention));
 
             if (!Container.IsRegistered<ILogger>("default_file_logger"))
             {
@@ -73,7 +76,6 @@ namespace Rocket
             }
 
             IPermissionProvider permissions = Container.Resolve<IPermissionProvider>();
-            IImplementation impl = Container.Resolve<IImplementation>();
 
             if (!Directory.Exists(WorkingDirectory))
                 Directory.CreateDirectory(WorkingDirectory);

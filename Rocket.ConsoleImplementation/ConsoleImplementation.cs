@@ -11,6 +11,13 @@ namespace Rocket.ConsoleImplementation
 {
     public class ConsoleImplementation : IImplementation
     {
+        private readonly ILogger logger;
+
+        public ConsoleImplementation(IRuntime runtime)
+        {
+            logger = runtime.Container.Resolve<ILogger>();
+            Console = new RocketConsole(runtime.Container);
+        }
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "ConsoleHost";
 
@@ -22,9 +29,6 @@ namespace Rocket.ConsoleImplementation
             ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
 
             Directory.SetCurrentDirectory(WorkingDirectory);
-
-            ILogger logger = runtime.Container.Resolve<ILogger>();
-            Console = new RocketConsole(runtime.Container);
 
             logger.LogInformation("Loaded; type \"help\" for help or \"exit\" to exit.");
 
