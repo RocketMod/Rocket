@@ -5,6 +5,7 @@ repo_name: 'RocketMod/Rocket'
 repo_url: 'https://github.com/RocketMod/Rocket'
 edit_uri: 'edit/rework/docs/content/'
 theme:
+  custom_dir: 'theme'
   name: 'material'
   palette:
     primary: 'cyan'
