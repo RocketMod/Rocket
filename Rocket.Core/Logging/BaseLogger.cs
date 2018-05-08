@@ -12,7 +12,18 @@ namespace Rocket.Core.Logging
     public abstract class BaseLogger : ILogger
     {
         public IDependencyContainer Container { get; }
-        protected IRocketSettingsProvider RocketSettings => Container.Resolve<IRocketSettingsProvider>();
+        protected IRocketSettingsProvider RocketSettings
+        {
+            get
+            {
+                if (Container.TryResolve<IRocketSettingsProvider>(null, out var settings))
+                {
+                    return settings;
+                }
+
+                return null;
+            }
+        }
 
         protected BaseLogger(IDependencyContainer container)
         {

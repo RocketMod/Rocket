@@ -27,7 +27,7 @@ namespace Rocket.Core.Logging
             SetColor(ConsoleColor.White);
             Console.Write("] ");
 
-            if (RocketSettings.Settings.IncludeMethodsInLogs)
+            if (RocketSettings?.Settings.IncludeMethodsInLogs ?? true)
             {
                 SetColor(ConsoleColor.White);
                 Console.Write("[");
