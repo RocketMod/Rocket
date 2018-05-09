@@ -1,3 +1,9 @@
+---
+name: Bug report
+about: Create a report to help us improve
+
+---
+
 <!-- 
      READ AND FILL THIS CAREFULLY OR YOUR ISSUE WILL GET CLOSED. ISSUES WITH NO TEMPLATE WILL LIKELY GET CLOSED DIRECTLY.
      
