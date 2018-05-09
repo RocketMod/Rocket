@@ -20,13 +20,8 @@ namespace Rocket.Tests.Mock
         public override string Id { get; }
         public override string Name { get; }
 
-        public override DateTime SessionConnectTime { get; } = DateTime.Now;
-        public override DateTime? SessionDisconnectTime => null;
-        public override TimeSpan SessionOnlineTime => DateTime.Now - SessionConnectTime;
-
         public override IEntity Entity => this;
         public override bool IsOnline => true;
-        public override DateTime? LastSeen => DateTime.Now;
 
         public override IUser User => new TestUser(this);
 
@@ -58,11 +53,6 @@ namespace Rocket.Tests.Mock
         }
 
         public string EntityTypeName => "Player";
-
-        public override void SendMessage(string message, params object[] arguments)
-        {
-            Console.WriteLine("[TestPlayer.SendMessage] " + message, arguments);
-        }
     }
 
     public class TestUser : IPlayerUser

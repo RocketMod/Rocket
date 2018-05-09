@@ -9,7 +9,7 @@ using Rocket.API.User;
 namespace Rocket.Core.Player
 {
     [TypeConverter(typeof(PlayerTypeConverter))]
-    public abstract class BasePlayer : IPlayer, IFormattable
+    public abstract class BasePlayer : IPlayer
     {
         protected BasePlayer(IDependencyContainer container)
         {
@@ -18,11 +18,6 @@ namespace Rocket.Core.Player
 
         protected IDependencyContainer Container { get; }
 
-        public abstract DateTime? LastSeen { get; }
-
-        public abstract DateTime SessionConnectTime { get; }
-        public abstract DateTime? SessionDisconnectTime { get; }
-        public abstract TimeSpan SessionOnlineTime { get; }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
@@ -71,6 +66,5 @@ namespace Rocket.Core.Player
         public abstract IUser User { get; }
         public abstract IEntity Entity { get; }
         public abstract bool IsOnline { get; }
-        public abstract void SendMessage(string message, params object[] arguments);
     }
 }
