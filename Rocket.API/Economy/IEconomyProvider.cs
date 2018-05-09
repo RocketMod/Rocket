@@ -135,7 +135,7 @@ namespace Rocket.API.Economy
         /// </summary>
         /// <param name="owner">The user whose accounts to get.</param>
         /// <returns>the accounts of the given user</returns>
-        IEnumerable<IEconomyAccount> GetAccounts(string owner);
+        IEnumerable<IEconomyAccount> GetAccounts(IIdentity owner);
 
         /// <summary>
         ///     Checks if the given identity is supported by the economy provider.

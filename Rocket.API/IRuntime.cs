@@ -13,5 +13,7 @@ namespace Rocket.API
         ///     The base dependency container.
         /// </summary>
         IDependencyContainer Container { get; }
+
+        void Shutdown();
     }
 }
