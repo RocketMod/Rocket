@@ -1,20 +1,23 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<package >
+<?xml version="1.0" encoding="utf-8"?>
+
+<package>
   <metadata>
     <id>Rocket.Core</id>
-    <version>2.4.2.0</version>
-    <authors>fr34kyn01535</authors>
-    <owners>fr34kyn01535</owners>
-    <licenseUrl>https://github.com/RocketMod/Rocket.Unturned/blob/master/LICENSE</licenseUrl>
+    <version>$version$</version>
+    <authors>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;, Enes Sadık Özbek &lt;esozbek.me&gt;</authors>
+    <owners>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;</owners>
+    <licenseUrl>https://github.com/RocketMod/Rocket/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://rocketmod.net/</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Unity3D Game Server Mod</description>
-    <copyright>fr34kyn01535 © 2015</copyright>
-    <tags>Rocket Mod Unity3D</tags>
+    <description>Core implementations for RocketMod Game Server Plugin Framework</description>
+    <copyright>Sven Mawby&lt;fr34kyn01535@bam.yt&gt; ©</copyright>
+    <tags>Rocket Mod UnityEngine UnrealEngine</tags>
+    <dependencies>
+	  <dependency id="Rocket.API" version="$version$" />
+    </dependencies>
   </metadata>
   <files>
-    <file src="Rocket.API.dll" target="lib/net35" />
     <file src="Rocket.Core.dll" target="lib/net35" />
-    <file src="UnityEngine.dll" target="lib/net35" />
+    <file src="Rocket.Core.xml" target="lib/net35" />
   </files>
 </package>

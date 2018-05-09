@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2043
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandsExample", "commands\CommandsExample.csproj", "{AF4E374A-89FB-4364-8BB6-E5E1A3A10EC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Core", "..\Rocket.Core\Rocket.Core.csproj", "{A7056AB1-C5F5-493B-8E47-DC42DE69961D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloWorldPlugin", "hello_world\HelloWorldPlugin.csproj", "{31BA2AC3-EF06-430F-8008-61D16FD567B5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rocket", "Rocket", "{AA1B40F4-3312-41E0-9D02-8BCB5D9E3F97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.API", "..\Rocket.API\Rocket.API.csproj", "{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Compatibility", "..\Rocket.Compatibility\Rocket.Compatibility.csproj", "{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF4E374A-89FB-4364-8BB6-E5E1A3A10EC7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF4E374A-89FB-4364-8BB6-E5E1A3A10EC7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF4E374A-89FB-4364-8BB6-E5E1A3A10EC7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF4E374A-89FB-4364-8BB6-E5E1A3A10EC7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31BA2AC3-EF06-430F-8008-61D16FD567B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A7056AB1-C5F5-493B-8E47-DC42DE69961D} = {AA1B40F4-3312-41E0-9D02-8BCB5D9E3F97}
+		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A} = {AA1B40F4-3312-41E0-9D02-8BCB5D9E3F97}
+		{01263B0D-9CE3-4D5A-AFCB-165592EF24B5} = {AA1B40F4-3312-41E0-9D02-8BCB5D9E3F97}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F3DD8450-BEEC-4E04-8B4B-85B2779DDC01}
+	EndGlobalSection
+EndGlobal

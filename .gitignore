@@ -190,3 +190,7 @@ ModelManifest.xml
 
 # IntelliJ Rider 
 .idea/
+.vs
+packages
+TestResults
+docs/site
