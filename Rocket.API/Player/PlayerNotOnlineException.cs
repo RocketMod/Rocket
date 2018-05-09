@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using Rocket.API.Commands;
 
 namespace Rocket.API.Player
@@ -20,7 +21,7 @@ namespace Rocket.API.Player
         /// <inheritdoc />
         public void SendErrorMessage(ICommandContext context)
         {
-            context.User.UserManager.SendMessage(context.User, Message, ConsoleColor.Red);
+            context.User.UserManager.SendMessage(null, context.User, Message, Color.Red);
         }
     }
 }

@@ -45,11 +45,12 @@ namespace Rocket.API.User
         /// <summary>
         ///     Sends a message to the given User.
         /// </summary>
+        /// <param name="color">The message color.</param>
         /// <param name="sender">The sender of the message (optional).</param>
         /// <param name="receiver">The receiver of the message.</param>
         /// <param name="message">The message to send.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
-        void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments);
+        void SendMessage(IUser sender, IUser receiver, string message, Color? color = null, params object[] arguments);
 
         /// <summary>
         ///     Sends a message without sender to the given Users.
@@ -57,25 +58,9 @@ namespace Rocket.API.User
         /// <param name="sender">The sender of the message (optional).</param>
         /// <param name="receivers">The receivers of the message.</param>
         /// <param name="message">The message to send.</param>
-        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
-        void SendMessage(IUser sender, IEnumerable<IUser> receivers, string message, params object[] arguments);
-
-        /// <summary>
-        ///     Sends a message to all Users.
-        /// </summary>
-        /// <param name="sender">The sender of the message.</param>
-        /// <param name="message">The message to send.</param>
-        /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
-        void SendMessage(IUser sender, string message, params object[] arguments);
-
-        /// <summary>
-        ///     Sends a message to all Users.
-        /// </summary>
-        /// <param name="sender">The sender of the message.</param>
-        /// <param name="message">The message to send.</param>
         /// <param name="color">The message color.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
-        void SendMessage(IUser sender, string message, Color? color = null, params object[] arguments);
+        void Broadcast(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null, params object[] arguments);
 
         /// <summary>
         ///     Broadcasts the given message.

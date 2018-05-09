@@ -28,27 +28,18 @@ namespace Rocket.Tests.Mock.Providers
         public bool Unban(IUserInfo user, IUser unbannedBy = null)
             => false;
 
-        public void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendMessage(IUser sender, IEnumerable<IUser> receivers, string message, params object[] arguments)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendMessage(IUser sender, string message, params object[] arguments)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendMessage(IUser sender, string message, Color? color = null, params object[] arguments)
+        public void SendMessage(IUser sender, IUser receiver, string message, Color? color = null, params object[] arguments)
         {
             throw new NotImplementedException();
         }
 
         public void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Broadcast(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null,
+                              params object[] arguments)
         {
             throw new NotImplementedException();
         }

@@ -25,34 +25,24 @@ namespace Rocket.Core.User
             return user.UserManager.Ban(user, bannedBy, reason, timeSpan);
         }
 
-        public void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments)
-        {
-            throw new NotImplementedException();
-        }
-
         public bool Kick(IUser user, IUser kickedBy = null, string reason = null)
         {
             return user.UserManager.Kick(user, kickedBy, reason);
         }
 
-        public void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments)
+        public void SendMessage(IUser sender, IUser receiver, string message, Color? color = null, params object[] arguments)
         {
-            receiver.UserManager.SendMessage(sender, receiver, message, arguments);
+            receiver.UserManager.SendMessage(sender, receiver, message, color, arguments);
         }
 
-        public void SendMessage(IUser sender, IEnumerable<IUser> receivers, string message, params object[] arguments)
+        public void Broadcast(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null, params object[] arguments)
         {
             throw new NotImplementedException();
         }
 
-        public void SendMessage(IUser sender, string message, params object[] arguments)
+        public void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments)
         {
-            sender?.UserManager.SendMessage(sender, message, arguments);
-        }
-
-        public void SendMessage(IUser sender, string message, Color? color = null, params object[] arguments)
-        {
-            sender?.UserManager.SendMessage(sender, message, color, arguments);
+            throw new NotImplementedException();
         }
 
         public bool Unban(IUserInfo user, IUser unbannedBy = null)
