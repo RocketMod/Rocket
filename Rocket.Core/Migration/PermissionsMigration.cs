@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using Rocket.API.Configuration;
+﻿using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
@@ -18,12 +16,13 @@ namespace Rocket.Core.Migration
 
         public void Migrate(IDependencyContainer container, string basePath)
         {
-            ConfigurationPermissionProvider permissions = (ConfigurationPermissionProvider) container.Resolve<IPermissionProvider>("default_permissions");
-            var logger = container.Resolve<ILogger>();
-            var xmlConfiguration = (XmlConfiguration) container.Resolve<IConfiguration>("xml");
+            ConfigurationPermissionProvider permissions =
+                (ConfigurationPermissionProvider) container.Resolve<IPermissionProvider>("default_permissions");
+            ILogger logger = container.Resolve<ILogger>();
+            XmlConfiguration xmlConfiguration = (XmlConfiguration) container.Resolve<IConfiguration>("xml");
             xmlConfiguration.ConfigurationRoot = null;
 
-            var context = new ConfigurationContext(basePath, "Permissions.config");
+            ConfigurationContext context = new ConfigurationContext(basePath, "Permissions.config");
             if (!xmlConfiguration.Exists(context))
             {
                 logger.LogError("Permissions migration failed: Permissions.config.xml was not found in: " + basePath);
@@ -35,48 +34,47 @@ namespace Rocket.Core.Migration
 
             //bug: doesn't deserialize correctly.
             RocketPermissions legacyPermissions = xmlConfiguration.Get<RocketPermissions>();
-            foreach (var group in legacyPermissions.Groups)
+            foreach (RocketPermissionsGroup group in legacyPermissions.Groups)
             {
                 PermissionGroup newGroup = new PermissionGroup
                 {
-                    Name = @group.DisplayName,
-                    Id = @group.Id,
+                    Name = group.DisplayName,
+                    Id = group.Id,
                     Priority = 0
                 };
 
                 if (!permissions.CreateGroup(newGroup))
                 {
-                    logger.LogWarning($"Failed to migrate group: {@group.DisplayName} (Id: {group.Id})");
+                    logger.LogWarning($"Failed to migrate group: {group.DisplayName} (Id: {group.Id})");
                     continue;
                 }
 
-                foreach (var permission in group.Permissions)
-                {
+                foreach (Permission permission in group.Permissions)
                     permissions.AddPermission(newGroup, permission.Name);
-                }
             }
 
             // restore parent groups
-            foreach (var group in legacyPermissions.Groups)
+            foreach (RocketPermissionsGroup group in legacyPermissions.Groups)
             {
-                if (string.IsNullOrEmpty(@group.ParentGroup))
+                if (string.IsNullOrEmpty(group.ParentGroup))
                     continue;
 
-                var sourceGroup = permissions.GetGroup(group.Id);
+                IPermissionGroup sourceGroup = permissions.GetGroup(group.Id);
                 if (sourceGroup == null)
                     continue;
 
-                var targetGroup = permissions.GetGroup(group.ParentGroup);
-                if(targetGroup == null)
+                IPermissionGroup targetGroup = permissions.GetGroup(group.ParentGroup);
+                if (targetGroup == null)
                     continue;
 
                 if (legacyPermissions.DefaultGroup.Equals(group.Id))
                 {
-                    var section = permissions.GetConfigSection<GroupPermissionSection>(sourceGroup, false);
+                    GroupPermissionSection section =
+                        permissions.GetConfigSection<GroupPermissionSection>(sourceGroup, false);
                     section.AutoAssign = true;
                     section.Save();
                 }
-                
+
                 permissions.AddGroup(sourceGroup, targetGroup);
             }
 

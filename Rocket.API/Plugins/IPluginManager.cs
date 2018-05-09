@@ -37,16 +37,18 @@ namespace Rocket.API.Plugins
         ///     Executes soft depend code if the given plugin was loaded.
         /// </summary>
         /// <remarks>
-        ///     Directly referencing another plugin breaks the calling plugin when the referenced plugin is not available yet.<br/><br/>
-        ///     The full qualifying type names (types with fully declared namespaces) must be used instead of "using" statements for 
-        ///     namespaces of the referenced plugin.<br/><br/>
+        ///     Directly referencing another plugin breaks the calling plugin when the referenced plugin is not available yet.
+        ///     <br /><br />
+        ///     The full qualifying type names (types with fully declared namespaces) must be used instead of "using" statements
+        ///     for
+        ///     namespaces of the referenced plugin.<br /><br />
         ///     <b>Example:</b>
         ///     <code>
         ///         pluginManager.ExecuteSoftDependCode("FancyFeast, (IRocketPlugin plugin) =>{
         ///             FancyFeastPlugin.Feast pluginInstance = (FancyFeastPlugin.Feast) plugin;
         ///             pluginInstance.StartFeast();
         ///         });
-        ///     </code>       
+        ///     </code>
         /// </remarks>
         /// <param name="pluginName">The name of the referenced plugin.</param>
         /// <param name="action">The action to be invoked when the plugin was found.</param>

@@ -1,28 +1,28 @@
-﻿using Rocket.API.Chat;
-using Rocket.API.Commands;
+﻿using Rocket.API.Commands;
 using Rocket.API.Entities;
 using Rocket.API.I18N;
 using Rocket.API.Player;
+using Rocket.API.User;
 using Rocket.Core.Commands;
-using Rocket.Core.I18N;
+using Rocket.Core.User;
 
 namespace Rocket.Examples.CommandsPlugin
 {
     public class CommandsCollection
     {
-        private readonly IChatManager chatManager;
-        private readonly ITranslationLocator translations;
+        private readonly IUserManager userManager;
+        private readonly ITranslationCollection translations;
 
-        public CommandsCollection(IChatManager chatManager, ITranslationLocator translations)
+        public CommandsCollection(IUserManager userManager, ITranslationCollection translations)
         {
-            this.chatManager = chatManager;
+            this.userManager = userManager;
             this.translations = translations;
         }
 
         [Command(Summary = "Kills a player.")] //By default, name is the same as the method name, and it will support all command callers
-        public void KillPlayer(ICommandCaller sender, IOnlinePlayer target)
+        public void KillPlayer(IUser sender, IPlayer target)
         {
-            if (target is ILivingEntity entity)
+            if (target.IsOnline && target.Entity is ILivingEntity entity)
                 entity.Kill(sender);
             else // the game likely does not support killing players (e.g. Eco)
                 sender.SendMessage("Target could not be killed :(");
@@ -30,11 +30,10 @@ namespace Rocket.Examples.CommandsPlugin
 
         [Command(Name = "Broadcast", Summary = "Broadcasts a message.")]
         [CommandAlias("bc")]
-        [CommandCaller(typeof(IConsoleCommandCaller))] // only console can call it
-        public void Broadcast(ICommandCaller sender, string[] args)
+        [CommandUser(typeof(IConsole))] // only console can call it
+        public void Broadcast(IUser sender, string[] args)
         {
-            string message = string.Join(" ", args);
-            chatManager.BroadcastLocalized(translations, message, sender, message);
+            userManager.Broadcast(sender, translations.Get("broadcast", sender, string.Join(" ", args)));
         }
     }
 }

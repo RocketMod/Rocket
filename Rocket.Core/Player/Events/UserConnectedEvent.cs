@@ -1,5 +1,4 @@
 ﻿using Rocket.API.Eventing;
-using Rocket.API.Player;
 using Rocket.API.User;
 
 namespace Rocket.Core.Player.Events
@@ -10,11 +9,11 @@ namespace Rocket.Core.Player.Events
         public UserConnectedEvent(IUser user, bool global = true) : base(user, global) { }
 
         public UserConnectedEvent(IUser user,
-                                    EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                    bool global = true) : base(user, executionTarget, global) { }
+                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                                  bool global = true) : base(user, executionTarget, global) { }
 
         public UserConnectedEvent(IUser user, string name = null,
-                                    EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                    bool global = true) : base(user, name, executionTarget, global) { }
+                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                                  bool global = true) : base(user, name, executionTarget, global) { }
     }
 }

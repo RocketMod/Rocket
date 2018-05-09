@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Practices.ObjectBuilder2;
-using Rocket.API;
-using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
@@ -81,11 +79,11 @@ namespace Rocket.Core.Permissions
         public bool RemoveDeniedPermission(IIdentity target, string permission)
             => throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
 
-        public IPermissionGroup GetPrimaryGroup(IUser caller)
+        public IPermissionGroup GetPrimaryGroup(IUser user)
         {
             IPermissionGroup group;
-            foreach (IPermissionProvider service in ProxiedServices.Where(c => c.SupportsTarget(caller)))
-                if ((group = service.GetPrimaryGroup(caller)) != null)
+            foreach (IPermissionProvider service in ProxiedServices.Where(c => c.SupportsTarget(user)))
+                if ((group = service.GetPrimaryGroup(user)) != null)
                     return group;
 
             return null;
@@ -108,9 +106,7 @@ namespace Rocket.Core.Permissions
         }
 
         public bool UpdateGroup(IPermissionGroup group)
-        {
-            throw new NotSupportedException("Updating groups from proxy is not supported.");
-        }
+            => throw new NotSupportedException("Updating groups from proxy is not supported.");
 
         public bool AddGroup(IIdentity target, IPermissionGroup group)
             => throw new NotSupportedException("Adding groups from proxy is not supported.");

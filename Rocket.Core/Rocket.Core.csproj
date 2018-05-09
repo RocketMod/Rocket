@@ -161,6 +161,7 @@
     <Compile Include="Plugins\PluginManager.cs" />
     <Compile Include="ServiceProxies\ServiceProxy.cs" />
     <Compile Include="Scheduler\TaskScheduleEvent.cs" />
+    <Compile Include="User\ProxyUserManager.cs" />
     <Compile Include="User\UserExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

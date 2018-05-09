@@ -1,6 +1,7 @@
 ﻿using Rocket.API.DependencyInjection;
 
-namespace Rocket.Core.Migration {
+namespace Rocket.Core.Migration
+{
     public interface IMigrationStep
     {
         string Name { get; }

@@ -1,7 +1,7 @@
 ﻿namespace Rocket.API.Scheduler
 {
     /// <summary>
-    ///     Defines when and how an action should be executed.    
+    ///     Defines when and how an action should be executed.
     /// </summary>
     public enum ExecutionTargetContext
     {
@@ -28,8 +28,8 @@
         /// <summary>
         ///     Executes the action on every frame update continuously in the main thread.
         /// </summary>
-        /// 
         EveryFrame,
+
         /// <summary>
         ///     Executes the action on every frame update continuously in a separate thread.
         /// </summary>

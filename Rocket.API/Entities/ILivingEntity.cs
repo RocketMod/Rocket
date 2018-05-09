@@ -1,5 +1,4 @@
-﻿using Rocket.API.Commands;
-using Rocket.API.User;
+﻿using Rocket.API.User;
 
 namespace Rocket.API.Entities
 {
@@ -24,13 +23,13 @@ namespace Rocket.API.Entities
         void Kill();
 
         /// <summary>
-        ///     <inheritdoc cref="Kill()"/>
+        ///     <inheritdoc cref="Kill()" />
         /// </summary>
         /// <param name="killer">the killer of the entity.</param>
         void Kill(IEntity killer);
 
         /// <summary>
-        ///     <inheritdoc cref="Kill()"/>
+        ///     <inheritdoc cref="Kill()" />
         /// </summary>
         /// <param name="killer">the killer of the entity.</param>
         void Kill(IUser killer);

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
 using Rocket.API.User;
@@ -21,12 +20,12 @@ namespace Rocket.Tests.Mock.Providers
         public IEnumerable<IPlayer> OnlinePlayers => new List<IPlayer> {new TestPlayer(Container)};
 
         public IEnumerable<IUser> Users => OnlinePlayers.Select(c => c.User);
-        public bool Kick(IUser player, IUser caller = null, string reason = null) => false;
+        public bool Kick(IUser user, IUser kickedBy = null, string reason = null) => false;
 
-        public bool Ban(IUser player, IUser caller = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
             => false;
 
-        public bool Unban(IUser player, IUser caller = null) 
+        public bool Unban(IUserInfo user, IUser unbannedBy = null)
             => false;
 
         public void SendMessage(IUser sender, IUser receiver, string message, params object[] arguments)

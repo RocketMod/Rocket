@@ -9,7 +9,15 @@ namespace Rocket.API.Plugins
     /// </summary>
     public interface IPlugin : IEventEmitter, IConfigurationContext
     {
+        /// <summary>
+        ///     The related plugin manager.
+        /// </summary>
         IPluginManager PluginManager { get; }
+
+        /// <summary>
+        ///     The dependency container;
+        /// </summary>
+        IDependencyContainer Container { get; }
 
         /// <summary>
         ///     Activates the plugin.
@@ -22,10 +30,5 @@ namespace Rocket.API.Plugins
         /// </summary>
         /// <returns><b>true</b> if the plugin could be deactivated; otherwise, <b>false</b>.</returns>
         bool Unload();
-
-        /// <summary>
-        ///     The dependency container;
-        /// </summary>
-        IDependencyContainer Container { get; }
     }
 }

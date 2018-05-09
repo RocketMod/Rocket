@@ -1,12 +1,10 @@
-﻿using System;
-using Rocket.API.Commands;
-using Rocket.API.Entities;
+﻿using Rocket.API.Entities;
 using Rocket.API.User;
 
 namespace Rocket.API.Player
 {
     /// <summary>
-    ///     <inheritdoc cref="IPlayer"/><br/><br/>
+    ///     <inheritdoc cref="IPlayer" /><br /><br />
     ///     This interface represents an online player.
     /// </summary>
     public interface IPlayer : IIdentity

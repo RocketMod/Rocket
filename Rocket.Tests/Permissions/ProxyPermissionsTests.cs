@@ -1,8 +1,4 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rocket.API.Permissions;
-
-namespace Rocket.Tests.Permissions
+﻿namespace Rocket.Tests.Permissions
 {
     /*
     [TestClass]

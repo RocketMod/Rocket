@@ -1,7 +1,5 @@
 ﻿using System;
-using Rocket.API.Commands;
 using Rocket.API.Eventing;
-using Rocket.API.Player;
 using Rocket.API.User;
 
 namespace Rocket.Core.Player.Events
@@ -9,7 +7,7 @@ namespace Rocket.Core.Player.Events
     public class UserBanEvent : Event, ICancellableEvent
     {
         public UserBanEvent(IUserInfo user, IUser bannedBy = null, string reason = null,
-                              TimeSpan? duration = null) : base(true)
+                            TimeSpan? duration = null) : base(true)
         {
             BannedBy = bannedBy;
             User = user;
@@ -18,7 +16,7 @@ namespace Rocket.Core.Player.Events
         }
 
         public UserBanEvent(IUserInfo user, IUser bannedBy = null, string reason = null,
-                              TimeSpan? duration = null, bool global = true) : base(global)
+                            TimeSpan? duration = null, bool global = true) : base(global)
         {
             BannedBy = bannedBy;
             User = user;
@@ -27,9 +25,9 @@ namespace Rocket.Core.Player.Events
         }
 
         public UserBanEvent(IUserInfo user, IUser bannedBy = null, string reason = null,
-                              TimeSpan? duration = null,
-                              EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                              bool global = true) : base(executionTarget, global)
+                            TimeSpan? duration = null,
+                            EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                            bool global = true) : base(executionTarget, global)
         {
             BannedBy = bannedBy;
             User = user;
@@ -38,9 +36,9 @@ namespace Rocket.Core.Player.Events
         }
 
         public UserBanEvent(IUserInfo user, IUser bannedBy = null, string reason = null,
-                              TimeSpan? duration = null, string name = null,
-                              EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                              bool global = true) : base(name, executionTarget, global)
+                            TimeSpan? duration = null, string name = null,
+                            EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                            bool global = true) : base(name, executionTarget, global)
         {
             BannedBy = bannedBy;
             User = user;

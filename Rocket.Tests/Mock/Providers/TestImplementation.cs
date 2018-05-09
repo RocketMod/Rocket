@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using Rocket.API;
 using Rocket.API.Commands;
-using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
-using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 
 namespace Rocket.Tests.Mock.Providers

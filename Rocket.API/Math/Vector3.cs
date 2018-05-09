@@ -9,9 +9,9 @@ namespace Rocket.API.Math
     /// </summary>
     [Serializable]
     public class Vector3 : Vector2
-    {    
+    {
         /// <summary>
-        ///     The Z coordinate. 
+        ///     The Z coordinate.
         /// </summary>
         public float Z { get; set; }
     }

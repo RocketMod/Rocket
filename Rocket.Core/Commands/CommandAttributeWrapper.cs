@@ -12,14 +12,14 @@ namespace Rocket.Core.Commands
     [DontAutoRegister]
     public class CommandAttributeWrapper : ICommand
     {
-        private readonly Type[] supportedCallers;
+        private readonly Type[] supportedUsers;
 
         public CommandAttributeWrapper(object instance, MethodBase method,
                                        CommandAttribute attribute,
                                        string[] aliases,
-                                       Type[] supportedCallers)
+                                       Type[] supportedUsers)
         {
-            this.supportedCallers = supportedCallers;
+            this.supportedUsers = supportedUsers;
             Instance = instance;
             Method = method;
             Attribute = attribute;
@@ -27,20 +27,6 @@ namespace Rocket.Core.Commands
             Syntax = attribute?.Syntax ?? BuildSyntaxFromMethod();
 
             Aliases = aliases;
-        }
-
-        private string BuildSyntaxFromMethod()
-        {
-            List<ParameterInfo> parameters = (from param in Method.GetParameters()
-                                              let type = param.ParameterType
-                                              where type != typeof(ICommandContext)
-                                              where type != typeof(IUser)
-                                              where type != typeof(string[])
-                                              where type != typeof(ICommandParameters)
-                                              where type != typeof(IDependencyContainer)
-                                              select param).ToList();
-
-            return string.Join(" ", parameters.Select(c => $"<{c.Name}>").ToArray());
         }
 
         public CommandAttribute Attribute { get; }
@@ -57,10 +43,10 @@ namespace Rocket.Core.Commands
 
         public bool SupportsUser(Type user)
         {
-            if (supportedCallers.Length == 0)
+            if (supportedUsers.Length == 0)
                 return true;
 
-            return supportedCallers.Any(c => c.IsAssignableFrom(user));
+            return supportedUsers.Any(c => c.IsAssignableFrom(user));
         }
 
         public void Execute(ICommandContext context)
@@ -105,11 +91,26 @@ namespace Rocket.Core.Commands
                     {
                         throw new CommandWrongUsageException();
                     }
+
                     index++;
                 }
             }
 
             Method.Invoke(Instance, @params.ToArray());
+        }
+
+        private string BuildSyntaxFromMethod()
+        {
+            List<ParameterInfo> parameters = (from param in Method.GetParameters()
+                                              let type = param.ParameterType
+                                              where type != typeof(ICommandContext)
+                                              where type != typeof(IUser)
+                                              where type != typeof(string[])
+                                              where type != typeof(ICommandParameters)
+                                              where type != typeof(IDependencyContainer)
+                                              select param).ToList();
+
+            return string.Join(" ", parameters.Select(c => $"<{c.Name}>").ToArray());
         }
     }
 }

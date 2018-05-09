@@ -1,8 +1,6 @@
-﻿using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API;
 using Rocket.API.Logging;
-using Rocket.Core.Logging;
 using Rocket.Tests.Mock;
 
 namespace Rocket.Tests

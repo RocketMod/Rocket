@@ -24,7 +24,7 @@ namespace Rocket.Core.Extensions
 
         public static MethodBase GetCallingMethod(params Type[] skipTypes)
         {
-            var list = skipTypes?.ToList() ?? new List<Type>();
+            List<Type> list = skipTypes?.ToList() ?? new List<Type>();
             list.Add(typeof(ReflectionExtensions));
 
             StackTrace st = new StackTrace();
@@ -61,7 +61,6 @@ namespace Rocket.Core.Extensions
         public static IEnumerable<Type> FindAllTypes(this ILifecycleObject @object,
                                                      bool includeAbstractAndInterfaces = false)
             => @object.GetType().Assembly.FindAllTypes(includeAbstractAndInterfaces);
-
 
         public static IEnumerable<Type> FindAllTypes(this Assembly @object, bool includeAbstractAndInterfaces = false)
         {
@@ -102,12 +101,10 @@ namespace Rocket.Core.Extensions
 
             return l;
         }
+
         public static string GetDebugName(this MethodBase mb)
         {
-            if (mb is MemberInfo mi && mi.DeclaringType != null)
-            {
-                return mi.DeclaringType.Name + "." + mi.Name;
-            }
+            if (mb is MemberInfo mi && mi.DeclaringType != null) return mi.DeclaringType.Name + "." + mi.Name;
 
             return "<anonymous>#" + mb.Name;
         }

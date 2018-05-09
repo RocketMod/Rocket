@@ -1,5 +1,4 @@
 ﻿using System;
-using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Entities;
 using Rocket.API.Player;
@@ -29,6 +28,8 @@ namespace Rocket.Tests.Mock
         public override bool IsOnline => true;
         public override DateTime? LastSeen => DateTime.Now;
 
+        public override IUser User => new TestUser(this);
+
         public double MaxHealth
         {
             get => 100;
@@ -56,14 +57,12 @@ namespace Rocket.Tests.Mock
             throw new NotImplementedException();
         }
 
+        public string EntityTypeName => "Player";
+
         public override void SendMessage(string message, params object[] arguments)
         {
             Console.WriteLine("[TestPlayer.SendMessage] " + message, arguments);
         }
-
-        public override IUser User => new TestUser(this);
-
-        public string EntityTypeName => "Player";
     }
 
     public class TestUser : IPlayerUser
@@ -84,6 +83,7 @@ namespace Rocket.Tests.Mock
         public bool IsOnline => true;
         public DateTime SessionConnectTime { get; }
         public DateTime? SessionDisconnectTime => null;
+        public DateTime? LastSeen => DateTime.Now;
         public string UserType => "TestPlayer";
         public IPlayer Player { get; }
     }

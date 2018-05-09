@@ -11,7 +11,7 @@
         string WorkingDirectory { get; }
 
         /// <summary>
-        ///     The configuration name.<br/><br/>
+        ///     The configuration name.<br /><br />
         ///     <b>Must never include file endings like .json, .xml etc.</b>
         /// </summary>
         string ConfigurationName { get; }

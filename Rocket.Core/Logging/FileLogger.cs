@@ -2,7 +2,6 @@
 using System.IO;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
-using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
 
@@ -11,19 +10,16 @@ namespace Rocket.Core.Logging
     [DontAutoRegister]
     public class FileLogger : BaseLogger, IDisposable
     {
-        public FileLogger(IDependencyContainer container) : base(container) { }
-        private StreamWriter streamWriter;
         private string logFile;
+        private StreamWriter streamWriter;
+        public FileLogger(IDependencyContainer container) : base(container) { }
 
         public virtual string File
         {
             get => logFile;
             set
             {
-                if (value != null && value.Equals(logFile, StringComparison.OrdinalIgnoreCase))
-                {
-                    return;
-                }
+                if (value != null && value.Equals(logFile, StringComparison.OrdinalIgnoreCase)) return;
 
                 if (value == null)
                 {
@@ -31,10 +27,7 @@ namespace Rocket.Core.Logging
                     return;
                 }
 
-                if (System.IO.File.Exists(value))
-                {
-                    Backup(value);
-                }
+                if (System.IO.File.Exists(value)) Backup(value);
 
                 if (streamWriter != null)
                 {
@@ -46,15 +39,23 @@ namespace Rocket.Core.Logging
             }
         }
 
+        public void Dispose()
+        {
+            streamWriter?.Close();
+            streamWriter?.Dispose();
+
+            Backup(File);
+        }
+
         // renames old log files
         public void Backup(string file)
         {
-            var directory = Path.GetDirectoryName(file);
-            var fileName = Path.GetFileNameWithoutExtension(file);
-            var extension = Path.GetFileName(file).Replace(fileName, string.Empty);
+            string directory = Path.GetDirectoryName(file);
+            string fileName = Path.GetFileNameWithoutExtension(file);
+            string extension = Path.GetFileName(file).Replace(fileName, string.Empty);
 
             string ver = $"{DateTime.Now:yyyyMMddTHHmmss}"; //ISO 8601
-            var backupFileBaseName = Path.Combine(directory, fileName + "." + ver + extension);
+            string backupFileBaseName = Path.Combine(directory, fileName + "." + ver + extension);
 
             string backupFile = backupFileBaseName;
             int i = 0;
@@ -75,20 +76,19 @@ namespace Rocket.Core.Logging
             }
         }
 
-        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments)
+        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
+                                   params object[] arguments)
         {
             if (string.IsNullOrEmpty(logFile))
                 throw new FileLoadException("File has not been set.");
-
 
             if (!IsEnabled(level))
                 return;
 
             if (streamWriter == null)
-            {
                 try
                 {
-                    var parentDir = Path.GetDirectoryName(logFile);
+                    string parentDir = Path.GetDirectoryName(logFile);
                     if (!Directory.Exists(parentDir))
                         Directory.CreateDirectory(parentDir);
 
@@ -100,20 +100,13 @@ namespace Rocket.Core.Logging
                     //todo: show error
                     return;
                 }
-            }
 
             string callingMethod = GetLoggerCallingMethod().GetDebugName();
-            string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] " + (RocketSettings?.Settings.IncludeMethodsInLogs ?? true ? $"[{callingMethod}] " : "") + $"{message}";
+            string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] "
+                + (RocketSettings?.Settings.IncludeMethodsInLogs ?? true ? $"[{callingMethod}] " : "")
+                + $"{message}";
             if (streamWriter.BaseStream.CanWrite)
                 streamWriter.WriteLine(formattedLine);
-        }
-
-        public void Dispose()
-        {
-            streamWriter?.Close();
-            streamWriter?.Dispose();
-
-            Backup(File);
         }
     }
 }

@@ -1,14 +1,10 @@
-﻿using System;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
+﻿using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using Rocket.API;
-using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
-using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Logging;
 
@@ -24,10 +20,14 @@ namespace Rocket
             Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
 
-            var logger = Container.Resolve<ILogger>();
+            Container.Activate(typeof(RegistrationByConvention));
+
+            ILogger logger = Container.Resolve<ILogger>();
+            IImplementation impl = Container.Resolve<IImplementation>();
+
             string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
-            logger.LogInformation(rocketInitializeMessage, ConsoleColor.DarkGreen);
-            logger.LogInformation(@"                                    
+            impl.Console.WriteLine(rocketInitializeMessage, Color.DarkGreen);
+            impl.Console.WriteLine(@"                                    
 									
                                                            ,:
                                                          ,' |
@@ -61,31 +61,28 @@ namespace Rocket
                   _((    )b -`.  ) +
                  (8)(_.aP"" _a   \( \   *
                +  ) / (8P(88))
-                  (""     `""       `", ConsoleColor.Cyan);
+                  (""     `""       `", Color.Cyan);
 
 
-            Container.Activate(typeof(RegistrationByConvention));
-            
             if (!Container.IsRegistered<ILogger>("default_file_logger"))
             {
-                var logsDirectory = Path.Combine(WorkingDirectory, "Logs");
+                string logsDirectory = Path.Combine(WorkingDirectory, "Logs");
                 if (!Directory.Exists(logsDirectory))
                     Directory.CreateDirectory(logsDirectory);
                 Container.RegisterSingletonType<ILogger, FileLogger>("default_file_logger");
                 FileLogger fl = (FileLogger) Container.Resolve<ILogger>("default_file_logger");
                 fl.File = Path.Combine(logsDirectory, "Rocket.log");
-                fl.LogInformation(rocketInitializeMessage, ConsoleColor.DarkGreen);
+                fl.LogInformation(rocketInitializeMessage, Color.DarkGreen);
             }
 
-            var permissions = Container.Resolve<IPermissionProvider>();
-            var impl = Container.Resolve<IImplementation>();
+            IPermissionProvider permissions = Container.Resolve<IPermissionProvider>();
 
             if (!Directory.Exists(WorkingDirectory))
                 Directory.CreateDirectory(WorkingDirectory);
 
             permissions.Load(this);
 
-            logger.LogInformation($"Initializing implementation: {impl.Name}", ConsoleColor.Green);
+            logger.LogInformation($"Initializing implementation: {impl.Name}", Color.Green);
             impl.Init(this);
         }
 
@@ -95,11 +92,12 @@ namespace Rocket
 
         public bool IsAlive => true;
         public string Name => "Rocket.Runtime";
+
         public string WorkingDirectory
         {
             get
             {
-                var implDir = Container.Resolve<IImplementation>().WorkingDirectory;
+                string implDir = Container.Resolve<IImplementation>().WorkingDirectory;
                 string dirName = new DirectoryInfo(implDir).Name;
                 if (dirName != "Rocket")
                     return Path.Combine(implDir, "Rocket");

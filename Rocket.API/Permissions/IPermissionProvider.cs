@@ -25,7 +25,11 @@ namespace Rocket.API.Permissions
         /// </summary>
         /// <param name="target">The target to check.</param>
         /// <param name="permission">The permission to check.</param>
-        /// <returns><see cref="PermissionResult.Grant"/> if the target explicity has the permission, <see cref="PermissionResult.Deny"/> if the target explicitly does not have the permission; otherwise, <see cref="PermissionResult.Default"/></returns>
+        /// <returns>
+        ///     <see cref="PermissionResult.Grant" /> if the target explicity has the permission,
+        ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have the permission; otherwise,
+        ///     <see cref="PermissionResult.Default" />
+        /// </returns>
         PermissionResult CheckPermission(IIdentity target, string permission);
 
         /// <summary>
@@ -33,7 +37,11 @@ namespace Rocket.API.Permissions
         /// </summary>
         /// <param name="target">The target to check.</param>
         /// <param name="permissions">The permissions to check.</param>
-        /// <returns><see cref="PermissionResult.Grant"/> if the target explicity has access to all of the given permissions, <see cref="PermissionResult.Deny"/> if the target explicitly does not have access to any of the permissions; otherwise, <see cref="PermissionResult.Default"/></returns>
+        /// <returns>
+        ///     <see cref="PermissionResult.Grant" /> if the target explicity has access to all of the given permissions,
+        ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have access to any of the permissions;
+        ///     otherwise, <see cref="PermissionResult.Default" />
+        /// </returns>
         PermissionResult CheckHasAllPermissions(IIdentity target, params string[] permissions);
 
         /// <summary>
@@ -41,7 +49,11 @@ namespace Rocket.API.Permissions
         /// </summary>
         /// <param name="target">The target to check.</param>
         /// <param name="permissions">The permissions to check.</param>
-        /// <returns><see cref="PermissionResult.Grant"/> if the target explicity has access to any of the given permissions, <see cref="PermissionResult.Deny"/> if the target explicitly does not have access to any of the permissions; otherwise, <see cref="PermissionResult.Default"/></returns>
+        /// <returns>
+        ///     <see cref="PermissionResult.Grant" /> if the target explicity has access to any of the given permissions,
+        ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have access to any of the permissions;
+        ///     otherwise, <see cref="PermissionResult.Default" />
+        /// </returns>
         PermissionResult CheckHasAnyPermission(IIdentity target, params string[] permissions);
 
         /// <summary>
@@ -77,12 +89,12 @@ namespace Rocket.API.Permissions
         bool RemoveDeniedPermission(IIdentity target, string permission);
 
         /// <summary>
-        ///     Gets the primary group of the given command caller.
+        ///     Gets the primary group of the given user.
         /// </summary>
-        /// <param name="caller">The command caller.</param>
+        /// <param name="user">The user wose primary group to get of.</param>
         /// <returns>the primary group if it exists; otherwise, <b>null</b>.</returns>
         [Obsolete("Might be removed")]
-        IPermissionGroup GetPrimaryGroup(IUser caller);
+        IPermissionGroup GetPrimaryGroup(IUser user);
 
         /// <summary>
         ///     Gets the primary group with the given ID.
@@ -97,7 +109,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <returns>the inherited groups of the target.</returns>
         IEnumerable<IPermissionGroup> GetGroups(IIdentity target);
-        
+
         /// <summary>
         ///     Gets all registered groups.
         /// </summary>
@@ -112,7 +124,7 @@ namespace Rocket.API.Permissions
         bool UpdateGroup(IPermissionGroup group);
 
         /// <summary>
-        ///     Adds the given group to the command caller.
+        ///     Adds the given group to the user.
         /// </summary>
         /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to add.</param>
@@ -120,7 +132,7 @@ namespace Rocket.API.Permissions
         bool AddGroup(IIdentity target, IPermissionGroup group);
 
         /// <summary>
-        ///     Removes the given group from the command caller.
+        ///     Removes the given group from the user.
         /// </summary>
         /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to remove.</param>
@@ -148,7 +160,7 @@ namespace Rocket.API.Permissions
         void Load(IConfigurationContext context);
 
         /// <summary>
-        ///     Reloads the permissions from the context which was used to initially load them.<br/><br/>
+        ///     Reloads the permissions from the context which was used to initially load them.<br /><br />
         ///     May override not saved changes.
         /// </summary>
         void Reload();

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration;
@@ -18,19 +17,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Permission => "Rocket.Migrate.Config";
         public string Syntax => "[<from type> <to type> <path>]";
         public IChildCommand[] ChildCommands { get; }
-        public bool SupportsUser(Type user)
-        {
-            return typeof(IConsole).IsAssignableFrom(user);
-        }
+
+        public bool SupportsUser(Type user) => typeof(IConsole).IsAssignableFrom(user);
 
         public void Execute(ICommandContext context)
         {
-            if (context.Parameters.Length != 0 && context.Parameters.Length < 3)
-            {
-                throw new CommandWrongUsageException();
-            }
+            if (context.Parameters.Length != 0 && context.Parameters.Length < 3) throw new CommandWrongUsageException();
 
-            var configProviders = context.Container.ResolveAll<IConfiguration>().ToArray();
+            IConfiguration[] configProviders = context.Container.ResolveAll<IConfiguration>().ToArray();
 
             if (context.Parameters.Length == 0)
             {
@@ -39,9 +33,9 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            var from = context.Parameters.Get<string>(0);
-            var to = context.Parameters.Get<string>(1);
-            var path = context.Parameters.GetArgumentLine(2);
+            string from = context.Parameters.Get<string>(0);
+            string to = context.Parameters.Get<string>(1);
+            string path = context.Parameters.GetArgumentLine(2);
 
             if (from.Equals(to, StringComparison.OrdinalIgnoreCase))
             {
@@ -53,21 +47,18 @@ namespace Rocket.Core.Commands.RocketCommands
                 configProviders.FirstOrDefault(c => c.Name.Equals(from, StringComparison.OrdinalIgnoreCase));
 
             if (fromProvider == null)
-            {
-                throw new CommandWrongUsageException($"\"{from}\" is not a valid config type. " + GetConfigTypes(configProviders));
-            }
+                throw new CommandWrongUsageException($"\"{from}\" is not a valid config type. "
+                    + GetConfigTypes(configProviders));
 
             IConfiguration toProvider =
                 configProviders.FirstOrDefault(c => c.Name.Equals(to, StringComparison.OrdinalIgnoreCase));
 
-
             if (toProvider == null)
-            {
-                throw new CommandWrongUsageException($"\"{to}\" is not a valid config type. " + GetConfigTypes(configProviders));
-            }
+                throw new CommandWrongUsageException($"\"{to}\" is not a valid config type. "
+                    + GetConfigTypes(configProviders));
 
-            var workingDir = Path.GetDirectoryName(path);
-            var fileName = Path.GetFileName(path);
+            string workingDir = Path.GetDirectoryName(path);
+            string fileName = Path.GetFileName(path);
 
             ConfigurationContext cc = new ConfigurationContext(workingDir, fileName);
 
@@ -84,9 +75,9 @@ namespace Rocket.Core.Commands.RocketCommands
 
         private void CopyConfigElement(IConfigurationElement fromSection, IConfigurationElement toSection)
         {
-            foreach (var fromChild in fromSection.GetChildren())
+            foreach (IConfigurationSection fromChild in fromSection.GetChildren())
             {
-                var toChild = toSection.CreateSection(fromChild.Key, fromChild.Type);
+                IConfigurationSection toChild = toSection.CreateSection(fromChild.Key, fromChild.Type);
 
                 if (fromChild.Type != SectionType.Object)
                     toChild.Set(fromChild.Get());

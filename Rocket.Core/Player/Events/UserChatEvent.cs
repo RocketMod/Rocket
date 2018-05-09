@@ -1,5 +1,4 @@
 ﻿using Rocket.API.Eventing;
-using Rocket.API.Player;
 using Rocket.API.User;
 
 namespace Rocket.Core.Player.Events
@@ -17,15 +16,15 @@ namespace Rocket.Core.Player.Events
         }
 
         public UserChatEvent(IUser user, string message,
-                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                               bool global = true) : base(user, executionTarget, global)
+                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                             bool global = true) : base(user, executionTarget, global)
         {
             Message = message;
         }
 
         public UserChatEvent(IUser user, string message, string name = null,
-                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                               bool global = true) : base(user, name, executionTarget, global)
+                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                             bool global = true) : base(user, name, executionTarget, global)
         {
             Message = message;
         }

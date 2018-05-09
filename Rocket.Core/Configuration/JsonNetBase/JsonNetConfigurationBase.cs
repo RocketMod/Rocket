@@ -1,14 +1,16 @@
 ﻿using System;
 using System.IO;
 using Newtonsoft.Json.Linq;
-using Rocket.API;
 using Rocket.API.Configuration;
 
 namespace Rocket.Core.Configuration.JsonNetBase
 {
     public abstract class JsonNetConfigurationBase : JsonNetConfigurationElement, IConfiguration
     {
-        public Type Scheme { get; set; }
+        protected JsonNetConfigurationBase() : base(null)
+        {
+            Root = this;
+        }
 
         public string ConfigurationFile
         {
@@ -16,30 +18,24 @@ namespace Rocket.Core.Configuration.JsonNetBase
             {
                 if (ConfigurationContext == null)
                     throw new ConfigurationContextNotSetException(this);
-                return System.IO.Path.Combine(ConfigurationContext.WorkingDirectory, ConfigurationContext.ConfigurationName + "." + FileEnding);
+                return System.IO.Path.Combine(ConfigurationContext.WorkingDirectory,
+                    ConfigurationContext.ConfigurationName + "." + FileEnding);
             }
         }
 
         protected abstract string FileEnding { get; }
-
-        protected JsonNetConfigurationBase() : base(null)
-        {
-            Root = this;
-        }
+        public Type Scheme { get; set; }
 
         public bool Exists(IConfigurationContext context)
-            => File.Exists(System.IO.Path.Combine(context.WorkingDirectory, context.ConfigurationName + "." + FileEnding));
+            => File.Exists(System.IO.Path.Combine(context.WorkingDirectory,
+                context.ConfigurationName + "." + FileEnding));
 
         public virtual void Load(object defaultConfiguration = null)
         {
             if (ConfigurationContext == null)
                 throw new Exception("ConfigurationContext is null!");
 
-            if (defaultConfiguration != null)
-            {
-                // Load model changes 
-                LoadFromObject(defaultConfiguration);
-            }
+            if (defaultConfiguration != null) LoadFromObject(defaultConfiguration);
 
             if (File.Exists(ConfigurationFile))
                 LoadFromFile(ConfigurationFile);
@@ -85,7 +81,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
                 throw new NotSupportedException(
                     "This configuration was not loaded from a file; so it can not be saved!");
 
-            var parentDir = System.IO.Path.GetDirectoryName(ConfigurationFile);
+            string parentDir = System.IO.Path.GetDirectoryName(ConfigurationFile);
             if (!Directory.Exists(parentDir))
                 Directory.CreateDirectory(parentDir);
 

@@ -13,7 +13,6 @@ namespace Rocket.API.Commands
     {
         /// <summary>
         ///     Returns the n. command parameter.
-        ///     
         ///     <para>Index must be less than <see cref="Length">length</see> and not negative.</para>
         ///     <para>This property will never return null.</para>
         /// </summary>
@@ -129,11 +128,15 @@ namespace Rocket.API.Commands
         ///     Returns the joined arguments starting at the given position.
         /// </summary>
         /// <example>
-        ///     If the command was entered as "/mycommand dosomething a bla c" it would return "a bla" if startPosition was 1 and endPosition was 2.
+        ///     If the command was entered as "/mycommand dosomething a bla c" it would return "a bla" if startPosition was 1 and
+        ///     endPosition was 2.
         /// </example>
         /// <param name="startPosition">The zero based position to start from.</param>
         /// <param name="endPosition">The end position.</param>
-        /// <exception cref="IndexOutOfRangeException">If startPosition or endPosition is greater than or equal <see cref="Length">length</see>.</exception>
+        /// <exception cref="IndexOutOfRangeException">
+        ///     If startPosition or endPosition is greater than or equal
+        ///     <see cref="Length">length</see>.
+        /// </exception>
         /// <exception cref="ArgumentException">If startPosition is greater than or equal endPosition.</exception>
         /// <returns>he joined arguments starting from the given position</returns>
         string GetArgumentLine(int startPosition, int endPosition);

@@ -14,23 +14,24 @@ namespace Rocket.API.Scheduler
         ReadOnlyCollection<ITask> Tasks { get; }
 
         /// <summary>
-        ///     Schedules an action for all frames on the main thread. See <see cref="ExecutionTargetContext.EveryFrame"/>.
+        ///     Schedules an action for all frames on the main thread. See <see cref="ExecutionTargetContext.EveryFrame" />.
         /// </summary>
         ITask ScheduleEveryFrame(ILifecycleObject owner, Action action);
 
         /// <summary>
-        ///     Schedules an action for the next frame on the main thread. See <see cref="ExecutionTargetContext.NextFrame"/>.
+        ///     Schedules an action for the next frame on the main thread. See <see cref="ExecutionTargetContext.NextFrame" />.
         /// </summary>
         ITask ScheduleNextFrame(ILifecycleObject owner, Action action);
 
         /// <summary>
         ///     Schedules an action.
         /// </summary>
-        /// <seealso cref="ExecutionTargetContext"/>
+        /// <seealso cref="ExecutionTargetContext" />
         ITask Schedule(ILifecycleObject owner, Action action, ExecutionTargetContext target);
 
         /// <summary>
-        ///     Schedule an action which includes physics interactions (e.g. applying force to an object) for the next physics update. See <see cref="ExecutionTargetContext.NextPhysicsUpdate"/>.<br />
+        ///     Schedule an action which includes physics interactions (e.g. applying force to an object) for the next physics
+        ///     update. See <see cref="ExecutionTargetContext.NextPhysicsUpdate" />.<br />
         ///     Execution time depends on the engine implemention.
         /// </summary>
         /// <param name="action">The action to schedule</param>
@@ -38,7 +39,8 @@ namespace Rocket.API.Scheduler
         ITask ScheduleNextPhysicUpdate(ILifecycleObject owner, Action action);
 
         /// <summary>
-        ///     Schedule an action which includes physics interaction (e.g. applying force to an object) for every physics update. See <see cref="ExecutionTargetContext.EveryPhysicsUpdate"/>.<br />
+        ///     Schedule an action which includes physics interaction (e.g. applying force to an object) for every physics update.
+        ///     See <see cref="ExecutionTargetContext.EveryPhysicsUpdate" />.<br />
         ///     Execution time depends on the engine implemention.
         /// </summary>
         /// <param name="action">The action to schedule</param>
@@ -46,12 +48,13 @@ namespace Rocket.API.Scheduler
         ITask ScheduleEveryPhysicUpdate(ILifecycleObject owner, Action action);
 
         /// <summary>
-        ///     Schedules an action for all frame on a separate thread. See <see cref="ExecutionTargetContext.EveryAsyncFrame"/>.
+        ///     Schedules an action for all frame on a separate thread. See <see cref="ExecutionTargetContext.EveryAsyncFrame" />.
         /// </summary>
         ITask ScheduleEveryAsyncFrame(ILifecycleObject @object, Action action);
 
         /// <summary>
-        ///     Schedules an action for the next frame on a separate thread. See <see cref="ExecutionTargetContext.NextPhysicsUpdate"/>.
+        ///     Schedules an action for the next frame on a separate thread. See
+        ///     <see cref="ExecutionTargetContext.NextPhysicsUpdate" />.
         /// </summary>
         ITask ScheduleNextAsyncFrame(ILifecycleObject @object, Action action);
 

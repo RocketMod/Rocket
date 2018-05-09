@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Rocket.API.Commands;
-using Rocket.API.Permissions;
-using Rocket.API.Player;
+﻿using System.Collections.Generic;
 using Rocket.API.User;
 
 namespace Rocket.API.Economy
@@ -13,7 +9,17 @@ namespace Rocket.API.Economy
     public interface IEconomyProvider
     {
         /// <summary>
-        ///     Adds balance to the command callers account.
+        ///     All currencies. Contains at least one element.
+        /// </summary>
+        IEnumerable<IEconomyCurrency> Currencies { get; }
+
+        /// <summary>
+        ///     The default currency. Will never return null.
+        /// </summary>
+        IEconomyCurrency DefaultCurrency { get; }
+
+        /// <summary>
+        ///     Adds balance to the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to add. Should not be negative.</param>
@@ -39,36 +45,36 @@ namespace Rocket.API.Economy
         void AddBalance(IEconomyAccount account, decimal amount, string reason = null);
 
         /// <summary>
-        ///     Removes balance from the command callers account.
+        ///     Removes balance from the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to remove. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
-        /// <seealso cref="SupportsNegativeBalance(IIdentity)"/>
+        /// <seealso cref="SupportsNegativeBalance(IIdentity)" />
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
         bool RemoveBalance(IIdentity owner, decimal amount, string reason = null);
 
         /// <summary>
-        ///     Removes balance from the command callers account based on a specific currency.
+        ///     Removes balance from the users account based on a specific currency.
         /// </summary>
         /// <param name="amount">The amount to remove. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
         /// <param name="account">The account to remove balance from.</param>
-        /// <seealso cref="SupportsNegativeBalance(IIdentity)"/>
+        /// <seealso cref="SupportsNegativeBalance(IIdentity)" />
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
         bool RemoveBalance(IEconomyAccount account, decimal amount, string reason = null);
 
         /// <summary>
-        ///     Sets the balance of the command callers account.
+        ///     Sets the balance of the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
-        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)"/>.</param>
+        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)" />.</param>
         void SetBalance(IIdentity owner, decimal amount);
 
         /// <summary>
-        ///     Sets the balance of the command callers account in a specific currency.
+        ///     Sets the balance of the users account in a specific currency.
         /// </summary>
-        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)"/>.</param>
+        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)" />.</param>
         /// <param name="account">The account to set the balance of.</param>
         void SetBalance(IEconomyAccount account, decimal amount);
 
@@ -80,12 +86,12 @@ namespace Rocket.API.Economy
         bool SupportsNegativeBalance(IIdentity owner);
 
         /// <summary>
-        ///     Checks if the account of the command caller can have negative balance.
+        ///     Checks if the account of the user can have negative balance.
         /// </summary>
         /// <param name="account">Checks if the given account has access.</param>
         /// <returns><b>true</b> if the account can have negative balance; otherwise, <b>false</b>.</returns>
         bool SupportsNegativeBalance(IEconomyAccount account);
-        
+
         /// <summary>
         ///     Creates an account.
         /// </summary>
@@ -93,7 +99,10 @@ namespace Rocket.API.Economy
         /// <param name="name">The name of the account.</param>
         /// <param name="account">The account instance if it was created; otherwise, <b>null</b>.</param>
         /// <exception>If the account creation failed because of an internal error.</exception>
-        /// <returns><b>true</b> if account creation is supported and the account didn't exist already, and was created; otherwise, <b>false</b>.</returns>
+        /// <returns>
+        ///     <b>true</b> if account creation is supported and the account didn't exist already, and was created; otherwise,
+        ///     <b>false</b>.
+        /// </returns>
         bool CreateAccount(IIdentity owner, string name, out IEconomyAccount account);
 
         /// <summary>
@@ -114,11 +123,6 @@ namespace Rocket.API.Economy
         bool DeleteAccount(IEconomyAccount account);
 
         /// <summary>
-        ///     All currencies. Contains at least one element.
-        /// </summary>
-        IEnumerable<IEconomyCurrency> Currencies { get; }
-
-        /// <summary>
         ///     Gets a specific account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
@@ -134,10 +138,10 @@ namespace Rocket.API.Economy
         IEnumerable<IEconomyAccount> GetAccounts(string owner);
 
         /// <summary>
-        ///     The default currency. Will never return null.
+        ///     Checks if the given identity is supported by the economy provider.
         /// </summary>
-        IEconomyCurrency DefaultCurrency { get; }
-
+        /// <param name="identity">The identity to check.</param>
+        /// <returns><b>True</b> if the identity is supported; otherwise, <b>false</b>.</returns>
         bool SupportsIdentity(IIdentity identity);
     }
 }

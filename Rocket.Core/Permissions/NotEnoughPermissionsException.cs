@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using Rocket.API.Commands;
 using Rocket.API.User;
-using Rocket.Core.Commands;
 using Rocket.Core.User;
 
 namespace Rocket.Core.Permissions
@@ -42,7 +42,7 @@ namespace Rocket.Core.Permissions
 
         public void SendErrorMessage(ICommandContext context)
         {
-            context.User.SendMessage(FriendlyErrorMessage, ConsoleColor.Red);
+            context.User.SendMessage(FriendlyErrorMessage, Color.Red);
         }
     }
 }

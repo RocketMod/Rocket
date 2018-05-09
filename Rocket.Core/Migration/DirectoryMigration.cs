@@ -10,7 +10,7 @@ namespace Rocket.Core.Migration
 
         public void Migrate(IDependencyContainer container, string basePath)
         {
-            var runtime = container.Resolve<IRuntime>();
+            IRuntime runtime = container.Resolve<IRuntime>();
             string source = GetSourcePath(basePath);
             string target = GetTargetPath(runtime.WorkingDirectory);
 
@@ -26,13 +26,14 @@ namespace Rocket.Core.Migration
             if (!Directory.Exists(targetDir))
                 Directory.CreateDirectory(targetDir);
 
-            foreach (var file in Directory.GetFiles(sourceDir))
+            foreach (string file in Directory.GetFiles(sourceDir))
             {
-                var targetFile = Path.Combine(targetDir, Path.GetFileName(file));
-                if(!File.Exists(targetFile))
+                string targetFile = Path.Combine(targetDir, Path.GetFileName(file));
+                if (!File.Exists(targetFile))
                     File.Copy(file, targetFile);
             }
-            foreach (var directory in Directory.GetDirectories(sourceDir))
+
+            foreach (string directory in Directory.GetDirectories(sourceDir))
                 Copy(directory, Path.Combine(targetDir, Path.GetFileName(directory)));
         }
     }

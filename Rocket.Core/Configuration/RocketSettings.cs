@@ -1,7 +1,7 @@
 ﻿namespace Rocket.Core.Configuration
 {
     /// <summary>
-    ///     See <see cref="IRocketSettingsProvider"/>.
+    ///     See <see cref="IRocketSettingsProvider" />.
     /// </summary>
     public class RocketSettings
     {

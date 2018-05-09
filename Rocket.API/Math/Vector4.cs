@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace Rocket.API.Math {
+namespace Rocket.API.Math
+{
     /// <summary>
     ///     A four dimensional vector.
     /// </summary>
@@ -8,7 +9,7 @@ namespace Rocket.API.Math {
     public class Vector4 : Vector3
     {
         /// <summary>
-        ///     The W coordinate. 
+        ///     The W coordinate.
         /// </summary>
         public float W { get; set; }
     }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.I18N;
 

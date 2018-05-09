@@ -1,13 +1,21 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Rocket.API.Configuration;
-using Rocket.API.Permissions;
 using Rocket.Core.Configuration;
 
 namespace Rocket.Core.Permissions
 {
     public class GroupPermissionSection : PermissionSection
     {
+        public GroupPermissionSection(string id, IConfigurationElement element) : base(id, element)
+        {
+            ParentGroups = new string[0];
+            Priority = 0;
+        }
+
+        public GroupPermissionSection() { }
+
         public override string Id { get; set; }
 
         public string Name { get; set; }
@@ -22,20 +30,9 @@ namespace Rocket.Core.Permissions
 
         public bool AutoAssign { get; set; } = false;
 
-        public GroupPermissionSection(string id, IConfigurationElement element) : base(id, element)
-        {
-            ParentGroups = new string[0];
-            Priority = 0;
-        }
-
-        public GroupPermissionSection()
-        {
-
-        }
-
         public override void Save()
         {
-            var groups = element.Get<GroupPermissionSection[]>().ToList();
+            List<GroupPermissionSection> groups = element.Get<GroupPermissionSection[]>().ToList();
             groups.RemoveAll(c => c.Id.Equals(Id, StringComparison.OrdinalIgnoreCase));
             groups.Add(this);
             element.Set(groups.ToArray());

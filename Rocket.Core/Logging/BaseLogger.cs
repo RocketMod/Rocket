@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using Rocket.API.DependencyInjection;
@@ -11,19 +12,25 @@ namespace Rocket.Core.Logging
 {
     public abstract class BaseLogger : ILogger
     {
-        public IDependencyContainer Container { get; }
-        protected IRocketSettingsProvider RocketSettings
+        private static readonly ICollection<Type> ignoredLoggingTypes = new HashSet<Type>
         {
-            get
-            {
-                if (Container.TryResolve<IRocketSettingsProvider>(null, out var settings))
-                {
-                    return settings;
-                }
+            typeof(BaseLogger),
+            typeof(ProxyLogger),
+            typeof(LoggingExtensions)
+        };
 
-                return null;
-            }
-        }
+        private readonly ICollection<LogLevel> enabledLevels = new HashSet<LogLevel>
+        {
+#if DEBUG
+            //LogLevel.Trace, 
+            LogLevel.Debug,
+#endif
+            LogLevel.Native,
+            LogLevel.Information,
+            LogLevel.Warning,
+            LogLevel.Error,
+            LogLevel.Fatal
+        };
 
         protected BaseLogger(IDependencyContainer container)
         {
@@ -31,13 +38,20 @@ namespace Rocket.Core.Logging
             SkipTypeFromLogging(GetType());
         }
 
-        private static readonly ICollection<Type> ignoredLoggingTypes = new HashSet<Type> { typeof(BaseLogger), typeof(ProxyLogger), typeof(LoggingExtensions) };
-        public static void SkipTypeFromLogging(Type type)
+        public IDependencyContainer Container { get; }
+
+        protected IRocketSettingsProvider RocketSettings
         {
-            ignoredLoggingTypes.Add(type);
+            get
+            {
+                if (Container.TryResolve(null, out IRocketSettingsProvider settings)) return settings;
+
+                return null;
+            }
         }
 
-        public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments)
+        public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null,
+                        params object[] arguments)
         {
             if (!IsEnabled(level))
                 return;
@@ -45,9 +59,25 @@ namespace Rocket.Core.Logging
             OnLog(message, level, exception, arguments);
         }
 
-        public abstract void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] arguments);
+        public virtual bool IsEnabled(LogLevel level) => enabledLevels.Contains(level);
 
-        public string GetLogLevelPrefix(LogLevel level)
+        public virtual void SetEnabled(LogLevel level, bool enabled)
+        {
+            if (enabled)
+                enabledLevels.Add(level);
+            else
+                enabledLevels.Remove(level);
+        }
+
+        public static void SkipTypeFromLogging(Type type)
+        {
+            ignoredLoggingTypes.Add(type);
+        }
+
+        public abstract void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
+                                   params object[] arguments);
+
+        public static string GetLogLevelPrefix(LogLevel level)
         {
             switch (level)
             {
@@ -66,61 +96,34 @@ namespace Rocket.Core.Logging
                 case LogLevel.Fatal:
                     return "Fatal";
             }
+
             throw new ArgumentOutOfRangeException(nameof(level), level, null);
         }
 
-        public ConsoleColor GetLogLevelColor(LogLevel level)
+        public static Color GetLogLevelColor(LogLevel level)
         {
             switch (level)
             {
                 case LogLevel.Trace:
-                    return ConsoleColor.DarkGray;
+                    return Color.DarkGray;
                 case LogLevel.Debug:
-                    return ConsoleColor.Gray;
+                    return Color.Gray;
                 case LogLevel.Native:
-                    return ConsoleColor.White;
+                    return Color.White;
                 case LogLevel.Information:
-                    return ConsoleColor.Green;
+                    return Color.Green;
                 case LogLevel.Warning:
-                    return ConsoleColor.Yellow;
+                    return Color.Yellow;
                 case LogLevel.Error:
-                    return ConsoleColor.Red;
+                    return Color.Red;
                 case LogLevel.Fatal:
-                    return ConsoleColor.DarkRed;
+                    return Color.DarkRed;
             }
+
             throw new ArgumentOutOfRangeException(nameof(level), level, null);
         }
 
         public virtual MethodBase GetLoggerCallingMethod()
-        {
-            return ReflectionExtensions.GetCallingMethod(ignoredLoggingTypes.ToArray());
-        }
-
-
-        private readonly ICollection<LogLevel> enabledLevels = new HashSet<LogLevel>
-        {
-#if DEBUG
-            //LogLevel.Trace, 
-            LogLevel.Debug,
-#endif
-            LogLevel.Native,
-            LogLevel.Information,
-            LogLevel.Warning,
-            LogLevel.Error,
-            LogLevel.Fatal
-        };
-
-        public virtual bool IsEnabled(LogLevel level)
-        {
-            return enabledLevels.Contains(level);
-        }
-
-        public virtual void SetEnabled(LogLevel level, bool enabled)
-        {
-            if (enabled)
-                enabledLevels.Add(level);
-            else
-                enabledLevels.Remove(level);
-        }
+            => ReflectionExtensions.GetCallingMethod(ignoredLoggingTypes.ToArray());
     }
 }

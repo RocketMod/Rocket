@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Plugins;
-using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 
 namespace Rocket.Core.Logging
@@ -11,7 +10,7 @@ namespace Rocket.Core.Logging
     {
         public PluginLogger(IDependencyContainer container, IPlugin plugin) : base(container)
         {
-            var path = Path.Combine(plugin.WorkingDirectory, "Logs");
+            string path = Path.Combine(plugin.WorkingDirectory, "Logs");
             File = Path.Combine(path, plugin.Name + ".log");
         }
     }

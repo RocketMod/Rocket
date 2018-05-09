@@ -14,7 +14,7 @@ namespace Rocket.Core.Logging
         {
             logger.Log(message, LogLevel.Trace, exception, arguments);
         }
-        
+
         public static void LogDebug(this ILogger logger, string message, params object[] arguments)
         {
             logger.LogDebug(message, null, null, arguments);
@@ -30,7 +30,8 @@ namespace Rocket.Core.Logging
             logger.LogNative(message, null, null, arguments);
         }
 
-        public static void LogNative(this ILogger logger, string message, Exception exception, params object[] arguments)
+        public static void LogNative(this ILogger logger, string message, Exception exception,
+                                     params object[] arguments)
         {
             logger.Log(message, LogLevel.Native, exception, arguments);
         }
@@ -40,7 +41,8 @@ namespace Rocket.Core.Logging
             logger.LogInformation(message, null, null, arguments);
         }
 
-        public static void LogInformation(this ILogger logger, string message, Exception exception, params object[] arguments)
+        public static void LogInformation(this ILogger logger, string message, Exception exception,
+                                          params object[] arguments)
         {
             logger.Log(message, LogLevel.Information, exception, arguments);
         }
@@ -50,7 +52,8 @@ namespace Rocket.Core.Logging
             logger.LogWarning(message, null, null, arguments);
         }
 
-        public static void LogWarning(this ILogger logger, string message, Exception exception, params object[] arguments)
+        public static void LogWarning(this ILogger logger, string message, Exception exception,
+                                      params object[] arguments)
         {
             logger.Log(message, LogLevel.Warning, exception, arguments);
         }

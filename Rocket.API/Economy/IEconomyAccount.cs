@@ -1,6 +1,4 @@
-﻿using Rocket.API.Permissions;
-using Rocket.API.Player;
-using Rocket.API.User;
+﻿using Rocket.API.User;
 
 namespace Rocket.API.Economy
 {
@@ -15,7 +13,7 @@ namespace Rocket.API.Economy
         IIdentity Owner { get; }
 
         /// <summary>
-        ///     The name of the account. 
+        ///     The name of the account.
         /// </summary>
         string Name { get; }
 
@@ -23,7 +21,7 @@ namespace Rocket.API.Economy
         ///     The accounts balance.
         /// </summary>
         decimal Balance { get; }
-        
+
         /// <summary>
         ///     The accounts currency. Can be null.
         /// </summary>

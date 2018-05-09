@@ -16,10 +16,9 @@ namespace Rocket.Core.Plugins
 {
     public abstract class Plugin : IPlugin, ITranslatable, IConfigurable
     {
-        protected Plugin(IDependencyContainer container) : this(null, container) { }
-
         // The parent logger is used to log stuff that should not be logged to the plugins own log.
         private readonly ILogger parentLogger;
+        protected Plugin(IDependencyContainer container) : this(null, container) { }
 
         protected Plugin(string name, IDependencyContainer container)
         {
@@ -32,18 +31,13 @@ namespace Rocket.Core.Plugins
 
             WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
 
-            var rocketSettings = Container.Resolve<IRocketSettingsProvider>();
+            IRocketSettingsProvider rocketSettings = Container.Resolve<IRocketSettingsProvider>();
             if (rocketSettings.Settings.PluginLogsEnabled)
-            {
                 Container.RegisterSingletonType<ILogger, PluginLogger>("plugin_logger");
-            }
         }
 
-        public IDependencyContainer Container { get; }
         protected IEventManager EventManager => Container.Resolve<IEventManager>();
         protected ILogger Logger => Container.Resolve<ILogger>();
-
-        public virtual IPluginManager PluginManager => Container.Resolve<IPluginManager>("default_plugins");
 
         protected IRuntime Runtime => Container.Resolve<IRuntime>();
 
@@ -52,6 +46,10 @@ namespace Rocket.Core.Plugins
 
         public virtual object DefaultConfiguration
             => null;
+
+        public IDependencyContainer Container { get; }
+
+        public virtual IPluginManager PluginManager => Container.Resolve<IPluginManager>("default_plugins");
 
         public string Name { get; }
 
@@ -80,6 +78,7 @@ namespace Rocket.Core.Plugins
             {
                 Logger.LogFatal($"Failed to load {Name}: ", ex);
             }
+
             return true;
         }
 
@@ -95,6 +94,7 @@ namespace Rocket.Core.Plugins
                 PluginDeactivateEvent loadedEvent = new PluginDeactivateEvent(PluginManager, this);
                 EventManager.Emit(Runtime, loadedEvent);
             }
+
             try
             {
                 OnDeactivate();
@@ -122,7 +122,6 @@ namespace Rocket.Core.Plugins
 
         public void ObLoad(bool isReload)
         {
-
             if (EventManager != null)
             {
                 PluginActivateEvent activateEvent = new PluginActivateEvent(PluginManager, this);
@@ -134,7 +133,7 @@ namespace Rocket.Core.Plugins
             if (DefaultConfiguration != null)
             {
                 Configuration = Container.Resolve<IConfiguration>();
-                var context = this.CreateChildConfigurationContext("Configuration");
+                IConfigurationContext context = this.CreateChildConfigurationContext("Configuration");
                 Configuration.Scheme = DefaultConfiguration.GetType();
                 Configuration.Load(context, DefaultConfiguration);
             }
@@ -142,7 +141,7 @@ namespace Rocket.Core.Plugins
             if (DefaultTranslations != null)
             {
                 Translations = Container.Resolve<ITranslationCollection>();
-                var context = this.CreateChildConfigurationContext("Translations");
+                IConfigurationContext context = this.CreateChildConfigurationContext("Translations");
                 Translations.Load(context, DefaultTranslations);
             }
 

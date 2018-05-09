@@ -18,29 +18,6 @@ namespace Rocket.API.Configuration
         bool IsLoaded { get; }
 
         /// <summary>
-        ///     Checks if the configuration for the given context exists.
-        /// </summary>
-        /// <param name="context">The context to check.</param>
-        /// <returns><b>true</b> if the configuration exists; otherwise, <b>false</b>.</returns>
-        bool Exists(IConfigurationContext context);
-
-        /// <summary>
-        ///     Loads the configuration. 
-        ///     If the configuration does not exist, it will create oen from the default configuration.<br/><br/>
-        ///     <b><see cref="ConfigurationContext"/> must be set before.</b> 
-        /// </summary>
-        /// <param name="defaultConfiguration">The default configuration to be used if the configuration does not exist already.</param>
-        void Load(object defaultConfiguration = null);
-
-        /// <summary>
-        ///     Loads the configuration from the given context. 
-        ///     If the configuration does not exist, it will create oen from the default configuration.<br/><br/>
-        /// </summary>
-        /// <param name="context">The context to load from.</param>
-        /// <param name="defaultConfiguration">The default configuration to be used if the configuration does not exist already.</param>
-        void Load(IConfigurationContext context, object defaultConfiguration = null);
-
-        /// <summary>
         ///     The configuration context.
         /// </summary>
         IConfigurationContext ConfigurationContext { get; set; }
@@ -49,6 +26,29 @@ namespace Rocket.API.Configuration
         ///     The configuration type name.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        ///     Checks if the configuration for the given context exists.
+        /// </summary>
+        /// <param name="context">The context to check.</param>
+        /// <returns><b>true</b> if the configuration exists; otherwise, <b>false</b>.</returns>
+        bool Exists(IConfigurationContext context);
+
+        /// <summary>
+        ///     Loads the configuration.
+        ///     If the configuration does not exist, it will create oen from the default configuration.<br /><br />
+        ///     <b><see cref="ConfigurationContext" /> must be set before.</b>
+        /// </summary>
+        /// <param name="defaultConfiguration">The default configuration to be used if the configuration does not exist already.</param>
+        void Load(object defaultConfiguration = null);
+
+        /// <summary>
+        ///     Loads the configuration from the given context.
+        ///     If the configuration does not exist, it will create oen from the default configuration.<br /><br />
+        /// </summary>
+        /// <param name="context">The context to load from.</param>
+        /// <param name="defaultConfiguration">The default configuration to be used if the configuration does not exist already.</param>
+        void Load(IConfigurationContext context, object defaultConfiguration = null);
 
         /// <summary>
         ///     Loads a new empty configuration without any context.
@@ -62,14 +62,14 @@ namespace Rocket.API.Configuration
         void LoadFromObject(object o);
 
         /// <summary>
-        ///     Reloads the configuration from the provided context.<br/><br/>
-        ///     <b><see cref="ConfigurationContext"/> must be set before.</b> 
+        ///     Reloads the configuration from the provided context.<br /><br />
+        ///     <b><see cref="ConfigurationContext" /> must be set before.</b>
         /// </summary>
         void Reload();
 
         /// <summary>
-        ///     Saves the configuration to the provided context.<br/><br/>
-        ///     <b><see cref="ConfigurationContext"/> must be set before.</b> 
+        ///     Saves the configuration to the provided context.<br /><br />
+        ///     <b><see cref="ConfigurationContext" /> must be set before.</b>
         /// </summary>
         void Save();
     }

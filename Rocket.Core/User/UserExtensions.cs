@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using Rocket.API.User;
 
 namespace Rocket.Core.User
@@ -14,5 +15,8 @@ namespace Rocket.Core.User
         {
             user.UserManager.SendMessage(null, message, color, bindings);
         }
+
+        public static TimeSpan GetOnlineTime(this IUser user) 
+            => (user.SessionDisconnectTime ?? DateTime.Now) - user.SessionConnectTime;
     }
 }

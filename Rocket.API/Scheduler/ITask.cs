@@ -25,7 +25,7 @@ namespace Rocket.API.Scheduler
         /// <summary>
         ///     Defines how and when the task should be executed.
         /// </summary>
-        /// <seealso cref="ExecutionTargetContext"/>
+        /// <seealso cref="ExecutionTargetContext" />
         ExecutionTargetContext ExecutionTarget { get; }
 
         /// <summary>

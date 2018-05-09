@@ -1,7 +1,4 @@
-﻿using System;
-using System.Xml.Serialization;
-
-namespace Rocket.Core.Migration.LegacyPermissions
+﻿namespace Rocket.Core.Migration.LegacyPermissions
 {
     public class Permission
     {

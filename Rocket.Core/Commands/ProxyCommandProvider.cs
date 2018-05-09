@@ -14,7 +14,7 @@ namespace Rocket.Core.Commands
 
         public ILifecycleObject GetOwner(ICommand command)
         {
-            foreach(var service in ProxiedServices)
+            foreach (ICommandProvider service in ProxiedServices)
                 if (service.Commands.Any(c => c == command))
                     return service.GetOwner(command);
 

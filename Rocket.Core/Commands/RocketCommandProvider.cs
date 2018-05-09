@@ -16,13 +16,19 @@ namespace Rocket.Core.Commands
         {
             this.runtime = runtime;
 
-            var types = (typeof(RocketCommandProvider).Assembly.FindTypes<ICommand>())
-                        .Where(c => c.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Length == 0)
-                        .Where(c => !typeof(IChildCommand).IsAssignableFrom(c));
+            IEnumerable<Type> types = typeof(RocketCommandProvider).Assembly.FindTypes<ICommand>()
+                                                                   .Where(c => c
+                                                                               .GetCustomAttributes(
+                                                                                   typeof(DontAutoRegisterAttribute),
+                                                                                   true)
+                                                                               .Length
+                                                                       == 0)
+                                                                   .Where(c
+                                                                       => !typeof(IChildCommand).IsAssignableFrom(c));
 
             List<ICommand> list = new List<ICommand>();
             foreach (Type type in types)
-                list.Add((ICommand)Activator.CreateInstance(type, new object[0]));
+                list.Add((ICommand) Activator.CreateInstance(type, new object[0]));
             Commands = list;
         }
 

@@ -1,6 +1,7 @@
 ﻿using System;
 
-namespace Rocket.API.Math {
+namespace Rocket.API.Math
+{
     /// <summary>
     ///     A three dimensional vector.
     /// </summary>
@@ -8,12 +9,12 @@ namespace Rocket.API.Math {
     public class Vector2
     {
         /// <summary>
-        ///     The X coordinate. 
+        ///     The X coordinate.
         /// </summary>
         public float X { get; set; }
 
         /// <summary>
-        ///     The Y coordinate. 
+        ///     The Y coordinate.
         /// </summary>
         public float Y { get; set; }
     }

@@ -12,23 +12,21 @@ namespace Rocket.Core.Commands.RocketCommands
     public class CommandHelp : ICommand
     {
         public string Name => "Help";
-        public string[] Aliases => new[] { "h" };
+        public string[] Aliases => new[] {"h"};
         public string Summary => "Provides help for all or a specific command.";
         public string Description => null;
         public string Permission => "Rocket.Help";
         public string Syntax => "[command] [1. Child Command] [2. Child Command] [...]";
         public IChildCommand[] ChildCommands => null;
-        public bool SupportsUser(Type User)
-        {
-            return true;
-        }
+
+        public bool SupportsUser(Type User) => true;
 
         public void Execute(ICommandContext context)
         {
-            var cmdProvider = context.Container.Resolve<ICommandProvider>();
-            var permissionProvider = context.Container.Resolve<IPermissionProvider>();
+            ICommandProvider cmdProvider = context.Container.Resolve<ICommandProvider>();
+            IPermissionProvider permissionProvider = context.Container.Resolve<IPermissionProvider>();
 
-            var rootPrefix = context.RootContext.CommandPrefix;
+            string rootPrefix = context.RootContext.CommandPrefix;
             IEnumerable<ICommand> childs = cmdProvider.Commands.OrderBy(c => c.Name);
 
             if (context.Parameters.Length > 0)
@@ -55,10 +53,10 @@ namespace Rocket.Core.Commands.RocketCommands
 
                 context.User.SendMessage(GetCommandUsage(cmd, prefix), Color.Blue);
 
-                if(cmd.Description != null)
+                if (cmd.Description != null)
                     context.User.SendMessage(cmd.Description, Color.Cyan);
 
-                var childCommands =
+                List<ICommand> childCommands =
                     (cmd.ChildCommands?.Cast<ICommand>().ToList() ?? new List<ICommand>())
                     .Where(c => HasAccess(c, context.User, permissionProvider))
                     .OrderBy(c => c.Name)
@@ -67,33 +65,28 @@ namespace Rocket.Core.Commands.RocketCommands
                 if (childCommands.Count == 0)
                     return;
 
-                foreach (var subCmd in childCommands)
-                {
-                    context.User.SendMessage(GetCommandUsage(subCmd, rootPrefix + cmd.Name.ToLower() + " "), Color.Blue);
-                }
+                foreach (ICommand subCmd in childCommands)
+                    context.User.SendMessage(GetCommandUsage(subCmd, rootPrefix + cmd.Name.ToLower() + " "),
+                        Color.Blue);
 
                 return;
             }
 
             context.User.SendMessage("Available commands: ", Color.Green);
 
-            foreach (var cmd in cmdProvider.Commands.OrderBy(c => c.Name))
-            {
+            foreach (ICommand cmd in cmdProvider.Commands.OrderBy(c => c.Name))
                 if (HasAccess(cmd, context.User, permissionProvider))
                     context.User.SendMessage(GetCommandUsage(cmd, rootPrefix), Color.Blue);
-            }
         }
 
-        public bool HasAccess(ICommand command, IUser caller, IPermissionProvider permissionProvider)
-        {
-            return (permissionProvider.CheckPermission(caller, command.Permission ?? command.Name)
+        public bool HasAccess(ICommand command, IUser user, IPermissionProvider permissionProvider)
+            => permissionProvider.CheckPermission(user, command.Permission ?? command.Name)
                 == PermissionResult.Grant
-                && command.SupportsUser(caller.GetType()));
-        }
+                && command.SupportsUser(user.GetType());
 
-        public string GetCommandUsage(ICommand command, string prefix)
-        {
-            return prefix + command.Name.ToLower() + (string.IsNullOrEmpty(command.Syntax) ? "" : " " + command.Syntax) + (string.IsNullOrEmpty(command.Summary) ? "" : ": " + command.Summary);
-        }
+        public string GetCommandUsage(ICommand command, string prefix) => prefix
+            + command.Name.ToLower()
+            + (string.IsNullOrEmpty(command.Syntax) ? "" : " " + command.Syntax)
+            + (string.IsNullOrEmpty(command.Summary) ? "" : ": " + command.Summary);
     }
 }
