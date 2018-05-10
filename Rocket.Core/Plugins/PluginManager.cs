@@ -108,13 +108,7 @@ namespace Rocket.Core.Plugins
             foreach (IDependencyContainer childContainer in pluginContainers)
             {
                 IPlugin plugin = childContainer.Resolve<IPlugin>();
-
-                PluginActivateEvent pluginActivateEvent = new PluginActivateEvent(this, plugin);
-                eventManager.Emit(runtime, pluginActivateEvent);
-
-                if (pluginActivateEvent.IsCancelled)
-                    continue;
-
+                
                 PluginCommandProvider cmdProvider = new PluginCommandProvider(plugin, childContainer);
                 parentContainer.RegisterSingletonInstance<ICommandProvider>(cmdProvider, plugin.Name);
 
@@ -137,9 +131,6 @@ namespace Rocket.Core.Plugins
                     }
 
                 plugin.Load(false);
-
-                PluginActivatedEvent pluginActivatedEvent = new PluginActivatedEvent(this, plugin);
-                eventManager.Emit(runtime, pluginActivatedEvent);
             }
         }
 
