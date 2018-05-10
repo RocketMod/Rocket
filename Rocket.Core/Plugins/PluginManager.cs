@@ -91,6 +91,12 @@ namespace Rocket.Core.Plugins
                     logger.LogError($"Failed to load plugin assembly at {pluginPath}", ex);
                 }
 
+            PluginManagerInitEvent pluginManagerInitEvent = new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
+            eventManager.Emit(runtime, pluginManagerInitEvent);
+
+            if (pluginManagerInitEvent.IsCancelled)
+                return;
+
             List<IDependencyContainer> pluginContainers = new List<IDependencyContainer>();
             foreach (Assembly assembly in assemblies)
             {
@@ -101,13 +107,13 @@ namespace Rocket.Core.Plugins
 
             foreach (IDependencyContainer childContainer in pluginContainers)
             {
-                PluginManagerInitEvent @event = new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
-                eventManager.Emit(runtime, @event);
-
-                if (@event.IsCancelled)
-                    return;
-
                 IPlugin plugin = childContainer.Resolve<IPlugin>();
+
+                PluginActivateEvent pluginActivateEvent = new PluginActivateEvent(this, plugin);
+                eventManager.Emit(runtime, pluginActivateEvent);
+
+                if (pluginActivateEvent.IsCancelled)
+                    continue;
 
                 PluginCommandProvider cmdProvider = new PluginCommandProvider(plugin, childContainer);
                 parentContainer.RegisterSingletonInstance<ICommandProvider>(cmdProvider, plugin.Name);
@@ -131,6 +137,9 @@ namespace Rocket.Core.Plugins
                     }
 
                 plugin.Load(false);
+
+                PluginActivatedEvent pluginActivatedEvent = new PluginActivatedEvent(this, plugin);
+                eventManager.Emit(runtime, pluginActivatedEvent);
             }
         }
 
