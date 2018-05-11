@@ -14,7 +14,7 @@ namespace Rocket.Core.User
 
         public static void SendMessage(this IUser user, string message, Color? color = null, params object[] bindings)
         {
-            user.UserManager.SendMessage(null, message, color, bindings);
+            user.UserManager.SendMessage(user, message, color, bindings);
         }
 
         public static TimeSpan GetOnlineTime(this IUser user) 
