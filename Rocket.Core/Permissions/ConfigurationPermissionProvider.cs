@@ -9,7 +9,7 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions
 {
-    [ServicePriority(Priority = ServicePriority.Lowest)]
+    [ServicePriority(Priority = ServicePriority.Normal)]
     public class ConfigurationPermissionProvider : IPermissionProvider
     {
         public ConfigurationPermissionProvider(IConfiguration groupsConfig,
