@@ -6,7 +6,7 @@ namespace Rocket.API.Commands
     /// <summary>
     ///     A service which provides a set of commands.
     /// </summary>
-    public interface ICommandProvider : IProxyableService
+    public interface ICommandProvider : IProxyableService, IService
     {
         /// <summary>
         ///     The commands of this provider.
@@ -21,7 +21,5 @@ namespace Rocket.API.Commands
         /// </summary>
         /// <param name="command">The command to get the owner of.</param>
         ILifecycleObject GetOwner(ICommand command);
-
-        string ProviderName { get; }
     }
 }

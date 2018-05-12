@@ -7,7 +7,7 @@ namespace Rocket.API.Commands
     /// <summary>
     ///     The service responsible for handling commands.
     /// </summary>
-    public interface ICommandHandler : IProxyableService
+    public interface ICommandHandler : IProxyableService, IService
     {
         /// <summary>
         ///     Handles a command

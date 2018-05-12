@@ -52,5 +52,7 @@ namespace Rocket.Core.Plugins
 
         public bool UnloadPlugin(string name)
             => throw new NotSupportedException("Unloading plugins is not supported through proxy");
+
+        public string ServiceName => "ProxyPlugins";
     }
 }

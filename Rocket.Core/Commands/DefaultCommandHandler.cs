@@ -127,5 +127,7 @@ namespace Rocket.Core.Commands
             if (!SupportsUser(user.GetType()))
                 throw new NotSupportedException(user.GetType().FullName + " is not supported!");
         }
+
+        public string ServiceName => "RocketCommandHandler";
     }
 }

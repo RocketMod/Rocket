@@ -140,5 +140,7 @@ namespace Rocket.Core.Permissions
             if (!SupportsTarget(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");
         }
+
+        public string ServiceName => "ProxyPermissions";
     }
 }

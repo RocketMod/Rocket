@@ -108,5 +108,7 @@ namespace Rocket.Core.Logging
             if (streamWriter.BaseStream.CanWrite)
                 streamWriter.WriteLine(formattedLine);
         }
+
+        public override string ServiceName => "FileLogger";
     }
 }

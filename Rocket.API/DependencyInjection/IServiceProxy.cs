@@ -33,5 +33,5 @@ namespace Rocket.API.DependencyInjection
     ///     This allows us to avoid having issues with load order of providers and prevents to do always foreach with
     ///     container.ResolveAll&lt;&gt;.
     /// </remarks>
-    public interface IServiceProxy { }
+    public interface IServiceProxy : IService { }
 }

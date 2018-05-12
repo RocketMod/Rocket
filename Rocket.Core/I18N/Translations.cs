@@ -54,5 +54,7 @@ namespace Rocket.Core.I18N
         {
             config.Save();
         }
+
+        public string ServiceName => "RocketTranslations";
     }
 }

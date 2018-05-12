@@ -54,6 +54,7 @@
     <Compile Include="Commands\ICommandParameters.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Commands\IConsoleCommandCaller.cs" />
+    <Compile Include="DependencyInjection\IService.cs" />
     <Compile Include="User\IPlayerUser.cs" />
     <Compile Include="User\IUser.cs" />
     <Compile Include="Commands\ISubCommand.cs" />
@@ -116,9 +117,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Chat\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\Rocket.Compatibility\Rocket.Compatibility.csproj">
       <Project>{01263B0D-9CE3-4D5A-AFCB-165592EF24B5}</Project>

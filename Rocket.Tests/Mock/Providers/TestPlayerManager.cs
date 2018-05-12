@@ -64,5 +64,6 @@ namespace Rocket.Tests.Mock.Providers
             => throw new NotImplementedException();
 
         public IPlayer GetPlayer(string id) => GetOnlinePlayer(id);
+        public string ServiceName => "TestPlayers";
     }
 }

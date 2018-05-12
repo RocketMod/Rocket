@@ -1,11 +1,12 @@
 ﻿using System;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.Configuration
 {
     /// <summary>
     ///     A configuration provider. Also represents the root node of the configuration tree.
     /// </summary>
-    public interface IConfiguration : IConfigurationElement
+    public interface IConfiguration : IConfigurationElement, IService
     {
         /// <summary>
         ///     The configuration scheme. Can be null.

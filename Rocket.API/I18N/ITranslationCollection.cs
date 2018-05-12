@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using Rocket.API.Configuration;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.I18N
 {
     /// <summary>
     ///     Provides translations.
     /// </summary>
-    public interface ITranslationCollection
+    public interface ITranslationCollection: IProxyableService
     {
         /// <summary>
         ///     Get a localized message from the given translation key.

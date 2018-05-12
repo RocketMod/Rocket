@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Commands;
 using Rocket.API.Configuration;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 
 namespace Rocket.API
@@ -7,7 +8,7 @@ namespace Rocket.API
     /// <summary>
     ///     A game specific implemention of RocketMod. Implementations are responsible for providing game specific features.
     /// </summary>
-    public interface IImplementation : IEventEmitter, IConfigurationContext
+    public interface IImplementation : IEventEmitter, IConfigurationContext, IService
     {
         /// <summary>
         ///     The game instance ID.

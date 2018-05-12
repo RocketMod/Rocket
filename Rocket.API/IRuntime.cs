@@ -7,7 +7,7 @@ namespace Rocket.API
     /// <summary>
     ///     Defines a RocketMod Runtime. The runtime is responsibe for initializing RocketMod itself.
     /// </summary>
-    public interface IRuntime : IEventEmitter, IConfigurationContext
+    public interface IRuntime : IEventEmitter, IConfigurationContext, IService
     {
         /// <summary>
         ///     The base dependency container.

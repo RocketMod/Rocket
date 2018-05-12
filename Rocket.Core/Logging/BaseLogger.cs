@@ -125,5 +125,7 @@ namespace Rocket.Core.Logging
 
         public virtual MethodBase GetLoggerCallingMethod()
             => ReflectionExtensions.GetCallingMethod(ignoredLoggingTypes.ToArray());
+
+        public abstract string ServiceName { get; }
     }
 }

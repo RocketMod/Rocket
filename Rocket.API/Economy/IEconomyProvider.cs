@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Rocket.API.DependencyInjection;
 using Rocket.API.User;
 
 namespace Rocket.API.Economy
@@ -6,7 +7,7 @@ namespace Rocket.API.Economy
     /// <summary>
     ///     The service responsible for managing economy and currencies.
     /// </summary>
-    public interface IEconomyProvider
+    public interface IEconomyProvider: IService
     {
         /// <summary>
         ///     All currencies. Contains at least one element.

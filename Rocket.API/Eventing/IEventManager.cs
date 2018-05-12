@@ -1,4 +1,5 @@
 ﻿using System;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.Eventing
 {
@@ -26,7 +27,7 @@ namespace Rocket.API.Eventing
     /// <summary>
     ///     The event manager is responsible for emitting events and for managing their subscriptions.
     /// </summary>
-    public interface IEventManager
+    public interface IEventManager: IService
     {
         /// <summary>
         ///     Subscribe to an event.

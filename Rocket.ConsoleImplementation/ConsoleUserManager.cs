@@ -47,5 +47,7 @@ namespace Rocket.ConsoleImplementation
         {
             console.SendMessage($"[Broadcast] {message}", color, arguments);
         }
+
+        public string ServiceName => "ConsoleManager";
     }
 }

@@ -447,5 +447,7 @@ namespace Rocket.Core.Permissions
             GroupsConfig = groupsConfig;
             PlayersConfig = playersConfig;
         }
+
+        public string ServiceName => "RocketPermissions";
     }
 }

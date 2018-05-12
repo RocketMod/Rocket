@@ -342,5 +342,7 @@ namespace Rocket.Core.Plugins
             IEnumerable<IPlugin> plugins = container.ResolveAll<IPlugin>();
             foreach (IPlugin plugin in plugins) plugin.Unload();
         }
+
+        public string ServiceName => "RocketPlugins";
     }
 }

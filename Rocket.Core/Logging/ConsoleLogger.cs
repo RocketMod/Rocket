@@ -48,6 +48,8 @@ namespace Rocket.Core.Logging
             SetForegroundColor(orgCol);
         }
 
+        public override string ServiceName => "Console";
+
         public static Color GetForegroundColor()
         {
             int[] cColors =

@@ -33,7 +33,7 @@ namespace Rocket.Core.Commands
         }
 
         public ILifecycleObject GetOwner(ICommand command) => runtime;
-        public string ProviderName => "Rocket";
         public IEnumerable<ICommand> Commands { get; }
+        public string ServiceName => "RocketCommands";
     }
 }

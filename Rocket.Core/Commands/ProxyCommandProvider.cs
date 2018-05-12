@@ -40,7 +40,7 @@ namespace Rocket.Core.Commands
 
         public ICommandProvider GetProvider(string name)
         {
-            return ProxiedServices.FirstOrDefault(c => c.ProviderName.Equals(name, StringComparison.OrdinalIgnoreCase));
+            return ProxiedServices.FirstOrDefault(c => c.ServiceName.Equals(name, StringComparison.OrdinalIgnoreCase));
         }
 
         private IEnumerable<ICommand> registeredCommands;
@@ -128,5 +128,7 @@ namespace Rocket.Core.Commands
                 return registeredCommands;
             }
         }
+
+        public string ServiceName => "ProxyCommands";
     }
 }

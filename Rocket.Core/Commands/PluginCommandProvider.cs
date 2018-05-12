@@ -22,5 +22,6 @@ namespace Rocket.Core.Commands
         public ILifecycleObject GetOwner(ICommand command) => plugin;
         public string ProviderName => plugin.Name;
         public IEnumerable<ICommand> Commands => pluginContainer.ResolveAll<ICommand>();
+        public string ServiceName => plugin.Name;
     }
 }

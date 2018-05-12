@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.Scheduler
 {
     /// <summary>
     ///     The service responsible for scheduling and managing tasks.
     /// </summary>
-    public interface ITaskScheduler
+    public interface ITaskScheduler: IService
     {
         /// <summary>
         ///     Gets all current scheduled tasks.

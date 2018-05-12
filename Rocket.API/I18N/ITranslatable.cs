@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.I18N
 {
     /// <summary>
     ///     An object which has translations.
     /// </summary>
-    public interface ITranslatable
+    public interface ITranslatable: IService
     {
         /// <summary>
         ///     The translation source.

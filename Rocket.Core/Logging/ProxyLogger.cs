@@ -25,5 +25,7 @@ namespace Rocket.Core.Logging
         {
             throw new NotSupportedException("Not supported on proxy provider.");
         }
+
+        public string ServiceName => "ProxyLogger";
     }
 }

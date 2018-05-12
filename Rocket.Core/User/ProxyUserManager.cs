@@ -63,5 +63,7 @@ namespace Rocket.Core.User
         {
             return user.UserManager.Unban(user, unbannedBy);
         }
+
+        public string ServiceName => "ProxyUsers";
     }
 }
