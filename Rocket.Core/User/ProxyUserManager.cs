@@ -37,12 +37,26 @@ namespace Rocket.Core.User
 
         public void Broadcast(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null, params object[] arguments)
         {
-            throw new NotImplementedException();
+            if (sender == null)
+            {
+                var rec = receivers.ToList();
+                foreach (var service in ProxiedServices)
+                    service.Broadcast(null, rec, message, color, arguments);
+                return;
+            }
+            sender.UserManager.Broadcast(sender, receivers, message, color, arguments);
         }
 
         public void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments)
         {
-            throw new NotImplementedException();
+            if (sender == null)
+            {
+                foreach (var service in ProxiedServices)
+                    service.Broadcast(null, message, color, arguments);
+                return;
+            }
+
+            sender.UserManager.Broadcast(sender, message, color, arguments);
         }
 
         public bool Unban(IUserInfo user, IUser unbannedBy = null)
