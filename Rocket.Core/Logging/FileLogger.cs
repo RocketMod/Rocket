@@ -103,7 +103,7 @@ namespace Rocket.Core.Logging
 
             string callingMethod = GetLoggerCallingMethod().GetDebugName();
             string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] "
-                + (RocketSettings?.Settings.IncludeMethodsInLogs ?? true ? $"[{callingMethod}] " : "")
+                + (RocketSettings?.Settings.Logging.IncludeMethodsInLogs ?? true ? $"[{callingMethod}] " : "")
                 + $"{message}";
             if (streamWriter.BaseStream.CanWrite)
                 streamWriter.WriteLine(formattedLine);
