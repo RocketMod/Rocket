@@ -4,6 +4,7 @@ using System.Drawing;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.User;
+using Rocket.Core.Logging;
 using Rocket.Core.User;
 
 namespace Rocket.ConsoleImplementation
@@ -30,7 +31,7 @@ namespace Rocket.ConsoleImplementation
 
         public void SendMessage(IUser sender, IUser receiver, string message, Color? color = null, params object[] arguments)
         {
-            WriteLine(message, color, arguments);
+            console.WriteLine(message, color, arguments);
         }
 
         public void Broadcast(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null, params object[] arguments)
@@ -45,7 +46,7 @@ namespace Rocket.ConsoleImplementation
 
         public void WriteLine(string message, Color? color = null, params object[] arguments)
         {
-            console.SendMessage($"[Broadcast] {message}", color, arguments);
+            console.WriteLine($"[Broadcast] {message}", color, arguments);
         }
 
         public string ServiceName => "ConsoleManager";

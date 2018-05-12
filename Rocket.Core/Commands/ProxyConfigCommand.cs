@@ -1,5 +1,5 @@
 ﻿namespace Rocket.Core.Commands {
-    class ConfigCommand
+    class ProxyConfigCommand
     {
         public string Name { get; set; }
         public string Provider { get; set; }

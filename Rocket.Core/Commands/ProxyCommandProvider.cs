@@ -19,18 +19,22 @@ namespace Rocket.Core.Commands
             this.configuration = configuration;
             IRuntime runtime = container.Resolve<IRuntime>();
             var context = runtime.CreateChildConfigurationContext("Commands");
-            configuration.Load(context, new ConfigCommand[0]);
+            configuration.Load(context, new ProxyCommandProviderConfig());
         }
 
         public ILifecycleObject GetOwner(ICommand command)
         {
+            if (command is ProxyCommand)
+                command = ((ProxyCommand)command).BaseCommand;
+
             return GetProvider(command)?.GetOwner(command) ?? throw new Exception("Owner not found.");
         }
 
-        public string ProviderName => "Proxy";
-
         public ICommandProvider GetProvider(ICommand command)
         {
+            if (command is ProxyCommand)
+                command = ((ProxyCommand) command).BaseCommand;
+
             foreach (ICommandProvider service in ProxiedServices)
                 if (service.Commands.Any(c => c == command))
                     return service;
@@ -50,7 +54,7 @@ namespace Rocket.Core.Commands
             Dictionary<ICommand, ICommandProvider> commands = new Dictionary<ICommand, ICommandProvider>();
 
             //first register from config
-            foreach (var command in configuration.Get<ConfigCommand[]>())
+            foreach (var command in configuration.Get<ProxyCommandProviderConfig>().Commands)
             {
                 var providerName = command.Provider.Split('/')[0];
                 var originalCommandName = command.Provider.Split('/')[1];
@@ -76,7 +80,8 @@ namespace Rocket.Core.Commands
 
                     foreach (ICommand c in commands.Keys)
                     {
-                        if (c.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase))
+                        
+                        if ((c as ProxyCommand)?.BaseCommand?.Name?.Equals(command.Name, StringComparison.OrdinalIgnoreCase) ?? false || c.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             previousRegistration = c;
                             previousProvider = commands[c];
@@ -105,9 +110,21 @@ namespace Rocket.Core.Commands
                     commands.Add(command, proxy);
                 }
 
-            registeredCommands = commands.Keys.ToArray();
-            configuration.Set(registeredCommands);
+            registeredCommands = commands.Keys;
+            IEnumerable<ProxyConfigCommand> configCommands = registeredCommands.Select(c => GetProxyCommand(c, commands[c]));
+
+            configuration.Set(new ProxyCommandProviderConfig { Commands = configCommands.ToArray() });
             configuration.Save();
+        }
+
+        private ProxyConfigCommand GetProxyCommand(ICommand command, ICommandProvider provider)
+        {
+            var implName = (command as ProxyCommand)?.BaseCommand?.Name ?? command.Name;
+            return new ProxyConfigCommand
+            {
+                Name = command.Name,
+                Provider = provider.ServiceName + "/" + implName
+            };
         }
 
         private int previousProxyCount = 0;
@@ -130,5 +147,11 @@ namespace Rocket.Core.Commands
         }
 
         public string ServiceName => "ProxyCommands";
+    }
+
+    class ProxyCommandProviderConfig
+    {
+        [ConfigArray]
+        public ProxyConfigCommand[] Commands { get; set; } = new ProxyConfigCommand[0];
     }
 }

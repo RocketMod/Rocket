@@ -53,7 +53,7 @@
     <Compile Include="Commands\ICommandHandler.cs" />
     <Compile Include="Commands\ICommandParameters.cs" />
     <Compile Include="Commands\ICommandProvider.cs" />
-    <Compile Include="Commands\IConsoleCommandCaller.cs" />
+    <Compile Include="Commands\IConsole.cs" />
     <Compile Include="DependencyInjection\IService.cs" />
     <Compile Include="User\IPlayerUser.cs" />
     <Compile Include="User\IUser.cs" />

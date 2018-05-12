@@ -8,6 +8,7 @@ using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
+using Rocket.Core.User;
 
 namespace Rocket.ConsoleImplementation
 {
@@ -89,7 +90,8 @@ namespace Rocket.ConsoleImplementation
             Write(format, null, bindings);
         }
 
-        private MethodBase GetLoggerCallingMethod() => ReflectionExtensions.GetCallingMethod(typeof(RocketConsole));
+        private MethodBase GetLoggerCallingMethod() => 
+            ReflectionExtensions.GetCallingMethod(typeof(RocketConsole), typeof(ConsoleUserManager), typeof(UserExtensions));
 
         private void SetForegroundColor(Color color)
         {
