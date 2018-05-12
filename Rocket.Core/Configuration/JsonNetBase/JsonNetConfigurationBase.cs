@@ -35,7 +35,10 @@ namespace Rocket.Core.Configuration.JsonNetBase
             if (ConfigurationContext == null)
                 throw new Exception("ConfigurationContext is null!");
 
-            if (defaultConfiguration != null) LoadFromObject(defaultConfiguration);
+            if (defaultConfiguration != null)
+                LoadFromObject(defaultConfiguration);
+            else
+                LoadEmpty();
 
             if (File.Exists(ConfigurationFile))
                 LoadFromFile(ConfigurationFile);

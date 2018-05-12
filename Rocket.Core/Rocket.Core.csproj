@@ -57,6 +57,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\ConfigCommand.cs" />
     <Compile Include="Commands\CommandAliasAttribute.cs" />
     <Compile Include="Commands\CommandAttribute.cs" />
     <Compile Include="Commands\CommandAttributeWrapper.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="Commands\CommandWrongUsageException.cs" />
     <Compile Include="Commands\DefaultCommandHandler.cs" />
     <Compile Include="Commands\PluginCommandProvider.cs" />
+    <Compile Include="Commands\ProxyCommand.cs" />
     <Compile Include="Commands\ProxyCommandHandler.cs" />
     <Compile Include="Commands\ProxyCommandProvider.cs" />
     <Compile Include="Commands\RocketCommandProvider.cs" />

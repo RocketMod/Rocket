@@ -21,7 +21,7 @@ namespace Rocket.Core.ServiceProxies
             objects.Sort((a, b) => Compare(GetPriority(a), GetPriority(b), highestFirst));
         }
 
-        private static ServicePriority GetPriority(object a)
+        public static ServicePriority GetPriority(object a)
         {
             ServicePriorityAttribute serviceAttribute = (ServicePriorityAttribute)
                 a.GetType()

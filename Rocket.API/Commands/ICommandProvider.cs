@@ -21,5 +21,7 @@ namespace Rocket.API.Commands
         /// </summary>
         /// <param name="command">The command to get the owner of.</param>
         ILifecycleObject GetOwner(ICommand command);
+
+        string ProviderName { get; }
     }
 }
