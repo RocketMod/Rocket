@@ -1,7 +1,9 @@
 ﻿using System;
 using Rocket.API.Commands;
+using Rocket.Core.DependencyInjection;
 
 namespace Rocket.Core.Commands {
+    [DontAutoRegister]
     public class ProxyCommand : ICommand
     {
         public ICommand BaseCommand { get; }
