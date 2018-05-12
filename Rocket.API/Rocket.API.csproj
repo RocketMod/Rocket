@@ -57,7 +57,7 @@
     <Compile Include="DependencyInjection\IService.cs" />
     <Compile Include="User\IPlayerUser.cs" />
     <Compile Include="User\IUser.cs" />
-    <Compile Include="Commands\ISubCommand.cs" />
+    <Compile Include="Commands\IChildCommand.cs" />
     <Compile Include="Configuration\ConfigurationContextNotSetException.cs" />
     <Compile Include="Configuration\ConfigurationNotLoadedException.cs" />
     <Compile Include="Configuration\IConfigurable.cs" />
