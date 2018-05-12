@@ -24,12 +24,5 @@ namespace Rocket.API.Logging
         /// <param name="level">The log level to check.</param>
         /// <returns><b>true</b> if the log level is enabled; otherwise, <b>false</b>.</returns>
         bool IsEnabled(LogLevel level);
-
-        /// <summary>
-        ///     Enables or disables a log level.
-        /// </summary>
-        /// <param name="level">The log level to enable or disable.</param>
-        /// <param name="enabled">Defines if the log level should be enabled.</param>
-        void SetEnabled(LogLevel level, bool enabled);
     }
 }

@@ -16,14 +16,14 @@
         Debug,
 
         /// <summary>
-        ///     Native game messages.
-        /// </summary>
-        Native,
-
-        /// <summary>
         ///     Information messages.
         /// </summary>
         Information,
+
+        /// <summary>
+        ///     Native game messages.
+        /// </summary>
+        Native,
 
         /// <summary>
         ///     Warning messages.

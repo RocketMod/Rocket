@@ -19,18 +19,15 @@ namespace Rocket.Core.Logging
             typeof(LoggingExtensions)
         };
 
-        private readonly ICollection<LogLevel> enabledLevels = new HashSet<LogLevel>
+        protected Configuration.LogSettings LogSettings
         {
-#if DEBUG
-            //LogLevel.Trace, 
-            LogLevel.Debug,
-#endif
-            LogLevel.Native,
-            LogLevel.Information,
-            LogLevel.Warning,
-            LogLevel.Error,
-            LogLevel.Fatal
-        };
+            get
+            {
+                if (Container.TryResolve(null, out IRocketSettingsProvider settings)) return settings.Settings.Logging;
+
+                return new Configuration.LogSettings();
+            }
+        }
 
         protected BaseLogger(IDependencyContainer container)
         {
@@ -39,16 +36,6 @@ namespace Rocket.Core.Logging
         }
 
         public IDependencyContainer Container { get; }
-
-        protected IRocketSettingsProvider RocketSettings
-        {
-            get
-            {
-                if (Container.TryResolve(null, out IRocketSettingsProvider settings)) return settings;
-
-                return null;
-            }
-        }
 
         public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null,
                         params object[] arguments)
@@ -59,14 +46,10 @@ namespace Rocket.Core.Logging
             OnLog(message, level, exception, arguments);
         }
 
-        public virtual bool IsEnabled(LogLevel level) => enabledLevels.Contains(level);
-
-        public virtual void SetEnabled(LogLevel level, bool enabled)
+        public virtual bool IsEnabled(LogLevel level)
         {
-            if (enabled)
-                enabledLevels.Add(level);
-            else
-                enabledLevels.Remove(level);
+            var settingsLevel = (LogLevel) Enum.Parse(typeof(LogLevel), LogSettings.LogLevel, true);
+            return level >= settingsLevel;
         }
 
         public static void SkipTypeFromLogging(Type type)

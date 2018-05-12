@@ -1,28 +1,38 @@
-﻿namespace Rocket.Core.Configuration
+﻿using Rocket.API.Logging;
+
+namespace Rocket.Core.Configuration
 {
     /// <summary>
     ///     See <see cref="IRocketSettingsProvider" />.
     /// </summary>
     public class RocketSettings
     {
-        public Logging Logging { get; set; } = new Logging();
+        public LogSettings Logging { get; set; } = new LogSettings();
     }
 
-    public class Logging
+    /// <summary>
+    ///     Logging related settings.
+    /// </summary>
+    public class LogSettings
     {
+        /// <summary>
+        ///     The log level to show.
+        /// </summary>
+        public string LogLevel { get; set; } = API.Logging.LogLevel.Information.ToString();
+
         /// <summary>
         ///     Defines if the plugin loggers should be enabled by default.
         /// </summary>
-        public bool PluginLogsEnabled { get; set; } = true;
+        public bool EnableSeparatePluginLogs { get; set; } = true;
 
         /// <summary>
         ///     Defines if command executions should be logged.
         /// </summary>
-        public bool LogCommandExecutions { get; set; } = true;
+        public bool EnableCommandExecutionsLogs { get; set; } = true;
 
         /// <summary>
         ///     Defines if methods should be included in the logs.
         /// </summary>
-        public bool IncludeMethodsInLogs { get; set; } = true;
+        public bool IncludeMethods { get; set; } = true;
     }
 }

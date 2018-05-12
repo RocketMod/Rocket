@@ -57,7 +57,7 @@ namespace Rocket.ConsoleImplementation
             SetForegroundColor(Color.White);
             Console.Write("] ");
 
-            if (rocketSettings?.Settings.Logging.IncludeMethodsInLogs ?? true)
+            if (rocketSettings?.Settings.Logging.IncludeMethods ?? true)
             {
                 SetForegroundColor(Color.White);
                 Console.Write("[");

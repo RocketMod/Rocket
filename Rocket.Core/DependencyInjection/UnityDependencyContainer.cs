@@ -6,6 +6,7 @@ using System.Reflection;
 using Microsoft.Practices.Unity;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
+using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 
 namespace Rocket.Core.DependencyInjection
@@ -312,7 +313,7 @@ namespace Rocket.Core.DependencyInjection
         /// </returns>
         public bool TryResolve<T>(string mappingName, out T output)
         {
-            if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
+            if (!typeof(ILogger).IsAssignableFrom(typeof(T)) && !typeof(IRocketSettingsProvider).IsAssignableFrom(typeof(T)))
                 Logger?.LogTrace("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered<T>(mappingName))

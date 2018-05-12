@@ -16,13 +16,11 @@ namespace Rocket
         {
             Container = new UnityDependencyContainer();
             Container.RegisterInstance<IRuntime>(this);
-            Container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
-            Container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
-            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
+            Container.RegisterSingletonType<ILogger, NullLogger>();
 
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
             Container.Activate(typeof(RegistrationByConvention));
 
-            ILogger logger = Container.Resolve<ILogger>();
             IImplementation impl = Container.Resolve<IImplementation>();
 
             string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
@@ -82,7 +80,7 @@ namespace Rocket
 
             permissions.Load(this);
 
-            logger.LogInformation($"Initializing implementation: {impl.Name}", Color.Green);
+            Container.Resolve<ILogger>().LogInformation($"Initializing implementation: {impl.Name}", Color.Green);
             impl.Init(this);
         }
 

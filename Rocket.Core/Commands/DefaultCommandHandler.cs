@@ -32,7 +32,7 @@ namespace Rocket.Core.Commands
             IDependencyContainer contextContainer = container.CreateChildContainer();
             IRocketSettingsProvider settings = contextContainer.Resolve<IRocketSettingsProvider>();
 
-            if (settings.Settings.Logging.LogCommandExecutions)
+            if (settings.Settings.Logging.EnableCommandExecutionsLogs)
                 contextContainer.Resolve<ILogger>().LogInformation($"{user.Name} executed command: \"{commandLine}\"");
 
             CommandContext context = new CommandContext(contextContainer,

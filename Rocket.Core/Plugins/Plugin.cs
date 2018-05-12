@@ -32,7 +32,7 @@ namespace Rocket.Core.Plugins
             WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
 
             IRocketSettingsProvider rocketSettings = Container.Resolve<IRocketSettingsProvider>();
-            if (rocketSettings.Settings.Logging.PluginLogsEnabled)
+            if (rocketSettings.Settings.Logging.EnableSeparatePluginLogs)
                 Container.RegisterSingletonType<ILogger, PluginLogger>("plugin_logger");
         }
 
