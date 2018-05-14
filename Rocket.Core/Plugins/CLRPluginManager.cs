@@ -263,6 +263,8 @@ namespace Rocket.Core.Plugins
                 return null;
 
             childContainer = Container.CreateChildContainer();
+            childContainer.RegisterInstance<IPluginManager>(this);
+
             IPlugin pluginInstance = (IPlugin) childContainer.Activate(pluginType);
             Container.RegisterInstance(pluginInstance, pluginInstance.Name);
 

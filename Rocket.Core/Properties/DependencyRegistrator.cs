@@ -17,6 +17,7 @@ using Rocket.Core.I18N;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
 using Rocket.Core.Plugins;
+using Rocket.Core.Plugins.NuGet;
 using Rocket.Core.User;
 
 namespace Rocket.Core.Properties
@@ -38,7 +39,8 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<ICommandHandler, DefaultCommandHandler>("default_cmdhandler");
             container.RegisterSingletonType<ICommandHandler, ProxyCommandHandler>("proxy_cmdhandler", null);
 
-            container.RegisterSingletonType<IPluginManager, PluginManager>("default_plugins");
+            container.RegisterSingletonType<IPluginManager, PluginManager>("dll_plugins");
+            container.RegisterSingletonType<IPluginManager, NuGetPluginManager>("nuget_plugins");
             container.RegisterSingletonType<IPluginManager, ProxyPluginManager>("proxy_plugins", null);
 
             container.RegisterSingletonType<ICommandProvider, RocketCommandProvider>("rocket_cmdprovider");

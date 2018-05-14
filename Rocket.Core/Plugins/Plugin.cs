@@ -49,7 +49,7 @@ namespace Rocket.Core.Plugins
 
         public IDependencyContainer Container { get; }
 
-        public virtual IPluginManager PluginManager => Container.Resolve<IPluginManager>("default_plugins");
+        public virtual IPluginManager PluginManager => Container.Resolve<IPluginManager>();
 
         public string Name { get; }
 
