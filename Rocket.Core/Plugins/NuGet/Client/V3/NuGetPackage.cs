@@ -9,7 +9,7 @@ namespace Rocket.Core.Plugins.NuGet.Client.V3
 
         public string Version { get; set; }
 
-        public IEnumerable<NuGetPackageVersion> Versions { get; set; }
+        public List<NuGetPackageVersion> Versions { get; set; }
 
         public string Registration { get; set; }
 
@@ -21,7 +21,7 @@ namespace Rocket.Core.Plugins.NuGet.Client.V3
 
         public string Description { get; set; }
 
-        public IEnumerable<string> Authors { get; set; }
+        public List<string> Authors { get; set; }
 
         public string IconUrl { get; set; }
 
@@ -31,7 +31,7 @@ namespace Rocket.Core.Plugins.NuGet.Client.V3
 
         public string Summary { get; set; }
 
-        public IEnumerable<string> Tags { get; set; }
+        public List<string> Tags { get; set; }
 
         public string Title { get; set; }
 

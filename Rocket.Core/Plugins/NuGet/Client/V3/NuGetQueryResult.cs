@@ -6,6 +6,6 @@ namespace Rocket.Core.Plugins.NuGet.Client.V3
     {
         public int TotalHits { get; set; }
         
-        public IEnumerable<NuGetPackage> Data { get; set; }
+        public List<NuGetPackage> Data { get; set; }
     }
 }
