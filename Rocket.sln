@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Core", "Rocket.Core\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Tests", "Rocket.Tests\Rocket.Tests.csproj", "{BE1381DE-6771-4F2E-8F31-8949EDC6CFC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.ConsoleImplementation", "Rocket.ConsoleImplementation\Rocket.ConsoleImplementation.csproj", "{2C208038-27DA-4F7B-AA8C-276BB2531E1E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Console", "Rocket.Console\Rocket.Console.csproj", "{2C208038-27DA-4F7B-AA8C-276BB2531E1E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
