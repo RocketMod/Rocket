@@ -4,6 +4,7 @@ using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Plugins;
+using Rocket.Core.Commands;
 using Rocket.Core.Plugins.NuGet;
 using Rocket.Core.User;
 
@@ -13,12 +14,16 @@ namespace Rocket.Core.Commands.RocketCommands
     {
         public string Name => "Rocket";
         public string Permission => "Rocket.ManageRocket";
-        public string Syntax => "<reload/install/uninstall>";
+        public string Syntax => "";
         public string Summary => "Manages RocketMod.";
         public string Description => null;
         public string[] Aliases => null;
-        public IChildCommand[] ChildCommands => new IChildCommand[] {new CommandRocketInstall(), new CommandRocketInstall.CommandRocketUninstall(),
-                                                                     new CommandRocketReload()};
+
+        public IChildCommand[] ChildCommands => new IChildCommand[]
+        {
+            new CommandRocketInstall(), new CommandRocketUninstall(),
+            new CommandRocketReload(), new CommandRocketUpdate()
+        };
 
         public void Execute(ICommandContext context)
         {
@@ -73,12 +78,11 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length < 2)
                 throw new CommandWrongUsageException();
 
-            NuGetPluginManager pm = context.Container.Resolve<NuGetPluginManager>("nuget_plugins");
+            NuGetPluginManager pm = (NuGetPluginManager) context.Container.Resolve<IPluginManager>("nuget_plugins");
 
             string repoName = context.Parameters.Get<string>(0);
             string pluginName = context.Parameters.Get<string>(1);
-            string version;
-            context.Parameters.TryGet(1, out version);
+            context.Parameters.TryGet(2, out string version);
 
             var repo = pm.Repositories.FirstOrDefault(c
                 => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
@@ -89,59 +93,111 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            if (pm.Install(repoName, pluginName, version))
-            {
-                context.User.SendMessage("Successfully installed: " + pluginName, Color.DarkGreen);
-            }
-            else
+            if (!pm.Install(repoName, pluginName, version))
             {
                 context.User.SendMessage("Failed to install: " + pluginName, Color.DarkRed);
+                return;
             }
+
+            if (!pm.LoadPlugin(repoName, pluginName))
+            {
+                context.User.SendMessage("Failed to initialize: " + pluginName, Color.DarkRed);
+                pm.Uninstall(repoName, pluginName);
+                return;
+            }
+
+            context.User.SendMessage("Successfully installed: " + pluginName, Color.DarkGreen);
+        }
+    }
+
+    public class CommandRocketUninstall : IChildCommand
+    {
+        public string Name => "Uninstall";
+        public string[] Aliases => null;
+        public string Summary => "Uninstalls plugin";
+        public string Description => null;
+        public string Permission => "Rocket.ManageRocket.Uninstall";
+        public string Syntax => "<repo> <plugin>";
+        public IChildCommand[] ChildCommands => null;
+
+        public bool SupportsUser(Type user)
+        {
+            return true;
         }
 
-        public class CommandRocketUninstall : IChildCommand
+        public void Execute(ICommandContext context)
         {
-            public string Name => "Uninstall";
-            public string[] Aliases => null;
-            public string Summary => "Uninstalls plugin";
-            public string Description => null;
-            public string Permission => "Rocket.ManageRocket.Uninstall";
-            public string Syntax => "<repo> <plugin>";
-            public IChildCommand[] ChildCommands => null;
+            if (context.Parameters.Length != 2)
+                throw new CommandWrongUsageException();
 
-            public bool SupportsUser(Type user)
+            NuGetPluginManager pm = (NuGetPluginManager) context.Container.Resolve<IPluginManager>("nuget_plugins");
+
+            string repoName = context.Parameters.Get<string>(0);
+            string pluginName = context.Parameters.Get<string>(1);
+
+            var repo = pm.Repositories.FirstOrDefault(c
+                => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
+
+            if (repo == null)
             {
-                return true;
+                context.User.SendMessage("Repository not found: " + repoName, Color.DarkRed);
+                return;
             }
 
-            public void Execute(ICommandContext context)
+            if (!pm.Uninstall(repoName, pluginName))
             {
-                if (context.Parameters.Length != 2)
-                    throw new CommandWrongUsageException();
-
-                NuGetPluginManager pm = context.Container.Resolve<NuGetPluginManager>("nuget_plugins");
-
-                string repoName = context.Parameters.Get<string>(0);
-                string pluginName = context.Parameters.Get<string>(1);
-
-                var repo = pm.Repositories.FirstOrDefault(c
-                    => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
-
-                if (repo == null)
-                {
-                    context.User.SendMessage("Repository not found: " + repoName, Color.DarkRed);
-                    return;
-                }
-
-                if (pm.Uninstall(repoName, pluginName))
-                {
-                    context.User.SendMessage("Successfully uninstalled: " + pluginName, Color.DarkGreen);
-                }
-                else
-                {
-                    context.User.SendMessage("Failed to uninstall: " + pluginName, Color.DarkRed);
-                }
+                context.User.SendMessage("Failed to uninstall: " + pluginName, Color.DarkRed);
+                return;
             }
+
+            context.User.SendMessage("Successfully uninstalled: " + pluginName, Color.DarkGreen);
+            context.User.SendMessage("Restart server to finish uninstall.", Color.Red);
+        }
+    }
+
+    public class CommandRocketUpdate : IChildCommand
+    {
+        public string Name => "Update";
+        public string[] Aliases => null;
+        public string Summary => "Updates plugin";
+        public string Description => null;
+        public string Permission => "Rocket.ManageRocket.Update";
+        public string Syntax => "<repo> <plugin> [version]";
+        public IChildCommand[] ChildCommands => null;
+
+        public bool SupportsUser(Type user)
+        {
+            return true;
+        }
+
+        public void Execute(ICommandContext context)
+        {
+            if (context.Parameters.Length < 2)
+                throw new CommandWrongUsageException();
+
+            NuGetPluginManager pm = (NuGetPluginManager) context.Container.Resolve<IPluginManager>("nuget_plugins");
+
+            string repoName = context.Parameters.Get<string>(0);
+            string pluginName = context.Parameters.Get<string>(1);
+            context.Parameters.TryGet(2, out string version);
+
+            var repo = pm.Repositories.FirstOrDefault(c
+                => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
+
+            if (repo == null)
+            {
+                context.User.SendMessage("Repository not found: " + repoName, Color.DarkRed);
+                return;
+            }
+
+            if (!pm.Update(repoName, pluginName, version))
+            {
+                context.User.SendMessage("Failed to update: " + pluginName, Color.DarkRed);
+                return;
+            }
+
+            context.User.SendMessage("Successfully updated: " + pluginName, Color.DarkGreen);
+            context.User.SendMessage("Restart server to finish update.", Color.Red);
         }
     }
 }

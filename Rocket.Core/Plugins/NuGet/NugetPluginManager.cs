@@ -33,7 +33,7 @@ namespace Rocket.Core.Plugins.NuGet
             client = new NuGetClientV3();
         }
 
-        protected IConfiguration Configuration
+        protected virtual IConfiguration Configuration
         {
             get
             {
@@ -77,12 +77,26 @@ namespace Rocket.Core.Plugins.NuGet
             }
         }
 
-        public IEnumerable<Repository> Repositories
+        public virtual IEnumerable<Repository> Repositories
             => Configuration["Repositories"].Get<Repository[]>();
+
+        public bool Update(string repoName, string packageName, string version = null)
+        {
+            return InstallInternal(repoName, packageName, version, true);
+        }
 
         public bool Install(string repoName, string packageName, string version = null)
         {
-            Uninstall(repoName, packageName);
+            return InstallInternal(repoName, packageName, version);
+        }
+
+        protected virtual bool InstallInternal(string repoName, string packageName, string version = null, bool isUpdate = false)
+        {
+            if (isUpdate != PluginExists(repoName, packageName))
+                return false;
+
+            if(isUpdate)
+                Uninstall(repoName, packageName);
 
             var configRepo = Repositories
                 .FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
@@ -94,10 +108,12 @@ namespace Rocket.Core.Plugins.NuGet
                 throw new ArgumentException("Repo not enabled: " + repoName, nameof(repoName));
 
             var repo = client.FetchRepository(configRepo.Url);
-            var packages = client.QueryPackages(repo, new NuGetQuery
+            List<NuGetPackage> packages = client.QueryPackages(repo, new NuGetQuery
             {
                 Name = packageName
-            }).ToList();
+            })
+            //Todo: remove after queries are fixed                                    
+            .Where(c => c.Id.ToLower().Contains(packageName.ToLower())).ToList();
 
             if (packages.Count == 0)
                 return false;
@@ -113,7 +129,7 @@ namespace Rocket.Core.Plugins.NuGet
             if (targetVersion == null)
                 throw new Exception("Version not found");
 
-            byte[] data = client.DownloadPackage(targetVersion);
+            byte[] data = client.DownloadPackage(repo, targetVersion);
 
             string uid = package.Id + "." + targetVersion.Version;
             var targetDir = Path.Combine(Path.Combine(RepositoriesDirectory, configRepo.Name), uid);
@@ -121,11 +137,10 @@ namespace Rocket.Core.Plugins.NuGet
                 Directory.CreateDirectory(targetDir);
 
             File.WriteAllBytes(Path.Combine(targetDir, uid + ".nupkg"), data);
-            InitPlugin(configRepo.Name, package.Id);
             return true;
         }
 
-        public bool Uninstall(string repoName, string packageName, string version = null)
+        public virtual bool Uninstall(string repoName, string packageName, string version = null)
         {
             var repoDir = Path.Combine(RepositoriesDirectory, repoName);
             if (!Directory.Exists(repoDir))
@@ -152,9 +167,33 @@ namespace Rocket.Core.Plugins.NuGet
             return false;
         }
 
-        private void InitPlugin(string repo, string plugin)
+        public virtual bool LoadPlugin(string repo, string pluginName)
         {
+            var pkg = GetNugetPackageFile(repo, pluginName);
+            var assemblies = LoadAssembliesFromNugetPackage(pkg);
+            return assemblies.Count() > 0; // test
 
+            foreach (var asm in assemblies)
+                LoadPluginFromAssembly(asm, out _);
+        }
+
+        public virtual bool PluginExists(string repo, string pluginName)
+        {
+            return File.Exists(GetNugetPackageFile(repo, pluginName));
+        }
+
+        public virtual string GetNugetPackageFile(string repo, string pluginName)
+        {
+            foreach (var dir in Directory.GetDirectories(Path.Combine(RepositoriesDirectory, repo)))
+            {
+                var dirName = new DirectoryInfo(dir).Name;
+                if (dirName.ToLower().StartsWith(pluginName.ToLower() + "."))
+                {
+                    return Path.Combine(dir, dirName + ".nupkg");
+                }
+            }
+
+            return null;
         }
 
         public override string ServiceName => "NuGet Plugins";
@@ -181,19 +220,20 @@ namespace Rocket.Core.Plugins.NuGet
             return assemblies;
         }
 
-        public IEnumerable<Assembly> LoadAssembliesFromNugetPackage(string nugetPackageFile)
+        public virtual IEnumerable<Assembly> LoadAssembliesFromNugetPackage(string nugetPackageFile)
         {
-            Stream fs = new FileStream(nugetPackageFile, FileMode.Open);
-            ZipFile zf = new ZipFile(fs);
-            ZipEntry ze = null;
+            using (Stream fs = new FileStream(nugetPackageFile, FileMode.Open))
+            {
+                ZipFile zf = new ZipFile(fs);
+                ZipEntry ze = null;
 #if NET35
-            foreach (ZipEntry entry in zf)
-                if (entry.Name.StartsWith("lib/net35") && entry.Name.EndsWith(".dll"))
-                {
-                    ze = entry;
-                    break;
-                }
-#else 
+                foreach (ZipEntry entry in zf)
+                    if (entry.Name.ToLower().StartsWith("lib/net35") && entry.Name.EndsWith(".dll"))
+                    {
+                        ze = entry;
+                        break;
+                    }
+#else
             foreach (ZipEntry entry in zf)
                 if (entry.Name.StartsWith("lib") && entry.Name.EndsWith(".dll"))
                 {
@@ -202,15 +242,21 @@ namespace Rocket.Core.Plugins.NuGet
                 }
 #endif
 
-            if (ze == null)
-                throw new Exception("No dll found in package");
+                if (ze == null)
+                    throw new Exception("No dll found in package");
 
-            Stream inputStream = zf.GetInputStream(ze);
-            MemoryStream ms = new MemoryStream();
-            inputStream.CopyTo(ms);
+                Stream inputStream = zf.GetInputStream(ze);
+                MemoryStream ms = new MemoryStream();
+                inputStream.CopyTo(ms);
 
-            var asm = Assembly.Load(ms.ToArray());
-            return new List<Assembly> { asm };
+                var asm = Assembly.Load(ms.ToArray());
+
+                ms.Close();
+                inputStream.Close();
+                zf.Close();
+
+                return new List<Assembly> { asm };
+            }
         }
     }
 }
