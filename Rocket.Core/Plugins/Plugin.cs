@@ -69,65 +69,12 @@ namespace Rocket.Core.Plugins
                 Translations?.Reload();
             }
 
-            try
-            {
-                ObLoad(isReload);
-                IsAlive = true;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogFatal($"Failed to load {Name}: ", ex);
-            }
-
-            return true;
-        }
-
-        public bool Unload()
-        {
-            if (!IsAlive)
-                return false;
-
-            parentLogger.LogInformation($"Unloading {Name}.");
-
             if (EventManager != null)
             {
-                PluginDeactivateEvent loadedEvent = new PluginDeactivateEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadedEvent);
-            }
-
-            try
-            {
-                OnDeactivate();
-            }
-            catch (Exception ex)
-            {
-                Logger.LogFatal($"An error occured on unloading {Name}: ", ex);
-            }
-
-            IsAlive = false;
-
-            if (EventManager != null)
-            {
-                PluginDeactivatedEvent loadedEvent = new PluginDeactivatedEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadedEvent);
-            }
-
-            return true;
-        }
-
-        public bool IsAlive { get; internal set; }
-
-        public ITranslationCollection Translations { get; protected set; }
-        public virtual Dictionary<string, string> DefaultTranslations => null;
-
-        public void ObLoad(bool isReload)
-        {
-            if (EventManager != null)
-            {
-                PluginActivateEvent activateEvent = new PluginActivateEvent(PluginManager, this);
-                EventManager.Emit(Runtime, activateEvent);
-                if (activateEvent.IsCancelled)
-                    return;
+                PluginLoadEvent loadEvent = new PluginLoadEvent(PluginManager, this);
+                EventManager.Emit(Runtime, loadEvent);
+                if (loadEvent.IsCancelled)
+                    return false;
             }
 
             if (DefaultConfiguration != null)
@@ -145,15 +92,64 @@ namespace Rocket.Core.Plugins
                 Translations.Load(context, DefaultTranslations);
             }
 
-            OnActivate(isReload);
+            try
+            {
+                OnLoad(isReload);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogFatal($"Failed to load {Name}: ", ex);
+                return false;
+            }
+
             IsAlive = true;
 
             if (EventManager != null)
             {
-                PluginActivatedEvent activatedEvent = new PluginActivatedEvent(PluginManager, this);
-                EventManager.Emit(Runtime, activatedEvent);
+                PluginLoadedEvent loadedEvent = new PluginLoadedEvent(PluginManager, this);
+                EventManager.Emit(Runtime, loadedEvent);
             }
+
+            return true;
         }
+
+        public bool Unload()
+        {
+            if (!IsAlive)
+                return false;
+
+            parentLogger.LogInformation($"Unloading {Name}.");
+
+            if (EventManager != null)
+            {
+                PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
+                EventManager.Emit(Runtime, loadedEvent);
+            }
+
+            try
+            {
+                OnUnload();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogFatal($"An error occured on unloading {Name}: ", ex);
+            }
+
+            IsAlive = false;
+
+            if (EventManager != null)
+            {
+                PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
+                EventManager.Emit(Runtime, loadedEvent);
+            }
+
+            return true;
+        }
+
+        public bool IsAlive { get; internal set; }
+
+        public ITranslationCollection Translations { get; protected set; }
+        public virtual Dictionary<string, string> DefaultTranslations => null;
 
         public void RegisterCommandsFromObject(object o)
         {
@@ -161,8 +157,8 @@ namespace Rocket.Core.Plugins
             p?.RegisterCommands(Container, o);
         }
 
-        protected virtual void OnActivate(bool isFromReload) { }
-        protected virtual void OnDeactivate() { }
+        protected virtual void OnLoad(bool isFromReload) { }
+        protected virtual void OnUnload() { }
 
         public void Subscribe(IEventListener listener)
         {

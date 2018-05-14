@@ -6,7 +6,7 @@ namespace Rocket.Core.Plugins.Events
     /// <summary>
     ///     This event is before plugin were loaded but after dependencies were set up.
     ///     It should not be used by plugins itself, only by implementations.<br /><br />
-    ///     Plugins can use <see cref="PluginActivateEvent" /> and <see cref="PluginActivatedEvent" />
+    ///     Plugins can use <see cref="PluginLoadEvent" /> and <see cref="PluginLoadedEvent" />
     /// </summary>
     public class PluginManagerInitEvent : Event, ICancellableEvent
     {

@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using Rocket.API;
@@ -22,6 +23,8 @@ namespace Rocket
             Container.Activate(typeof(RegistrationByConvention));
 
             IImplementation impl = Container.Resolve<IImplementation>();
+
+            Version = new Version(versionInfo.FileVersion);
 
             string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
             impl.Console.WriteLine(rocketInitializeMessage, Color.DarkGreen);
@@ -111,5 +114,7 @@ namespace Rocket
         {
             Container.Dispose();
         }
+
+        public Version Version { get; }
     }
 }

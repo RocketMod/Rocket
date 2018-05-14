@@ -23,7 +23,7 @@ namespace Rocket.Core.Plugins.NuGet.Client.V3
             return repo;
         }
 
-        public IEnumerable<NuGetPackage> QueryPackages(NuGetRepository repository)
+        public IEnumerable<NuGetPackage> QueryPackages(NuGetRepository repository, NuGetQuery query = null)
         {
             var client = GetRestClient(repository.BaseUrl);
             var request = new RestRequest("query", Method.GET);
