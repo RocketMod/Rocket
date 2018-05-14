@@ -52,6 +52,7 @@ namespace Rocket.Core.Commands.RocketCommands
             context.User.SendMessage("Reload completed.", Color.DarkGreen);
         }
     }
+
     public class CommandRocketInstall : IChildCommand
     {
         public string Name => "Install";
@@ -142,4 +143,5 @@ namespace Rocket.Core.Commands.RocketCommands
                 }
             }
         }
+    }
 }
