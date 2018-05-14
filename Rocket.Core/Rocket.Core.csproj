@@ -44,6 +44,9 @@
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net35\Newtonsoft.Json.dll</HintPath>
     </Reference>
+    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\RestSharp.105.2.3\lib\net35\RestSharp.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
@@ -125,6 +128,15 @@
     <Compile Include="Player\Events\UserEvent.cs" />
     <Compile Include="Player\PlayerTypeConverter.cs" />
     <Compile Include="DependencyInjection\UnityDescriptorContext.cs" />
+    <Compile Include="Plugins\NuGet\Client\V3\NuGetClientV3.cs" />
+    <Compile Include="Plugins\NuGet\Client\V3\NuGetContext.cs" />
+    <Compile Include="Plugins\NuGet\Client\V3\NuGetPackage.cs" />
+    <Compile Include="Plugins\NuGet\Client\V3\NuGetPackageVersionRegistration.cs" />
+    <Compile Include="Plugins\NuGet\Client\V3\NuGetPackageVersion.cs" />
+    <Compile Include="Plugins\NuGet\Client\V3\NuGetQueryResult.cs" />
+    <Compile Include="Plugins\NuGet\Client\V3\NuGetRepository.cs" />
+    <Compile Include="Plugins\NuGet\Client\V3\NuGetResource.cs" />
+    <Compile Include="Plugins\NuGet\NugetPluginManager.cs" />
     <Compile Include="Plugins\ProxyPluginManager.cs" />
     <Compile Include="ServiceProxies\ServicePriority.cs" />
     <Compile Include="ServiceProxies\ServicePriorityAttribute.cs" />
