@@ -54,19 +54,19 @@ namespace Rocket.Core.Plugins.NuGet
                     {
                         new Repository
                         {
-                            Name = "rocket-universal",
-                            Url = "http://nuget.rocketmod.net/", //todo: http://universal.nuget.rocketmod.net/
+                            Name = "universal",
+                            Url = "http://nuget.rocketmod.net/",
                             Enabled = true
                         },
                         new Repository
                         {
-                            Name = "rocket-unturned",
+                            Name = "unturned",
                             Url = "http://unturned.nuget.rocketmod.net/",
                             Enabled = false
                         },
                         new Repository
                         {
-                            Name = "rocket-eco",
+                            Name = "eco",
                             Url = "http://eco.nuget.rocketmod.net/",
                             Enabled = false
                         }
