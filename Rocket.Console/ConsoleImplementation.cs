@@ -32,14 +32,16 @@ namespace Rocket.ConsoleImplementation
 
             logger.LogInformation("Loaded; type \"help\" for help or \"exit\" to exit.");
 
-            System.Console.Write(">");
+            System.Console.ForegroundColor = ConsoleColor.Gray;
+            System.Console.Write("> ");
+            System.Console.ForegroundColor = ConsoleColor.White;
 
             string line;
             while (!(line = System.Console.ReadLine())?.Equals("exit", StringComparison.OrdinalIgnoreCase) ?? false)
             {
                 if (!cmdHandler.HandleCommand(Console, line, ""))
                     System.Console.WriteLine("Command not found: " + line);
-                System.Console.Write(">");
+                System.Console.Write("> ");
             }
         }
 
