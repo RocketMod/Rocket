@@ -11,14 +11,14 @@ using Rocket.Core.Logging;
 
 namespace Rocket.Core.Plugins
 {
-    public class PluginManager : CLRPluginManager
+    public class DllPluginManager : CLRPluginManager
     {
         private Dictionary<string, string> packageAssemblies;
         private string packagesDirectory;
         private Dictionary<string, string> pluginAssemblies;
         private string pluginsDirectory;
 
-        public PluginManager(IDependencyContainer dependencyContainer, 
+        public DllPluginManager(IDependencyContainer dependencyContainer, 
                              IEventManager eventManager,
                              ILogger logger) : 
             base(dependencyContainer, eventManager, logger) { }
@@ -26,6 +26,9 @@ namespace Rocket.Core.Plugins
         protected override IEnumerable<Assembly> LoadAssemblies()
         {
             IRuntime runtime = Container.Resolve<IRuntime>();
+            List<Assembly> assemblies = new List<Assembly>();
+            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                assemblies.Add(assembly);
 
             pluginsDirectory = Path.Combine(runtime.WorkingDirectory, "Plugins");
             packagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
@@ -52,7 +55,6 @@ namespace Rocket.Core.Plugins
                 return null;
             };
 
-            List<Assembly> assemblies = new List<Assembly>();
             foreach (string pluginPath in pluginAssemblies.Values)
                 try
                 {

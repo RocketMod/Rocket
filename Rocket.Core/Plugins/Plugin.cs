@@ -153,7 +153,7 @@ namespace Rocket.Core.Plugins
 
         public void RegisterCommandsFromObject(object o)
         {
-            PluginManager p = PluginManager as PluginManager;
+            DllPluginManager p = PluginManager as DllPluginManager;
             p?.RegisterCommands(Container, o);
         }
 

@@ -178,7 +178,7 @@
     <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationElement.cs" />
     <Compile Include="Properties\CommonAssemblyInfo.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
-    <Compile Include="Plugins\PluginManager.cs" />
+    <Compile Include="Plugins\DllPluginManager.cs" />
     <Compile Include="ServiceProxies\ServiceProxy.cs" />
     <Compile Include="Scheduler\TaskScheduleEvent.cs" />
     <Compile Include="User\ProxyUserManager.cs" />
