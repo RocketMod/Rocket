@@ -14,12 +14,12 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "";
 
         public IChildCommand[] ChildCommands => new IChildCommand[]
-            {new PermissionGroupChildrenCommandAdd(), new PermissionGroupChildrenCommandRemove()};
+            {new CommandGroupAdd(), new CommandGroupRemove()};
 
         public string Summary => "Manages permission groups.";
         public string Description => null;
 
-        public string[] Aliases => new[] {"PG"};
+        public string[] Aliases => new[] { "PG" };
 
         public string Name => "PermissionGroup";
         public string Permission => "Rocket.Permissions.ManageGroups";
@@ -32,7 +32,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public bool SupportsUser(Type user) => true;
     }
 
-    public abstract class PermissionGroupChildrenCommandUpdate : IChildCommand
+    public abstract class CommandGroupUpdate : IChildCommand
     {
         public abstract string Name { get; }
         public abstract string Summary { get; }
@@ -71,12 +71,12 @@ namespace Rocket.Core.Commands.RocketCommands
                                             IPlayer targetPlayer, IPermissionGroup groupToUpdate);
     }
 
-    public class PermissionGroupChildrenCommandAdd : PermissionGroupChildrenCommandUpdate
+    public class CommandGroupAdd : CommandGroupUpdate
     {
         public override string Name => "Add";
         public override string Summary => "Adds a player to a permission group.";
         public override string Permission => "Rocket.Permissions.ManageGroups.Add";
-        public override string[] Aliases => new[] {"a", "+"};
+        public override string[] Aliases => new[] { "a", "+" };
 
         protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
                                             IPlayer targetPlayer, IPermissionGroup groupToUpdate)
@@ -89,12 +89,12 @@ namespace Rocket.Core.Commands.RocketCommands
         }
     }
 
-    public class PermissionGroupChildrenCommandRemove : PermissionGroupChildrenCommandUpdate
+    public class CommandGroupRemove : CommandGroupUpdate
     {
         public override string Name => "Remove";
         public override string Summary => "Removes a player from a permission group.";
         public override string Permission => "Rocket.Permissions.ManageGroups.Remove";
-        public override string[] Aliases => new[] {"r", "-"};
+        public override string[] Aliases => new[] { "r", "-" };
 
         protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
                                             IPlayer targetPlayer, IPermissionGroup groupToUpdate)

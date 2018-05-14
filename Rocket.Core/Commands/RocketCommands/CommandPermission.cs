@@ -19,8 +19,8 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public IChildCommand[] ChildCommands => new IChildCommand[]
         {
-            new PermissionChildrenCommandAdd(), new PermissionChildrenCommandRemove(),
-            new PermissionChildrenCommandReload()
+            new CommandPermissionAdd(), new CommandPermissionRemove(),
+            new CommandPermissionReload()
         };
 
         public string[] Aliases => new[] {"P"};
@@ -33,7 +33,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public bool SupportsUser(Type user) => true;
     }
 
-    public abstract class PermissionChildrenCommandUpdate : IChildCommand
+    public abstract class CommandPermissionUpdate : IChildCommand
     {
         public abstract string Name { get; }
         public abstract string Summary { get; }
@@ -98,7 +98,7 @@ namespace Rocket.Core.Commands.RocketCommands
                                                  IIdentity target, string permissionToUpdate);
     }
 
-    public class PermissionChildrenCommandAdd : PermissionChildrenCommandUpdate
+    public class CommandPermissionAdd : CommandPermissionUpdate
     {
         public override string Name => "Add";
         public override string Summary => "Adds a permission to a group or player.";
@@ -116,7 +116,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
     }
 
-    public class PermissionChildrenCommandRemove : PermissionChildrenCommandUpdate
+    public class CommandPermissionRemove : CommandPermissionUpdate
     {
         public override string Name => "Remove";
         public override string Summary => "Removes permission from a group or player.";
@@ -135,7 +135,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
     }
 
-    public class PermissionChildrenCommandReload : IChildCommand
+    public class CommandPermissionReload : IChildCommand
     {
         public string Name => "Reload";
         public string Summary => "Reloads permissions.";
