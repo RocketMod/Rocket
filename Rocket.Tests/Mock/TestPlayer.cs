@@ -1,6 +1,7 @@
 ﻿using System;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Entities;
+using Rocket.API.Math;
 using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.Player;
@@ -53,6 +54,7 @@ namespace Rocket.Tests.Mock
         }
 
         public string EntityTypeName => "Player";
+        public Vector3 Position => Vector3.Zero;
     }
 
     public class TestUser : IPlayerUser
