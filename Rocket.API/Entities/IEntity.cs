@@ -1,4 +1,4 @@
-﻿using Rocket.API.Math;
+﻿using System.Numerics;
 
 namespace Rocket.API.Entities
 {

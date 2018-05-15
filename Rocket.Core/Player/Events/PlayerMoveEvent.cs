@@ -1,5 +1,5 @@
-﻿using Rocket.API.Eventing;
-using Rocket.API.Math;
+﻿using System.Numerics;
+using Rocket.API.Eventing;
 using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events

@@ -74,9 +74,6 @@
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Entities\ILivingEntity.cs" />
     <Compile Include="Logging\LogLevel.cs" />
-    <Compile Include="Math\Vector2.cs" />
-    <Compile Include="Math\Vector3.cs" />
-    <Compile Include="Math\Vector4.cs" />
     <Compile Include="User\IIdentity.cs" />
     <Compile Include="Player\IPlayer.cs" />
     <Compile Include="Permissions\IPermissionGroup.cs" />

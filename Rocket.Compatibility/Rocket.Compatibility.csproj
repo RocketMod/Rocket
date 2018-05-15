@@ -22,6 +22,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
     </DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -32,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
     </DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -52,6 +54,24 @@
     <Compile Include="System\Drawing\KnownColor.cs" />
     <Compile Include="System\Drawing\KnownColors.cs" />
     <Compile Include="System\Drawing\SystemColors.cs" />
+    <Compile Include="System\Numerics\BigInteger.cs" />
+    <Compile Include="System\Numerics\BigIntegerBuilder.cs" />
+    <Compile Include="System\Numerics\BigNumber.cs" />
+    <Compile Include="System\Numerics\Complex.cs" />
+    <Compile Include="System\Numerics\HashCodeHelper.cs" />
+    <Compile Include="System\Numerics\JITIntrinsicAttribute.cs" />
+    <Compile Include="System\Numerics\Matrix3x2.cs" />
+    <Compile Include="System\Numerics\Matrix4x4.cs" />
+    <Compile Include="System\Numerics\NumericsHelpers.cs" />
+    <Compile Include="System\Numerics\Plane.cs" />
+    <Compile Include="System\Numerics\Quaternion.cs" />
+    <Compile Include="System\Numerics\Vector2.cs" />
+    <Compile Include="System\Numerics\Vector2_Intrinsics.cs" />
+    <Compile Include="System\Numerics\Vector3.cs" />
+    <Compile Include="System\Numerics\Vector3_Intrinsics.cs" />
+    <Compile Include="System\Numerics\Vector4.cs" />
+    <Compile Include="System\Numerics\Vector4_Intrinsics.cs" />
+    <Compile Include="System\Numerics\Vector_Operations.cs" />
     <Compile Include="System\Tuple.cs" />
   </ItemGroup>
   <ItemGroup>

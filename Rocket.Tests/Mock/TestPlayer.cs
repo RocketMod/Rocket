@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Numerics;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Entities;
-using Rocket.API.Math;
 using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.Player;

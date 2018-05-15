@@ -4,7 +4,7 @@ namespace Rocket.Compatibility
 {
     public static class StreamExtensions
     {
-        public static void CopyTo(this Stream input, Stream output)
+public static void CopyTo(this Stream input, Stream output)
         {
             byte[] buffer = new byte[16 * 1024]; // Fairly arbitrary size
             int bytesRead;
