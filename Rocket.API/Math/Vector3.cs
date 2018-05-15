@@ -45,7 +45,7 @@ namespace Rocket.API.Math
         /// <summary>
         ///     The zero 3d vector (0, 0, 0).
         /// </summary>
-        public new Vector3 Zero => new Vector3();
+        public new static Vector3 Zero => new Vector3();
 
         public static Vector3 operator +(Vector3 a, Vector3 b)
         {
