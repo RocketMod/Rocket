@@ -14,6 +14,30 @@ using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins
 {
+    public abstract class Plugin<TConfig> : Plugin
+    {
+        public virtual TConfig ConfigurationInstance { get; set; }
+
+        protected Plugin(IDependencyContainer container) : base(container) { }
+        protected Plugin(string name, IDependencyContainer container) : base(name, container) { }
+
+        public override void SaveConfiguration()
+        {
+            base.SaveConfiguration();
+            Configuration.Set(ConfigurationInstance);
+            Configuration?.Save();
+        }
+
+        public override void LoadConfiguration()
+        {
+            base.LoadConfiguration();
+            if (Configuration == null)
+                return;
+
+            ConfigurationInstance = (TConfig) Configuration.Get(typeof(TConfig));
+        }
+    }
+
     public abstract class Plugin : IPlugin, ITranslatable, IConfigurable
     {
         // The parent logger is used to log stuff that should not be logged to the plugins own log.
@@ -34,6 +58,11 @@ namespace Rocket.Core.Plugins
             IRocketSettingsProvider rocketSettings = Container.Resolve<IRocketSettingsProvider>();
             if (rocketSettings.Settings.Logging.EnableSeparatePluginLogs)
                 Container.RegisterSingletonType<ILogger, PluginLogger>("plugin_logger");
+        }
+
+        public virtual void SaveConfiguration()
+        {
+            Configuration?.Save();
         }
 
         protected IEventManager EventManager => Container.Resolve<IEventManager>();
@@ -77,13 +106,7 @@ namespace Rocket.Core.Plugins
                     return false;
             }
 
-            if (DefaultConfiguration != null)
-            {
-                Configuration = Container.Resolve<IConfiguration>();
-                IConfigurationContext context = this.CreateChildConfigurationContext("Configuration");
-                Configuration.Scheme = DefaultConfiguration.GetType();
-                Configuration.Load(context, DefaultConfiguration);
-            }
+            LoadConfiguration();
 
             if (DefaultTranslations != null)
             {
@@ -111,6 +134,17 @@ namespace Rocket.Core.Plugins
             }
 
             return true;
+        }
+
+        public virtual void LoadConfiguration()
+        {
+            if (DefaultConfiguration != null)
+            {
+                Configuration = Container.Resolve<IConfiguration>();
+                IConfigurationContext context = this.CreateChildConfigurationContext("Configuration");
+                Configuration.Scheme = DefaultConfiguration.GetType();
+                Configuration.Load(context, DefaultConfiguration);
+            }
         }
 
         public bool Unload()
