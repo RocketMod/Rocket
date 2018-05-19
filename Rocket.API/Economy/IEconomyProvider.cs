@@ -144,5 +144,12 @@ namespace Rocket.API.Economy
         /// <param name="identity">The identity to check.</param>
         /// <returns><b>True</b> if the identity is supported; otherwise, <b>false</b>.</returns>
         bool SupportsIdentity(IIdentity identity);
+
+        /// <summary>
+        ///     Gets the (total) balance for the given identity.
+        /// </summary>
+        /// <param name="identity">The identitiy whose balance to get.</param>
+        /// <returns>The balance of the identity. Might be negative.</returns>
+        decimal GetBalance(IIdentity identity);
     }
 }
