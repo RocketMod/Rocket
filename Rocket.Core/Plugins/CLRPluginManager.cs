@@ -268,6 +268,8 @@ namespace Rocket.Core.Plugins
             IPlugin pluginInstance = (IPlugin) childContainer.Activate(pluginType);
             Container.RegisterInstance(pluginInstance, pluginInstance.Name);
 
+            childContainer.RegisterInstance(pluginInstance);
+
             IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>(false);
             IEnumerable<Type> pluginCommands =
                 pluginInstance.FindTypes<ICommand>(false, c => !typeof(IChildCommand).IsAssignableFrom(c)
@@ -279,13 +281,13 @@ namespace Rocket.Core.Plugins
 
             foreach (Type listener in listeners)
             {
-                IEventListener instance = (IEventListener) Activator.CreateInstance(listener, new object[0]);
+                IEventListener instance = (IEventListener) childContainer.Activate(listener);
                 EventManager.AddEventListener(pluginInstance, instance);
             }
 
             foreach (Type command in pluginCommands)
             {
-                ICommand cmdInstance = (ICommand) Activator.CreateInstance(command, new object[0]);
+                ICommand cmdInstance = (ICommand) childContainer.Activate(command);
                 childContainer.RegisterSingletonInstance(cmdInstance, cmdInstance.Name);
             }
 
