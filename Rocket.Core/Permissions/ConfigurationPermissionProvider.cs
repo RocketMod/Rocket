@@ -342,7 +342,7 @@ namespace Rocket.Core.Permissions
         /// </summary>
         /// <param name="permission">The permission to build the tree for</param>
         /// <returns>The collection of all parent permission nodes</returns>
-        public IEnumerable<string> BuildPermissionTree(string permission)
+        public static IEnumerable<string> BuildPermissionTree(string permission)
         {
             List<string> permissions = new List<string>
             {

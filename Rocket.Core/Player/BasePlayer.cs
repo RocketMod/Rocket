@@ -62,7 +62,7 @@ namespace Rocket.Core.Player
 
         public abstract string Id { get; }
         public abstract string Name { get; }
-        public IdentityType Type => IdentityType.Player;
+        public string IdentityType => IdentityTypes.Player;
         public abstract IUser User { get; }
         public abstract IEntity Entity { get; }
         public abstract bool IsOnline { get; }

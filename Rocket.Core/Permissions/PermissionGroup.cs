@@ -8,7 +8,7 @@ namespace Rocket.Core.Permissions
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        public IdentityType Type => IdentityType.Group;
+        public string IdentityType => IdentityTypes.Group;
 
         public int Priority { get; set; }
 

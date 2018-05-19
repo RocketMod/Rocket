@@ -1,32 +1,6 @@
 ﻿namespace Rocket.API.User
 {
     /// <summary>
-    ///     Defines the identity's types.
-    /// </summary>
-    public enum IdentityType
-    {
-        /// <summary>
-        ///     A console identity.
-        /// </summary>
-        Console = 0,
-
-        /// <summary>
-        ///     A player identitiy.
-        /// </summary>
-        Player = 1,
-
-        /// <summary>
-        ///     A group identity.
-        /// </summary>
-        Group = 2,
-
-        /// <summary>
-        ///     A custom identity.
-        /// </summary>
-        Custom = 3
-    }
-
-    /// <summary>
     ///     An identity.
     /// </summary>
     public interface IIdentity
@@ -44,6 +18,26 @@
         /// <summary>
         ///     The identity type.
         /// </summary>
-        IdentityType Type { get; }
+        string IdentityType { get; }
+    }
+
+    /// <summary>
+    ///     Defines built in Rocket identity types.
+    /// </summary>
+    public static class IdentityTypes
+    {
+        /// <summary>
+        ///     A console identity.
+        /// </summary>
+        public static readonly string Console = "console";
+
+        /// <summary>
+        ///     A player identitiy.
+        /// </summary>
+        public static readonly string Player = "player";
+        /// <summary>
+        ///     A group identity.
+        /// </summary>
+        public static readonly string Group = "group";
     }
 }

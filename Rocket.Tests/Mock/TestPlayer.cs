@@ -70,7 +70,7 @@ namespace Rocket.Tests.Mock
 
         public string Id => testPlayer.Id;
         public string Name => testPlayer.Name;
-        public IdentityType Type => testPlayer.Type;
+        public string IdentityType => testPlayer.IdentityType;
         public IUserManager UserManager => throw new NotImplementedException();
         public bool IsOnline => true;
         public DateTime SessionConnectTime { get; }
