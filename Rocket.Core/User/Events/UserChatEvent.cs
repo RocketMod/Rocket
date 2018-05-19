@@ -1,7 +1,8 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.User;
+using Rocket.Core.Player.Events;
 
-namespace Rocket.Core.Player.Events
+namespace Rocket.Core.User.Events
 {
     public class UserChatEvent : UserEvent, ICancellableEvent
     {

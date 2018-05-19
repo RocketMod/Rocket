@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.Player;
+using Rocket.Core.User.Events;
 
 namespace Rocket.Core.Player.Events
 {
