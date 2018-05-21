@@ -17,7 +17,7 @@
         /// <param name="targetCurrency">The currency to exchange from.</param>
         /// <exception>When the target currency is not supported.</exception>
         /// <returns></returns>
-        decimal Exchange(double amount, IEconomyCurrency targetCurrency);
+        decimal Exchange(decimal amount, IEconomyCurrency targetCurrency);
 
         /// <summary>
         ///     Checks if this cucrrency can be exchanged with the other one.

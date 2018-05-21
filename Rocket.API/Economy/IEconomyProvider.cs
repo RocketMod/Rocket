@@ -151,5 +151,10 @@ namespace Rocket.API.Economy
         /// <param name="identity">The identitiy whose balance to get.</param>
         /// <returns>The balance of the identity. Might be negative.</returns>
         decimal GetBalance(IIdentity identity);
+
+        /// <summary>
+        ///     Checks if the provider supports multiple accounts per user.
+        /// </summary>
+        bool SupportsMultipleAccounts { get; }
     }
 }
