@@ -18,7 +18,7 @@ namespace Rocket.API.Player
         /// <summary>
         ///     The game object that is linked to this player.
         /// </summary>
-        IEntity Entity { get; }
+        IPlayerEntity Entity { get; }
 
         /// <summary>
         ///     Checks if the player is online.
