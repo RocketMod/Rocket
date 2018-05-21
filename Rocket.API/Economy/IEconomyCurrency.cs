@@ -13,7 +13,7 @@
         /// <summary>
         ///     Exchanges the given amount to a different currency.
         /// </summary>
-        /// <param name="amount">The amount to exchange.</param>
+        /// <param name="amount">The amount to exchange from this currency.</param>
         /// <param name="targetCurrency">The currency to exchange to.</param>
         /// <exception>When the target currency is not supported.</exception>
         /// <returns>The exchanged amount.</returns>
