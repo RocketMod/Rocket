@@ -55,7 +55,8 @@
     <Compile Include="Commands\ICommandProvider.cs" />
     <Compile Include="Commands\IConsole.cs" />
     <Compile Include="DependencyInjection\IService.cs" />
-    <Compile Include="User\IPlayerUser.cs" />
+    <Compile Include="Player\IPlayerEntity.cs" />
+    <Compile Include="Player\IPlayerUser.cs" />
     <Compile Include="User\IUser.cs" />
     <Compile Include="Commands\IChildCommand.cs" />
     <Compile Include="Configuration\ConfigurationContextNotSetException.cs" />

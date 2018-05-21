@@ -7,22 +7,17 @@ namespace Rocket.Core.Player.Events
 {
     public class PlayerUnbanEvent : UserUnbanEvent
     {
-        public IPlayer Player { get; }
-        public PlayerUnbanEvent(IPlayer player, IUser unbannedBy = null) : base(player.User, unbannedBy)
+        public PlayerUnbanEvent(IUserInfo player, IUser unbannedBy = null) : base(player, unbannedBy)
         {
-            Player = player;
         }
-        public PlayerUnbanEvent(IPlayer player, IUser unbannedBy = null, bool global = true) : base(player.User, unbannedBy, global)
+        public PlayerUnbanEvent(IUserInfo player, IUser unbannedBy = null, bool global = true) : base(player, unbannedBy, global)
         {
-            Player = player;
         }
-        public PlayerUnbanEvent(IPlayer player, IUser unbannedBy = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.User, unbannedBy, executionTarget, global)
+        public PlayerUnbanEvent(IUserInfo player, IUser unbannedBy = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, unbannedBy, executionTarget, global)
         {
-            Player = player;
         }
-        public PlayerUnbanEvent(IPlayer player, IUser unbannedBy = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.User, unbannedBy, name, executionTarget, global)
+        public PlayerUnbanEvent(IUserInfo player, IUser unbannedBy = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, unbannedBy, name, executionTarget, global)
         {
-            Player = player;
         }
     }
 }

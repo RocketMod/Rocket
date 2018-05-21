@@ -1,6 +1,6 @@
-﻿using Rocket.API.Player;
+﻿using Rocket.API.User;
 
-namespace Rocket.API.User
+namespace Rocket.API.Player
 {
     /// <summary>
     ///     A players user.

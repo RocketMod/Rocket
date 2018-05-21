@@ -9,22 +9,18 @@ namespace Rocket.Core.Player.Events
 {
     public class PlayerBanEvent : UserBanEvent
     {
-        public IPlayer Player { get; }
-        public PlayerBanEvent(IPlayer player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null) : base(player.User, bannedBy, reason, duration)
+
+        public PlayerBanEvent(IUserInfo player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null) : base(player, bannedBy, reason, duration)
         {
-            Player = player;
         }
-        public PlayerBanEvent(IPlayer player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null, bool global = true) : base(player.User, bannedBy, reason, duration, global)
+        public PlayerBanEvent(IUserInfo player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null, bool global = true) : base(player, bannedBy, reason, duration, global)
         {
-            Player = player;
         }
-        public PlayerBanEvent(IPlayer player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.User, bannedBy, reason, duration, executionTarget, global)
+        public PlayerBanEvent(IUserInfo player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, bannedBy, reason, duration, executionTarget, global)
         {
-            Player = player;
         }
-        public PlayerBanEvent(IPlayer player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.User, bannedBy, reason, duration, name, executionTarget, global)
+        public PlayerBanEvent(IUserInfo player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, bannedBy, reason, duration, name, executionTarget, global)
         {
-            Player = player;
         }
     }
 }
