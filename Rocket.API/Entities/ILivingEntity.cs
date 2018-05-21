@@ -5,7 +5,7 @@ namespace Rocket.API.Entities
     /// <summary>
     ///     Represents a living entity with health.
     /// </summary>
-    public interface ILivingEntity : IEntity
+    public interface ILivingEntity
     {
         /// <summary>
         ///     The max health of the entity.

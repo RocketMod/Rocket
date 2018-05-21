@@ -8,7 +8,7 @@ using Rocket.Core.Player;
 
 namespace Rocket.Tests.Mock
 {
-    public sealed class TestPlayer : BasePlayer, ILivingEntity
+    public sealed class TestPlayer : BasePlayer, IPlayerEntity, ILivingEntity
     {
         public TestPlayer(IDependencyContainer container, string id, string name) : base(container)
         {
@@ -21,7 +21,7 @@ namespace Rocket.Tests.Mock
         public override string Id { get; }
         public override string Name { get; }
 
-        public override IEntity Entity => this;
+        public override IPlayerEntity Entity => this;
         public override bool IsOnline => true;
 
         public override IUser User => new TestUser(this);
@@ -55,6 +55,11 @@ namespace Rocket.Tests.Mock
 
         public string EntityTypeName => "Player";
         public Vector3 Position => Vector3.Zero;
+        public IPlayer Player => this;
+        public bool Teleport(Vector3 position)
+        {
+            return false;
+        }
     }
 
     public class TestUser : IPlayerUser
