@@ -1,36 +1,4 @@
-We use this repository to track issues and maintain a wiki for the Rocket Unity3D Game Server Mod.
-                                    
-									
-                                                   ,:
-                                                 ,' |
-                                                /   :
-                                             --'   /
-                                             \/ />/
-                                             / <//_\        
-                                          __/   /           
-                                          )'-. /
-                                          ./  :\
-                                           /.' '
-                                         '/'
-                                         +
-                                        '
-                                      `.
-                                  .-"-
-                                 (    |
-                              . .-'  '.
-                             ( (.   )8:
-                         .'    / (_  )
-                          _. :(.   )8P  `
-                      .  (  `-' (  `.   .
-                       .  :  (   .a8a)
-                      /_`( "a `a. )"'
-                  (  (/  .  ' )=='
-                 (   (    )  .8"   +
-                   (`'8a.( _(   (
-                ..-. `8P    ) `  )  +
-              -'   (      -ab:  )
-            '    _  `    (8P"Ya
-          _(    (    )b  -`.  ) +
-         ( 8)  ( _.aP" _a   \( \   *
-       +  )/    (8P   (88    )  )
-          (      "     `"       `
+This branch was the first attempt on rewriting RocketMod but it failed due inactivity and unexpected problems.
+We created another rework which was later merged to master.
+
+This branch is read only and only kept for archive purposes; after porting some missing features from here to master it will likely be deleted.
