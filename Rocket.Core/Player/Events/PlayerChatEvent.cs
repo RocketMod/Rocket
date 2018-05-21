@@ -8,19 +8,19 @@ namespace Rocket.Core.Player.Events
     public class PlayerChatEvent: UserChatEvent
     {
         public IPlayer Player { get; }
-        public PlayerChatEvent(IPlayer player, string message) : base(player.User, message)
+        public PlayerChatEvent(IPlayer player, string message) : base(player.Extend().User, message)
         {
             Player = player;
         }
-        public PlayerChatEvent(IPlayer player, string message, bool global = true) : base(player.User, message, global)
+        public PlayerChatEvent(IPlayer player, string message, bool global = true) : base(player.Extend().User, message, global)
         {
             Player = player;
         }
-        public PlayerChatEvent(IPlayer player, string message, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.User, message, executionTarget, global)
+        public PlayerChatEvent(IPlayer player, string message, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.Extend().User, message, executionTarget, global)
         {
             Player = player;
         }
-        public PlayerChatEvent(IPlayer player, string message, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.User, message, name, executionTarget, global)
+        public PlayerChatEvent(IPlayer player, string message, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.Extend().User, message, name, executionTarget, global)
         {
             Player = player;
         }

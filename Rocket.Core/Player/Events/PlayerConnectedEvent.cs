@@ -10,19 +10,19 @@ namespace Rocket.Core.Player.Events
     public class PlayerConnectedEvent: UserConnectedEvent
     {
         public IPlayer Player { get; }
-        public PlayerConnectedEvent(IPlayer player) : base(player.User)
+        public PlayerConnectedEvent(IPlayer player) : base(player.Extend().User)
         {
             Player = player;
         }
-        public PlayerConnectedEvent(IPlayer player, bool global = true) : base(player.User, global)
+        public PlayerConnectedEvent(IPlayer player, bool global = true) : base(player.Extend().User, global)
         {
             Player = player;
         }
-        public PlayerConnectedEvent(IPlayer player, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.User, executionTarget, global)
+        public PlayerConnectedEvent(IPlayer player, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.Extend().User, executionTarget, global)
         {
             Player = player;
         }
-        public PlayerConnectedEvent(IPlayer player, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.User, name, executionTarget, global)
+        public PlayerConnectedEvent(IPlayer player, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.Extend().User, name, executionTarget, global)
         {
             Player = player;
         }

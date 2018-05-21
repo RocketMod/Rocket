@@ -8,7 +8,9 @@ using Rocket.Core.Player;
 
 namespace Rocket.Tests.Mock
 {
-    public sealed class TestPlayer : BasePlayer, IPlayerEntity, ILivingEntity
+    public sealed class TestPlayer : BasePlayer<TestPlayer, TestUser, TestPlayer>, 
+        IPlayerEntity<TestPlayer>, 
+        ILivingEntity
     {
         public TestPlayer(IDependencyContainer container, string id, string name) : base(container)
         {
@@ -21,10 +23,10 @@ namespace Rocket.Tests.Mock
         public override string Id { get; }
         public override string Name { get; }
 
-        public override IPlayerEntity Entity => this;
+        public override TestPlayer Entity => this;
         public override bool IsOnline => true;
 
-        public override IUser User => new TestUser(this);
+        public override TestUser User => new TestUser(this);
 
         public double MaxHealth
         {
@@ -55,14 +57,14 @@ namespace Rocket.Tests.Mock
 
         public string EntityTypeName => "Player";
         public Vector3 Position => Vector3.Zero;
-        public IPlayer Player => this;
+        public TestPlayer Player => this;
         public bool Teleport(Vector3 position)
         {
             return false;
         }
     }
 
-    public class TestUser : IPlayerUser
+    public class TestUser : IPlayerUser<TestPlayer>
     {
         private readonly TestPlayer testPlayer;
 
@@ -70,7 +72,6 @@ namespace Rocket.Tests.Mock
         {
             this.testPlayer = testPlayer;
             SessionConnectTime = DateTime.Now;
-            Player = testPlayer;
         }
 
         public string Id => testPlayer.Id;
@@ -82,6 +83,7 @@ namespace Rocket.Tests.Mock
         public DateTime? SessionDisconnectTime => null;
         public DateTime? LastSeen => DateTime.Now;
         public string UserType => "TestPlayer";
-        public IPlayer Player { get; }
+
+        TestPlayer IPlayerUser<TestPlayer>.Player => testPlayer;
     }
 }

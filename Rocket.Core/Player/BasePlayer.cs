@@ -9,7 +9,10 @@ using Rocket.API.User;
 namespace Rocket.Core.Player
 {
     [TypeConverter(typeof(PlayerTypeConverter))]
-    public abstract class BasePlayer : IPlayer
+    public abstract class BasePlayer<TEntity, TUser, TSelf> : IPlayer<TEntity, TUser, TSelf> 
+        where TEntity : IPlayerEntity<TSelf> 
+        where TUser : IPlayerUser<TSelf> 
+        where TSelf : IPlayer
     {
         protected BasePlayer(IDependencyContainer container)
         {
@@ -63,8 +66,8 @@ namespace Rocket.Core.Player
         public abstract string Id { get; }
         public abstract string Name { get; }
         public string IdentityType => IdentityTypes.Player;
-        public abstract IUser User { get; }
-        public abstract IPlayerEntity Entity { get; }
+        public abstract TUser User { get; }
+        public abstract TEntity Entity { get; }
         public abstract bool IsOnline { get; }
     }
 }
