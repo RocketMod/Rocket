@@ -11,13 +11,13 @@
         string Name { get; }
 
         /// <summary>
-        ///     Exchanges balance from a difference currency.
+        ///     Exchanges the given amount to a different currency.
         /// </summary>
         /// <param name="amount">The amount to exchange.</param>
-        /// <param name="targetCurrency">The currency to exchange from.</param>
+        /// <param name="targetCurrency">The currency to exchange to.</param>
         /// <exception>When the target currency is not supported.</exception>
-        /// <returns></returns>
-        decimal Exchange(decimal amount, IEconomyCurrency targetCurrency);
+        /// <returns>The exchanged amount.</returns>
+        decimal ExchangeTo(decimal amount, IEconomyCurrency targetCurrency);
 
         /// <summary>
         ///     Checks if this cucrrency can be exchanged with the other one.
