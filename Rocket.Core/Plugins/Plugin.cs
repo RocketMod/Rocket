@@ -14,12 +14,14 @@ using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins
 {
-    public abstract class Plugin<TConfig> : Plugin
+    public abstract class Plugin<TConfig> : Plugin where TConfig: class, new()
     {
         public virtual TConfig ConfigurationInstance { get; set; }
 
         protected Plugin(IDependencyContainer container) : base(container) { }
         protected Plugin(string name, IDependencyContainer container) : base(name, container) { }
+
+        public override object DefaultConfiguration => new TConfig();
 
         public override void SaveConfiguration()
         {
