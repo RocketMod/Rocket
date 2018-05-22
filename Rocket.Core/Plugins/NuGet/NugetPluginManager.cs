@@ -171,10 +171,15 @@ namespace Rocket.Core.Plugins.NuGet
         {
             var pkg = GetNugetPackageFile(repo, pluginName);
             var assemblies = LoadAssembliesFromNugetPackage(pkg);
-            return assemblies.Count() > 0; // test
 
+            bool success = false;
             foreach (var asm in assemblies)
-                LoadPluginFromAssembly(asm, out _);
+            {
+                if (LoadPluginFromAssembly(asm, out _) != null)
+                    success = true;
+            }
+
+            return success;
         }
 
         public virtual bool PluginExists(string repo, string pluginName)
