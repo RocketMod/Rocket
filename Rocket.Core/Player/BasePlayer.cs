@@ -21,7 +21,6 @@ namespace Rocket.Core.Player
 
         protected IDependencyContainer Container { get; }
 
-
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
             if (format == null)

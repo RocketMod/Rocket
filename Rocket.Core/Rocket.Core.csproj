@@ -90,6 +90,7 @@
     <Compile Include="Configuration\RocketSettings.cs" />
     <Compile Include="Configuration\RocketSettingsProvider.cs" />
     <Compile Include="DependencyInjection\DontAutoRegister.cs" />
+    <Compile Include="Entities\EntityExtensions.cs" />
     <Compile Include="Extensions\TypeConverterExtensions.cs" />
     <Compile Include="Logging\BaseLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />
@@ -133,6 +134,7 @@
     <Compile Include="Player\Events\PlayerDisconnectedEvent.cs" />
     <Compile Include="Player\Events\PlayerKickEvent.cs" />
     <Compile Include="Player\Events\PlayerUnbanEvent.cs" />
+    <Compile Include="Player\PlayerExtensions.cs" />
     <Compile Include="User\Events\UserUnbanEvent.cs" />
     <Compile Include="User\Events\UserEvent.cs" />
     <Compile Include="Player\PlayerTypeConverter.cs" />
