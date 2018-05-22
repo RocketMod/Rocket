@@ -12,6 +12,9 @@
     <description>Core declarations for RocketMod Game Server Plugin Framework</description>
     <copyright>Sven Mawby&lt;fr34kyn01535@bam.yt&gt; ©</copyright>
     <tags>Rocket Mod Unity3D</tags>
+    <dependencies>
+	  <dependency id="Rocket.Compatibility" version="$version$" />
+    </dependencies>
   </metadata>
   <files>
     <file src="Rocket.API.dll" target="lib/net35" />
