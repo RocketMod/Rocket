@@ -147,7 +147,7 @@ namespace Rocket.API.Permissions
         bool CreateGroup(IPermissionGroup group);
 
         /// <summary>
-        ///     Creates a permission group.
+        ///     Deletes a permission group.
         /// </summary>
         /// <param name="group">The group to delete.</param>
         /// <returns><b>true</b> if the group was successfully deleted; otherwise, <b>false</b>.</returns>
