@@ -135,6 +135,7 @@
     <Compile Include="Player\Events\PlayerKickEvent.cs" />
     <Compile Include="Player\Events\PlayerUnbanEvent.cs" />
     <Compile Include="Player\PlayerExtensions.cs" />
+    <Compile Include="ServiceProxies\DontProxyAttribute.cs" />
     <Compile Include="User\Events\UserUnbanEvent.cs" />
     <Compile Include="User\Events\UserEvent.cs" />
     <Compile Include="Player\PlayerTypeConverter.cs" />

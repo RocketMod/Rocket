@@ -21,8 +21,10 @@ namespace Rocket.Core.ServiceProxies
         {
             get
             {
-                List<T> providers = Container.ResolveAll<T>()
-                                             .ToList();
+                List<T> providers = Container
+                                    .ResolveAll<T>()
+                                    .Where(c => !c.GetType().GetCustomAttributes(typeof(DontProxyAttribute), false).Any())
+                                    .ToList();
 
                 ServicePriorityComparer.Sort(providers, true);
                 return providers;
