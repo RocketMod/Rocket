@@ -26,7 +26,7 @@ namespace Rocket.Core.Plugins
         protected IDependencyContainer ParentContainer { get; }
 
         private readonly Dictionary<string, Assembly> cachedAssemblies;
-        private readonly IEnumerable<Assembly> assemblies;
+        private IEnumerable<Assembly> assemblies;
 
         protected CLRPluginManager(IDependencyContainer dependencyContainer,
                                    IEventManager eventManager, ILogger logger)
@@ -36,8 +36,6 @@ namespace Rocket.Core.Plugins
             ParentContainer = dependencyContainer;
             Container = dependencyContainer.CreateChildContainer();
             cachedAssemblies = new Dictionary<string, Assembly>();
-
-            assemblies = LoadAssemblies();
         }
 
         public void Dispose()
@@ -50,6 +48,8 @@ namespace Rocket.Core.Plugins
 
         public virtual void Init()
         {
+            assemblies = LoadAssemblies();
+
             IRuntime runtime = Container.Resolve<IRuntime>();
 
             PluginManagerInitEvent pluginManagerInitEvent =
