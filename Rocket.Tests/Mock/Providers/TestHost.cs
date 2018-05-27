@@ -9,11 +9,11 @@ using Rocket.Core.Logging;
 
 namespace Rocket.Tests.Mock.Providers
 {
-    public class TestImplementation : IImplementation
+    public class TestHost : IHost
     {
         private readonly ILogger logger;
 
-        public TestImplementation(IDependencyContainer container, ILogger logger)
+        public TestHost(IDependencyContainer container, ILogger logger)
         {
             this.logger = logger;
             Console = new TestConsole(container);
@@ -31,24 +31,24 @@ namespace Rocket.Tests.Mock.Providers
 
         public void Init(IRuntime runtime)
         {
-            logger.LogInformation("Loading implementation");
+            logger.LogInformation("Loading host");
             runtime.Container.Resolve<IPluginManager>().Init();
         }
 
         public void Reload()
         {
-            logger.LogInformation("Reloading implementation");
+            logger.LogInformation("Reloading host");
         }
 
         public IConsole Console { get; }
 
         public void Shutdown()
         {
-            logger.LogInformation("Shutting down implementation");
+            logger.LogInformation("Shutting down host");
         }
 
-        public string Name => "TestImplementation";
+        public string Name => "TestHost";
 
-        public string ConfigurationName => "TestImplementation";
+        public string ConfigurationName => "TestHost";
     }
 }

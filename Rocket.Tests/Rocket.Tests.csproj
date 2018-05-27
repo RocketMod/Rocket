@@ -71,7 +71,7 @@
     <Compile Include="Mock\TestPlayer.cs" />
     <Compile Include="Configuration\ConfigurationTestBase.cs" />
     <Compile Include="RocketTestBase.cs" />
-    <Compile Include="Mock\Providers\TestImplementation.cs" />
+    <Compile Include="Mock\Providers\TestHost.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Mock\TestPlugin.cs" />

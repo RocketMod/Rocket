@@ -39,7 +39,7 @@ namespace Rocket.Core.DependencyInjection
             }
         }
 
-        #region IDependencyContainer Implementation
+        #region IDependencyContainer Host
 
         public IDependencyContainer CreateChildContainer() => new UnityDependencyContainer(this);
         public IDependencyContainer ParentContainer { get; }
@@ -153,7 +153,7 @@ namespace Rocket.Core.DependencyInjection
 
         #endregion
 
-        #region IDependencyResolver Implementation
+        #region IDependencyResolver Host
 
         #region IsRegistered Methods
 

@@ -9,7 +9,7 @@ namespace Rocket.Console.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
-            container.RegisterSingletonType<IImplementation, ConsoleImplementation>();
+            container.RegisterSingletonType<IHost, ConsoleHost>();
             container.RegisterSingletonType<ITaskScheduler, SimpleTaskScheduler>();
             container.RegisterSingletonType<IUserManager, ConsoleUserManager>("game");
         }

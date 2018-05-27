@@ -9,7 +9,7 @@ namespace Rocket.Tests.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
-            container.RegisterSingletonType<IImplementation, TestImplementation>();
+            container.RegisterSingletonType<IHost, TestHost>();
             container.RegisterSingletonType<IPlayerManager, TestPlayerManager>();
         }
     }

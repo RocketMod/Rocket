@@ -9,7 +9,7 @@
     <licenseUrl>https://github.com/RocketMod/Rocket/blob/master/LICENSE</licenseUrl>
     <projectUrl>https://rocketmod.net/</projectUrl>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
-    <description>Core implementations for RocketMod Game Server Plugin Framework</description>
+    <description>Core hosts for RocketMod Game Server Plugin Framework</description>
     <copyright>Sven Mawby&lt;fr34kyn01535@bam.yt&gt; ©</copyright>
     <tags>Rocket Mod UnityEngine UnrealEngine</tags>
     <dependencies>

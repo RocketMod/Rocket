@@ -16,7 +16,7 @@ namespace Rocket.Tests.DI
         [TestMethod]
         public void ImplementationAvailable()
         {
-            Assert.IsNotNull(Runtime.Container.Resolve<IImplementation>());
+            Assert.IsNotNull(Runtime.Container.Resolve<IHost>());
         }
 
         [TestMethod]

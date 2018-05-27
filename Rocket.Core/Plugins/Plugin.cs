@@ -88,7 +88,7 @@ namespace Rocket.Core.Plugins
 
         protected IRuntime Runtime => Container.Resolve<IRuntime>();
 
-        protected IImplementation Implementation => Container.Resolve<IImplementation>();
+        protected IHost Host => Container.Resolve<IHost>();
         public IConfiguration Configuration { get; protected set; }
 
         public virtual object DefaultConfiguration

@@ -18,12 +18,12 @@ namespace Rocket.Core.Migration
 
         public void Migrate(IDependencyContainer container, string basePath)
         {
-            IImplementation implementation = container.Resolve<IImplementation>();
+            IHost host = container.Resolve<IHost>();
 
             ITranslationCollection translationsLocator = container.Resolve<ITranslationCollection>();
 
             ConfigurationContext toContext =
-                new ConfigurationContext(implementation.WorkingDirectory, "Rocket.Unturned.Translations");
+                new ConfigurationContext(host.WorkingDirectory, "Rocket.Unturned.Translations");
             translationsLocator.Load(toContext, new Dictionary<string, string>());
 
             ILogger logger = container.Resolve<ILogger>();

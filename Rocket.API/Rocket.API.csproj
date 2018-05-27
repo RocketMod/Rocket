@@ -94,7 +94,7 @@
     <Compile Include="ILifecycleObject.cs" />
     <Compile Include="Eventing\IEventManager.cs" />
     <Compile Include="I18N\ITranslationCollection.cs" />
-    <Compile Include="IImplementation.cs" />
+    <Compile Include="IHost.cs" />
     <Compile Include="DependencyInjection\IDependencyContainer.cs" />
     <Compile Include="DependencyInjection\IDependencyRegistrator.cs" />
     <Compile Include="DependencyInjection\IDependencyResolver.cs" />

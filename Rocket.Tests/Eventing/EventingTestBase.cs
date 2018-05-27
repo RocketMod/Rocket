@@ -73,7 +73,7 @@ namespace Rocket.Tests.Eventing
                 ;
         }
 
-        protected virtual IEventEmitter GetEmitter() => Runtime.Container.Resolve<IImplementation>();
+        protected virtual IEventEmitter GetEmitter() => Runtime.Container.Resolve<IHost>();
 
         protected virtual ILifecycleObject GetListener() => Runtime.Container.Resolve<IRuntime>();
 

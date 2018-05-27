@@ -5,27 +5,27 @@ namespace Rocket.Core.Implementation.Events
 {
     public class ImplementationReadyEvent : Event
     {
-        public ImplementationReadyEvent(IImplementation implementation) : this(implementation, true) { }
+        public ImplementationReadyEvent(IHost host) : this(host, true) { }
 
-        public ImplementationReadyEvent(IImplementation implementation, bool global = true) : base(global)
+        public ImplementationReadyEvent(IHost host, bool global = true) : base(global)
         {
-            Implementation = implementation;
+            Host = host;
         }
 
-        public ImplementationReadyEvent(IImplementation implementation,
+        public ImplementationReadyEvent(IHost host,
                                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                         bool global = true) : base(executionTarget, global)
         {
-            Implementation = implementation;
+            Host = host;
         }
 
-        public ImplementationReadyEvent(IImplementation implementation, string name = null,
+        public ImplementationReadyEvent(IHost host, string name = null,
                                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                         bool global = true) : base(name, executionTarget, global)
         {
-            Implementation = implementation;
+            Host = host;
         }
 
-        public IImplementation Implementation { get; }
+        public IHost Host { get; }
     }
 }

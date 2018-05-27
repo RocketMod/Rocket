@@ -9,11 +9,11 @@ using Rocket.Core.Logging;
 
 namespace Rocket.Console
 {
-    public class ConsoleImplementation : IImplementation
+    public class ConsoleHost : IHost
     {
         private readonly ILogger logger;
 
-        public ConsoleImplementation(IRuntime runtime)
+        public ConsoleHost(IRuntime runtime)
         {
             logger = runtime.Container.Resolve<ILogger>();
             Console = new RocketConsole(runtime.Container);

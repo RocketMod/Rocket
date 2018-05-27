@@ -28,7 +28,7 @@ namespace Rocket
             Container.Resolve<ICommandProvider>().Init();
             Container.Resolve<IRocketSettingsProvider>().Load();
 
-            IImplementation impl = Container.Resolve<IImplementation>();
+            IHost impl = Container.Resolve<IHost>();
 
             Version = new Version(versionInfo.FileVersion);
 
@@ -89,7 +89,7 @@ namespace Rocket
 
             permissions.Load(this);
 
-            Container.Resolve<ILogger>().LogInformation($"Initializing implementation: {impl.Name}", Color.Green);
+            Container.Resolve<ILogger>().LogInformation($"Initializing host: {impl.Name}", Color.Green);
             impl.Init(this);
         }
 
@@ -104,7 +104,7 @@ namespace Rocket
         {
             get
             {
-                string implDir = Container.Resolve<IImplementation>().WorkingDirectory;
+                string implDir = Container.Resolve<IHost>().WorkingDirectory;
                 string dirName = new DirectoryInfo(implDir).Name;
                 if (dirName != "Rocket")
                     return Path.Combine(implDir, "Rocket");

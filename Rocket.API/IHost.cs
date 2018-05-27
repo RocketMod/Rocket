@@ -8,7 +8,7 @@ namespace Rocket.API
     /// <summary>
     ///     A game specific implemention of RocketMod. Implementations are responsible for providing game specific features.
     /// </summary>
-    public interface IImplementation : IEventEmitter, IConfigurationContext, IService
+    public interface IHost : IEventEmitter, IConfigurationContext, IService
     {
         /// <summary>
         ///     The game instance ID.

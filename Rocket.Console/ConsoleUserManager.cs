@@ -11,7 +11,7 @@ namespace Rocket.Console
     {
         private readonly IConsole console;
 
-        public ConsoleUserManager(IImplementation impl)
+        public ConsoleUserManager(IHost impl)
         {
             console = impl.Console;
         }
