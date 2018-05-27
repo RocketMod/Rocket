@@ -15,7 +15,11 @@ namespace Rocket.Core.Commands
         public RocketCommandProvider(IRuntime runtime)
         {
             this.runtime = runtime;
+        }
 
+        public ILifecycleObject GetOwner(ICommand command) => runtime;
+        public void Init()
+        {
             IEnumerable<Type> types = typeof(RocketCommandProvider).Assembly.FindTypes<ICommand>()
                                                                    .Where(c => c
                                                                                .GetCustomAttributes(
@@ -28,12 +32,11 @@ namespace Rocket.Core.Commands
 
             List<ICommand> list = new List<ICommand>();
             foreach (Type type in types)
-                list.Add((ICommand) Activator.CreateInstance(type, new object[0]));
+                list.Add((ICommand)Activator.CreateInstance(type, new object[0]));
             Commands = list;
         }
 
-        public ILifecycleObject GetOwner(ICommand command) => runtime;
-        public IEnumerable<ICommand> Commands { get; }
+        public IEnumerable<ICommand> Commands { get; protected set; }
         public string ServiceName => "RocketMod";
     }
 }

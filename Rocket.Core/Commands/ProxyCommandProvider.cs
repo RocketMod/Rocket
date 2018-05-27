@@ -12,14 +12,13 @@ namespace Rocket.Core.Commands
 {
     public class ProxyCommandProvider : ServiceProxy<ICommandProvider>, ICommandProvider
     {
+        private readonly IDependencyContainer container;
         private readonly IConfiguration configuration;
 
         public ProxyCommandProvider(IDependencyContainer container, IConfiguration configuration) : base(container)
         {
+            this.container = container;
             this.configuration = configuration;
-            IRuntime runtime = container.Resolve<IRuntime>();
-            var context = runtime.CreateChildConfigurationContext("Commands");
-            configuration.Load(context, new ProxyCommandProviderConfig());
         }
 
         public ILifecycleObject GetOwner(ICommand command)
@@ -28,6 +27,18 @@ namespace Rocket.Core.Commands
                 command = ((ProxyCommand)command).BaseCommand;
 
             return GetProvider(command)?.GetOwner(command) ?? throw new Exception("Owner not found.");
+        }
+
+        public void Init()
+        {
+            foreach (var service in ProxiedServices)
+            {
+                service.Init();
+            }
+
+            IRuntime runtime = container.Resolve<IRuntime>();
+            var context = runtime.CreateChildConfigurationContext("Commands");
+            configuration.Load(context, new ProxyCommandProviderConfig());
         }
 
         public ICommandProvider GetProvider(ICommand command)

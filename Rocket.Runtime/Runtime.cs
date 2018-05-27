@@ -3,9 +3,11 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using Rocket.API;
+using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
+using Rocket.Core.Commands;
 using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Logging;
@@ -23,8 +25,10 @@ namespace Rocket
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
             Container.Activate(typeof(RegistrationByConvention));
 
-            IImplementation impl = Container.Resolve<IImplementation>();
+            Container.Resolve<ICommandProvider>().Init();
             Container.Resolve<IRocketSettingsProvider>().Load();
+
+            IImplementation impl = Container.Resolve<IImplementation>();
 
             Version = new Version(versionInfo.FileVersion);
 
