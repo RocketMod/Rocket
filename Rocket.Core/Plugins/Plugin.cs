@@ -14,7 +14,7 @@ using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins
 {
-    public abstract class Plugin<TConfig> : Plugin where TConfig: class, new()
+    public abstract class Plugin<TConfig> : Plugin where TConfig : class, new()
     {
         public virtual TConfig ConfigurationInstance { get; set; }
 
@@ -36,7 +36,7 @@ namespace Rocket.Core.Plugins
             if (Configuration == null)
                 return;
 
-            ConfigurationInstance = (TConfig) Configuration.Get(typeof(TConfig));
+            ConfigurationInstance = (TConfig)Configuration.Get(typeof(TConfig));
         }
     }
 
@@ -49,7 +49,23 @@ namespace Rocket.Core.Plugins
         protected Plugin(string name, IDependencyContainer container)
         {
             parentLogger = container.ParentContainer.Resolve<ILogger>();
-            Name = name ?? GetType().Name;
+
+            string assemblyName = null;
+            try
+            {
+                // ReSharper disable once ConditionIsAlwaysTrueOrFalse
+                // Resharper does not know that dynamically byte[] loaded assemblies can return null for Location
+                if (GetType().Assembly?.Location != null)
+                {
+                    assemblyName = Path.GetFileNameWithoutExtension(GetType().Assembly.Location);
+                }
+            }
+            catch
+            {
+
+            }
+
+            Name = name ?? assemblyName ?? GetType().Name;
 
             Container = container;
             container.RegisterSingletonInstance<ILogger>(new ProxyLogger(Container), null, "proxy_logger");
