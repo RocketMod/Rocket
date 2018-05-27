@@ -266,6 +266,11 @@ namespace Rocket.Core.Plugins
             childContainer.RegisterInstance<IPluginManager>(this);
 
             IPlugin pluginInstance = (IPlugin) childContainer.Activate(pluginType);
+            if (pluginInstance == null)
+            {
+                throw new Exception("Failed to activate: " + pluginType.FullName + ". Is your plugin constructor public?");
+            }
+
             Container.RegisterInstance(pluginInstance, pluginInstance.Name);
 
             childContainer.RegisterInstance(pluginInstance);
