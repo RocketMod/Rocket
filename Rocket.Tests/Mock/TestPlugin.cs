@@ -9,7 +9,7 @@ namespace Rocket.Tests.Mock
 {
     public class TestPlugin : Plugin
     {
-        public TestPlugin(IDependencyContainer container) : base(container)
+        public TestPlugin(IDependencyContainer container) : base("TestPlugin", container)
         {
             Logger.LogInformation("Constructing TestPlugin (From plugin)");
         }
