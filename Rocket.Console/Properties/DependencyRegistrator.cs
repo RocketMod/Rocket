@@ -3,7 +3,7 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Scheduler;
 using Rocket.API.User;
 
-namespace Rocket.ConsoleImplementation.Properties
+namespace Rocket.Console.Properties
 {
     public class DependencyRegistrator : IDependencyRegistrator
     {

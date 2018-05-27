@@ -7,7 +7,7 @@ using Rocket.API.Logging;
 using Rocket.API.Plugins;
 using Rocket.Core.Logging;
 
-namespace Rocket.ConsoleImplementation
+namespace Rocket.Console
 {
     public class ConsoleImplementation : IImplementation
     {

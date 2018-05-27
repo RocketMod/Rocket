@@ -1,4 +1,4 @@
-﻿namespace Rocket.ConsoleImplementation
+﻿namespace Rocket.Console
 {
     internal class Program
     {

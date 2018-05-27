@@ -4,10 +4,8 @@ using System.Drawing;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.User;
-using Rocket.Core.Logging;
-using Rocket.Core.User;
 
-namespace Rocket.ConsoleImplementation
+namespace Rocket.Console
 {
     public class ConsoleUserManager : IUserManager
     {

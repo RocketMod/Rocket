@@ -2,7 +2,7 @@
 using Rocket.API;
 using Rocket.API.Scheduler;
 
-namespace Rocket.ConsoleImplementation
+namespace Rocket.Console
 {
     public class SimpleTask : ITask
     {

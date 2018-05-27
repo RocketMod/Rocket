@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{2C208038-27DA-4F7B-AA8C-276BB2531E1E}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Rocket.ConsoleImplementation</RootNamespace>
-    <AssemblyName>Rocket.ConsoleImplementation</AssemblyName>
+    <RootNamespace>Rocket.Console</RootNamespace>
+    <AssemblyName>Rocket.Console</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -34,7 +34,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>Rocket.ConsoleImplementation.Program</StartupObject>
+    <StartupObject>Rocket.Console.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

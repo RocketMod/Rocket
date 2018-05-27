@@ -10,7 +10,7 @@ using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.User;
 
-namespace Rocket.ConsoleImplementation
+namespace Rocket.Console
 {
     public class RocketConsole : IConsole
     {
@@ -49,40 +49,40 @@ namespace Rocket.ConsoleImplementation
             Color orgCol = ConsoleLogger.GetForegroundColor();
 
             SetForegroundColor(Color.White);
-            Console.Write("[");
+            System.Console.Write("[");
 
             SetForegroundColor(BaseLogger.GetLogLevelColor(level));
-            Console.Write(BaseLogger.GetLogLevelPrefix(level));
+            System.Console.Write(BaseLogger.GetLogLevelPrefix(level));
 
             SetForegroundColor(Color.White);
-            Console.Write("] ");
+            System.Console.Write("] ");
 
             if (rocketSettings?.Settings.Logging.IncludeMethods ?? true)
             {
                 SetForegroundColor(Color.White);
-                Console.Write("[");
+                System.Console.Write("[");
 
                 SetForegroundColor(Color.DarkGray);
-                Console.Write(GetLoggerCallingMethod().GetDebugName());
+                System.Console.Write(GetLoggerCallingMethod().GetDebugName());
 
                 SetForegroundColor(Color.White);
-                Console.Write("] ");
+                System.Console.Write("] ");
             }
 
             SetForegroundColor(color ?? Color.White);
 
             string line = string.Format(format, bindings);
-            Console.WriteLine(line);
+            System.Console.WriteLine(line);
 
             SetForegroundColor(orgCol);
         }
 
         public void Write(string format, Color? color = null, params object[] bindings)
         {
-            ConsoleColor orgColor = Console.ForegroundColor;
+            ConsoleColor orgColor = System.Console.ForegroundColor;
             ConsoleLogger.SetForegroundColor(color ?? Color.White);
-            Console.Write(format, bindings);
-            Console.ForegroundColor = orgColor;
+            System.Console.Write(format, bindings);
+            System.Console.ForegroundColor = orgColor;
         }
 
         public void Write(string format, params object[] bindings)
