@@ -17,7 +17,14 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="Rocket.Core.dll" target="lib/net35" />
+    <file src="ICSharpCode.SharpZipLib.dll" target="lib/net35" />
+	<file src="Microsoft.Practices.ServiceLocation.dll" target="lib/net35" />	
+	<file src="Microsoft.Practices.Unity.Configuration.dll" target="lib/net35" />		
+	<file src="Microsoft.Practices.Unity.dll" target="lib/net35" />		
+	<file src="Newtonsoft.Json.dll" target="lib/net35" />		
+	<file src="RestSharp.dll" target="lib/net35" />		
+	<file src="System.Runtime.Serialization.dll" target="lib/net35" />
     <file src="Rocket.Core.xml" target="lib/net35" />
+	<file src="Rocket.Runtime.dll" target="lib/net35" />
   </files>
 </package>
