@@ -24,6 +24,7 @@
 	<file src="Newtonsoft.Json.dll" target="lib/net35" />		
 	<file src="RestSharp.dll" target="lib/net35" />		
 	<file src="System.Runtime.Serialization.dll" target="lib/net35" />
-    <file src="Rocket.Core.xml" target="lib/net35" />
+    <file src="Rocket.Core.dll" target="lib/net35" />
+    <file src="Rocket.Core.xml" target="lib/net35" />	
   </files>
 </package>
