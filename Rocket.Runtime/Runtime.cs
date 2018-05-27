@@ -6,6 +6,7 @@ using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
+using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Logging;
 
@@ -23,6 +24,7 @@ namespace Rocket
             Container.Activate(typeof(RegistrationByConvention));
 
             IImplementation impl = Container.Resolve<IImplementation>();
+            Container.Resolve<IRocketSettingsProvider>().Load();
 
             Version = new Version(versionInfo.FileVersion);
 

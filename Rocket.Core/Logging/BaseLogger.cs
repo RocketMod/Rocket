@@ -23,9 +23,10 @@ namespace Rocket.Core.Logging
         {
             get
             {
-                if (Container.TryResolve(null, out IRocketSettingsProvider settings)) return settings.Settings.Logging;
+                if (Container.TryResolve(null, out IRocketSettingsProvider settings))
+                    return settings.Settings.Logging;
 
-                return new Configuration.LogSettings();
+                return new LogSettings();
             }
         }
 
