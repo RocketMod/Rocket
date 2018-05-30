@@ -192,6 +192,7 @@
     <Compile Include="Scheduler\TaskScheduleEvent.cs" />
     <Compile Include="User\ProxyUserManager.cs" />
     <Compile Include="User\UserExtensions.cs" />
+    <Compile Include="Util\ColorUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
