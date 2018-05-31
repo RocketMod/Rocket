@@ -93,7 +93,7 @@ namespace Rocket.Core.Logging
                 case LogLevel.Debug:
                     return Color.Gray;
                 case LogLevel.Native:
-                    return Color.White;
+                    return Color.Blue;
                 case LogLevel.Information:
                     return Color.Green;
                 case LogLevel.Warning:
