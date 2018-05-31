@@ -37,7 +37,7 @@ namespace Rocket.Core.Logging
             }
 
             SetForegroundColor(Color.White);
-            Console.WriteLine(message);
+            Console.WriteLine(String.Format (message, arguments));
 
             if (exception != null)
             {
