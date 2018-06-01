@@ -75,7 +75,7 @@ namespace Rocket.Core.Logging
 
         public static void LogFatal(this ILogger logger, string message, Exception exception, params object[] arguments)
         {
-            logger.LogFatal(message, exception, null, arguments);
+            logger.Log(message, LogLevel.Fatal, exception, arguments);
         }
     }
 }
