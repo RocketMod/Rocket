@@ -16,16 +16,17 @@ namespace Rocket.Core.Plugins
         private Dictionary<string, string> packageAssemblies;
         private Dictionary<string, string> pluginAssemblies;
 
-        public DllPluginManager(IDependencyContainer dependencyContainer, 
+        public DllPluginManager(IDependencyContainer dependencyContainer,
                              IEventManager eventManager,
-                             ILogger logger) : 
-            base(dependencyContainer, eventManager, logger) { }
+                             ILogger logger) :
+            base(dependencyContainer, eventManager, logger)
+        { }
 
         protected override IEnumerable<Assembly> LoadAssemblies()
         {
             IRuntime runtime = Container.Resolve<IRuntime>();
             List<Assembly> assemblies = new List<Assembly>();
-            foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 assemblies.Add(assembly);
 
             /*
@@ -44,26 +45,34 @@ namespace Rocket.Core.Plugins
             var pluginsDirectory = Path.Combine(runtime.WorkingDirectory, "Plugins");
             Directory.CreateDirectory(pluginsDirectory);
             pluginAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(pluginsDirectory);
-            foreach(var entry in pluginAssemblies)
+            foreach (var entry in pluginAssemblies)
                 Logger.LogDebug("Loaded plugin: " + entry.Key + " -> " + entry.Value);
 
             AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
             {
                 var name = ReflectionExtensions.GetVersionIndependentName(args.Name);
-                if (pluginAssemblies.TryGetValue(name, out string pluginFile))
-                    return LoadCachedAssembly(pluginFile);
 
-                if (packageAssemblies.TryGetValue(name, out string packageFile))
-                    return LoadCachedAssembly(packageFile);
-
-                foreach (var asm in assemblies)
+                try
                 {
-                    var asmName = ReflectionExtensions.GetVersionIndependentName(asm.FullName);
-                    if (asmName.Equals(name))
-                        return asm;
-                }
+                    if (pluginAssemblies.TryGetValue(name, out string pluginFile))
+                        return LoadCachedAssembly(pluginFile);
 
-                Logger.LogDebug("Could not find dependency: " + name);
+                    if (packageAssemblies.TryGetValue(name, out string packageFile))
+                        return LoadCachedAssembly(packageFile);
+
+                    foreach (var asm in assemblies)
+                    {
+                        var asmName = ReflectionExtensions.GetVersionIndependentName(asm.FullName);
+                        if (asmName.Equals(name))
+                            return asm;
+                    }
+
+                    Logger.LogDebug("Could not find dependency: " + name);
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogFatal("Failed to load assembly: " + name, ex);
+                }
                 return null;
             };
 
