@@ -311,10 +311,16 @@ namespace Rocket.Core.Plugins
 
             foreach (Type command in pluginCommands)
             {
-                ICommand cmdInstance = (ICommand)childContainer.Activate(command);
-
-                if (cmdInstance != null)
-                    childContainer.RegisterSingletonInstance(cmdInstance, cmdInstance.Name);
+                try
+                {
+                    ICommand cmdInstance = (ICommand)childContainer.Activate(command);
+                    if (cmdInstance != null)
+                        childContainer.RegisterSingletonInstance(cmdInstance, cmdInstance.Name);
+                }
+                catch(Exception ex)
+                {
+                    Logger.LogError(null, ex);
+                }
             }
 
             return pluginInstance;
