@@ -62,7 +62,7 @@ namespace Rocket.Core.Logging
         }
 
         public abstract void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                                   params object[] arguments);
+                                   params object[] bindings);
 
         public static string GetLogLevelPrefix(LogLevel level)
         {

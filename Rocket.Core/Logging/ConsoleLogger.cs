@@ -11,7 +11,16 @@ namespace Rocket.Core.Logging
         public ConsoleLogger(IDependencyContainer container) : base(container) { }
 
         public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                                   params object[] arguments)
+                                   params object[] bindings)
+        {
+            if (message != null)
+                WriteLine(level, message, false, bindings);
+
+            if (exception != null)
+                WriteLine(level, exception.ToString(), true);
+        }
+
+        private void WriteLine(LogLevel level, string message, bool isException, params object[] bindings)
         {
             Color orgCol = GetForegroundColor();
 
@@ -36,14 +45,8 @@ namespace Rocket.Core.Logging
                 Console.Write("] ");
             }
 
-            SetForegroundColor(Color.White);
-            Console.WriteLine(message, arguments);
-
-            if (exception != null)
-            {
-                SetForegroundColor(Color.Red);
-                Console.WriteLine(exception);
-            }
+            SetForegroundColor(isException ? Color.Red : Color.White);
+            Console.WriteLine(message, bindings);
 
             SetForegroundColor(orgCol);
         }
@@ -72,7 +75,7 @@ namespace Rocket.Core.Logging
                 0xFFFFFF  //White = 15
             };
 
-            return Color.FromArgb(cColors[(int) Console.ForegroundColor]);
+            return Color.FromArgb(cColors[(int)Console.ForegroundColor]);
         }
 
         public static void SetForegroundColor(Color color)

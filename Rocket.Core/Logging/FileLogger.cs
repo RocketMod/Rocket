@@ -77,7 +77,7 @@ namespace Rocket.Core.Logging
         }
 
         public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                                   params object[] arguments)
+                                   params object[] bindings)
         {
             if (string.IsNullOrEmpty(logFile))
                 throw new FileLoadException("File has not been set.");
@@ -101,10 +101,26 @@ namespace Rocket.Core.Logging
                     return;
                 }
 
+
+            if (message != null)
+            {
+                WriteLine(level, message, bindings);
+            }
+
+            if (exception != null)
+            {
+                WriteLine(level, exception.ToString());
+            }
+        }
+
+        private void WriteLine(LogLevel level, string message, params object[] bindings)
+        {
             string callingMethod = GetLoggerCallingMethod().GetDebugName();
+
             string formattedLine = $"[{DateTime.Now}] [{GetLogLevelPrefix(level)}] "
                 + (LogSettings.IncludeMethods ? $"[{callingMethod}] " : "")
-                + $"{String.Format (message, arguments)}";
+                + $"{string.Format(message, bindings)}";
+
             if (streamWriter.BaseStream.CanWrite)
                 streamWriter.WriteLine(formattedLine);
         }
