@@ -33,7 +33,7 @@ namespace Rocket.Core.Logging
         public static void LogNative(this ILogger logger, string message, Exception exception,
                                      params object[] arguments)
         {
-            logger.Log(message, LogLevel.Native, exception, arguments);
+            logger.Log(message, LogLevel.Game, exception, arguments);
         }
 
         public static void LogInformation(this ILogger logger, string message, params object[] arguments)

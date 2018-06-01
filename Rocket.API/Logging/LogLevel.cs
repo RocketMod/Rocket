@@ -16,9 +16,9 @@
         Debug,
 
         /// <summary>
-        ///     Native game messages.
+        ///     Game game messages.
         /// </summary>
-        Native,
+        Game,
 
         /// <summary>
         ///     Information messages.

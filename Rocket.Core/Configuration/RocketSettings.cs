@@ -71,5 +71,10 @@ namespace Rocket.Core.Configuration
         ///     Defines if methods should be included in the logs.
         /// </summary>
         public bool IncludeMethods { get; set; } = true;
+
+        /// <summary>
+        ///     Defines if the game output should be ignored.
+        /// </summary>
+        public bool IgnoreGameLogs { get; set; } = true;
     }
 }

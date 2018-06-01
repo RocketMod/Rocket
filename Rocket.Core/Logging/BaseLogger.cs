@@ -49,6 +49,9 @@ namespace Rocket.Core.Logging
 
         public virtual bool IsEnabled(LogLevel level)
         {
+            if (level == LogLevel.Game)
+                return !LogSettings.IgnoreGameLogs;
+
             var settingsLevel = (LogLevel) Enum.Parse(typeof(LogLevel), LogSettings.LogLevel, true);
             return level >= settingsLevel;
         }
@@ -69,7 +72,7 @@ namespace Rocket.Core.Logging
                     return "Trace";
                 case LogLevel.Debug:
                     return "Debug";
-                case LogLevel.Native:
+                case LogLevel.Game:
                     return "Game";
                 case LogLevel.Information:
                     return "Info";
@@ -92,8 +95,8 @@ namespace Rocket.Core.Logging
                     return Color.DarkGray;
                 case LogLevel.Debug:
                     return Color.Gray;
-                case LogLevel.Native:
-                    return Color.Blue;
+                case LogLevel.Game:
+                    return Color.Magenta;
                 case LogLevel.Information:
                     return Color.Green;
                 case LogLevel.Warning:
