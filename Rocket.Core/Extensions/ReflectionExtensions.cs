@@ -59,6 +59,18 @@ namespace Rocket.Core.Extensions
             return target?.GetMethod();
         }
 
+        internal static T GetPrivateProperty<T>(this object o, string property)
+        {
+            var prop = o.GetType()
+                        .GetProperty(property, BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.Public);
+
+            if(prop == null)
+                throw new Exception("Property not found!");
+
+            return (T) prop.GetGetMethod(true)
+                    .Invoke(o, new object[0]);
+        }
+
         public static IEnumerable<Type> FindAllTypes(this ILifecycleObject @object,
                                                      bool includeAbstractAndInterfaces = false)
             => @object.GetType().Assembly.FindAllTypes(includeAbstractAndInterfaces);

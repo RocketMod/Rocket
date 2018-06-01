@@ -1,22 +1,18 @@
 ﻿using Rocket.API.Player;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Player
 {
     public static class PlayerExtensions
     {
-        private static IPlayer<IPlayerEntity<IPlayer>, IPlayerUser<IPlayer>, IPlayer> Extend(this IPlayer player)
+        public static IPlayerUser GetUser(this IPlayer player)
         {
-            return ((IPlayer<IPlayerEntity<IPlayer>, IPlayerUser<IPlayer>, IPlayer>) player);
+            return player.GetPrivateProperty<IPlayerUser>("User");
         }
 
-        public static IPlayerUser<IPlayer> GetUser(this IPlayer player)
+        public static IPlayerEntity GetEntity(this IPlayer player)
         {
-            return player.GetUser();
-        }
-
-        public static IPlayerEntity<IPlayer> GetEntity(this IPlayer player)
-        {
-            return player.Extend().Entity;
+            return player.GetPrivateProperty<IPlayerEntity>("Entity");
         }
     }
 }

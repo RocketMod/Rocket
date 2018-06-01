@@ -3,6 +3,7 @@ using System.Drawing;
 using Rocket.API.User;
 using System.Collections.Generic;
 using Rocket.API.Player;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.User
 {
@@ -51,14 +52,9 @@ namespace Rocket.Core.User
 
         }
 
-        private static IPlayerUser<IPlayer> Extend(this IPlayerUser user)
-        {
-            return (IPlayerUser<IPlayer>) user;
-        }
-
         public static IPlayer GetPlayer(this IPlayerUser user)
         {
-            return user.Extend().Player;
+            return user.GetPrivateProperty<IPlayer>("Player");
         }
     }
 }
