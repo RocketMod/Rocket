@@ -208,7 +208,7 @@ namespace Rocket.Core.Plugins
             foreach (MethodInfo method in @object.GetType().GetMethods(BindingFlags.Public | BindingFlags.Instance))
             {
                 CommandAttribute cmdAttr =
-                    (CommandAttribute) method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
+                    (CommandAttribute)method.GetCustomAttributes(typeof(CommandAttribute), true).FirstOrDefault();
 
                 if (cmdAttr == null)
                     continue;
@@ -284,7 +284,7 @@ namespace Rocket.Core.Plugins
             childContainer = Container.CreateChildContainer();
             childContainer.RegisterInstance<IPluginManager>(this);
 
-            IPlugin pluginInstance = (IPlugin) childContainer.Activate(pluginType);
+            IPlugin pluginInstance = (IPlugin)childContainer.Activate(pluginType);
             if (pluginInstance == null)
             {
                 throw new Exception("Failed to activate: " + pluginType.FullName + ". Is your plugin constructor public?");
@@ -301,18 +301,20 @@ namespace Rocket.Core.Plugins
             IEnumerable<Type> dependencyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>(false);
 
             foreach (Type registrator in dependencyRegistrators)
-                ((IDependencyRegistrator) Activator.CreateInstance(registrator)).Register(Container, Container);
+                ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(Container, Container);
 
             foreach (Type listener in listeners)
             {
-                IEventListener instance = (IEventListener) childContainer.Activate(listener);
+                IEventListener instance = (IEventListener)childContainer.Activate(listener);
                 EventManager.AddEventListener(pluginInstance, instance);
             }
 
             foreach (Type command in pluginCommands)
             {
-                ICommand cmdInstance = (ICommand) childContainer.Activate(command);
-                childContainer.RegisterSingletonInstance(cmdInstance, cmdInstance.Name);
+                ICommand cmdInstance = (ICommand)childContainer.Activate(command);
+
+                if (cmdInstance != null)
+                    childContainer.RegisterSingletonInstance(cmdInstance, cmdInstance.Name);
             }
 
             return pluginInstance;
