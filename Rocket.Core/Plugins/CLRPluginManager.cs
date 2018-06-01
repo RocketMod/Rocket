@@ -69,17 +69,24 @@ namespace Rocket.Core.Plugins
             List<IDependencyContainer> pluginContainers = new List<IDependencyContainer>();
             foreach (Assembly assembly in assemblies)
             {
-                Logger.LogDebug($"[{GetType().Name}] Loading from assembly: " + assembly.GetName().Name);
-                LoadPluginFromAssembly(assembly, out IDependencyContainer container);
+                try
+                {
+                    Logger.LogDebug($"[{GetType().Name}] Loading from assembly: " + assembly.GetName().Name);
+                    LoadPluginFromAssembly(assembly, out IDependencyContainer container);
 
-                if (container != null)
-                {
-                    pluginContainers.Add(container);
-                    Logger.LogDebug($"[{GetType().Name}] Plugin found in: " + assembly.GetName().Name);
+                    if (container != null)
+                    {
+                        pluginContainers.Add(container);
+                        Logger.LogDebug($"[{GetType().Name}] Plugin found in: " + assembly.GetName().Name);
+                    }
+                    else
+                    {
+                        Logger.LogDebug($"[{GetType().Name}] No plugins found in: " + assembly.GetName().Name);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    Logger.LogDebug($"[{GetType().Name}] No plugins found in: " + assembly.GetName().Name);
+                    Logger.LogError($"[{GetType().Name}] Failed to load from assembly: " + assembly.GetName().Name, ex);
                 }
             }
 
