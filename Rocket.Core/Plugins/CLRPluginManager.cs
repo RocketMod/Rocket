@@ -14,6 +14,7 @@ using Rocket.Compatibility;
 using Rocket.Core.Commands;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Extensions;
+using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
 
 namespace Rocket.Core.Plugins
@@ -48,6 +49,8 @@ namespace Rocket.Core.Plugins
 
         public virtual void Init()
         {
+            Logger.LogDebug($"[{GetType().Name}] Initializing plugins.");
+
             assemblies = LoadAssemblies();
 
             IRuntime runtime = Container.Resolve<IRuntime>();
@@ -57,25 +60,41 @@ namespace Rocket.Core.Plugins
             EventManager.Emit(runtime, pluginManagerInitEvent);
 
             if (pluginManagerInitEvent.IsCancelled)
+            {
+                Logger.LogDebug($"[{GetType().Name}] Loading of plugins was canacelled.");
                 return;
+            }
+
 
             List<IDependencyContainer> pluginContainers = new List<IDependencyContainer>();
             foreach (Assembly assembly in assemblies)
             {
+                Logger.LogDebug($"[{GetType().Name}] Loading from assembly: " + assembly.GetName().Name);
                 LoadPluginFromAssembly(assembly, out IDependencyContainer container);
+
                 if (container != null)
+                {
                     pluginContainers.Add(container);
+                    Logger.LogDebug($"[{GetType().Name}] Plugin found in: " + assembly.GetName().Name);
+                }
+                else
+                {
+                    Logger.LogDebug($"[{GetType().Name}] No plugins found in: " + assembly.GetName().Name);
+                }
             }
 
             foreach (IDependencyContainer childContainer in pluginContainers)
             {
                 IPlugin plugin = childContainer.Resolve<IPlugin>();
+                Logger.LogDebug($"[{GetType().Name}] Trying to load plugin: " + plugin.Name);
 
                 PluginCommandProvider cmdProvider = new PluginCommandProvider(plugin, childContainer);
                 ParentContainer.RegisterSingletonInstance<ICommandProvider>(cmdProvider, plugin.Name);
 
                 Assembly asm = plugin.GetType().Assembly;
                 string pluginDir = plugin.WorkingDirectory;
+                if (!Directory.Exists(pluginDir))
+                    Directory.CreateDirectory(pluginDir);
 
                 foreach (string s in asm.GetManifestResourceNames())
                     using (Stream stream = asm.GetManifestResourceStream(s))
