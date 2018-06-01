@@ -10,19 +10,19 @@ namespace Rocket.Core.Player.Events
     public class PlayerKickEvent: UserKickEvent
     {
         public IPlayer Player { get; }
-        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null) : base(player.Extend().User, kickedBy, reason)
+        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null) : base(player.GetUser(), kickedBy, reason)
         {
             Player = player;
         }
-        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, bool global = true) : base(player.Extend().User, kickedBy, reason, global)
+        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, bool global = true) : base(player.GetUser(), kickedBy, reason, global)
         {
             Player = player;
         }
-        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.Extend().User, kickedBy, reason, executionTarget, global)
+        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), kickedBy, reason, executionTarget, global)
         {
             Player = player;
         }
-        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.Extend().User, kickedBy, reason, name, executionTarget, global)
+        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), kickedBy, reason, name, executionTarget, global)
         {
             Player = player;
         }

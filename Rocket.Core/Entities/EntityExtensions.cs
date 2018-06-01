@@ -4,7 +4,7 @@ namespace Rocket.Core.Entities
 {
     public static class EntityExtensions
     {
-        internal static IPlayerEntity<IPlayer> Extend(this IPlayerEntity entity)
+        private static IPlayerEntity<IPlayer> Extend(this IPlayerEntity entity)
         {
             return (IPlayerEntity<IPlayer>) entity;
         }

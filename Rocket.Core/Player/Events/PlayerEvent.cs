@@ -9,7 +9,7 @@ namespace Rocket.Core.Player.Events
         protected PlayerEvent(IPlayer player) : this(player, true) { }
 
         /// <param name="global">Defines if the event is emitted globally</param>
-        protected PlayerEvent(IPlayer player, bool global = true) : base(player.Extend().User, global)
+        protected PlayerEvent(IPlayer player, bool global = true) : base(player.GetUser(), global)
         {
             Player = player;
         }
@@ -18,7 +18,7 @@ namespace Rocket.Core.Player.Events
         /// <param name="global">Defines if the event is emitted globally</param>
         protected PlayerEvent(IPlayer player,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                              bool global = true) : base(player.Extend().User, executionTarget, global)
+                              bool global = true) : base(player.GetUser(), executionTarget, global)
         {
             Player = player;
         }
@@ -29,7 +29,7 @@ namespace Rocket.Core.Player.Events
         /// <param name="global">Defines if the event is emitted globally</param>
         protected PlayerEvent(IPlayer player, string name = null,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                              bool global = true) : base(player.Extend().User, name, executionTarget, global)
+                              bool global = true) : base(player.GetUser(), name, executionTarget, global)
         {
             Player = player;
         }
