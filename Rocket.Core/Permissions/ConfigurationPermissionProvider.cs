@@ -22,6 +22,46 @@ namespace Rocket.Core.Permissions
         public IConfiguration GroupsConfig { get; protected set; }
         public IConfiguration PlayersConfig { get; protected set; }
 
+        public IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true)
+        {
+            PermissionSection section = target is IPermissionGroup
+                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
+                : GetConfigSection<PlayerPermissionSection>(target, false);
+
+            List<string> permissions = section?.Permissions
+                                              .Where(c => !c.StartsWith("!"))
+                                              .Select(c => c.ToLower())
+                                              .ToList() ?? new List<string>();
+            if (inherit)
+            {
+                foreach(var parent in GetGroups(target))
+                    permissions
+                        .AddRange(GetGrantedPermissions(parent, true));
+            }
+
+            return permissions.Distinct();
+        }
+
+        public IEnumerable<string> GetDeniedPermissions(IIdentity target, bool inherit = true)
+        {
+            PermissionSection section = target is IPermissionGroup
+                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
+                : GetConfigSection<PlayerPermissionSection>(target, false);
+
+            List<string> permissions = section?.Permissions
+                                              .Where(c => c.StartsWith("!"))
+                                              .Select(c => c.Substring(1).ToLower())
+                                              .ToList() ?? new List<string>();
+            if (inherit)
+            {
+                foreach (var parent in GetGroups(target))
+                    permissions
+                        .AddRange(GetDeniedPermissions(parent, true));
+            }
+
+            return permissions.Distinct();
+        }
+
         public bool SupportsTarget(IIdentity target)
             => target is IPermissionGroup || target is IUser;
 

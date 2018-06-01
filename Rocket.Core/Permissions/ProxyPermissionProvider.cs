@@ -14,6 +14,20 @@ namespace Rocket.Core.Permissions
     {
         public ProxyPermissionProvider(IDependencyContainer container) : base(container) { }
 
+        public IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true)
+        {
+            return ProxiedServices
+                   .Where(c => c.SupportsTarget(target))
+                   .SelectMany(c => c.GetGrantedPermissions(target, inherit));
+        }
+
+        public IEnumerable<string> GetDeniedPermissions(IIdentity target, bool inherit = true)
+        {
+            return ProxiedServices
+                   .Where(c => c.SupportsTarget(target))
+                   .SelectMany(c => c.GetDeniedPermissions(target, inherit));
+        }
+
         public bool SupportsTarget(IIdentity target)
         {
             return ProxiedServices.Any(c => c.SupportsTarget(target));

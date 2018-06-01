@@ -11,6 +11,16 @@ namespace Rocket.Core.Permissions
     [ServicePriority(Priority = ServicePriority.High)]
     public class ConsolePermissionProvider : IPermissionProvider
     {
+        public IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true)
+        {
+            return new List<string>();
+        }
+
+        public IEnumerable<string> GetDeniedPermissions(IIdentity target, bool inherit = true)
+        {
+            return new List<string>();
+        }
+
         public bool SupportsTarget(IIdentity target) => target is IConsole;
 
         public PermissionResult CheckPermission(IIdentity target, string permission)

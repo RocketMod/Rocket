@@ -11,7 +11,21 @@ namespace Rocket.API.Permissions
     /// </summary>
     public interface IPermissionProvider : IProxyableService
     {
-        // Note: do not add something like GetPermissions()!
+        /// <summary>
+        ///     Gets the permissions of the given target.
+        /// </summary>
+        /// <param name="target">The target whichs permissions to get.</param>
+        /// <param name="inherit">Defines if the parent groups permissions should be included.</param>
+        /// <returns>A list of all permissions of the target.</returns>
+        IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true);
+
+        /// <summary>
+        ///     Gets the denied permissions of the given target.
+        /// </summary>
+        /// <param name="target">The target whichs denied permissions to get.</param>
+        /// <param name="inherit">Defines if the parent groups denied permissions should be included.</param>
+        /// <returns>A list of all denied permissions of the target.</returns>
+        IEnumerable<string> GetDeniedPermissions(IIdentity target, bool inherit = true);
 
         /// <summary>
         ///     Defines if the given target is supported by this provider.
