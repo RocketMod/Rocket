@@ -14,9 +14,7 @@ namespace Rocket.Core.Plugins
     public class DllPluginManager : CLRPluginManager
     {
         private Dictionary<string, string> packageAssemblies;
-        private string packagesDirectory;
         private Dictionary<string, string> pluginAssemblies;
-        private string pluginsDirectory;
 
         public DllPluginManager(IDependencyContainer dependencyContainer, 
                              IEventManager eventManager,
@@ -30,28 +28,42 @@ namespace Rocket.Core.Plugins
             foreach(var assembly in AppDomain.CurrentDomain.GetAssemblies())
                 assemblies.Add(assembly);
 
-            pluginsDirectory = Path.Combine(runtime.WorkingDirectory, "Plugins");
-            packagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
+            /*
+            var rocketDire = Path.GetDirectoryName(typeof(DllPluginManager).Assembly.Location);
+            var rocketAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(rocketDir);
+            foreach (var entry in rocketAssemblies)
+                Logger.LogDebug("Loaded rocket assembly: " + entry.Key + " -> " + entry.Value);
+            */
 
-            Directory.CreateDirectory(pluginsDirectory);
-            pluginAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(pluginsDirectory);
-
+            var packagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
             Directory.CreateDirectory(packagesDirectory);
             packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(packagesDirectory);
+            foreach (var entry in packageAssemblies)
+                Logger.LogDebug("Loaded library: " + entry.Key + " -> " + entry.Value);
+
+            var pluginsDirectory = Path.Combine(runtime.WorkingDirectory, "Plugins");
+            Directory.CreateDirectory(pluginsDirectory);
+            pluginAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(pluginsDirectory);
+            foreach(var entry in pluginAssemblies)
+                Logger.LogDebug("Loaded plugin: " + entry.Key + " -> " + entry.Value);
 
             AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
             {
-                if (pluginAssemblies.TryGetValue(args.Name, out string pluginFile))
+                var name = ReflectionExtensions.GetVersionIndependentName(args.Name);
+                if (pluginAssemblies.TryGetValue(name, out string pluginFile))
                     return LoadCachedAssembly(pluginFile);
 
-                if (packageAssemblies.TryGetValue(args.Name, out string packageFile))
+                if (packageAssemblies.TryGetValue(name, out string packageFile))
                     return LoadCachedAssembly(packageFile);
 
-                Logger.LogDebug(((AppDomain)sender).FriendlyName
-                    + " could not find dependency: "
-                    + args.Name
-                    + " for: "
-                    + sender);
+                foreach (var asm in assemblies)
+                {
+                    var asmName = ReflectionExtensions.GetVersionIndependentName(asm.FullName);
+                    if (asmName.Equals(name))
+                        return asm;
+                }
+
+                Logger.LogDebug("Could not find dependency: " + name);
                 return null;
             };
 

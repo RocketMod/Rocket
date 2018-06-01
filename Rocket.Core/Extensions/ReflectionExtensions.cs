@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Rocket.API;
 
 namespace Rocket.Core.Extensions
@@ -89,17 +90,33 @@ namespace Rocket.Core.Extensions
             string directory, string extension = "*.dll")
         {
             Dictionary<string, string> l = new Dictionary<string, string>();
-            IEnumerable<FileInfo> libraries =
+            IEnumerable<FileInfo> assemblyFiles =
                 new DirectoryInfo(directory).GetFiles(extension, SearchOption.AllDirectories);
-            foreach (FileInfo library in libraries)
+            foreach (FileInfo assemblyFile in assemblyFiles)
                 try
                 {
-                    AssemblyName name = AssemblyName.GetAssemblyName(library.FullName);
-                    l.Add(name.FullName, library.FullName);
+                    AssemblyName assemblyName = AssemblyName.GetAssemblyName(assemblyFile.FullName);
+                    l.Add(GetVersionIndependentName(assemblyName.FullName), assemblyFile.FullName);
                 }
-                catch { }
+                catch
+                {
+
+                }
 
             return l;
+        }
+
+        public static string GetVersionIndependentName(string name)
+        {
+            return GetVersionIndependentName(name, out _);
+        }
+
+        public static string GetVersionIndependentName(string name, out string extractedVersion)
+        {
+            Regex regex = new Regex("Version=(?<version>.+?), ", RegexOptions.Compiled);
+            var match = regex.Match(name);
+            extractedVersion = match.Groups[0].Value;
+            return regex.Replace(name, "");
         }
 
         public static string GetDebugName(this MethodBase mb)
