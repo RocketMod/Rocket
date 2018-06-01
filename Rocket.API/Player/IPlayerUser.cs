@@ -6,7 +6,7 @@ namespace Rocket.API.Player
     ///     <inheritdoc cref="IPlayer"/>
     /// </summary>
     /// <typeparam name="TPlayer"></typeparam>
-    public interface IPlayerUser<out TPlayer> : IUser where TPlayer: IPlayer
+    public interface IPlayerUser<out TPlayer> : IPlayerUser where TPlayer: IPlayer
     {
         /// <summary>
         ///     The parent player object.

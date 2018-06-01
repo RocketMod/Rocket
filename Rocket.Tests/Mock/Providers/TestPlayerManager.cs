@@ -20,7 +20,7 @@ namespace Rocket.Tests.Mock.Providers
 
         public IEnumerable<IPlayer> OnlinePlayers => new List<IPlayer> {new TestPlayer(Container)};
 
-        public IEnumerable<IUser> Users => OnlinePlayers.Select(c => (IUser)(c.Extend().User));
+        public IEnumerable<IUser> Users => OnlinePlayers.Select(c => (IUser)(c.GetUser()));
 
         public bool Kick(IUser user, IUser kickedBy = null, string reason = null) => false;
 

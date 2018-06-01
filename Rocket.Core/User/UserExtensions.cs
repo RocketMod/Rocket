@@ -51,7 +51,7 @@ namespace Rocket.Core.User
 
         }
 
-        public static IPlayerUser<IPlayer> Extend(this IPlayerUser user)
+        internal static IPlayerUser<IPlayer> Extend(this IPlayerUser user)
         {
             return (IPlayerUser<IPlayer>) user;
         }
