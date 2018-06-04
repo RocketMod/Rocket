@@ -310,11 +310,13 @@ namespace Rocket.Core.Plugins
             foreach (Type registrator in dependencyRegistrators)
                 ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(Container, Container);
 
+            /*
             foreach (Type listener in listeners)
             {
                 IEventListener instance = (IEventListener)childContainer.Activate(listener);
                 EventManager.AddEventListener(pluginInstance, instance);
             }
+            */
 
             foreach (Type command in pluginCommands)
             {
