@@ -133,6 +133,7 @@ namespace Rocket.Core.Plugins
                 Translations.Load(context, DefaultTranslations);
             }
 
+            IsAlive = true;
             try
             {
                 OnLoad(isReload);
@@ -140,10 +141,9 @@ namespace Rocket.Core.Plugins
             catch (Exception ex)
             {
                 Logger.LogFatal($"Failed to load {Name}: ", ex);
+                IsAlive = false;
                 return false;
             }
-
-            IsAlive = true;
 
             if (EventManager != null)
             {

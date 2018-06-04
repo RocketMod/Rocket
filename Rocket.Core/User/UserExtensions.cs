@@ -43,13 +43,11 @@ namespace Rocket.Core.User
                                        params object[] arguments)
         {
             manager.SendMessage(null, receiver, message, color, arguments);
-
         }
 
         public static void SendMessage(this IUserManager manager, IUser receiver, string message, params object[] arguments)
         {
             manager.SendMessage(null, receiver, message, null, arguments);
-
         }
 
         public static IPlayer GetPlayer(this IPlayerUser user)
