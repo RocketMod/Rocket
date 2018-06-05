@@ -279,7 +279,7 @@ namespace Rocket.Core.Eventing
         private EventHandler GetEventHandler(Type target, string emitterName)
         {
             EventHandler handler =
-                (EventHandler) target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
+                (EventHandler) target?.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
                 ?? new EventHandler();
             handler.EmitterName = emitterName ?? handler.EmitterName;
             return handler;
