@@ -1,7 +1,8 @@
 ﻿namespace Rocket.Core.Commands {
-    class ProxyConfigCommand
+    public class ProxyConfigCommand
     {
         public string Name { get; set; }
         public string Provider { get; set; }
+        public bool IsEnabled { get; set; } = true;
     }
 }

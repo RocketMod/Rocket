@@ -44,7 +44,7 @@ namespace Rocket.Core.Commands
         public ICommandProvider GetProvider(ICommand command)
         {
             if (command is ProxyCommand)
-                command = ((ProxyCommand) command).BaseCommand;
+                command = ((ProxyCommand)command).BaseCommand;
 
             foreach (ICommandProvider service in ProxiedServices)
                 if (service.Commands.Any(c => c == command))
@@ -76,7 +76,7 @@ namespace Rocket.Core.Commands
                     => c.Name.Equals(originalCommandName,
                         StringComparison.OrdinalIgnoreCase));
 
-                if (providerCommand == null)
+                if (providerCommand == null || !command.IsEnabled)
                     continue;
 
                 commands.Add(new ProxyCommand(providerCommand, command.Name), provider);
@@ -91,7 +91,6 @@ namespace Rocket.Core.Commands
 
                     foreach (ICommand c in commands.Keys)
                     {
-                        
                         if ((c as ProxyCommand)?.BaseCommand?.Name?.Equals(command.Name, StringComparison.OrdinalIgnoreCase) ?? false || c.Name.Equals(command.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             previousRegistration = c;
@@ -122,7 +121,8 @@ namespace Rocket.Core.Commands
                 }
 
             registeredCommands = commands.Keys;
-            IEnumerable<ProxyConfigCommand> configCommands = registeredCommands.Select(c => GetProxyCommand(c, commands[c]));
+            IEnumerable<ProxyConfigCommand> configCommands =
+                registeredCommands.Select(c => GetProxyCommand(c, commands[c]));
 
             configuration.Set(new ProxyCommandProviderConfig { Commands = configCommands.ToArray() });
             configuration.Save();
@@ -134,7 +134,8 @@ namespace Rocket.Core.Commands
             return new ProxyConfigCommand
             {
                 Name = command.Name,
-                Provider = provider.ServiceName + "/" + implName
+                Provider = provider.ServiceName + "/" + implName,
+                IsEnabled = true
             };
         }
 
