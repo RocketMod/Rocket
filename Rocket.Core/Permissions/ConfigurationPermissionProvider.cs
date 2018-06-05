@@ -439,15 +439,33 @@ namespace Rocket.Core.Permissions
         {
             GuardTarget(target);
 
-            IConfigurationElement config = target is IPermissionGroup
-                ? GroupsConfig["Groups"]
-                : PlayersConfig[((IUser) target).UserType];
+            bool isPermissionGroup = target is IPermissionGroup;
 
-            List<PermissionSection> values = config.Get<PermissionSection[]>().ToList();
+            IConfiguration config = null;
+            string path = null;
 
-            if (config.Type != SectionType.Array)
-                throw new Exception("Expected array type but got " + config.Type);
+            if (isPermissionGroup)
+            {
+                config = GroupsConfig;
+                path = "Groups";
+            }
+            else
+            {
+                config = PlayersConfig;
+                path = ((IUser) target).UserType;
+            }
 
+            if (!config.ChildExists(path))
+            {
+                config.CreateSection(path, SectionType.Array);
+            }
+
+            IConfigurationElement configElement = config[path];
+
+            if (configElement.Type != SectionType.Array)
+                throw new Exception("Expected array type but got " + configElement.Type);
+
+            List<PermissionSection> values = configElement.Get<PermissionSection[]>().ToList();
             if (!values.Any(c => c.Id.Equals(target.Id)))
             {
                 if (!createIfNotFound)
@@ -455,15 +473,15 @@ namespace Rocket.Core.Permissions
 
                 PermissionSection toCreate;
                 if (target is IPermissionGroup)
-                    toCreate = new GroupPermissionSection(target.Id, config);
+                    toCreate = new GroupPermissionSection(target.Id, configElement);
                 else
-                    toCreate = new PlayerPermissionSection(target.Id, config);
+                    toCreate = new PlayerPermissionSection(target.Id, configElement);
 
                 toCreate.Save();
             }
 
-            T section = config.Get<T[]>().FirstOrDefault(c => c.Id == target.Id);
-            section?.SetConfigElement(config);
+            T section = configElement.Get<T[]>().FirstOrDefault(c => c.Id == target.Id);
+            section?.SetConfigElement(configElement);
             return section;
         }
 
