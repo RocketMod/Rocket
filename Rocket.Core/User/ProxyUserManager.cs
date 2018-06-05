@@ -16,7 +16,7 @@ namespace Rocket.Core.User
             this.container = container;
         }
 
-        public IEnumerable<IUser> Users => ProxiedServices.SelectMany(c => c.Users);
+        public IEnumerable<IUser> OnlineUsers => ProxiedServices.SelectMany(c => c.OnlineUsers);
 
         public IEnumerable<IUserManager> ProxiedServices => container.ResolveAll<IUserManager>();
 

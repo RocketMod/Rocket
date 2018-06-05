@@ -13,7 +13,7 @@ namespace Rocket.API.User
         /// <summary>
         ///     The online users.
         /// </summary>
-        IEnumerable<IUser> Users { get; }
+        IEnumerable<IUser> OnlineUsers { get; }
 
         /// <summary>
         ///     Kicks (disconnects) the given user from the server.

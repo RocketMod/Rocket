@@ -89,7 +89,7 @@ namespace Rocket.Core.Commands
 
                 if (!isUserInfo)
                 {
-                    return targetUserManager.Users
+                    return targetUserManager.OnlineUsers
                                             .OrderBy(c => c.Name)
                                             .First(c => c.Name.Equals(userName, StringComparison.OrdinalIgnoreCase));
                 }

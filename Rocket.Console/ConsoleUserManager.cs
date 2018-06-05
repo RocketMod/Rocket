@@ -16,9 +16,7 @@ namespace Rocket.Console
             console = impl.Console;
         }
 
-        public IEnumerable<IUser> Users { get; }
-
-        IEnumerable<IUser> IUserManager.Users => Users;
+        public IEnumerable<IUser> OnlineUsers => new List<IUser> { console };
 
         public bool Kick(IUser user, IUser kickedBy = null, string reason = null) => throw new NotSupportedException();
 
