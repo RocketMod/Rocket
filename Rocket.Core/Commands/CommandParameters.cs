@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Player;
+using Rocket.API.User;
 using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Commands
@@ -34,7 +36,7 @@ namespace Rocket.Core.Commands
         public int Length => ToArray().Length;
 
         /// <inheritdoc />
-        public T Get<T>(int index) => (T) Get(index, typeof(T));
+        public T Get<T>(int index) => (T)Get(index, typeof(T));
 
         /// <inheritdoc />
         public object Get(int index, Type type)
@@ -42,17 +44,69 @@ namespace Rocket.Core.Commands
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
+            if (Length >= index)
+            {
+                throw new CommandIndexOutOfRangeException(index, Length);
+            }
+
+            if (index < 0)
+                throw new IndexOutOfRangeException();
+
+            string arg = ToArray()[index];
+
+
+
+            bool isUserInfo = typeof(IUserInfo).IsAssignableFrom(type);
+            bool isUser = typeof(IUser).IsAssignableFrom(type);
+
+
+            //todo make type converters
+            if (isUserInfo || isUser)
+            {
+                /*
+                 * The logic for getting IUser and IUserInfo is as follows:
+                 * If the name is supplied as usermanager:username, e.g. discord:Trojaner, it will search for valid "discord" user manager and return the "Trojaner" named user of it.
+                 * Otherwise (if the user manager does not exist or the format was not supplied), it will use the player manager and return the user for the given input.
+                 */
+                IUserManager targetUserManager = container.Resolve<IPlayerManager>();
+
+                string userName = arg;
+                if (arg.Contains(":"))
+                {
+                    var args = arg.Split(':');
+                    string userManagerMapping = args.First();
+
+                    foreach (var userMgr in container.ResolveAll<IUserManager>())
+                    {
+                        if (userMgr.ServiceName.Equals(userManagerMapping, StringComparison.OrdinalIgnoreCase))
+                        {
+                            userName = string.Join(":", args.Skip(1).ToArray());
+                            targetUserManager = userMgr;
+                            break;
+                        }
+                    }
+                }
+
+                if (!isUserInfo)
+                {
+                    return targetUserManager.Users
+                                            .OrderBy(c => c.Name)
+                                            .First(c => c.Name.Equals(userName, StringComparison.OrdinalIgnoreCase));
+                }
+
+                return targetUserManager.GetUser(userName);
+            }
+
             TypeConverter converter = TypeConverterExtensions.GetConverter(type);
 
             if (converter.CanConvertFrom(typeof(string)))
-                return converter.ConvertFromWithContext(container, ToArray()[index]);
+                return converter.ConvertFromWithContext(container, arg);
 
-            throw new NotSupportedException(
-                $"Converting \"{ToArray()[index]}\" to \"{type.FullName}\" is not supported!");
+            throw new CommandParameterParseException(arg, type);
         }
 
         /// <inheritdoc />
-        public T Get<T>(int index, T defaultValue) => (T) Get(index, typeof(T), defaultValue);
+        public T Get<T>(int index, T defaultValue) => (T)Get(index, typeof(T), defaultValue);
 
         /// <inheritdoc />
         public object Get(int index, Type type, object defaultValue)
@@ -66,10 +120,11 @@ namespace Rocket.Core.Commands
         public bool TryGet<T>(int index, out T value)
         {
             bool result = TryGet(index, typeof(T), out object tmp);
-            value = (T) tmp;
+            value = (T)tmp;
             return result;
         }
 
+        /// <inheritdoc />
         public string GetArgumentLine(int startPosition)
         {
             if (startPosition > Length)
@@ -78,6 +133,7 @@ namespace Rocket.Core.Commands
             return string.Join(" ", ToArray().Skip(startPosition).ToArray());
         }
 
+        /// <inheritdoc />
         public string GetArgumentLine(int startPosition, int endPosition)
         {
             if (startPosition > Length)
