@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
@@ -10,6 +11,7 @@ using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands
 {
@@ -46,7 +48,7 @@ namespace Rocket.Core.Commands
 
             context.Command = target;
 
-            List<ICommand> tree = new List<ICommand> {target};
+            List<ICommand> tree = new List<ICommand> { target };
             context = GetChild(context, context, tree);
 
             //Builds a defalt permission
@@ -58,7 +60,7 @@ namespace Rocket.Core.Commands
                 else
                     defaultPerm += "." + node.Name;
 
-            List<string> tmp = new List<string> {defaultPerm};
+            List<string> tmp = new List<string> { defaultPerm };
             if (context.Command.Permission != null)
                 tmp.Add(context.Command.Permission);
 
@@ -68,23 +70,24 @@ namespace Rocket.Core.Commands
             if (provider.CheckHasAnyPermission(user, perms) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(user, perms);
 
-            if (Debugger.IsAttached) // go to exception directly in VS
+            try
+            {
                 context.Command.Execute(context);
-            else
-                try
+            }
+            catch (Exception e)
+            {
+                if (e is ICommandFriendlyException exception)
                 {
-                    context.Command.Execute(context);
+                    exception.SendErrorMessage(context);
+                    return true;
                 }
-                catch (Exception e)
-                {
-                    if (e is ICommandFriendlyException exception)
-                    {
-                        exception.SendErrorMessage(context);
-                        return true;
-                    }
 
-                    throw;
-                }
+#if DEBUG
+                context.User.SendMessage(e.ToString(), Color.DarkRed);
+#else
+                throw;
+#endif
+            }
 
             return true;
         }
