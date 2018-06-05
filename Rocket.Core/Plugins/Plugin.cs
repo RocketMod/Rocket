@@ -66,12 +66,13 @@ namespace Rocket.Core.Plugins
             }
 
             Name = name ?? assemblyName ?? GetType().Name;
+            Name = Name.Replace(" ", "_");
 
             Container = container;
             container.RegisterSingletonInstance<ILogger>(new ProxyLogger(Container), null, "proxy_logger");
             Container.RegisterSingletonInstance<IPlugin>(this);
 
-            WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name);
+            WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name.Replace("_", " "));
 
             IRocketSettingsProvider rocketSettings = Container.Resolve<IRocketSettingsProvider>();
             if (rocketSettings.Settings.Logging.EnableSeparatePluginLogs)
