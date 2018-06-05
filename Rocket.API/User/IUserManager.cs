@@ -70,5 +70,12 @@ namespace Rocket.API.User
         /// <param name="color">The message color.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
         void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments);
+
+        /// <summary>
+        ///     Gets the given online or offline user info.
+        /// </summary>
+        /// <param name="id">The id of the user.</param>
+        /// <returns>The user info.</returns>
+        IUserInfo GetUser(string id);
     }
 }

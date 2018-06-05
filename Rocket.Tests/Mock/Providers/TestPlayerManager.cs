@@ -40,6 +40,11 @@ namespace Rocket.Tests.Mock.Providers
             throw new NotImplementedException();
         }
 
+        public IUserInfo GetUser(string id)
+        {
+            return GetPlayer(id)?.GetUser();
+        }
+
         public void Broadcast(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null,
                               params object[] arguments)
         {

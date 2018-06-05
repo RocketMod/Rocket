@@ -59,6 +59,11 @@ namespace Rocket.Core.User
             sender.UserManager.Broadcast(sender, message, color, arguments);
         }
 
+        public IUserInfo GetUser(string id)
+        {
+            throw new Exception("Not supported on proxy.");
+        }
+
         public bool Unban(IUserInfo user, IUser unbannedBy = null)
         {
             return user.UserManager.Unban(user, unbannedBy);

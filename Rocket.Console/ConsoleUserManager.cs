@@ -42,6 +42,11 @@ namespace Rocket.Console
             WriteLine(message, color, arguments);
         }
 
+        public IUserInfo GetUser(string id)
+        {
+            return console;
+        }
+
         public void WriteLine(string message, Color? color = null, params object[] arguments)
         {
             console.WriteLine($"[Broadcast] {message}", color, arguments);
