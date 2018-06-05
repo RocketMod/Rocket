@@ -257,14 +257,14 @@ namespace Rocket.Core.Eventing
                     continue;
                 }
 
-                scheduler.Schedule(pl, () =>
+                scheduler.ScheduleUpdate(pl, () =>
                 {
                     executionCount++;
                     info.Action.Invoke(sender, @event);
 
                     //all actions called; run OnEventExecuted
                     if (executionCount == targetActions.Count) FinishEvent();
-                }, (ExecutionTargetContext) @event.ExecutionTarget);
+                }, @event.Name + "EmitTask", (ExecutionTargetContext) @event.ExecutionTarget);
             }
 
             if (scheduler == null) FinishEvent();

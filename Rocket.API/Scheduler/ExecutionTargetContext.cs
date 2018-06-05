@@ -38,6 +38,11 @@
         /// <summary>
         ///     Executes the action on every physics update continuously.
         /// </summary>
-        EveryPhysicsUpdate
+        EveryPhysicsUpdate,
+
+        /// <summary>
+        ///     Executes the action async.
+        /// </summary>
+        Async
     }
 }

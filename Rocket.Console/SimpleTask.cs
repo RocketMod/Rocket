@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Rocket.API;
 using Rocket.API.Scheduler;
 
@@ -6,26 +7,24 @@ namespace Rocket.Console
 {
     public class SimpleTask : ITask
     {
-        private readonly ITaskScheduler scheduler;
-
         internal SimpleTask(ITaskScheduler scheduler, ILifecycleObject owner, Action action,
                             ExecutionTargetContext executionTarget)
         {
             Owner = owner;
             Action = action;
             ExecutionTarget = executionTarget;
-            this.scheduler = scheduler;
+            Scheduler = scheduler;
         }
 
+        public string Name => null;
+        public TimeSpan? Period => null;
+        public DateTime? StartTime => null;
+        public DateTime? EndTime => null;
         public ILifecycleObject Owner { get; }
         public Action Action { get; }
         public bool IsCancelled { get; internal set; }
         public ExecutionTargetContext ExecutionTarget { get; }
-        public bool IsFinished => !scheduler.Tasks.Contains(this);
-
-        public void Cancel()
-        {
-            scheduler.CancelTask(this);
-        }
+        public bool IsFinished => !Scheduler.Tasks.Contains(this);
+        public ITaskScheduler Scheduler { get; }
     }
 }

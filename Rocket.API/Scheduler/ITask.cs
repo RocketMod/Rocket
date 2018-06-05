@@ -8,6 +8,26 @@ namespace Rocket.API.Scheduler
     public interface ITask
     {
         /// <summary>
+        ///     The task name.
+        /// </summary>
+        string Name { get; }
+
+        /// <summary>
+        ///     The period to execute the task in.
+        /// </summary>
+        TimeSpan? Period { get; }
+
+        /// <summary>
+        ///     The time the task has started or will start.
+        /// </summary>
+        DateTime? StartTime { get; } 
+
+        /// <summary>
+        ///     The time the task will end or has end.
+        /// </summary>
+        DateTime? EndTime { get; }
+
+        /// <summary>
         ///     The owner of the task.
         /// </summary>
         ILifecycleObject Owner { get; }
@@ -34,8 +54,8 @@ namespace Rocket.API.Scheduler
         bool IsFinished { get; }
 
         /// <summary>
-        ///     Cancels the task.
+        ///     The parent task scheduler.
         /// </summary>
-        void Cancel();
+        ITaskScheduler Scheduler { get; }
     }
 }

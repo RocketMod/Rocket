@@ -19,23 +19,23 @@ namespace Rocket.Console
             this.container = container;
         }
 
-        public ReadOnlyCollection<ITask> Tasks => tasks.AsReadOnly();
+        public IEnumerable<ITask> Tasks => tasks.AsReadOnly();
 
-        public ITask ScheduleEveryFrame(ILifecycleObject @object, Action action)
+        public ITask ScheduleEveryFrame(ILifecycleObject @object, Action action, string taskName)
         {
             SimpleTask task = new SimpleTask(this, @object, action, ExecutionTargetContext.NextFrame);
             TriggerEvent(task);
             return task;
         }
 
-        public ITask ScheduleNextFrame(ILifecycleObject @object, Action action)
+        public ITask ScheduleNextFrame(ILifecycleObject @object, Action action, string taskName)
         {
             SimpleTask task = new SimpleTask(this, @object, action, ExecutionTargetContext.NextFrame);
             TriggerEvent(task);
             return task;
         }
 
-        public ITask Schedule(ILifecycleObject @object, Action action, ExecutionTargetContext target)
+        public ITask ScheduleUpdate(ILifecycleObject @object, Action action, string taskName, ExecutionTargetContext target)
         {
             SimpleTask task = new SimpleTask(this, @object, action, target);
 
@@ -52,28 +52,28 @@ namespace Rocket.Console
             return task;
         }
 
-        public ITask ScheduleNextPhysicUpdate(ILifecycleObject @object, Action action)
+        public ITask ScheduleNextPhysicUpdate(ILifecycleObject @object, Action action, string taskName)
         {
             SimpleTask task = new SimpleTask(this, @object, action, ExecutionTargetContext.NextPhysicsUpdate);
             TriggerEvent(task);
             return task;
         }
 
-        public ITask ScheduleEveryPhysicUpdate(ILifecycleObject @object, Action action)
+        public ITask ScheduleEveryPhysicUpdate(ILifecycleObject @object, Action action, string taskName)
         {
             SimpleTask task = new SimpleTask(this, @object, action, ExecutionTargetContext.EveryPhysicsUpdate);
             TriggerEvent(task);
             return task;
         }
 
-        public ITask ScheduleEveryAsyncFrame(ILifecycleObject @object, Action action)
+        public ITask ScheduleEveryAsyncFrame(ILifecycleObject @object, Action action, string taskName)
         {
             SimpleTask task = new SimpleTask(this, @object, action, ExecutionTargetContext.EveryAsyncFrame);
             TriggerEvent(task);
             return task;
         }
 
-        public ITask ScheduleNextAsyncFrame(ILifecycleObject @object, Action action)
+        public ITask ScheduleNextAsyncFrame(ILifecycleObject @object, Action action, string taskName)
         {
             SimpleTask task = new SimpleTask(this, @object, action, ExecutionTargetContext.NextAsyncFrame);
             TriggerEvent(task);
@@ -85,6 +85,22 @@ namespace Rocket.Console
             SimpleTask task = (SimpleTask) t;
             task.IsCancelled = true;
             return tasks.Remove(task);
+        }
+
+        public ITask ScheduleDelayed(ILifecycleObject @object, Action action, string taskName, TimeSpan delay, bool runAsync = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITask ScheduleAt(ILifecycleObject @object, Action action, string taskName, DateTime date, bool runAsync = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITask SchedulePeriodically(ILifecycleObject @object, Action action, string taskName, TimeSpan period, TimeSpan? delay = null,
+                                          bool runAsync = false)
+        {
+            throw new NotImplementedException();
         }
 
         private void TriggerEvent(SimpleTask task, EventCallback cb = null)
