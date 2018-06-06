@@ -41,10 +41,10 @@ namespace Rocket.API.Player
     /// <summary>
     ///     Thrown when a player was not found.
     /// </summary>
-    public abstract class PlayerNotFoundException : Exception, ICommandFriendlyException
+    public class PlayerNotFoundException : Exception, ICommandFriendlyException
     {
         /// <param name="nameOrId">The name or ID of the player which was not found.</param>
-        protected PlayerNotFoundException(string nameOrId)
+        public PlayerNotFoundException(string nameOrId)
             : base(string.IsNullOrEmpty(nameOrId)
                 ? "The requested player was not found."
                 : $"The requested player: \"{nameOrId}\" was not found.") { }

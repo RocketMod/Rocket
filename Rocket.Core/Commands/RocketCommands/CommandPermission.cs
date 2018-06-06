@@ -59,7 +59,8 @@ namespace Rocket.Core.Commands.RocketCommands
             string targetName = context.Parameters.Get<string>(1);
             string permissionToUpdate = context.Parameters.Get<string>(2);
 
-            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
+            IPermissionProvider configPermissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
+            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
 
             switch (type)
             {
@@ -68,7 +69,7 @@ namespace Rocket.Core.Commands.RocketCommands
                     permission = "Rocket.Permissions.ManageGroups." + targetName;
                     permissionFailMessage = "You don't have permissions to manage this group.";
 
-                    target = permissions.GetGroup(targetName);
+                    target = configPermissions.GetGroup(targetName);
                     if (target == null)
                     {
                         context.User.SendMessage($"Group \"{targetName}\" was not found.", Color.Red);
@@ -81,7 +82,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 case "player":
                     permission = "Rocket.Permissions.ManagePlayers";
                     permissionFailMessage = "You don't have permissions to manage permissions of players.";
-                    target = context.Parameters.Get<IUserInfo>(2);
+                    target = context.Parameters.Get<IUserInfo>(1);
                     break;
 
                 default:
@@ -91,7 +92,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (permissions.CheckPermission(context.User, permission) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(context.User, permission, permissionFailMessage);
 
-            UpdatePermission(context.User, permissions, target, permissionToUpdate);
+            UpdatePermission(context.User, configPermissions, target, permissionToUpdate);
         }
 
         protected abstract void UpdatePermission(IUser user, IPermissionProvider permissions,
