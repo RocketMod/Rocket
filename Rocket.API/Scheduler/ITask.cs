@@ -33,6 +33,11 @@ namespace Rocket.API.Scheduler
         DateTime? EndTime { get; }
 
         /// <summary>
+        ///     The last time the task was run.
+        /// </summary>
+        DateTime? LastRunTime { get; }
+
+        /// <summary>
         ///     The owner of the task.
         /// </summary>
         ILifecycleObject Owner { get; }

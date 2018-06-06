@@ -25,6 +25,7 @@ namespace Rocket.Console
         public TimeSpan? Period => null;
         public DateTime? StartTime => null;
         public DateTime? EndTime => null;
+        public DateTime? LastRunTime => null;
         public ILifecycleObject Owner { get; }
 
         public Action Action { get; }
