@@ -44,7 +44,7 @@ namespace Rocket.Core.Commands
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
 
-            if (Length >= index)
+            if (Length <= index)
             {
                 throw new CommandIndexOutOfRangeException(index, Length);
             }
