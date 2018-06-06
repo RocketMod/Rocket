@@ -8,6 +8,11 @@ namespace Rocket.API.Scheduler
     public interface ITask
     {
         /// <summary>
+        ///     Gets the tasks ID.
+        /// </summary>
+        int TaskId { get; }
+
+        /// <summary>
         ///     The task name.
         /// </summary>
         string Name { get; }
