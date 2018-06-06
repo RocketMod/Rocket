@@ -36,7 +36,9 @@ namespace Rocket.Core.Permissions
             groups.RemoveAll(c => c.Id.Equals(Id, StringComparison.OrdinalIgnoreCase));
             groups.Add(this);
             element.Set(groups.ToArray());
-            element.Root.Save();
+
+            if (element.Root.ConfigurationContext != null)
+                element.Root.Save();
         }
 
         public override string[] GetGroups() => ParentGroups;

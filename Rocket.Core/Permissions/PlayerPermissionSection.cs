@@ -29,7 +29,9 @@ namespace Rocket.Core.Permissions
             players.RemoveAll(c => c.Id.Equals(Id, StringComparison.OrdinalIgnoreCase));
             players.Add(this);
             element.Set(players.ToArray());
-            element.Root.Save();
+
+            if (element.Root.ConfigurationContext != null)
+                element.Root.Save();
         }
 
         public override string[] GetGroups() => Groups;
