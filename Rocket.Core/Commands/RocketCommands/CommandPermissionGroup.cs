@@ -47,7 +47,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public void Execute(ICommandContext context)
         {
-            IPlayer targetPlayer = context.Parameters.Get<IPlayer>(0);
+            IUserInfo targetPlayer = context.Parameters.Get<IUserInfo>(0);
             string groupName = context.Parameters.Get<string>(1);
 
             string permission = "Rocket.Permissions.ManageGroups." + groupName;
@@ -68,7 +68,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
 
         protected abstract void UpdateGroup(IUser user, IPermissionProvider permissions,
-                                            IPlayer targetPlayer, IPermissionGroup groupToUpdate);
+                                            IUserInfo targetUser, IPermissionGroup groupToUpdate);
     }
 
     public class CommandGroupAdd : CommandGroupUpdate
@@ -79,13 +79,13 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] { "a", "+" };
 
         protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
-                                            IPlayer targetPlayer, IPermissionGroup groupToUpdate)
+                                            IUserInfo targetUser, IPermissionGroup groupToUpdate)
         {
-            if (permissions.AddGroup(targetPlayer, groupToUpdate))
-                user.SendMessage($"Successfully added {targetPlayer:Name} to \"{groupToUpdate:Name}\"!",
+            if (permissions.AddGroup(targetUser, groupToUpdate))
+                user.SendMessage($"Successfully added {targetUser:Name} to \"{groupToUpdate:Name}\"!",
                     Color.DarkGreen);
             else
-                user.SendMessage($"Failed to add {targetPlayer:Name} to \"{groupToUpdate:Name}\"!", Color.Red);
+                user.SendMessage($"Failed to add {targetUser:Name} to \"{groupToUpdate:Name}\"!", Color.Red);
         }
     }
 
@@ -97,13 +97,13 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] { "r", "-" };
 
         protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
-                                            IPlayer targetPlayer, IPermissionGroup groupToUpdate)
+                                            IUserInfo targetUser, IPermissionGroup groupToUpdate)
         {
-            if (permissions.RemoveGroup(targetPlayer, groupToUpdate))
-                user.SendMessage($"Successfully removed {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
+            if (permissions.RemoveGroup(targetUser, groupToUpdate))
+                user.SendMessage($"Successfully removed {targetUser:Name} from \"{groupToUpdate:Name}\"!",
                     Color.DarkGreen);
             else
-                user.SendMessage($"Failed to remove {targetPlayer:Name} from \"{groupToUpdate:Name}\"!",
+                user.SendMessage($"Failed to remove {targetUser:Name} from \"{groupToUpdate:Name}\"!",
                     Color.Red);
         }
     }

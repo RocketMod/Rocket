@@ -81,7 +81,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 case "player":
                     permission = "Rocket.Permissions.ManagePlayers";
                     permissionFailMessage = "You don't have permissions to manage permissions of players.";
-                    target = context.Parameters.Get<IPlayer>(2);
+                    target = context.Parameters.Get<IUserInfo>(2);
                     break;
 
                 default:
