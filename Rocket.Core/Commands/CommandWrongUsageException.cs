@@ -22,7 +22,7 @@ namespace Rocket.Core.Commands
         public int Index { get; }
         public int Length { get; }
 
-        public CommandIndexOutOfRangeException(int index, int length) : base($"Missing {index + 1}. argument.")
+        public CommandIndexOutOfRangeException(string command, int index, int length) : base($"{command}: Missing {index + 1}. argument.")
         {
             Index = index;
             Length = length;
