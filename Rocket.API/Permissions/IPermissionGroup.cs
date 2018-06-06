@@ -11,5 +11,10 @@ namespace Rocket.API.Permissions
         ///     The priority of this group.
         /// </summary>
         int Priority { get; }
+
+        /// <summary>
+        ///     Defines if the group should be auto assigned.
+        /// </summary>
+        bool AutoAssign { get; }
     }
 }

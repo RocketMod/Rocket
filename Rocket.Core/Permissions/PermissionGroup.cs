@@ -12,6 +12,8 @@ namespace Rocket.Core.Permissions
 
         public int Priority { get; set; }
 
+        public bool AutoAssign { get; set; }
+
         public string ToString(string format, IFormatProvider formatProvider)
         {
             if (format == null)
