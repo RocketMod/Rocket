@@ -89,6 +89,8 @@ namespace Rocket.Core.Permissions
             GuardPermission(ref permission);
             GuardTarget(target);
 
+            permission = permission.Replace("!!", ""); //remove double negations
+
             if (!permission.StartsWith("!") && CheckPermission(target, "!" + permission) == PermissionResult.Grant)
                 return PermissionResult.Deny;
 
@@ -101,8 +103,18 @@ namespace Rocket.Core.Permissions
             string[] permissions = section?.Permissions ?? new string[0];
 
             foreach (string permissionNode in permissionTree)
-                if (permissions.Any(c => c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase)))
-                    return PermissionResult.Grant;
+            {
+                foreach (string c in permissions)
+                {
+                    if(c.Contains("*") && !c.StartsWith("!") && permission.StartsWith("!"))
+                        continue;
+
+                    if (c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return PermissionResult.Grant;
+                    }
+                }
+            }
 
             // check parent group permissions / player group permissions
             IEnumerable<IPermissionGroup> groups = GetGroups(target);
@@ -111,7 +123,7 @@ namespace Rocket.Core.Permissions
                 PermissionResult result = CheckPermission(group, permission);
                 if (result == PermissionResult.Grant)
                     return PermissionResult.Grant;
-
+                
                 if (result == PermissionResult.Deny)
                     return PermissionResult.Deny;
             }
@@ -148,14 +160,22 @@ namespace Rocket.Core.Permissions
 
             foreach (string permission in permissions)
             {
+                Console.WriteLine("Checking: " + permission);
+                
                 PermissionResult result = CheckPermission(target, permission);
                 if (result == PermissionResult.Deny)
+                {
+                    Console.WriteLine("Denied: " + permission);
                     return PermissionResult.Deny;
-
-                if (result == PermissionResult.Grant)
+                }
+                if (result == PermissionResult.Grant) {
+                    Console.WriteLine("Granted: " + permission);
                     return PermissionResult.Grant;
+                }
+
             }
 
+            Console.WriteLine("Default: " + permissions);
             return PermissionResult.Default;
         }
 
