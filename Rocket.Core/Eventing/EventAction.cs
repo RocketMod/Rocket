@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Rocket.API;
 using Rocket.API.Eventing;
@@ -11,12 +12,12 @@ namespace Rocket.Core.Eventing
             ILifecycleObject owner,
             EventCallback action,
             EventHandler handler,
-            string eventName)
+            List<string> eventNames)
         {
             Owner = owner;
             Action = action;
             Handler = handler;
-            TargetEventName = eventName;
+            TargetEventNames = eventNames;
         }
 
         public EventAction(ILifecycleObject owner,
@@ -28,7 +29,7 @@ namespace Rocket.Core.Eventing
             Listener = listener;
             Action = (sender, @event) => method.Invoke(listener, new object[] {sender, @event});
             Handler = handler;
-            TargetEventName = EventManager.GetEventName(type);
+            TargetEventNames = EventManager.GetEventNames(type);
             TargetEventType = type;
         }
 
@@ -37,7 +38,7 @@ namespace Rocket.Core.Eventing
             Owner = owner;
             Action = action;
             Handler = handler;
-            TargetEventName = EventManager.GetEventName(eventType);
+            TargetEventNames = EventManager.GetEventNames(eventType);
             TargetEventType = eventType;
         }
 
@@ -51,6 +52,6 @@ namespace Rocket.Core.Eventing
 
         public IEventListener Listener { get; }
 
-        public string TargetEventName { get; }
+        public List<string> TargetEventNames { get; }
     }
 }

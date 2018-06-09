@@ -7,6 +7,7 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Scheduler;
+using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.ServiceProxies;
 
@@ -18,10 +19,12 @@ namespace Rocket.Core.Eventing
         private readonly List<EventAction> eventListeners = new List<EventAction>();
 
         private readonly List<IEvent> inProgress = new List<IEvent>();
+        private readonly ILogger logger;
 
         public EventManager(IDependencyContainer container)
         {
             this.container = container;
+            container.TryResolve(null, out logger);
         }
 
         public void Subscribe(ILifecycleObject @object, string eventName, EventCallback callback)
@@ -30,7 +33,7 @@ namespace Rocket.Core.Eventing
                 return;
 
             EventHandler handler = GetEventHandler(callback.Method, null);
-            eventListeners.Add(new EventAction(@object, callback.Invoke, handler, eventName));
+            eventListeners.Add(new EventAction(@object, callback.Invoke, handler, new List<string> { eventName }));
         }
 
         public void Subscribe<TEvent>(ILifecycleObject @object, EventCallback<TEvent> callback,
@@ -41,7 +44,7 @@ namespace Rocket.Core.Eventing
 
             EventHandler handler = GetEventHandler(callback.Method, emitterName);
             eventListeners.Add(new EventAction(@object,
-                (sender, @event) => callback.Invoke(sender, (TEvent) @event), handler, typeof(TEvent)));
+                (sender, @event) => callback.Invoke(sender, (TEvent)@event), handler, typeof(TEvent)));
         }
 
         public void Subscribe(ILifecycleObject @object, Type eventType, EventCallback callback,
@@ -60,7 +63,7 @@ namespace Rocket.Core.Eventing
                 return;
 
             EventHandler handler = GetEventHandler(callback.Method, emitterName);
-            eventListeners.Add(new EventAction(@object, callback, handler, eventName));
+            eventListeners.Add(new EventAction(@object, callback, handler,  new List<string> { eventName }));
         }
 
         public void Subscribe<TEvent, TEmitter>(ILifecycleObject @object, EventCallback<TEvent> callback)
@@ -71,7 +74,7 @@ namespace Rocket.Core.Eventing
 
             EventHandler handler = GetEventHandler(callback.Method, GetEmitterName(typeof(TEmitter)));
             eventListeners.Add(new EventAction(@object,
-                (sender, @event) => callback.Invoke(sender, (TEvent) @event), handler, typeof(TEvent)));
+                (sender, @event) => callback.Invoke(sender, (TEvent)@event), handler, typeof(TEvent)));
         }
 
         public void Subscribe(ILifecycleObject @object, EventCallback callback, Type eventType, Type eventEmitterType)
@@ -96,7 +99,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, eventName));
+            eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, new List<string> { eventName }));
         }
 
         public void Unsubscribe<TEvent>(ILifecycleObject @object) where TEvent : IEvent
@@ -112,7 +115,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, GetEventName(eventType)));
+            eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, GetEventNames(eventType)));
         }
 
         public void Unsubscribe(ILifecycleObject @object, string emitterName, string eventName)
@@ -123,7 +126,7 @@ namespace Rocket.Core.Eventing
             eventListeners.RemoveAll(c => c.Owner == @object
                 && c.Handler.EmitterName.Equals(emitterName,
                     StringComparison.OrdinalIgnoreCase)
-                && CheckEvent(c, eventName));
+                && CheckEvent(c, new List<string> { eventName }));
         }
 
         public void Unsubscribe<TEvent, TEmitter>(ILifecycleObject @object)
@@ -133,7 +136,7 @@ namespace Rocket.Core.Eventing
                 return;
 
             eventListeners.RemoveAll(c => c.Owner == @object
-                && CheckEvent(c, GetEventName(typeof(TEvent)))
+                && CheckEvent(c, GetEventNames(typeof(TEvent)))
                 && CheckEmitter(c, GetEmitterName(typeof(TEmitter)), false));
         }
 
@@ -143,7 +146,7 @@ namespace Rocket.Core.Eventing
                 return;
 
             eventListeners.RemoveAll(c => c.Owner == @object
-                && CheckEvent(c, GetEventName(eventType))
+                && CheckEvent(c, GetEventNames(eventType))
                 && CheckEmitter(c, GetEmitterName(eventEmitterType), false));
         }
 
@@ -167,7 +170,7 @@ namespace Rocket.Core.Eventing
                                                 && c.GetGenericArguments().Length > 0))
                 foreach (MethodInfo method in @interface.GetMethods())
                 {
-                    EventHandler handler = (EventHandler) method.GetCustomAttributes(typeof(EventHandler), false)
+                    EventHandler handler = (EventHandler)method.GetCustomAttributes(typeof(EventHandler), false)
                                                                 .FirstOrDefault()
                         ?? new EventHandler
                         {
@@ -199,8 +202,6 @@ namespace Rocket.Core.Eventing
             string nameString = "[" + string.Join(", ", @event.Names.ToArray()) + "]";
 
             string primaryName = @event.Names.First();
-
-            container.TryResolve(null, out ILogger logger);
             logger?.LogTrace("Emitting event: " + nameString + " by \"" + sender.Name + "\"");
 
             inProgress.Add(@event);
@@ -208,7 +209,7 @@ namespace Rocket.Core.Eventing
             List<EventAction> actions =
                 eventListeners
                     .Where(c => c.TargetEventType?.IsInstanceOfType(@event)
-                        ?? @event.Names.Any(d => d.Equals(c.TargetEventName, StringComparison.OrdinalIgnoreCase))
+                        ?? @event.Names.Any(d => c.TargetEventNames.Any(e => d.Equals(e, StringComparison.OrdinalIgnoreCase)))
                         && c.Owner.IsAlive)
                     .ToList();
 
@@ -216,12 +217,12 @@ namespace Rocket.Core.Eventing
 
             List<EventAction> targetActions =
                 (from info in actions
-                 /* ignore cancelled events */
+                     /* ignore cancelled events */
                  where !(@event is ICancellableEvent)
-                     || !((ICancellableEvent) @event).IsCancelled
+                     || !((ICancellableEvent)@event).IsCancelled
                      || info.Handler.IgnoreCancelled
                  where CheckEmitter(info, sender.Name, @event.IsGlobal)
-                 where CheckEvent(info, GetEventName(@event.GetType()))
+                 where CheckEvent(info, @event.Names)
                  select info)
                 .ToList();
 
@@ -268,7 +269,7 @@ namespace Rocket.Core.Eventing
 
                     //all actions called; run OnEventExecuted
                     if (executionCount == targetActions.Count) FinishEvent();
-                }, primaryName + "EmitTask", (ExecutionTargetContext) @event.ExecutionTarget);
+                }, primaryName + "EmitTask", (ExecutionTargetContext)@event.ExecutionTarget);
             }
 
             if (scheduler == null) FinishEvent();
@@ -278,12 +279,10 @@ namespace Rocket.Core.Eventing
 
         public static string GetEmitterName(Type type) => type.Name;
 
-        public static string GetEventName(Type type) => type.Name.Replace("Event", "");
-
         private EventHandler GetEventHandler(Type target, string emitterName)
         {
             EventHandler handler =
-                (EventHandler) target?.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
+                (EventHandler)target?.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
                 ?? new EventHandler();
             handler.EmitterName = emitterName ?? handler.EmitterName;
             return handler;
@@ -292,7 +291,7 @@ namespace Rocket.Core.Eventing
         private EventHandler GetEventHandler(MethodInfo target, string emitterName)
         {
             EventHandler handler =
-                (EventHandler) target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
+                (EventHandler)target.GetCustomAttributes(typeof(EventHandler), false).FirstOrDefault()
                 ?? GetEventHandler(target.DeclaringType, emitterName);
 
             handler.EmitterName = emitterName ?? handler.EmitterName;
@@ -302,17 +301,61 @@ namespace Rocket.Core.Eventing
         private bool CheckEmitter(EventAction eventAction, string emitterName, bool isGlobal)
         {
             if (string.IsNullOrEmpty(emitterName))
+            {
+                logger.LogTrace("CheckEmitter: requested emitterName is null or empty; returning true");
                 return true;
+            }
 
             if (isGlobal && string.IsNullOrEmpty(eventAction.Handler.EmitterName))
+            {
+                logger.LogTrace("CheckEmitter: isGlobal and handler emitter name is null; returning true");
                 return true;
+            }
 
-            return eventAction.Handler.EmitterName?.Equals(emitterName, StringComparison.OrdinalIgnoreCase) ?? true;
+            if (eventAction.Handler.EmitterName?.Equals(emitterName, StringComparison.OrdinalIgnoreCase) ?? true)
+            {
+                logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName} == {emitterName}; returning true");
+                return true;
+            }
+
+            logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName} != {emitterName}; returning false");
+            return false;
         }
 
-        private bool CheckEvent(EventAction eventAction, string eventName) => (eventAction.TargetEventType != null
-                ? GetEventName(eventAction.TargetEventType)
-                : eventAction.TargetEventName)
-            .Equals(eventName, StringComparison.OrdinalIgnoreCase);
+        private bool CheckEvent(EventAction eventAction, IEnumerable<string> eventNames)
+        {
+            if (eventAction.TargetEventType == null)
+            {
+                return eventNames.Any(c => eventAction.TargetEventNames.Any(e => c.Equals(e, StringComparison.OrdinalIgnoreCase)));
+            }
+
+            return eventNames.Any(c => GetEventNames(eventAction.TargetEventType).Any(d => d.Equals(c, StringComparison.OrdinalIgnoreCase)));
+        }
+
+        public static List<string> GetEventNames(Type t)
+        {
+            List<string> names = new List<string>();
+            foreach (var type in t.GetTypeHierarchy())
+            {
+                if (!typeof(IEvent).IsAssignableFrom(type))
+                    break;
+
+                if (type == typeof(Event))
+                    break;
+
+                var attr = type.GetCustomAttributes(typeof(EventNameAttribute), false)
+                               .Cast<EventNameAttribute>()
+                               .ToList();
+                if (attr.Count == 0)
+                {
+                    names.Add(type.Name.Replace("Event", ""));
+                    continue;
+                }
+
+                names.AddRange(attr.Select(c => c.EventName));
+            }
+
+            return names;
+        }
     }
 }

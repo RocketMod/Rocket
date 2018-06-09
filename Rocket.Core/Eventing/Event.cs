@@ -20,26 +20,7 @@ namespace Rocket.Core.Eventing
         {
             IsGlobal = global;
 
-            List<string> names = new List<string>();
-            foreach (var type in GetType().GetTypeHierarchy())
-            {
-                if (!typeof(IEvent).IsAssignableFrom(type))
-                    break;
-
-                if (type == typeof(Event))
-                    break;
-
-                var attr = type.GetCustomAttributes(typeof(EventNameAttribute), false)
-                               .Cast<EventNameAttribute>()
-                               .ToList();
-                if (attr.Count == 0)
-                {
-                    names.Add(type.Name.Replace("Event", ""));
-                    continue;
-                }
-
-                names.AddRange(attr.Select(c => c.EventName));
-            }
+            List<string> names = EventManager.GetEventNames(GetType());
 
             Names = names;
 
@@ -54,28 +35,7 @@ namespace Rocket.Core.Eventing
             IsGlobal = global;
 
             List<string> names = new List<string> { name };
-            foreach (var type in GetType().GetTypeHierarchy())
-            {
-                if (type == GetType())
-                    continue;
-
-                if (!typeof(IEvent).IsAssignableFrom(type))
-                    break;
-
-                if (type == typeof(Event))
-                    break;
-
-                var attr = type.GetCustomAttributes(typeof(EventNameAttribute), false)
-                               .Cast<EventNameAttribute>()
-                               .ToList();
-                if (attr.Count == 0)
-                {
-                    names.Add(type.Name.Replace("Event", ""));
-                    continue;
-                }
-
-                names.AddRange(attr.Select(c => c.EventName));
-            }
+            names.AddRange(EventManager.GetEventNames(GetType().BaseType));
 
             Names = names;
 
