@@ -199,10 +199,10 @@ namespace Rocket.Core.Eventing
             if (@event == null)
                 throw new ArgumentNullException(nameof(@event));
 
-            string nameString = "[" + string.Join(", ", @event.Names.ToArray()) + "]";
-
+            string eventNameString = "[" + string.Join(", ", @event.Names.ToArray()) + "]" + " by \"" + sender.Name + "\"";
             string primaryName = @event.Names.First();
-            logger?.LogTrace("Emitting event: " + nameString + " by \"" + sender.Name + "\"");
+
+            logger?.LogTrace(eventNameString + ": Emitting.");
 
             inProgress.Add(@event);
 
@@ -228,18 +228,14 @@ namespace Rocket.Core.Eventing
 
             void FinishEvent()
             {
-                logger?.LogTrace("Event finished: " + nameString + " by \"" + sender.Name + "\"");
+                logger?.LogTrace(eventNameString + ": Finished.");
                 inProgress.Remove(@event);
                 callback?.Invoke(@event);
             }
 
             if (targetActions.Count == 0)
             {
-                logger?.LogTrace("Event"
-                    + nameString
-                    + " of \""
-                    + sender.Name
-                    + "\" was not sent: No target subscriptions found.");
+                logger?.LogTrace(eventNameString + ": No listeners found.");
                 FinishEvent();
                 return;
             }
@@ -314,11 +310,11 @@ namespace Rocket.Core.Eventing
 
             if (eventAction.Handler.EmitterName?.Equals(emitterName, StringComparison.OrdinalIgnoreCase) ?? true)
             {
-                logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName} == {emitterName}; returning true");
+                logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName ?? "null"} == {emitterName ?? "null"}; returning true");
                 return true;
             }
 
-            logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName} != {emitterName}; returning false");
+            logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName ?? "null"} != {emitterName ?? "null"}; returning false");
             return false;
         }
 
