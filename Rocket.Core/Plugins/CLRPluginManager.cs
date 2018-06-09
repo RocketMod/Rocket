@@ -13,6 +13,7 @@ using Rocket.API.Plugins;
 using Rocket.Compatibility;
 using Rocket.Core.Commands;
 using Rocket.Core.DependencyInjection;
+using Rocket.Core.Eventing;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
@@ -119,6 +120,13 @@ namespace Rocket.Core.Plugins
                     }
 
                 plugin.Load(false);
+
+                IEnumerable<Type> listeners = plugin.FindTypes<IAutoRegisteredEventListener>(false);
+                foreach (Type listener in listeners)
+                {
+                    IAutoRegisteredEventListener instance = (IAutoRegisteredEventListener)childContainer.Activate(listener);
+                    EventManager.AddEventListener(plugin, instance);
+                }
             }
         }
 
@@ -301,7 +309,6 @@ namespace Rocket.Core.Plugins
 
             childContainer.RegisterInstance(pluginInstance);
 
-            IEnumerable<Type> listeners = pluginInstance.FindTypes<IEventListener>(false);
             IEnumerable<Type> pluginCommands =
                 pluginInstance.FindTypes<ICommand>(false, c => !typeof(IChildCommand).IsAssignableFrom(c)
                     && c.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Length == 0);
@@ -309,14 +316,6 @@ namespace Rocket.Core.Plugins
 
             foreach (Type registrator in dependencyRegistrators)
                 ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(Container, Container);
-
-            /*
-            foreach (Type listener in listeners)
-            {
-                IEventListener instance = (IEventListener)childContainer.Activate(listener);
-                EventManager.AddEventListener(pluginInstance, instance);
-            }
-            */
 
             foreach (Type command in pluginCommands)
             {
