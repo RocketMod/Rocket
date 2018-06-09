@@ -1,6 +1,7 @@
 ﻿using System;
 using Rocket.API.Eventing;
 using Rocket.API.User;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.User.Events
 {
@@ -28,17 +29,6 @@ namespace Rocket.Core.User.Events
                             TimeSpan? duration = null,
                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                             bool global = true) : base(executionTarget, global)
-        {
-            BannedBy = bannedBy;
-            User = user;
-            Reason = reason;
-            Duration = duration;
-        }
-
-        public UserBanEvent(IUserInfo user, IUser bannedBy = null, string reason = null,
-                            TimeSpan? duration = null, string name = null,
-                            EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                            bool global = true) : base(name, executionTarget, global)
         {
             BannedBy = bannedBy;
             User = user;

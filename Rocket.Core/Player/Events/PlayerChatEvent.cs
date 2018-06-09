@@ -20,9 +20,5 @@ namespace Rocket.Core.Player.Events
         {
             Player = player;
         }
-        public PlayerChatEvent(IPlayer player, string message, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), message, name, executionTarget, global)
-        {
-            Player = player;
-        }
     }
 }

@@ -59,6 +59,17 @@ namespace Rocket.Core.Extensions
             return target?.GetMethod();
         }
 
+        public static IEnumerable<Type> GetTypeHierarchy(this Type type)
+        {
+            List<Type> types = new List<Type> { type};
+            while ((type = type.BaseType) != null)
+            {
+                types.Add(type);
+            }
+
+            return types;
+        }
+
         internal static T GetPrivateProperty<T>(this object o, string property)
         {
             var prop = o.GetType()

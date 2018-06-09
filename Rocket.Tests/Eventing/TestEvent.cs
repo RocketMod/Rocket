@@ -1,4 +1,5 @@
 ﻿using Rocket.API.Eventing;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Tests.Eventing
 {
@@ -10,10 +11,6 @@ namespace Rocket.Tests.Eventing
 
         public TestEvent(EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                          bool global = true) : base(executionTarget, global) { }
-
-        public TestEvent(string name = null,
-                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                         bool global = true) : base(name, executionTarget, global) { }
 
         public bool ValueChanged { get; set; }
 

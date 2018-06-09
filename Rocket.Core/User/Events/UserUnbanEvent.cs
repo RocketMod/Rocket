@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.User;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.User.Events
 {
@@ -20,14 +21,6 @@ namespace Rocket.Core.User.Events
         public UserUnbanEvent(IUserInfo user, IUser unbannedBy = null,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(executionTarget, global)
-        {
-            User = user;
-            UnbannedBy = unbannedBy;
-        }
-
-        public UserUnbanEvent(IUserInfo user, IUser unbannedBy = null, string name = null,
-                              EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                              bool global = true) : base(name, executionTarget, global)
         {
             User = user;
             UnbannedBy = unbannedBy;

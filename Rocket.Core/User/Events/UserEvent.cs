@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.User;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.User.Events
 {
@@ -18,17 +19,6 @@ namespace Rocket.Core.User.Events
         protected UserEvent(IUser user,
                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                             bool global = true) : base(executionTarget, global)
-        {
-            User = user;
-        }
-
-        /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget" /></param>
-        /// <param name="name">The name of the event. Will be auto set when null.</param>
-        /// ///
-        /// <param name="global">Defines if the event is emitted globally</param>
-        protected UserEvent(IUser user, string name = null,
-                            EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                            bool global = true) : base(name, executionTarget, global)
         {
             User = user;
         }

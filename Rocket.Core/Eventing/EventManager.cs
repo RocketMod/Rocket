@@ -196,15 +196,19 @@ namespace Rocket.Core.Eventing
             if (@event == null)
                 throw new ArgumentNullException(nameof(@event));
 
+            string nameString = "[" + string.Join(", ", @event.Names.ToArray()) + "]";
+
+            string primaryName = @event.Names.First();
+
             container.TryResolve(null, out ILogger logger);
-            logger?.LogTrace("Emitting event: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
+            logger?.LogTrace("Emitting event: " + nameString + " by \"" + sender.Name + "\"");
 
             inProgress.Add(@event);
 
             List<EventAction> actions =
                 eventListeners
                     .Where(c => c.TargetEventType?.IsInstanceOfType(@event)
-                        ?? c.TargetEventName.Equals(@event.Name, StringComparison.OrdinalIgnoreCase)
+                        ?? @event.Names.Any(d => d.Equals(c.TargetEventName, StringComparison.OrdinalIgnoreCase))
                         && c.Owner.IsAlive)
                     .ToList();
 
@@ -223,16 +227,16 @@ namespace Rocket.Core.Eventing
 
             void FinishEvent()
             {
-                logger?.LogTrace("Event finished: \"" + @event.Name + "\" by \"" + sender.Name + "\"");
+                logger?.LogTrace("Event finished: " + nameString + " by \"" + sender.Name + "\"");
                 inProgress.Remove(@event);
                 callback?.Invoke(@event);
             }
 
             if (targetActions.Count == 0)
             {
-                logger?.LogTrace("Event \""
-                    + @event.Name
-                    + "\" of \""
+                logger?.LogTrace("Event"
+                    + nameString
+                    + " of \""
                     + sender.Name
                     + "\" was not sent: No target subscriptions found.");
                 FinishEvent();
@@ -264,7 +268,7 @@ namespace Rocket.Core.Eventing
 
                     //all actions called; run OnEventExecuted
                     if (executionCount == targetActions.Count) FinishEvent();
-                }, @event.Name + "EmitTask", (ExecutionTargetContext) @event.ExecutionTarget);
+                }, primaryName + "EmitTask", (ExecutionTargetContext) @event.ExecutionTarget);
             }
 
             if (scheduler == null) FinishEvent();

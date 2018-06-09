@@ -16,8 +16,5 @@ namespace Rocket.Core.Player.Events
         public PlayerUnbanEvent(IUserInfo player, IUser unbannedBy = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, unbannedBy, executionTarget, global)
         {
         }
-        public PlayerUnbanEvent(IUserInfo player, IUser unbannedBy = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, unbannedBy, name, executionTarget, global)
-        {
-        }
     }
 }

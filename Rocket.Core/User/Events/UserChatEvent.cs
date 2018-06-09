@@ -23,13 +23,6 @@ namespace Rocket.Core.User.Events
             Message = message;
         }
 
-        public UserChatEvent(IUser user, string message, string name = null,
-                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                             bool global = true) : base(user, name, executionTarget, global)
-        {
-            Message = message;
-        }
-
         public string Message { get; set; }
 
         public bool IsCancelled { get; set; }

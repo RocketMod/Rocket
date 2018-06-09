@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.User;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.Commands.Events
 {
@@ -17,14 +18,6 @@ namespace Rocket.Core.Commands.Events
         public PreCommandExecutionEvent(IUser user, string commandLine,
                                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                         bool global = true) : base(executionTarget, global)
-        {
-            User = user;
-            CommandLine = commandLine;
-        }
-
-        public PreCommandExecutionEvent(IUser user, string commandLine, string name = null,
-                                        EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                        bool global = true) : base(name, executionTarget, global)
         {
             User = user;
             CommandLine = commandLine;

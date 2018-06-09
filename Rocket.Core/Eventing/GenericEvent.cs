@@ -5,12 +5,12 @@ namespace Rocket.Core.Eventing
 {
     public class GenericEvent : Event
     {
-        public GenericEvent(string name, EventExecutionTargetContext ctx = EventExecutionTargetContext.Sync) :
-            base(name, ctx)
+        public GenericEvent(EventExecutionTargetContext ctx = EventExecutionTargetContext.Sync) :
+            base(ctx)
         {
             Arguments = new Dictionary<string, object>();
         }
 
-        public Dictionary<string, object> Arguments { get; }
+        public Dictionary<string, object> Arguments { get; set; }
     }
 }

@@ -15,10 +15,6 @@ namespace Rocket.Core.Plugins.Events
                                    EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                    bool global = true) : base(pluginManager, plugin, executionTarget, global) { }
 
-        public PluginLoadEvent(IPluginManager pluginManager, IPlugin plugin, string name = null,
-                                   EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                   bool global = true) : base(pluginManager, plugin, name, executionTarget, global) { }
-
         public bool IsCancelled { get; set; }
     }
 }

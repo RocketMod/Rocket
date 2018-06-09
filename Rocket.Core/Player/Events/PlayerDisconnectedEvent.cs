@@ -25,9 +25,5 @@ namespace Rocket.Core.Player.Events
         {
             Player = player;
         }
-        public PlayerDisconnectedEvent(IPlayer player, string reason = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), reason, name, executionTarget, global)
-        {
-            Player = player;
-        }
     }
 }

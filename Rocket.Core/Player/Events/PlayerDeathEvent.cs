@@ -23,13 +23,6 @@ namespace Rocket.Core.Player.Events
             Killer = killer;
         }
 
-        public PlayerDeathEvent(IPlayer player, IEntity killer = null, string name = null,
-                                EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                bool global = true) : base(player, name, executionTarget, global)
-        {
-            Killer = killer;
-        }
-
         public IEntity Killer { get; }
     }
 }

@@ -27,14 +27,6 @@ namespace Rocket.Core.Player.Events
             NewPosition = newPosition;
         }
 
-        public PlayerMoveEvent(Vector3 oldPosition, Vector3 newPosition, IPlayer player, string name = null,
-                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                               bool global = true) : base(player, name, executionTarget, global)
-        {
-            OldPosition = oldPosition;
-            NewPosition = newPosition;
-        }
-
         public Vector3 OldPosition { get; }
         public Vector3 NewPosition { get; }
     }

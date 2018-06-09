@@ -96,6 +96,8 @@
     <Compile Include="Configuration\RocketSettingsProvider.cs" />
     <Compile Include="DependencyInjection\DontAutoRegister.cs" />
     <Compile Include="Entities\EntityExtensions.cs" />
+    <Compile Include="Eventing\Event.cs" />
+    <Compile Include="Eventing\EventNameAttribute.cs" />
     <Compile Include="Extensions\TypeConverterExtensions.cs" />
     <Compile Include="Logging\BaseLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />

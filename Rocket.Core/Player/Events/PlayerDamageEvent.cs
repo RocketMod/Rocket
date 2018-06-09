@@ -28,14 +28,6 @@ namespace Rocket.Core.Player.Events
             DamageDealer = damageDealer;
         }
 
-        public PlayerDamageEvent(IPlayer player, double damage, IUser damageDealer, string name = null,
-                                 EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                 bool global = true) : base(player, name, executionTarget, global)
-        {
-            Damage = damage;
-            DamageDealer = damageDealer;
-        }
-
         public IUser DamageDealer { get; }
         public double Damage { get; set; }
         public bool IsCancelled { get; set; }

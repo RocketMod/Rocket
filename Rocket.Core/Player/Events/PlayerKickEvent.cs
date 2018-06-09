@@ -22,9 +22,5 @@ namespace Rocket.Core.Player.Events
         {
             Player = player;
         }
-        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), kickedBy, reason, name, executionTarget, global)
-        {
-            Player = player;
-        }
     }
 }

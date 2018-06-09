@@ -19,8 +19,5 @@ namespace Rocket.Core.Player.Events
         public PlayerBanEvent(IUserInfo player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, bannedBy, reason, duration, executionTarget, global)
         {
         }
-        public PlayerBanEvent(IUserInfo player, IUser bannedBy = null, string reason = null, TimeSpan? duration = null, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player, bannedBy, reason, duration, name, executionTarget, global)
-        {
-        }
     }
 }

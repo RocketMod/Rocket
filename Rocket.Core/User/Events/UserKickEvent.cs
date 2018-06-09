@@ -27,15 +27,6 @@ namespace Rocket.Core.User.Events
             Reason = reason;
         }
 
-        public UserKickEvent(IUser user, IUser kickedBy = null, string reason = null,
-                             string name = null,
-                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                             bool global = true) : base(user, name, executionTarget, global)
-        {
-            KickedBy = kickedBy;
-            Reason = reason;
-        }
-
         public IUser KickedBy { get; }
 
         public string Reason { get; set; }

@@ -11,9 +11,5 @@ namespace Rocket.Core.Player.Events
         public PlayerRespawnEvent(IPlayer player,
                                   EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                   bool global = true) : base(player, executionTarget, global) { }
-
-        public PlayerRespawnEvent(IPlayer player, string name = null,
-                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                  bool global = true) : base(player, name, executionTarget, global) { }
     }
 }

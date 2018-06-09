@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.Player;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.Player.Events
 {
@@ -18,13 +19,6 @@ namespace Rocket.Core.Player.Events
         public PlayerPreConnectEvent(IPlayer player,
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                      bool global = true) : base(executionTarget, global)
-        {
-            Player = player;
-        }
-
-        public PlayerPreConnectEvent(IPlayer player, string name = null,
-                                     EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                     bool global = true) : base(name, executionTarget, global)
         {
             Player = player;
         }

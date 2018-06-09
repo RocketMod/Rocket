@@ -1,8 +1,5 @@
-﻿using System;
-using Rocket.API.Eventing;
+﻿using Rocket.API.Eventing;
 using Rocket.API.Player;
-using Rocket.API.User;
-using Rocket.Core.Player.Events;
 using Rocket.Core.User.Events;
 
 namespace Rocket.Core.Player.Events
@@ -19,10 +16,6 @@ namespace Rocket.Core.Player.Events
             Player = player;
         }
         public PlayerConnectedEvent(IPlayer player, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), executionTarget, global)
-        {
-            Player = player;
-        }
-        public PlayerConnectedEvent(IPlayer player, string name = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), name, executionTarget, global)
         {
             Player = player;
         }

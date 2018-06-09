@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.User;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.User.Events
 {
@@ -26,14 +27,6 @@ namespace Rocket.Core.User.Events
         public UserDisconnectedEvent(IUserInfo user, string reason = null,
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                      bool global = true) : base(executionTarget, global)
-        {
-            User = user;
-            Reason = reason;
-        }
-
-        public UserDisconnectedEvent(IUserInfo user, string reason = null, string name = null,
-                                     EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                     bool global = true) : base(name, executionTarget, global)
         {
             User = user;
             Reason = reason;

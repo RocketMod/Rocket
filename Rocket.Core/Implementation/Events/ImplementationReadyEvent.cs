@@ -1,5 +1,6 @@
 ﻿using Rocket.API;
 using Rocket.API.Eventing;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.Implementation.Events
 {
@@ -15,13 +16,6 @@ namespace Rocket.Core.Implementation.Events
         public ImplementationReadyEvent(IHost host,
                                         EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                         bool global = true) : base(executionTarget, global)
-        {
-            Host = host;
-        }
-
-        public ImplementationReadyEvent(IHost host, string name = null,
-                                        EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                        bool global = true) : base(name, executionTarget, global)
         {
             Host = host;
         }

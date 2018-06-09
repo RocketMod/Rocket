@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.Plugins;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.Plugins.Events
 {
@@ -18,13 +19,6 @@ namespace Rocket.Core.Plugins.Events
         public PluginManagerInitEvent(IPluginManager pluginManager,
                                       EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                       bool global = true) : base(executionTarget, global)
-        {
-            PluginManager = pluginManager;
-        }
-
-        public PluginManagerInitEvent(IPluginManager pluginManager, string name = null,
-                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                      bool global = true) : base(name, executionTarget, global)
         {
             PluginManager = pluginManager;
         }

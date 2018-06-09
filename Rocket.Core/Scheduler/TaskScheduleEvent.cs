@@ -1,5 +1,6 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.Scheduler;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.Scheduler
 {

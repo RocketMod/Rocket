@@ -11,9 +11,5 @@ namespace Rocket.Core.User.Events
         public UserConnectedEvent(IUser user,
                                   EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                   bool global = true) : base(user, executionTarget, global) { }
-
-        public UserConnectedEvent(IUser user, string name = null,
-                                  EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                  bool global = true) : base(user, name, executionTarget, global) { }
     }
 }

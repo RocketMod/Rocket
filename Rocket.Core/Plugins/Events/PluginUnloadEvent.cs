@@ -13,10 +13,6 @@ namespace Rocket.Core.Plugins.Events
                                      EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                      bool global = true) : base(plugnManager, plugin, executionTarget, global) { }
 
-        public PluginUnloadEvent(IPluginManager plugnManager, IPlugin plugin, string name = null,
-                                     EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                                     bool global = true) : base(plugnManager, plugin, name, executionTarget, global) { }
-
         public PluginUnloadEvent(IPluginManager plugnManager, IPlugin plugin) : base(plugnManager, plugin) { }
     }
 }

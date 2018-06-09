@@ -23,17 +23,6 @@ namespace Rocket.Core.Player.Events
             Player = player;
         }
 
-        /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget" /></param>
-        /// <param name="name">The name of the event. Will be auto set when null.</param>
-        /// ///
-        /// <param name="global">Defines if the event is emitted globally</param>
-        protected PlayerEvent(IPlayer player, string name = null,
-                              EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                              bool global = true) : base(player.GetUser(), name, executionTarget, global)
-        {
-            Player = player;
-        }
-
         public IPlayer Player { get; }
     }
 }
