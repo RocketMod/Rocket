@@ -25,6 +25,8 @@ namespace Rocket.Tests.Mock.Providers
         };
 
         public string InstanceId => "Test Instance";
+        public string ServerName => "Rocket Test Host";
+        public ushort ServerPort => 0;
         public string WorkingDirectory => Environment.CurrentDirectory;
 
         public bool IsAlive => true;

@@ -15,6 +15,17 @@ namespace Rocket.API
         /// </summary>
         string InstanceId { get; }
 
+
+        /// <summary>
+        ///     The name of the server.
+        /// </summary>
+        string ServerName { get; }
+
+        /// <summary>
+        ///     The port of the server.
+        /// </summary>
+        ushort ServerPort { get; }
+
         /// <summary>
         ///     Gets the console. <br />
         ///     <b>Might return null.</b>

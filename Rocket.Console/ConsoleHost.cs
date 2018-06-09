@@ -51,6 +51,8 @@ namespace Rocket.Console
         }
 
         public string InstanceId => "console";
+        public string ServerName => "Rocket Console";
+        public ushort ServerPort => 0;
 
         public void Reload() { }
 
