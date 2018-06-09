@@ -8,7 +8,12 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions
 {
-    public abstract class FullPermitPermissionProvider<T> : IPermissionProvider where T: IIdentity
+    public abstract class FullPermitPermissionProvider<T> : FullPermitPermissionProvider where T : IIdentity
+    {
+        public override bool SupportsTarget(IIdentity target) => target is T;
+    }
+
+    public abstract class FullPermitPermissionProvider : IPermissionProvider
     {
         public IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true)
         {
@@ -20,7 +25,7 @@ namespace Rocket.Core.Permissions
             return new List<string>();
         }
 
-        public bool SupportsTarget(IIdentity target) => target is T;
+        public abstract bool SupportsTarget(IIdentity target);
 
         public PermissionResult CheckPermission(IIdentity target, string permission)
         {
