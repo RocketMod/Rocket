@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
@@ -23,8 +24,8 @@ namespace Rocket.Tests.Mock.Providers
         {
             "TESTING"
         };
-
-        public string InstanceId => "Test Instance";
+        public Version HostVersion => new Version(FileVersionInfo.GetVersionInfo(GetType().Assembly.Location).FileVersion);
+        public string GameVersionName => HostVersion.ToString();
         public string ServerName => "Rocket Test Host";
         public ushort ServerPort => 0;
         public string WorkingDirectory => Environment.CurrentDirectory;

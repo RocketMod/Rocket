@@ -1,4 +1,5 @@
-﻿using Rocket.API.Commands;
+﻿using System;
+using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
@@ -11,10 +12,14 @@ namespace Rocket.API
     public interface IHost : IEventEmitter, IConfigurationContext, IService
     {
         /// <summary>
-        ///     The game instance ID.
+        ///     The host version.
         /// </summary>
-        string InstanceId { get; }
+        Version HostVersion { get; }
 
+        /// <summary>
+        ///     The name of the game version.
+        /// </summary>
+        string GameVersionName { get; }
 
         /// <summary>
         ///     The name of the server.

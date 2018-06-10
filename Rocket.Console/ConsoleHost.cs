@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
@@ -50,7 +52,8 @@ namespace Rocket.Console
             Environment.Exit(0);
         }
 
-        public string InstanceId => "console";
+        public Version HostVersion => new Version(FileVersionInfo.GetVersionInfo(GetType().Assembly.Location).FileVersion);
+        public string GameVersionName => HostVersion.ToString();
         public string ServerName => "Rocket Console";
         public ushort ServerPort => 0;
 
