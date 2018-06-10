@@ -66,18 +66,21 @@ namespace Rocket.Core.Commands
 
             string[] perms = tmp.ToArray();
 
+#if !DEBUG
             try
             {
-                IPermissionProvider provider = container.Resolve<IPermissionProvider>();
+#endif
+            IPermissionProvider provider = container.Resolve<IPermissionProvider>();
 
-                if (provider.CheckHasAnyPermission(user, perms) != PermissionResult.Grant)
-                {
-                    var logger = container.Resolve<ILogger>();
-                    logger.LogInformation($"{user.Name} does not have permissions to execute: \"{commandLine}\"");
-                    throw new NotEnoughPermissionsException(user, perms);
-                }
+            if (provider.CheckHasAnyPermission(user, perms) != PermissionResult.Grant)
+            {
+                var logger = container.Resolve<ILogger>();
+                logger.LogInformation($"{user.Name} does not have permissions to execute: \"{commandLine}\"");
+                throw new NotEnoughPermissionsException(user, perms);
+            }
 
-                context.Command.Execute(context);
+            context.Command.Execute(context);
+#if !DEBUG
             }
             catch (Exception e)
             {
@@ -90,6 +93,7 @@ namespace Rocket.Core.Commands
                 context.User.SendMessage("An internal error occured.", Color.DarkRed);
                 throw new Exception($"Command {commandLine} of user {user.Name} caused an exception: ", e);
             }
+#endif
 
             return true;
         }

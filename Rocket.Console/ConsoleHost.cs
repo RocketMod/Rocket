@@ -21,7 +21,7 @@ namespace Rocket.Console
             Console = new RocketConsole(runtime.Container);
         }
         public IEnumerable<string> Capabilities => new List<string>();
-        public string Name => "ConsoleHost";
+        public string Name => "Rocket.Console";
 
         public string WorkingDirectory { get; set; } = Path.Combine(Environment.CurrentDirectory, "Rocket");
 
