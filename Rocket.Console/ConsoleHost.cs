@@ -53,7 +53,7 @@ namespace Rocket.Console
         }
 
         public Version HostVersion => new Version(FileVersionInfo.GetVersionInfo(GetType().Assembly.Location).FileVersion);
-        public string GameVersionName => HostVersion.ToString();
+        public Version GameVersion => HostVersion;
         public string ServerName => "Rocket Console";
         public ushort ServerPort => 0;
 

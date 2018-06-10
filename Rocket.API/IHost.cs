@@ -19,7 +19,7 @@ namespace Rocket.API
         /// <summary>
         ///     The name of the game version.
         /// </summary>
-        string GameVersionName { get; }
+        Version GameVersion { get; }
 
         /// <summary>
         ///     The name of the server.

@@ -25,7 +25,7 @@ namespace Rocket.Tests.Mock.Providers
             "TESTING"
         };
         public Version HostVersion => new Version(FileVersionInfo.GetVersionInfo(GetType().Assembly.Location).FileVersion);
-        public string GameVersionName => HostVersion.ToString();
+        public Version GameVersion => HostVersion;
         public string ServerName => "Rocket Test Host";
         public ushort ServerPort => 0;
         public string WorkingDirectory => Environment.CurrentDirectory;
