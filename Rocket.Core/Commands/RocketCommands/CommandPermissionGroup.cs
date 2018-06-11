@@ -22,7 +22,6 @@ namespace Rocket.Core.Commands.RocketCommands
         public string[] Aliases => new[] { "PG" };
 
         public string Name => "PermissionGroup";
-        public string Permission => "Rocket.Permissions.ManageGroups";
 
         public void Execute(ICommandContext context)
         {

@@ -15,7 +15,6 @@ namespace Rocket.Core.Commands.RocketCommands
         public string[] Aliases => new[] {"h"};
         public string Summary => "Provides help for all or a specific command.";
         public string Description => null;
-        public string Permission => "Rocket.Help";
         public string Syntax => "[command] [1. Child Command] [2. Child Command] [...]";
         public IChildCommand[] ChildCommands => null;
 
@@ -24,6 +23,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public void Execute(ICommandContext context)
         {
             ICommandProvider cmdProvider = context.Container.Resolve<ICommandProvider>();
+            ICommandHandler cmdHandler = context.Container.Resolve<ICommandHandler>();
+
             IPermissionProvider permissionProvider = context.Container.Resolve<IPermissionProvider>();
 
             string rootPrefix = context.RootContext.CommandPrefix;
@@ -39,7 +40,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 {
                     cmd = childs?.GetCommand(commandNode, context.User);
 
-                    if (cmd == null || !HasAccess(cmd, context.User, permissionProvider))
+                    if (cmd == null || !HasAccess(cmd, context.User))
                     {
                         context.User.SendMessage("Command was not found: " + prefix + commandNode, Color.Red);
                         return;
@@ -58,7 +59,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
                 List<ICommand> childCommands =
                     (cmd.ChildCommands?.Cast<ICommand>().ToList() ?? new List<ICommand>())
-                    .Where(c => HasAccess(c, context.User, permissionProvider))
+                    .Where(c => HasAccess(c, context.User))
                     .OrderBy(c => c.Name)
                     .ToList();
 
@@ -75,14 +76,12 @@ namespace Rocket.Core.Commands.RocketCommands
             context.User.SendMessage("Available commands: ", Color.Green);
 
             foreach (ICommand cmd in cmdProvider.Commands.OrderBy(c => c.Name))
-                if (HasAccess(cmd, context.User, permissionProvider))
+                if (HasAccess(cmd, context.User))
                     context.User.SendMessage(GetCommandUsage(cmd, rootPrefix), Color.Blue);
         }
 
-        public bool HasAccess(ICommand command, IUser user, IPermissionProvider permissionProvider)
-            => permissionProvider.CheckPermission(user, command.Permission ?? command.Name)
-                == PermissionResult.Grant
-                && command.SupportsUser(user.GetType());
+        public bool HasAccess(ICommand command, IUser user) 
+            => command.SupportsUser(user.GetType());
 
         public string GetCommandUsage(ICommand command, string prefix) => prefix
             + command.Name.ToLower()

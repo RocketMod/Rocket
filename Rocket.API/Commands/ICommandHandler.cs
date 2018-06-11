@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rocket.API.DependencyInjection;
 using Rocket.API.User;
 
@@ -28,8 +29,24 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     Defines if this command handler can handle the given command user type.
         /// </summary>
-        /// <param name="User">The <see cref="IUser">command user</see> type to check.</param>
+        /// <param name="user">The <see cref="IUser">command user</see> type to check.</param>
         /// <returns><b>true</b> if the command user type is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsUser(Type User);
+        bool SupportsUser(Type user);
+
+        /// <summary>
+        ///     The permission required to execute the command.
+        ///     <para>
+        ///         <b>This method can return null.</b>
+        ///     </para>
+        /// </summary>
+        /// <remarks>
+        ///     <para>
+        ///         The default CommandHandler uses {CommandName}.{SubCommand} (e.g. "Heal") as permission.
+        ///     </para>
+        /// </remarks>
+        /// <example>
+        ///     <c>"MyPermission.Heal"</c>
+        /// </example>
+        string GetPermission(ICommandContext context);
     }
 }

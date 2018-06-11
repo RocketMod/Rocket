@@ -27,6 +27,18 @@ namespace Rocket.Core.Commands
             return ProxiedServices.Any(c => c.SupportsUser(user));
         }
 
+        public string GetPermission(ICommandContext context)
+        {
+            foreach (var handler in ProxiedServices)
+            {
+                var perm = handler.GetPermission(context);
+                if (perm != null)
+                    return perm;
+            }
+
+            return null;
+        }
+
         private void GuardUser(IUser user)
         {
             if (!SupportsUser(user.GetType()))

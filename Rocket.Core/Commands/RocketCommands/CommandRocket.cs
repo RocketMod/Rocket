@@ -13,7 +13,6 @@ namespace Rocket.Core.Commands.RocketCommands
     public class CommandRocket : ICommand
     {
         public string Name => "Rocket";
-        public string Permission => "Rocket.ManageRocket";
         public string Syntax => "";
         public string Summary => "Manages RocketMod.";
         public string Description => null;
@@ -38,7 +37,6 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Name => "Reload";
         public string Summary => "Reloads RocketMod and all plugins.";
         public string Description => null;
-        public string Permission => "Rocket.ManageRocket.Reload";
         public string Syntax => "";
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => null;
@@ -64,7 +62,6 @@ namespace Rocket.Core.Commands.RocketCommands
         public string[] Aliases => null;
         public string Summary => "Installs a plugin";
         public string Description => null;
-        public string Permission => "Rocket.ManageRocket.Install";
         public string Syntax => "<repo> <plugin> [version]";
         public IChildCommand[] ChildCommands => null;
 
@@ -116,7 +113,6 @@ namespace Rocket.Core.Commands.RocketCommands
         public string[] Aliases => null;
         public string Summary => "Uninstalls plugin";
         public string Description => null;
-        public string Permission => "Rocket.ManageRocket.Uninstall";
         public string Syntax => "<repo> <plugin>";
         public IChildCommand[] ChildCommands => null;
 
@@ -161,7 +157,6 @@ namespace Rocket.Core.Commands.RocketCommands
         public string[] Aliases => null;
         public string Summary => "Updates plugin";
         public string Description => null;
-        public string Permission => "Rocket.ManageRocket.Update";
         public string Syntax => "<repo> <plugin> [version]";
         public IChildCommand[] ChildCommands => null;
 

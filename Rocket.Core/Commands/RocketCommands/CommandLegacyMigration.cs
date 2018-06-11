@@ -19,7 +19,6 @@ namespace Rocket.Core.Commands.RocketCommands
         public string[] Aliases => null;
         public string Summary => "Migrates from old RocketMod 4";
         public string Description => null;
-        public string Permission => "Rocket.Migrate.Legacy";
         public string Syntax => "[step]";
         public IChildCommand[] ChildCommands => null;
 

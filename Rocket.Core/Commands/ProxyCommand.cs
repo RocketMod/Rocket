@@ -19,7 +19,6 @@ namespace Rocket.Core.Commands {
         public string[] Aliases => BaseCommand.Aliases;
         public string Summary => BaseCommand.Summary;
         public string Description => BaseCommand.Description;
-        public string Permission => BaseCommand.Permission;
         public string Syntax => BaseCommand.Syntax;
         public IChildCommand[] ChildCommands => BaseCommand.ChildCommands;
         public bool SupportsUser(Type user) => BaseCommand.SupportsUser(user);

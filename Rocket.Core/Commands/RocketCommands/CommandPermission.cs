@@ -12,7 +12,6 @@ namespace Rocket.Core.Commands.RocketCommands
     public class CommandPermission : ICommand
     {
         public string Name => "Permission";
-        public string Permission => "Rocket.Permissions.ManagePermissions";
         public string Syntax => "";
         public string Summary => "Manages rocket permissions.";
         public string Description => null;
@@ -141,7 +140,6 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Name => "Reload";
         public string Summary => "Reloads permissions.";
         public string Description => null;
-        public string Permission => "Rocket.Permissions.ManagePermissions.Reload";
         public string Syntax => "";
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"R"};

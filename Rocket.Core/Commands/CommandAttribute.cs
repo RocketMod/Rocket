@@ -9,8 +9,6 @@ namespace Rocket.Core.Commands
 
         public string Summary { get; set; }
 
-        public string Permission { get; set; }
-
         public string Syntax { get; set; }
 
         public string Description { get; set; }

@@ -65,24 +65,6 @@ namespace Rocket.API.Commands
         string Description { get; }
 
         /// <summary>
-        ///     The permission required to execute the command.
-        ///     <para>
-        ///         <b>This property can return null.</b>
-        ///     </para>
-        /// </summary>
-        /// <remarks>
-        ///     When returning null, the default permission will be used, which depends on the <see cref="ICommandHandler" />
-        ///     implementation.
-        ///     <para>
-        ///         The default CommandHandler uses {PluginName}.{CommandName} (e.g. "MyPlugin.Heal") as permission.
-        ///     </para>
-        /// </remarks>
-        /// <example>
-        ///     <c>"MyPermission.Heal"</c>
-        /// </example>
-        string Permission { get; }
-
-        /// <summary>
         ///     The command syntax will be shown to the <see cref="IUser" /> when the command was not used correctly.
         ///     <para>An output for the above example could be "/heal [player] &lt;amount&gt;".</para>
         ///     <para>The syntax should not contain Child Command usage.</para>

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
@@ -11,7 +9,6 @@ using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
-using Rocket.Core.User;
 
 namespace Rocket.Core.Commands
 {
@@ -48,23 +45,10 @@ namespace Rocket.Core.Commands
 
             context.Command = target;
 
-            List<ICommand> tree = new List<ICommand> { target };
+            List<ICommand> tree = new List<ICommand> { context.Command };
             context = GetChild(context, context, tree);
 
-            //Builds a defalt permission
-            //If the command is "A" with Child Command "B", the default permission will be "A.B"
-            string defaultPerm = "";
-            foreach (ICommand node in tree)
-                if (defaultPerm == "")
-                    defaultPerm = node.Name;
-                else
-                    defaultPerm += "." + node.Name;
-
-            List<string> tmp = new List<string> { defaultPerm };
-            if (context.Command.Permission != null)
-                tmp.Add(context.Command.Permission);
-
-            string[] perms = tmp.ToArray();
+            var permission = GetPermission(context);
 
 #if !DEBUG
             try
@@ -72,11 +56,11 @@ namespace Rocket.Core.Commands
 #endif
             IPermissionProvider provider = container.Resolve<IPermissionProvider>();
 
-            if (provider.CheckHasAnyPermission(user, perms) != PermissionResult.Grant)
+            if (provider.CheckPermission(user, permission) != PermissionResult.Grant)
             {
                 var logger = container.Resolve<ILogger>();
                 logger.LogInformation($"{user.Name} does not have permissions to execute: \"{commandLine}\"");
-                throw new NotEnoughPermissionsException(user, perms);
+                throw new NotEnoughPermissionsException(user, permission);
             }
 
             context.Command.Execute(context);
@@ -99,6 +83,27 @@ namespace Rocket.Core.Commands
         }
 
         public bool SupportsUser(Type user) => true;
+
+        //Builds a defalt permission
+        //If the command is "A" with Child Command "B", the default permission will be "A.B"
+        public string GetPermission(ICommandContext context)
+        {
+            var node = context.RootContext;
+
+            string permission = "";
+
+            while (node != null)
+            {
+                if (permission == "")
+                    permission = node.Command.Name;
+                else
+                    permission += "." + node.Command.Name;
+
+                node = node.ChildContext;
+            }
+
+            return permission;
+        }
 
         private CommandContext GetChild(CommandContext root, CommandContext context, List<ICommand> tree)
         {
