@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
@@ -9,6 +10,7 @@ using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands
 {
