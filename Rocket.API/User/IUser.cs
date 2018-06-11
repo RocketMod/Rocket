@@ -1,4 +1,5 @@
 ﻿using System;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.User
 {
@@ -31,5 +32,10 @@ namespace Rocket.API.User
         ///     The user type (e.g. "DiscordUser", "Unturned", etc...)
         /// </summary>
         string UserType { get; }
+
+        /// <summary>
+        ///     The distinct dependency container of the user.
+        /// </summary>
+        IDependencyContainer Container { get; }
     }
 }

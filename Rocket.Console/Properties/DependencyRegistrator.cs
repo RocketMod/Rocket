@@ -11,7 +11,7 @@ namespace Rocket.Console.Properties
         {
             container.RegisterSingletonType<IHost, ConsoleHost>();
             container.RegisterSingletonType<ITaskScheduler, SimpleTaskScheduler>();
-            container.RegisterSingletonType<IUserManager, ConsoleUserManager>("game");
+            container.RegisterSingletonType<IUserManager, ConsoleUserManager>("host");
         }
     }
 }

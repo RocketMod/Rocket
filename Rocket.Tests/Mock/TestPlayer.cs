@@ -83,7 +83,7 @@ namespace Rocket.Tests.Mock
         public DateTime? SessionDisconnectTime => null;
         public DateTime? LastSeen => DateTime.Now;
         public string UserType => "TestPlayer";
-
-        TestPlayer IPlayerUser<TestPlayer>.Player => testPlayer;
+        public IDependencyContainer Container => Player.Container;
+        public TestPlayer Player => testPlayer;
     }
 }

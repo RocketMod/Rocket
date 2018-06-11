@@ -1,4 +1,5 @@
 ﻿using System;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Entities;
 using Rocket.API.User;
 
@@ -35,5 +36,10 @@ namespace Rocket.API.Player
         ///     Checks if the player is online.
         /// </summary>
         bool IsOnline { get; }
+
+        /// <summary>
+        ///     The distinct dependency container of the player.
+        /// </summary>
+        IDependencyContainer Container { get; }
     }
 }

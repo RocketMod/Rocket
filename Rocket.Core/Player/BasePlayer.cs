@@ -16,10 +16,10 @@ namespace Rocket.Core.Player
     {
         protected BasePlayer(IDependencyContainer container)
         {
-            Container = container;
+            Container = container.CreateChildContainer();
         }
 
-        protected IDependencyContainer Container { get; }
+        public IDependencyContainer Container { get; }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {

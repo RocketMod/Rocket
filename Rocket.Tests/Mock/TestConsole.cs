@@ -10,20 +10,20 @@ namespace Rocket.Tests.Mock
 {
     public class TestConsole : IConsole
     {
-        private readonly IDependencyContainer container;
+        public IDependencyContainer Container { get; }
 
         public TestConsole(IDependencyContainer container)
         {
             SessionConnectTime = DateTime.Now;
             BaseLogger.SkipTypeFromLogging(GetType());
-            this.container = container;
+            Container = container.CreateChildContainer();
         }
 
         public string Id => "Console";
         public string Name => "Console";
         public string IdentityType => IdentityTypes.Console;
 
-        public IUserManager UserManager => container.Resolve<IUserManager>("console");
+        public IUserManager UserManager => Container.Resolve<IUserManager>("console");
         public bool IsOnline => true;
         public DateTime SessionConnectTime { get; }
         public DateTime? SessionDisconnectTime => null;

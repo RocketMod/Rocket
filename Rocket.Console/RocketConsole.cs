@@ -14,20 +14,20 @@ namespace Rocket.Console
 {
     public class RocketConsole : IConsole
     {
-        private readonly IDependencyContainer container;
+        public IDependencyContainer Container { get; }
 
         public RocketConsole(IDependencyContainer container)
         {
             SessionConnectTime = DateTime.Now;
             BaseLogger.SkipTypeFromLogging(GetType());
-            this.container = container;
+            Container = container.CreateChildContainer();
         }
 
         public string Id => "Console";
         public string Name => "Console";
         public string IdentityType => IdentityTypes.Console;
 
-        public IUserManager UserManager => container.Resolve<IUserManager>("game");
+        public IUserManager UserManager => Container.Resolve<IUserManager>("host");
         public bool IsOnline => true;
         public DateTime SessionConnectTime { get; }
         public DateTime? SessionDisconnectTime => null;
@@ -45,7 +45,7 @@ namespace Rocket.Console
 
         public void WriteLine(LogLevel level, string format, Color? color = null, params object[] bindings)
         {
-            IRocketSettingsProvider rocketSettings = container.Resolve<IRocketSettingsProvider>();
+            IRocketSettingsProvider rocketSettings = Container.Resolve<IRocketSettingsProvider>();
             Color orgCol = ConsoleLogger.GetForegroundColor();
 
             SetForegroundColor(Color.White);
