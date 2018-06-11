@@ -41,5 +41,10 @@ namespace Rocket.API.Player
         ///     The distinct dependency container of the player.
         /// </summary>
         IDependencyContainer Container { get; }
+
+        /// <summary>
+        ///     The PlayerManager of the player.
+        /// </summary>
+        IPlayerManager PlayerManager { get; }
     }
 }

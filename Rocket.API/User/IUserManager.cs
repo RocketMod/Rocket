@@ -30,9 +30,9 @@ namespace Rocket.API.User
         /// <param name="user">The user to ban.</param>
         /// <param name="bannedBy">The user which bans (optional).</param>
         /// <param name="reason">The ban reason which might be shown to the user (optional).</param>
-        /// <param name="timeSpan">The ban duration. Will never expire if null.</param>
+        /// <param name="duration">The ban duration. Will never expire if null.</param>
         /// <returns><b>true</b> if the user could be banned; otherwise, <b>false</b>.</returns>
-        bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null);
+        bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? duration = null);
 
         /// <summary>
         ///     Unbans the given user from the server.

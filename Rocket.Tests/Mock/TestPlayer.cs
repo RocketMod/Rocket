@@ -20,6 +20,7 @@ namespace Rocket.Tests.Mock
 
         public TestPlayer(IDependencyContainer container) : this(container, "TestPlayerId", "TestPlayer") { }
 
+        public override IPlayerManager PlayerManager => throw new NotImplementedException();
         public override string Id { get; }
         public override string Name { get; }
 

@@ -20,6 +20,7 @@ namespace Rocket.Core.Player
         }
 
         public IDependencyContainer Container { get; }
+        public abstract IPlayerManager PlayerManager { get; }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
