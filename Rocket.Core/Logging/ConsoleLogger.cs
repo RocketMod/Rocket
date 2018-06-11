@@ -8,6 +8,8 @@ namespace Rocket.Core.Logging
 {
     public class ConsoleLogger : BaseLogger
     {
+        private object _lock = new object();
+
         public ConsoleLogger(IDependencyContainer container) : base(container) { }
 
         public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
@@ -22,33 +24,36 @@ namespace Rocket.Core.Logging
 
         private void WriteLine(LogLevel level, string message, bool isException, params object[] bindings)
         {
-            Color orgCol = GetForegroundColor();
-
-            SetForegroundColor(Color.White);
-            Console.Write("[");
-
-            SetForegroundColor(GetLogLevelColor(level));
-            Console.Write(GetLogLevelPrefix(level));
-
-            SetForegroundColor(Color.White);
-            Console.Write("] ");
-
-            if (LogSettings.IncludeMethods)
+            lock (_lock)
             {
+                Color orgCol = GetForegroundColor();
+
                 SetForegroundColor(Color.White);
                 Console.Write("[");
 
-                SetForegroundColor(Color.DarkGray);
-                Console.Write(GetLoggerCallingMethod().GetDebugName());
+                SetForegroundColor(GetLogLevelColor(level));
+                Console.Write(GetLogLevelPrefix(level));
 
                 SetForegroundColor(Color.White);
                 Console.Write("] ");
+
+                if (LogSettings.IncludeMethods)
+                {
+                    SetForegroundColor(Color.White);
+                    Console.Write("[");
+
+                    SetForegroundColor(Color.DarkGray);
+                    Console.Write(GetLoggerCallingMethod().GetDebugName());
+
+                    SetForegroundColor(Color.White);
+                    Console.Write("] ");
+                }
+
+                SetForegroundColor(isException ? Color.Red : Color.White);
+                Console.WriteLine(message, bindings);
+
+                SetForegroundColor(orgCol);
             }
-
-            SetForegroundColor(isException ? Color.Red : Color.White);
-            Console.WriteLine(message, bindings);
-
-            SetForegroundColor(orgCol);
         }
 
         public override string ServiceName => "Console";
