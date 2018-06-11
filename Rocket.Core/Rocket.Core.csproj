@@ -89,11 +89,13 @@
     <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
     <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
     <Compile Include="Commands\RocketCommands\CommandRocket.cs" />
+    <Compile Include="Configuration\CommentAttribute.cs" />
     <Compile Include="Configuration\ConfigArrayAttribute.cs" />
     <Compile Include="Configuration\ConfigurationContextExtensions.cs" />
     <Compile Include="Configuration\IRocketSettingsProvider.cs" />
     <Compile Include="Configuration\RocketSettings.cs" />
     <Compile Include="Configuration\RocketSettingsProvider.cs" />
+    <Compile Include="Configuration\SetupAttribute.cs" />
     <Compile Include="DependencyInjection\DontAutoRegister.cs" />
     <Compile Include="Entities\EntityExtensions.cs" />
     <Compile Include="Eventing\Event.cs" />
