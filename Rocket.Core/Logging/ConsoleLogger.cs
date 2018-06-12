@@ -16,13 +16,13 @@ namespace Rocket.Core.Logging
                                    params object[] bindings)
         {
             if (message != null)
-                WriteLine(level, message, false, bindings);
+                WriteLine(level, message, Color.White, bindings);
 
             if (exception != null)
-                WriteLine(level, exception.ToString(), true);
+                WriteLine(level, exception.ToString(), Color.Red);
         }
 
-        private void WriteLine(LogLevel level, string message, bool isException, params object[] bindings)
+        public void WriteLine(LogLevel level, string message, Color? color = null, params object[] bindings)
         {
             lock (consoleLock)
             {
@@ -37,20 +37,35 @@ namespace Rocket.Core.Logging
                     WriteColored("] ", Color.White);
                 }
 
-                WriteLineColored(message, isException ? Color.Red : Color.White, bindings);
+                WriteLineColored(message, color, bindings);
+                Console.ResetColor();
             }
         }
 
         protected virtual void WriteColored(string format, Color? color = null, params object[] bindings)
         {
+            if (color == null)
+            {
+                Console.ResetColor();
+                Console.Write(format, bindings);
+                return;
+            }
+
             Color orgCol = GetForegroundColor();
-            SetForegroundColor(color ?? orgCol);
+            SetForegroundColor(color.Value);
             Console.Write(format, bindings);
             SetForegroundColor(orgCol);
         }
 
         protected virtual void WriteLineColored(string format, Color? color = null, params object[] bindings)
         {
+            if (color == null)
+            {
+                Console.ResetColor();
+                Console.WriteLine(format, bindings);
+                return;
+            }
+
             Color orgCol = GetForegroundColor();
             SetForegroundColor(color ?? orgCol);
             Console.WriteLine(format, bindings);
