@@ -1,48 +1,14 @@
 ﻿using System;
 using System.Drawing;
 using Rocket.API.DependencyInjection;
-using Rocket.API.Logging;
-using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Logging
 {
-    public class ConsoleLogger : BaseLogger
+    public class ConsoleLogger : FormattedLogger
     {
-        private readonly object consoleLock = new object();
+        public override string ServiceName => "Console";
 
-        public ConsoleLogger(IDependencyContainer container) : base(container) { }
-
-        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                                   params object[] bindings)
-        {
-            if (message != null)
-                WriteLine(level, message, Color.White, bindings);
-
-            if (exception != null)
-                WriteLine(level, exception.ToString(), Color.Red);
-        }
-
-        public void WriteLine(LogLevel level, string message, Color? color = null, params object[] bindings)
-        {
-            lock (consoleLock)
-            {
-                WriteColored("[", Color.White);
-                WriteColored(GetLogLevelPrefix(level), GetLogLevelColor(level));
-                WriteColored("] ", Color.White);
-
-                if (LogSettings.IncludeMethods)
-                {
-                    WriteColored("[", Color.White);
-                    WriteColored(GetLoggerCallingMethod().GetDebugName(), Color.DarkGray);
-                    WriteColored("] ", Color.White);
-                }
-
-                WriteLineColored(message, color, bindings);
-                Console.ResetColor();
-            }
-        }
-
-        protected virtual void WriteColored(string format, Color? color = null, params object[] bindings)
+        protected override void WriteColored(string format, Color? color = null, params object[] bindings)
         {
             if (color == null)
             {
@@ -57,7 +23,7 @@ namespace Rocket.Core.Logging
             SetForegroundColor(orgCol);
         }
 
-        protected virtual void WriteLineColored(string format, Color? color = null, params object[] bindings)
+        protected override void WriteLineColored(string format, Color? color = null, params object[] bindings)
         {
             if (color == null)
             {
@@ -72,9 +38,8 @@ namespace Rocket.Core.Logging
             SetForegroundColor(orgCol);
         }
 
-        public override string ServiceName => "Console";
 
-        public static Color GetForegroundColor()
+        protected static Color GetForegroundColor()
         {
             int[] cColors =
             {
@@ -101,28 +66,33 @@ namespace Rocket.Core.Logging
 
         public static void SetForegroundColor(Color color)
         {
-            ConsoleColor ret = 0;
-            double rr = color.R, gg = color.G, bb = color.B, delta = double.MaxValue;
-
-            foreach (ConsoleColor cc in Enum.GetValues(typeof(ConsoleColor)))
+            lock (ConsoleLock)
             {
-                string n = Enum.GetName(typeof(ConsoleColor), cc);
-                Color c = Color.FromName(n == "DarkYellow" ? "Orange" : n); // bug fix
-                double t = Math.Pow(c.R - rr, 2.0) + Math.Pow(c.G - gg, 2.0) + Math.Pow(c.B - bb, 2.0);
-                if (t == 0.0)
+                ConsoleColor ret = 0;
+                double rr = color.R, gg = color.G, bb = color.B, delta = double.MaxValue;
+
+                foreach (ConsoleColor cc in Enum.GetValues(typeof(ConsoleColor)))
                 {
-                    Console.ForegroundColor = cc;
-                    return;
+                    string n = Enum.GetName(typeof(ConsoleColor), cc);
+                    Color c = Color.FromName(n == "DarkYellow" ? "Orange" : n); // bug fix
+                    double t = Math.Pow(c.R - rr, 2.0) + Math.Pow(c.G - gg, 2.0) + Math.Pow(c.B - bb, 2.0);
+                    if (t == 0.0)
+                    {
+                        Console.ForegroundColor = cc;
+                        return;
+                    }
+
+                    if (t < delta)
+                    {
+                        delta = t;
+                        ret = cc;
+                    }
                 }
 
-                if (t < delta)
-                {
-                    delta = t;
-                    ret = cc;
-                }
+                Console.ForegroundColor = ret;
             }
-
-            Console.ForegroundColor = ret;
         }
+
+        public ConsoleLogger(IDependencyContainer container) : base(container) { }
     }
 }

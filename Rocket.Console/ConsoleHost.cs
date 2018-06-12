@@ -7,7 +7,9 @@ using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
+using Rocket.API.User;
 using Rocket.Core.Logging;
+using Rocket.Core.User;
 
 namespace Rocket.Console
 {
@@ -18,7 +20,7 @@ namespace Rocket.Console
         public ConsoleHost(IRuntime runtime)
         {
             logger = runtime.Container.Resolve<ILogger>();
-            Console = new RocketConsole(runtime.Container);
+            Console = new DefaultConsole(runtime.Container, runtime.Container.Resolve<IUserManager>("host"));
         }
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "Rocket.Console";

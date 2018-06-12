@@ -33,7 +33,7 @@ namespace Rocket.Core.Properties
 
             container.RegisterSingletonType<IRocketSettingsProvider, RocketSettingsProvider>();
 
-            container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
+            container.RegisterSingletonType<ILogger, FormattedLogger>("console_logger");
             container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
 
             container.RegisterSingletonType<IEventManager, EventManager>();

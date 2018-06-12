@@ -6,7 +6,7 @@ using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.Logging
 {
-    public class RgbConsoleLogger : ConsoleLogger
+    public class RgbConsoleLogger : FormattedLogger
     {
         private const ConsoleColor placeHolder = ConsoleColor.Blue;
 

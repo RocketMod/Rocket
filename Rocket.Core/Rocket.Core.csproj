@@ -103,6 +103,7 @@
     <Compile Include="Extensions\TypeConverterExtensions.cs" />
     <Compile Include="Logging\AnsiConsoleLogger.cs" />
     <Compile Include="Logging\BaseLogger.cs" />
+    <Compile Include="Logging\ConsoleLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />
     <Compile Include="Logging\LoggingExtensions.cs" />
     <Compile Include="Logging\RgbConsoleLogger.cs" />
@@ -188,7 +189,7 @@
     <Compile Include="Plugins\Events\PluginUnloadEvent.cs" />
     <Compile Include="Extensions\ReflectionExtensions.cs" />
     <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
+    <Compile Include="Logging\FormattedLogger.cs" />
     <Compile Include="Eventing\EventManager.cs" />
     <Compile Include="DependencyInjection\RegistrationByConvention.cs" />
     <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />
@@ -205,6 +206,7 @@
     <Compile Include="ServiceProxies\ServiceProxy.cs" />
     <Compile Include="Scheduler\TaskScheduleEvent.cs" />
     <Compile Include="User\ProxyUserManager.cs" />
+    <Compile Include="User\DefaultConsole.cs" />
     <Compile Include="User\UserExtensions.cs" />
     <Compile Include="Util\ColorUtility.cs" />
   </ItemGroup>
