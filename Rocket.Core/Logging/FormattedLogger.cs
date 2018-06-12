@@ -15,7 +15,11 @@ namespace Rocket.Core.Logging
         public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
                                    params object[] bindings)
         {
-            OnLog(message, level, exception, null, bindings);
+            if (message != null)
+                WriteLine(level, message, Color.White, bindings);
+
+            if (exception != null)
+                WriteLine(level, exception.ToString(), Color.Red);
         }
 
         public void WriteLine(LogLevel level, string message, Color? color = null, params object[] bindings)
