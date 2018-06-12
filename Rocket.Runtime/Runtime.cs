@@ -26,10 +26,27 @@ namespace Rocket
             Container.Activate(typeof(RegistrationByConvention));
 
             Container.Resolve<ICommandProvider>().Init();
-            Container.Resolve<IRocketSettingsProvider>().Load();
+
+            var settingsProvider = Container.Resolve<IRocketSettingsProvider>();
+            settingsProvider.Load();
+
+            int p = (int)Environment.OSVersion.Platform;
+            bool isLinux = (p == 4) || (p == 6) || (p == 128);
+
+            string mode = settingsProvider.Settings.Logging.ConsoleMode;
+
+            if (!mode.Equals("Compat", StringComparison.OrdinalIgnoreCase))
+            {
+                // use ANSI logging
+                if ((isLinux && mode.Equals("Default", StringComparison.OrdinalIgnoreCase)) || mode.Equals("ANSI", StringComparison.OrdinalIgnoreCase))
+                    Container.RegisterSingletonType<ILogger, AnsiConsoleLogger>("console_logger");
+
+                // use RGB logging (windows only)
+                //else if (!isLinux && (mode.Equals("Default", StringComparison.OrdinalIgnoreCase) || mode.Equals("RGB", StringComparison.OrdinalIgnoreCase)))
+                //    Container.RegisterSingletonType<ILogger, RgbConsoleLogger>("console_logger");
+            }
 
             IHost impl = Container.Resolve<IHost>();
-
             Version = new Version(versionInfo.FileVersion);
 
             string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
@@ -77,7 +94,7 @@ namespace Rocket
                 if (!Directory.Exists(logsDirectory))
                     Directory.CreateDirectory(logsDirectory);
                 Container.RegisterSingletonType<ILogger, FileLogger>("default_file_logger");
-                FileLogger fl = (FileLogger) Container.Resolve<ILogger>("default_file_logger");
+                FileLogger fl = (FileLogger)Container.Resolve<ILogger>("default_file_logger");
                 fl.File = Path.Combine(logsDirectory, "Rocket.log");
                 fl.LogInformation(rocketInitializeMessage, Color.DarkGreen);
             }

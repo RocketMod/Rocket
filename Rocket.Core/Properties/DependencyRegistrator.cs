@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -31,6 +32,7 @@ namespace Rocket.Core.Properties
             container.RegisterType<IConfiguration, XmlConfiguration>("xml");
 
             container.RegisterSingletonType<IRocketSettingsProvider, RocketSettingsProvider>();
+
             container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
             container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
 

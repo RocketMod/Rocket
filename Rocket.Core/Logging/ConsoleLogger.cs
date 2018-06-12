@@ -8,7 +8,7 @@ namespace Rocket.Core.Logging
 {
     public class ConsoleLogger : BaseLogger
     {
-        private object _lock = new object();
+        private readonly object consoleLock = new object();
 
         public ConsoleLogger(IDependencyContainer container) : base(container) { }
 
@@ -24,36 +24,37 @@ namespace Rocket.Core.Logging
 
         private void WriteLine(LogLevel level, string message, bool isException, params object[] bindings)
         {
-            lock (_lock)
+            lock (consoleLock)
             {
-                Color orgCol = GetForegroundColor();
-
-                SetForegroundColor(Color.White);
-                Console.Write("[");
-
-                SetForegroundColor(GetLogLevelColor(level));
-                Console.Write(GetLogLevelPrefix(level));
-
-                SetForegroundColor(Color.White);
-                Console.Write("] ");
+                WriteColored("[", Color.White);
+                WriteColored(GetLogLevelPrefix(level), GetLogLevelColor(level));
+                WriteColored("] ", Color.White);
 
                 if (LogSettings.IncludeMethods)
                 {
-                    SetForegroundColor(Color.White);
-                    Console.Write("[");
-
-                    SetForegroundColor(Color.DarkGray);
-                    Console.Write(GetLoggerCallingMethod().GetDebugName());
-
-                    SetForegroundColor(Color.White);
-                    Console.Write("] ");
+                    WriteColored("[", Color.White);
+                    WriteColored(GetLoggerCallingMethod().GetDebugName(), Color.DarkGray);
+                    WriteColored("] ", Color.White);
                 }
 
-                SetForegroundColor(isException ? Color.Red : Color.White);
-                Console.WriteLine(message, bindings);
-
-                SetForegroundColor(orgCol);
+                WriteLineColored(message, isException ? Color.Red : Color.White, bindings);
             }
+        }
+
+        protected virtual void WriteColored(string format, Color? color = null, params object[] bindings)
+        {
+            Color orgCol = GetForegroundColor();
+            SetForegroundColor(color ?? orgCol);
+            Console.Write(format, bindings);
+            SetForegroundColor(orgCol);
+        }
+
+        protected virtual void WriteLineColored(string format, Color? color = null, params object[] bindings)
+        {
+            Color orgCol = GetForegroundColor();
+            SetForegroundColor(color ?? orgCol);
+            Console.WriteLine(format, bindings);
+            SetForegroundColor(orgCol);
         }
 
         public override string ServiceName => "Console";

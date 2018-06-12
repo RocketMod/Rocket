@@ -76,5 +76,11 @@ namespace Rocket.Core.Configuration
         ///     Defines if the game output should be ignored.
         /// </summary>
         public bool IgnoreGameLogs { get; set; } = true;
+
+        /// <summary>
+        ///     Determines console mode.
+        ///     Supported: "ANSI", "RGB", "DEFAULT", "COMPAT"
+        /// </summary>
+        public string ConsoleMode { get; set; } = "Default";
     }
 }

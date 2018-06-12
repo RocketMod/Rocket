@@ -101,9 +101,11 @@
     <Compile Include="Eventing\Event.cs" />
     <Compile Include="Eventing\EventNameAttribute.cs" />
     <Compile Include="Extensions\TypeConverterExtensions.cs" />
+    <Compile Include="Logging\AnsiConsoleLogger.cs" />
     <Compile Include="Logging\BaseLogger.cs" />
     <Compile Include="Logging\FileLogger.cs" />
     <Compile Include="Logging\LoggingExtensions.cs" />
+    <Compile Include="Logging\RgbConsoleLogger.cs" />
     <Compile Include="Migration\DirectoryMigration.cs" />
     <Compile Include="Migration\LogsMigration.cs" />
     <Compile Include="Logging\PluginLogger.cs" />
