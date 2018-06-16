@@ -28,6 +28,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.ComponentModel.Design.Serialization;
@@ -35,7 +36,7 @@ using System.Globalization;
 using System.Reflection;
 using System.Text;
 
-namespace System.Drawing
+namespace Rocket.API.Drawing
 {
     public class ColorConverter : TypeConverter
     {
@@ -74,7 +75,7 @@ namespace System.Drawing
                 KnownColor kc;
                 try
                 {
-                    kc = (KnownColor) Enum.Parse(typeof(KnownColor), s, true);
+                    kc = (KnownColor)Enum.Parse(typeof(KnownColor), s, true);
                 }
                 catch (Exception e)
                 {
@@ -122,7 +123,7 @@ namespace System.Drawing
                     if (s.Length < 6 || s.Length == 6 && sharp && hex)
                         argb &= 0x00FFFFFF;
                     else if (argb >> 24 == 0)
-                        argb |= unchecked((int) 0xFF000000);
+                        argb |= unchecked((int)0xFF000000);
                     result = Color.FromArgb(argb);
                 }
             }
@@ -136,7 +137,7 @@ namespace System.Drawing
                 // checking the number of components
                 int[] numComponents = new int[components.Length];
                 for (int i = 0; i < numComponents.Length; i++)
-                    numComponents[i] = (int) converter.ConvertFrom(context,
+                    numComponents[i] = (int)converter.ConvertFrom(context,
                         culture, components[i]);
 
                 switch (components.Length)
@@ -186,7 +187,7 @@ namespace System.Drawing
         {
             if (value is Color)
             {
-                Color color = (Color) value;
+                Color color = (Color)value;
                 if (destinationType == typeof(string))
                 {
                     if (color == Color.Empty)
@@ -224,7 +225,7 @@ namespace System.Drawing
                     }
                     else if (color.IsSystemColor)
                     {
-                        return new InstanceDescriptor(typeof(SystemColors).GetMember(color.Name)[0], null);
+                        return new InstanceDescriptor(typeof(Rocket.API.Drawing.SystemColors).GetMember(color.Name)[0], null);
                     }
                     else if (color.IsKnownColor)
                     {
@@ -233,8 +234,8 @@ namespace System.Drawing
                     else
                     {
                         MethodInfo met = typeof(Color).GetMethod("FromArgb",
-                            new[] {typeof(int), typeof(int), typeof(int), typeof(int)});
-                        return new InstanceDescriptor(met, new object[] {color.A, color.R, color.G, color.B});
+                            new[] { typeof(int), typeof(int), typeof(int), typeof(int) });
+                        return new InstanceDescriptor(met, new object[] { color.A, color.R, color.G, color.B });
                     }
             }
 
@@ -249,7 +250,7 @@ namespace System.Drawing
                     return cached;
                 Array colors = Array.CreateInstance(typeof(Color), KnownColors.ArgbValues.Length - 1);
                 for (int i = 1; i < KnownColors.ArgbValues.Length; i++)
-                    colors.SetValue(KnownColors.FromKnownColor((KnownColor) i), i - 1);
+                    colors.SetValue(KnownColors.FromKnownColor((KnownColor)i), i - 1);
 
                 Array.Sort(colors, 0, colors.Length, new CompareColors());
                 cached = new StandardValuesCollection(colors);
@@ -262,7 +263,7 @@ namespace System.Drawing
 
         private sealed class CompareColors : IComparer
         {
-            public int Compare(object x, object y) => string.Compare(((Color) x).Name, ((Color) y).Name);
+            public int Compare(object x, object y) => string.Compare(((Color)x).Name, ((Color)y).Name);
         }
     }
 }

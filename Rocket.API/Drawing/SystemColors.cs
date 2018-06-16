@@ -29,7 +29,7 @@
 //	Sebastien Pouliot  <sebastien@ximian.com>
 //
 
-namespace System.Drawing
+namespace Rocket.API.Drawing
 {
     public sealed class SystemColors
     {

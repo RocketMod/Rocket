@@ -9,12 +9,11 @@ using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
-#if NET35
-//backport Stream.CopyTo
-using Rocket.Compatibility;
-#endif
 using Rocket.Core.Configuration;
 using Rocket.Core.Plugins.NuGet.Client.V3;
+#if NET35
+using Theraot.Core;
+#endif
 
 namespace Rocket.Core.Plugins.NuGet
 {

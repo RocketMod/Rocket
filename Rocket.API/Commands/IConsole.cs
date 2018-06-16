@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Drawing;
+using Rocket.API.Drawing;
 using Rocket.API.Logging;
 using Rocket.API.User;
+using Color = Rocket.API.Drawing.Color;
 
 namespace Rocket.API.Commands
 {

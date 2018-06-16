@@ -28,7 +28,7 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
-namespace System.Drawing
+namespace Rocket.API.Drawing
 {
     public enum KnownColor
     {
@@ -207,4 +207,4 @@ namespace System.Drawing
         MenuBar = 173,
         MenuHighlight = 174
     }
-}
+}   

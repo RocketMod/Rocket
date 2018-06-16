@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using Rocket.API.Commands;
+using Color = Rocket.API.Drawing.Color;
 
 namespace Rocket.API.Player
 {

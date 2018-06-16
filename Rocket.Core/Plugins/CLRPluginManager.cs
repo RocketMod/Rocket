@@ -10,13 +10,15 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
-using Rocket.Compatibility;
 using Rocket.Core.Commands;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Eventing;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
+#if NET35
+using Theraot.Core;
+#endif
 
 namespace Rocket.Core.Plugins
 {

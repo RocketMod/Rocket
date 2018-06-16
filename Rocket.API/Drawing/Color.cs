@@ -33,9 +33,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 
+using System;
 using System.ComponentModel;
 
-namespace System.Drawing
+namespace Rocket.API.Drawing
 {
     [TypeConverter(typeof(ColorConverter))]
     [Serializable]
@@ -89,11 +90,11 @@ namespace System.Drawing
             }
         }
 
-        public bool IsKnownColor => (state & (short) ColorType.Known) != 0;
+        public bool IsKnownColor => (state & (short)ColorType.Known) != 0;
 
-        public bool IsSystemColor => (state & (short) ColorType.System) != 0;
+        public bool IsSystemColor => (state & (short)ColorType.System) != 0;
 
-        public bool IsNamedColor => (state & (short) (ColorType.Known | ColorType.Named)) != 0;
+        public bool IsNamedColor => (state & (short)(ColorType.Known | ColorType.Named)) != 0;
 
         internal long Value
         {
@@ -101,7 +102,7 @@ namespace System.Drawing
             {
                 // Optimization for known colors that were deserialized
                 // from an MS serialized stream.  
-                if (value == 0 && IsKnownColor) value = FromKnownColor((KnownColor) knownColor).ToArgb() & 0xFFFFFFFF;
+                if (value == 0 && IsKnownColor) value = FromKnownColor((KnownColor)knownColor).ToArgb() & 0xFFFFFFFF;
                 return value;
             }
             set => this.value = value;
@@ -113,12 +114,12 @@ namespace System.Drawing
         {
             CheckARGBValues(alpha, red, green, blue);
             Color color = new Color();
-            color.state = (short) ColorType.ARGB;
-            color.Value = (int) ((uint) alpha << 24) + (red << 16) + (green << 8) + blue;
+            color.state = (short)ColorType.ARGB;
+            color.Value = (int)((uint)alpha << 24) + (red << 16) + (green << 8) + blue;
             return color;
         }
 
-        public int ToArgb() => (int) Value;
+        public int ToArgb() => (int)Value;
 
         public static Color FromArgb(int alpha, Color baseColor)
             => FromArgb(alpha, baseColor.R, baseColor.G, baseColor.B);
@@ -129,19 +130,19 @@ namespace System.Drawing
         public static Color FromKnownColor(KnownColor color)
         {
             Color c;
-            short n = (short) color;
+            short n = (short)color;
             if (n <= 0 || n >= KnownColors.ArgbValues.Length)
             {
                 // This is what it returns!
                 c = FromArgb(0, 0, 0, 0);
-                c.state |= (short) ColorType.Named;
+                c.state |= (short)ColorType.Named;
             }
             else
             {
                 c = new Color();
-                c.state = (short) (ColorType.ARGB | ColorType.Known | ColorType.Named);
+                c.state = (short)(ColorType.ARGB | ColorType.Known | ColorType.Named);
                 if (n < 27 || n > 169)
-                    c.state |= (short) ColorType.System;
+                    c.state |= (short)ColorType.System;
                 c.Value = KnownColors.ArgbValues[n];
             }
 
@@ -153,7 +154,7 @@ namespace System.Drawing
         {
             try
             {
-                KnownColor kc = (KnownColor) Enum.Parse(typeof(KnownColor), name, true);
+                KnownColor kc = (KnownColor)Enum.Parse(typeof(KnownColor), name, true);
                 return FromKnownColor(kc);
             }
             catch
@@ -161,7 +162,7 @@ namespace System.Drawing
                 // This is what it returns! 	 
                 Color d = FromArgb(0, 0, 0, 0);
                 d.name = name;
-                d.state |= (short) ColorType.Named;
+                d.state |= (short)ColorType.Named;
                 return d;
             }
         }
@@ -217,7 +218,7 @@ namespace System.Drawing
             byte minval = Math.Min(R, Math.Min(G, B));
             byte maxval = Math.Max(R, Math.Max(G, B));
 
-            return (float) (maxval + minval) / 510;
+            return (float)(maxval + minval) / 510;
         }
 
         public float GetSaturation()
@@ -232,7 +233,7 @@ namespace System.Drawing
             if (sum > 255)
                 sum = 510 - sum;
 
-            return (float) (maxval - minval) / sum;
+            return (float)(maxval - minval) / sum;
         }
 
         public float GetHue()
@@ -240,8 +241,8 @@ namespace System.Drawing
             int r = R;
             int g = G;
             int b = B;
-            byte minval = (byte) Math.Min(r, Math.Min(g, b));
-            byte maxval = (byte) Math.Max(r, Math.Max(g, b));
+            byte minval = (byte)Math.Min(r, Math.Min(g, b));
+            byte maxval = (byte)Math.Max(r, Math.Max(g, b));
 
             if (maxval == minval)
                 return 0.0f;
@@ -274,7 +275,7 @@ namespace System.Drawing
         /// <remarks>
         ///     Returns the KnownColor enum value for this color, 0 if is not known.
         /// </remarks>
-        public KnownColor ToKnownColor() => (KnownColor) knownColor;
+        public KnownColor ToKnownColor() => (KnownColor)knownColor;
 
         /// <summary>
         ///     IsEmpty Property
@@ -283,15 +284,15 @@ namespace System.Drawing
         ///     Indicates transparent black. R,G,B = 0; A=0?
         /// </remarks>
 
-        public bool IsEmpty => state == (short) ColorType.Empty;
+        public bool IsEmpty => state == (short)ColorType.Empty;
 
-        public byte A => (byte) (Value >> 24);
+        public byte A => (byte)(Value >> 24);
 
-        public byte R => (byte) (Value >> 16);
+        public byte R => (byte)(Value >> 16);
 
-        public byte G => (byte) (Value >> 8);
+        public byte G => (byte)(Value >> 8);
 
-        public byte B => (byte) Value;
+        public byte B => (byte)Value;
 
         /// <summary>
         ///     Equals Method
@@ -303,7 +304,7 @@ namespace System.Drawing
         {
             if (!(obj is Color))
                 return false;
-            Color c = (Color) obj;
+            Color c = (Color)obj;
             return this == c;
         }
 
@@ -323,7 +324,7 @@ namespace System.Drawing
         /// </remarks>
         public override int GetHashCode()
         {
-            int hc = (int) (Value ^ (Value >> 32) ^ state ^ (knownColor >> 16));
+            int hc = (int)(Value ^ (Value >> 32) ^ state ^ (knownColor >> 16));
             if (IsNamedColor)
                 hc ^= Name.GetHashCode();
             return hc;

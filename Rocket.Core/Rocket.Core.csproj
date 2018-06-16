@@ -1,240 +1,48 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configurations>Debug;Release</Configurations>
-    <Platforms>AnyCPU</Platforms>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A7056AB1-C5F5-493B-8E47-DC42DE69961D}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rocket.Core</RootNamespace>
+    <TargetFrameworks>netstandard2.0;net35;net461</TargetFrameworks>
     <AssemblyName>Rocket.Core</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <RootNamespace>Rocket.Core</RootNamespace>
+    <OutputType>Library</OutputType>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup> 
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Unity" Version="2.1.505.2" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
+	<PackageReference Include="Theraot.Core" Version="1.0.5" />
+	<ProjectReference Include="..\Rocket.Compatibility\Rocket.Compatibility.csproj" />
+	<!-- Packages where only a specific version is compatible with NET35 -->
+	<PackageReference Include="RestSharp" Version="105.2.3" />
+	<PackageReference Include="SharpZipLib" Version="0.86.0" />
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net461' ">
+    <!-- Stuff which isn't compatible with NET35 -->
+	<PackageReference Include="System.Numerics.Vectors">
+      <Version>4.5.0</Version>
+    </PackageReference>
+	<PackageReference Include="RestSharp" Version="106.3.1" />
+	<PackageReference Include="SharpZipLib" Version="1.0.0-alpha2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Rocket.API\Rocket.API.csproj" />
+  </ItemGroup>
+  <PropertyGroup>
+    <PackageId>Rocket.Core</PackageId>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageTags>RocketMod Rocket UnityEngine UnrealEngine Plugin Framework</PackageTags>
+    <PackageLicenseUrl>https://github.com/RocketMod/Rocket/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageProjectUrl>https://rocketmod.net/</PackageProjectUrl>
+	<PackageAuthors>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;, Enes Sadık Özbek &lt;esozbek.me&gt;</PackageAuthors>
+    <PackageOwners>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;</PackageOwners>
+    <Version>0.0.0.0</Version>
+    <Authors>Sven Mawby &lt;fr34kyn01535@bam.yt&gt;, Enes Sadık Özbek &lt;esozbek.me&gt;</Authors>
+    <Company>RocketMod</Company>
+    <Description>RocketMod .NET Game Server Plugin Framework Core implementations</Description>
+    <Copyright>Sven Mawby &lt;fr34kyn01535@bam.yt&gt;</Copyright>
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0.0</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;NET35</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\Rocket.Core.xml</DocumentationFile>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE;NET35</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\Rocket.Core.xml</DocumentationFile>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="AsyncBridge.Net35, Version=0.0.0.0, Culture=neutral, PublicKeyToken=b3b1c0202c0d6a87, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\AsyncBridge.Net35.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
-      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Unity, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.1.505.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.2.1.505.2\lib\NET35\Microsoft.Practices.Unity.Configuration.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net35\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="RestSharp, Version=105.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\RestSharp.105.2.3\lib\net35\RestSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration.Install">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.Entity" />
-    <Reference Include="System.Runtime.Serialization">
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Threading, Version=1.0.2856.102, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\lib\System.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Commands\ProxyConfigCommand.cs" />
-    <Compile Include="Commands\CommandAliasAttribute.cs" />
-    <Compile Include="Commands\CommandAttribute.cs" />
-    <Compile Include="Commands\CommandAttributeWrapper.cs" />
-    <Compile Include="Commands\CommandCaller.cs" />
-    <Compile Include="Commands\CommandContext.cs" />
-    <Compile Include="Commands\CommandParameters.cs" />
-    <Compile Include="Commands\CommandsExtensions.cs" />
-    <Compile Include="Commands\CommandWrongUsageException.cs" />
-    <Compile Include="Commands\DefaultCommandHandler.cs" />
-    <Compile Include="Commands\PluginCommandProvider.cs" />
-    <Compile Include="Commands\ProxyCommand.cs" />
-    <Compile Include="Commands\ProxyCommandHandler.cs" />
-    <Compile Include="Commands\ProxyCommandProvider.cs" />
-    <Compile Include="Commands\RocketCommandProvider.cs" />
-    <Compile Include="Commands\RocketCommands\CommandHelp.cs" />
-    <Compile Include="Commands\RocketCommands\CommandLegacyMigration.cs" />
-    <Compile Include="Commands\RocketCommands\CommandMigrateConfig.cs" />
-    <Compile Include="Commands\RocketCommands\CommandPermission.cs" />
-    <Compile Include="Commands\RocketCommands\CommandPermissionGroup.cs" />
-    <Compile Include="Commands\RocketCommands\CommandRocket.cs" />
-    <Compile Include="Configuration\CommentAttribute.cs" />
-    <Compile Include="Configuration\ConfigArrayAttribute.cs" />
-    <Compile Include="Configuration\ConfigurationContextExtensions.cs" />
-    <Compile Include="Configuration\IRocketSettingsProvider.cs" />
-    <Compile Include="Configuration\RocketSettings.cs" />
-    <Compile Include="Configuration\RocketSettingsProvider.cs" />
-    <Compile Include="Configuration\SetupAttribute.cs" />
-    <Compile Include="DependencyInjection\DontAutoRegister.cs" />
-    <Compile Include="Entities\EntityExtensions.cs" />
-    <Compile Include="Eventing\Event.cs" />
-    <Compile Include="Eventing\EventNameAttribute.cs" />
-    <Compile Include="Extensions\TypeConverterExtensions.cs" />
-    <Compile Include="Logging\AnsiConsoleLogger.cs" />
-    <Compile Include="Logging\BaseLogger.cs" />
-    <Compile Include="Logging\ConsoleLogger.cs" />
-    <Compile Include="Logging\FileLogger.cs" />
-    <Compile Include="Logging\LoggingExtensions.cs" />
-    <Compile Include="Logging\RgbConsoleLogger.cs" />
-    <Compile Include="Migration\DirectoryMigration.cs" />
-    <Compile Include="Migration\LogsMigration.cs" />
-    <Compile Include="Logging\PluginLogger.cs" />
-    <Compile Include="Logging\ProxyLogger.cs" />
-    <Compile Include="I18N\LocalizationExtensions.cs" />
-    <Compile Include="Migration\IMigrationStep.cs" />
-    <Compile Include="Migration\LegacyPermissions\Permission.cs" />
-    <Compile Include="Migration\LegacyPermissions\RocketPermissions.cs" />
-    <Compile Include="Migration\LegacyPermissions\RocketPermissionsGroup.cs" />
-    <Compile Include="Migration\PackagesMigration.cs" />
-    <Compile Include="Migration\PermissionsMigration.cs" />
-    <Compile Include="Migration\LegacyTranslations\Translation.cs" />
-    <Compile Include="Migration\TranslationsMigration.cs" />
-    <Compile Include="Permissions\FullPermitPermissionProvider.cs" />
-    <Compile Include="Permissions\GroupPermissionSection.cs" />
-    <Compile Include="Permissions\NotEnoughPermissionsException.cs" />
-    <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationBase.cs" />
-    <Compile Include="Configuration\Json\JsonConfiguration.cs" />
-    <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationSection.cs" />
-    <Compile Include="Configuration\Xml\XmlConfiguration.cs" />
-    <Compile Include="Configuration\ConfigurationContext.cs" />
-    <Compile Include="Eventing\EventAction.cs" />
-    <Compile Include="Eventing\EventHandler.cs" />
-    <Compile Include="Eventing\GenericCancellableEvent.cs" />
-    <Compile Include="Eventing\GenericEvent.cs" />
-    <Compile Include="Eventing\IAutoRegisteredEventListener.cs" />
-    <Compile Include="Permissions\ConsolePermissionProvider.cs" />
-    <Compile Include="Permissions\PermissionSection.cs" />
-    <Compile Include="Permissions\PlayerPermissionSection.cs" />
-    <Compile Include="Permissions\ProxyPermissionProvider.cs" />
-    <Compile Include="Player\BasePlayer.cs" />
-    <Compile Include="Player\Events\PlayerDamageEvent.cs" />
-    <Compile Include="Player\Events\PlayerMoveEvent.cs" />
-    <Compile Include="Player\Events\PlayerRespawnEvent.cs" />
-    <Compile Include="Player\Events\PlayerBanEvent.cs" />
-    <Compile Include="Player\Events\PlayerChatEvent.cs" />
-    <Compile Include="Player\Events\PlayerConnectedEvent.cs" />
-    <Compile Include="Player\Events\PlayerDisconnectedEvent.cs" />
-    <Compile Include="Player\Events\PlayerKickEvent.cs" />
-    <Compile Include="Player\Events\PlayerUnbanEvent.cs" />
-    <Compile Include="Player\PlayerExtensions.cs" />
-    <Compile Include="Scheduler\SchedulerExtensions.cs" />
-    <Compile Include="Scheduler\TaskExtensions.cs" />
-    <Compile Include="ServiceProxies\DontProxyAttribute.cs" />
-    <Compile Include="User\Events\UserUnbanEvent.cs" />
-    <Compile Include="User\Events\UserEvent.cs" />
-    <Compile Include="Player\PlayerTypeConverter.cs" />
-    <Compile Include="DependencyInjection\UnityDescriptorContext.cs" />
-    <Compile Include="Plugins\CLRPluginManager.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetClientV3.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetContext.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetPackage.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetPackageVersionRegistration.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetPackageVersion.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetQuery.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetQueryResult.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetRepository.cs" />
-    <Compile Include="Plugins\NuGet\Client\V3\NuGetResource.cs" />
-    <Compile Include="Plugins\NuGet\NuGetPluginManager.cs" />
-    <Compile Include="Plugins\NuGet\Repository.cs" />
-    <Compile Include="Plugins\ProxyPluginManager.cs" />
-    <Compile Include="ServiceProxies\ServicePriority.cs" />
-    <Compile Include="ServiceProxies\ServicePriorityAttribute.cs" />
-    <Compile Include="ServiceProxies\ServicePriorityComparer.cs" />
-    <Compile Include="Implementation\Events\ImplementationReadyEvent.cs" />
-    <Compile Include="User\Events\UserBanEvent.cs" />
-    <Compile Include="User\Events\UserChatEvent.cs" />
-    <Compile Include="User\Events\UserConnectedEvent.cs" />
-    <Compile Include="Player\Events\PlayerDeathEvent.cs" />
-    <Compile Include="User\Events\UserDisconnectedEvent.cs" />
-    <Compile Include="Player\Events\PlayerEvent.cs" />
-    <Compile Include="User\Events\UserKickEvent.cs" />
-    <Compile Include="Commands\Events\PreCommandExecutionEvent.cs" />
-    <Compile Include="Player\Events\PlayerPreConnectEvent.cs" />
-    <Compile Include="Plugins\Events\PluginEvent.cs" />
-    <Compile Include="Plugins\Events\PluginLoadedEvent.cs" />
-    <Compile Include="Plugins\Events\PluginLoadEvent.cs" />
-    <Compile Include="Plugins\Events\PluginManagerInitEvent.cs" />
-    <Compile Include="Plugins\Events\PluginUnloadedEvent.cs" />
-    <Compile Include="Plugins\Events\PluginUnloadEvent.cs" />
-    <Compile Include="Extensions\ReflectionExtensions.cs" />
-    <Compile Include="Extensions\StreamExtensions.cs" />
-    <Compile Include="Logging\FormattedLogger.cs" />
-    <Compile Include="Eventing\EventManager.cs" />
-    <Compile Include="DependencyInjection\RegistrationByConvention.cs" />
-    <Compile Include="DependencyInjection\UnityDependencyContainer.cs" />
-    <Compile Include="DependencyInjection\OrderedParametersOverride.cs" />
-    <Compile Include="I18N\Translations.cs" />
-    <Compile Include="Permissions\PermissionGroup.cs" />
-    <Compile Include="Permissions\ConfigurationPermissionProvider.cs" />
-    <Compile Include="Plugins\Plugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Configuration\JsonNetBase\JsonNetConfigurationElement.cs" />
-    <Compile Include="Properties\CommonAssemblyInfo.cs" />
-    <Compile Include="Properties\DependencyRegistrator.cs" />
-    <Compile Include="Plugins\DllPluginManager.cs" />
-    <Compile Include="ServiceProxies\ServiceProxy.cs" />
-    <Compile Include="Scheduler\TaskScheduleEvent.cs" />
-    <Compile Include="User\ProxyUserManager.cs" />
-    <Compile Include="User\DefaultConsole.cs" />
-    <Compile Include="User\UserExtensions.cs" />
-    <Compile Include="Util\ColorUtility.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
-      <Project>{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}</Project>
-      <Name>Rocket.API</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Rocket.Compatibility\Rocket.Compatibility.csproj">
-      <Project>{01263b0d-9ce3-4d5a-afcb-165592ef24b5}</Project>
-      <Name>Rocket.Compatibility</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
-    <None Include="Rocket.Core.nuspec">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

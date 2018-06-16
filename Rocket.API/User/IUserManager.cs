@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+using Rocket.API.Drawing;
 using Rocket.API.DependencyInjection;
+using Color = Rocket.API.Drawing.Color;
 
 namespace Rocket.API.User
 {
