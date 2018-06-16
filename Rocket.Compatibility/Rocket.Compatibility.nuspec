@@ -15,5 +15,7 @@
   </metadata>
   <files>
     <file src="Rocket.Compatibility.dll" target="lib/net35" />
+    <file src="AsyncBridge.Net35.dll" target="lib/net35" />
+    <file src="System.Threading.dll" target="lib/net35" />		
   </files>
 </package>
