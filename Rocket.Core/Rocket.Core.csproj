@@ -38,6 +38,7 @@
 	<PackageAuthors>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;, Enes Sadık Özbek &lt;esozbek.me&gt;</PackageAuthors>
     <PackageOwners>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;</PackageOwners>
     <Version>0.0.0.0</Version>
+	<PackageVersion>0.0.0.0</PackageVersion>
     <Authors>Sven Mawby &lt;fr34kyn01535@bam.yt&gt;, Enes Sadık Özbek &lt;esozbek.me&gt;</Authors>
     <Company>RocketMod</Company>
     <Description>RocketMod .NET Game Server Plugin Framework Core implementations</Description>
