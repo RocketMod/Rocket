@@ -12,7 +12,7 @@ namespace Rocket.Core.User
     [DontAutoRegister]
     public class DefaultConsole : IConsole
     {
-        private readonly ConsoleLogger consoleLogger;
+        private ConsoleLogger consoleLogger => (ConsoleLogger)Container.Resolve<ILogger>("console_logger");
         public IDependencyContainer Container { get; }
 
         public DefaultConsole(IDependencyContainer container, IUserManager userManager)
@@ -21,7 +21,6 @@ namespace Rocket.Core.User
             SessionConnectTime = DateTime.Now;
             BaseLogger.SkipTypeFromLogging(GetType());
             Container = container.CreateChildContainer();
-            consoleLogger = (ConsoleLogger) container.Resolve<ILogger>("console_logger");
         }
 
         public string Id => "Console";

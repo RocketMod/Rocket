@@ -20,7 +20,8 @@ namespace Rocket.Console
         public ConsoleHost(IRuntime runtime)
         {
             logger = runtime.Container.Resolve<ILogger>();
-            Console = new DefaultConsole(runtime.Container, runtime.Container.Resolve<IUserManager>("host"));
+            runtime.Container.TryResolve<IUserManager>("host", out var userMgr);
+            Console = new DefaultConsole(runtime.Container, userMgr);
         }
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "Rocket.Console";
