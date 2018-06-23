@@ -16,6 +16,7 @@ namespace Rocket.Core.Logging
         {
             typeof(BaseLogger),
             typeof(ProxyLogger),
+            typeof(FormattedLogger),
             typeof(LoggingExtensions)
         };
 

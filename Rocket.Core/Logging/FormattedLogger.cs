@@ -10,7 +10,10 @@ namespace Rocket.Core.Logging
     {
         protected static readonly object ConsoleLock = new object();
 
-        protected FormattedLogger(IDependencyContainer container) : base(container) { }
+        protected FormattedLogger(IDependencyContainer container) : base(container)
+        {
+            SkipTypeFromLogging(GetType());
+        }
 
         public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
                                    params object[] bindings)
