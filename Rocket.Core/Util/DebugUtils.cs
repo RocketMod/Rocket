@@ -8,11 +8,11 @@ namespace Rocket.Core.Util
     {
         public static void WaitForDebugger(bool autoBreak = true)
         {
-            Console.WriteLine("Waiting for debugger");
+            Console.Write("Waiting for debugger");
             while (!Debugger.IsAttached)
             {
                 Console.Write(".");
-                Thread.Sleep(500);
+                Thread.Sleep(750);
             }
             Console.WriteLine();
 
