@@ -94,7 +94,7 @@ namespace Rocket.Core.Plugins.NuGet
             if (isUpdate != PluginExists(repoName, packageName))
                 return false;
 
-            if(isUpdate)
+            if (isUpdate)
                 Uninstall(repoName, packageName);
 
             var configRepo = Repositories
@@ -237,13 +237,30 @@ namespace Rocket.Core.Plugins.NuGet
                         ze = entry;
                         break;
                     }
-#else
-            foreach (ZipEntry entry in zf)
-                if (entry.Name.StartsWith("lib") && entry.Name.EndsWith(".dll"))
+
+#elif NETSTANDARD2_0
+                foreach (ZipEntry entry in zf)
+                    if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
+                    {
+                        ze = entry;
+                        break;
+                    }
+#elif NET461 || NETSTANDARD2_0
+#if NETSTANDARD2_0
+                if(ze == null) 
                 {
-                    ze = entry;
-                    break;
+#endif
+                    foreach (ZipEntry entry in zf)
+                        if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
+                        {
+                            ze = entry;
+                            break;
+                        }
+#if NETSTANDARD2_0
                 }
+#endif
+#else
+#error Not supported runtime
 #endif
 
                 if (ze == null)
