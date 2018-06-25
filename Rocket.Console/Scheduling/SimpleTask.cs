@@ -3,29 +3,28 @@ using System.Linq;
 using Rocket.API;
 using Rocket.API.Scheduler;
 
-namespace Rocket.Console
+namespace Rocket.Console.Scheduling
 {
     public class SimpleTask : ITask
     {
-        private static volatile int taskIds;
-        internal SimpleTask(ITaskScheduler scheduler, ILifecycleObject owner, Action action,
+        internal SimpleTask(int taskId, string taskName, ITaskScheduler scheduler, ILifecycleObject owner, Action action,
                             ExecutionTargetContext executionTarget)
         {
+            Name = taskName;
             Owner = owner;
             Action = action;
             ExecutionTarget = executionTarget;
             Scheduler = scheduler;
-
-            TaskId = ++taskIds;
+            TaskId = taskId;
         }
         
         public int TaskId { get; }
-        public string Name => null;
+        public string Name { get; }
 
-        public TimeSpan? Period => null;
-        public DateTime? StartTime => null;
-        public DateTime? EndTime => null;
-        public DateTime? LastRunTime => null;
+        public TimeSpan? Period { get; internal set; }
+        public DateTime? StartTime { get; internal set; }
+        public DateTime? EndTime { get; internal set; }
+        public DateTime? LastRunTime { get; internal set; }
         public ILifecycleObject Owner { get; }
 
         public Action Action { get; }

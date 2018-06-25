@@ -46,11 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Scheduling\AsyncThreadPool.cs" />
     <Compile Include="ConsoleHost.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />
-    <Compile Include="SimpleTask.cs" />
-    <Compile Include="SimpleTaskScheduler.cs" />
+    <Compile Include="Scheduling\SimpleTask.cs" />
+    <Compile Include="Scheduling\SimpleTaskScheduler.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
@@ -69,5 +70,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
