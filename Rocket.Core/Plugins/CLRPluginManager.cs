@@ -108,8 +108,8 @@ namespace Rocket.Core.Plugins
 
             var asm = plugin.GetType().Assembly;
             string pluginDir = plugin.WorkingDirectory;
-            if (!Directory.Exists(pluginDir))
-                Directory.CreateDirectory(pluginDir);
+            //if (!Directory.Exists(pluginDir))
+            //    Directory.CreateDirectory(pluginDir);
 
             foreach (string s in asm.GetManifestResourceNames())
                 using (Stream stream = asm.GetManifestResourceStream(s))
