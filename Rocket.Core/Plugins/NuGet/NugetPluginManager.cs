@@ -179,13 +179,18 @@ namespace Rocket.Core.Plugins.NuGet
         public virtual bool LoadPlugin(string repo, string pluginName)
         {
             var pkg = GetNugetPackageFile(repo, pluginName);
-            var assemblies = LoadAssembliesFromNugetPackage(pkg);
+            if (pkg == null)
+                throw new Exception($"Plugin \"{pluginName}\" was not found in repo: \"{repo}\".");
 
+            var assemblies = LoadAssembliesFromNugetPackage(pkg);
             bool success = false;
             foreach (var asm in assemblies)
             {
                 if (LoadPluginFromAssembly(asm, out _) != null)
+                {
                     success = true;
+                    break; //only load one plugin per package
+                }
             }
 
             return success;
@@ -243,22 +248,16 @@ namespace Rocket.Core.Plugins.NuGet
             using (Stream fs = new FileStream(nugetPackageFile, FileMode.Open))
             {
                 ZipFile zf = new ZipFile(fs);
-                ZipEntry ze = null;
+                List<ZipEntry> assemblies = new List<ZipEntry>();
 #if NET35
                 foreach (ZipEntry entry in zf)
                     if (entry.Name.ToLower().StartsWith("lib/net35") && entry.Name.EndsWith(".dll"))
-                    {
-                        ze = entry;
-                        break;
-                    }
+                        assemblies.Add(entry);
 
 #elif NETSTANDARD2_0
                 foreach (ZipEntry entry in zf)
                     if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
-                    {
-                        ze = entry;
-                        break;
-                    }
+                        entries.Add(entry);
 #elif NET461 || NETSTANDARD2_0
 #if NETSTANDARD2_0
                 if(ze == null) 
@@ -266,10 +265,7 @@ namespace Rocket.Core.Plugins.NuGet
 #endif
                     foreach (ZipEntry entry in zf)
                         if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
-                        {
-                            ze = entry;
-                            break;
-                        }
+                        entries.Add(entry);
 #if NETSTANDARD2_0
                 }
 #endif
@@ -277,20 +273,23 @@ namespace Rocket.Core.Plugins.NuGet
 #error Not supported runtime
 #endif
 
-                if (ze == null)
-                    throw new Exception("No dll found in package");
+                if (assemblies.Count == 0)
+                    throw new Exception("No compatible assemblies were found.");
 
-                Stream inputStream = zf.GetInputStream(ze);
-                MemoryStream ms = new MemoryStream();
-                inputStream.CopyTo(ms);
+                foreach (var ze in assemblies)
+                {
+                    Stream inputStream = zf.GetInputStream(ze);
+                    MemoryStream ms = new MemoryStream();
+                    inputStream.CopyTo(ms);
 
-                var asm = Assembly.Load(ms.ToArray());
+                    var asm = Assembly.Load(ms.ToArray());
 
-                ms.Close();
-                inputStream.Close();
-                zf.Close();
+                    ms.Close();
+                    inputStream.Close();
+                    zf.Close();
 
-                return new List<Assembly> { asm };
+                    yield return asm;
+                }
             }
         }
     }
