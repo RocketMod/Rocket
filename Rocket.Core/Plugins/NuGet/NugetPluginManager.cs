@@ -257,7 +257,7 @@ namespace Rocket.Core.Plugins.NuGet
 #elif NETSTANDARD2_0
                 foreach (ZipEntry entry in zf)
                     if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
-                        entries.Add(entry);
+                        assemblies.Add(entry);
 #elif NET461 || NETSTANDARD2_0
 #if NETSTANDARD2_0
                 if(ze == null) 
@@ -265,7 +265,7 @@ namespace Rocket.Core.Plugins.NuGet
 #endif
                     foreach (ZipEntry entry in zf)
                         if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
-                        entries.Add(entry);
+                        assemblies.Add(entry);
 #if NETSTANDARD2_0
                 }
 #endif
