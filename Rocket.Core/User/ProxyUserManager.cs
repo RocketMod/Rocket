@@ -4,21 +4,20 @@ using Rocket.API.Drawing;
 using System.Linq;
 using Rocket.API.DependencyInjection;
 using Rocket.API.User;
+using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.User
 {
-    public class ProxyUserManager : IUserManager, IServiceProxy<IUserManager>
+    public class ProxyUserManager : ServiceProxy<IUserManager>, IUserManager
     {
         private readonly IDependencyContainer container;
 
-        public ProxyUserManager(IDependencyContainer container)
+        public ProxyUserManager(IDependencyContainer container) : base(container)
         {
             this.container = container;
         }
 
         public IEnumerable<IUser> OnlineUsers => ProxiedServices.SelectMany(c => c.OnlineUsers);
-
-        public IEnumerable<IUserManager> ProxiedServices => container.ResolveAll<IUserManager>();
 
         public bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
         {

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Rocket.API.DependencyInjection;
+using Rocket.API.User;
+using Rocket.Core.User;
 
 namespace Rocket.Core.ServiceProxies
 {
@@ -24,6 +27,7 @@ namespace Rocket.Core.ServiceProxies
                 List<T> providers = Container
                                     .ResolveAll<T>()
                                     .Where(c => !c.GetType().GetCustomAttributes(typeof(DontProxyAttribute), false).Any())
+                                    .Distinct()
                                     .ToList();
 
                 ServicePriorityComparer.Sort(providers, true);
