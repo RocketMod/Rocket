@@ -62,7 +62,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string[] Aliases => null;
         public string Summary => "Installs a plugin";
         public string Description => null;
-        public string Syntax => "<repo> <plugin> [version]";
+        public string Syntax => "<repo> <plugin> [version] [-Pre]";
         public IChildCommand[] ChildCommands => null;
 
         public bool SupportsUser(Type user)
@@ -77,9 +77,21 @@ namespace Rocket.Core.Commands.RocketCommands
 
             NuGetPluginManager pm = (NuGetPluginManager) context.Container.Resolve<IPluginManager>("nuget_plugins");
 
-            string repoName = context.Parameters.Get<string>(0);
-            string pluginName = context.Parameters.Get<string>(1);
-            context.Parameters.TryGet(2, out string version);
+            var args = context.Parameters.ToList();
+
+            string repoName = args[0];
+            string pluginName = args[1];
+            string version = null;
+            bool isPre = false;
+
+            if (args.Contains("-Pre"))
+            {
+                isPre = true;
+                args.Remove("-Pre");
+            }
+
+            if (args.Count > 2)
+                version = args[2];
 
             var repo = pm.Repositories.FirstOrDefault(c
                 => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
@@ -90,20 +102,21 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            if (!pm.Install(repoName, pluginName, version))
+            var result = pm.Install(repoName, pluginName, version, isPre);
+            if (result != NuGetInstallResult.Success)
             {
-                context.User.SendMessage("Failed to install: " + pluginName, Color.DarkRed);
+                context.User.SendMessage($"Failed to install \"{pluginName}\": " + result, Color.DarkRed);
                 return;
             }
 
             if (!pm.LoadPlugin(repoName, pluginName))
             {
-                context.User.SendMessage("Failed to initialize: " + pluginName, Color.DarkRed);
+                context.User.SendMessage($"Failed to initialize \"{pluginName}\"", Color.DarkRed);
                 pm.Uninstall(repoName, pluginName);
                 return;
             }
 
-            context.User.SendMessage("Successfully installed: " + pluginName, Color.DarkGreen);
+            context.User.SendMessage($"Successfully installed \"{pluginName}\"", Color.DarkGreen);
         }
     }
 
@@ -142,11 +155,11 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (!pm.Uninstall(repoName, pluginName))
             {
-                context.User.SendMessage("Failed to uninstall: " + pluginName, Color.DarkRed);
+                context.User.SendMessage($"Failed to uninstall \"{pluginName}\"", Color.DarkRed);
                 return;
             }
 
-            context.User.SendMessage("Successfully uninstalled: " + pluginName, Color.DarkGreen);
+            context.User.SendMessage($"Successfully uninstalled  \"{pluginName}\"", Color.DarkGreen);
             context.User.SendMessage("Restart server to finish uninstall.", Color.Red);
         }
     }
@@ -157,7 +170,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string[] Aliases => null;
         public string Summary => "Updates plugin";
         public string Description => null;
-        public string Syntax => "<repo> <plugin> [version]";
+        public string Syntax => "<repo> <plugin> [version] [-Pre]";
         public IChildCommand[] ChildCommands => null;
 
         public bool SupportsUser(Type user)
@@ -172,9 +185,21 @@ namespace Rocket.Core.Commands.RocketCommands
 
             NuGetPluginManager pm = (NuGetPluginManager) context.Container.Resolve<IPluginManager>("nuget_plugins");
 
-            string repoName = context.Parameters.Get<string>(0);
-            string pluginName = context.Parameters.Get<string>(1);
-            context.Parameters.TryGet(2, out string version);
+            var args = context.Parameters.ToList();
+
+            string repoName = args[0];
+            string pluginName = args[1];
+            string version = null;
+            bool isPre = false;
+
+            if (args.Contains("-Pre"))
+            {
+                isPre = true;
+                args.Remove("-Pre");
+            }
+
+            if (args.Count > 2)
+                version = args[2];
 
             var repo = pm.Repositories.FirstOrDefault(c
                 => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
@@ -185,13 +210,14 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            if (!pm.Update(repoName, pluginName, version))
+            var result = pm.Update(repoName, pluginName, version, isPre);
+            if (result != NuGetInstallResult.Success)
             {
-                context.User.SendMessage("Failed to update: " + pluginName, Color.DarkRed);
+                context.User.SendMessage($"Failed to update \"{pluginName}\": " + result, Color.DarkRed);
                 return;
             }
 
-            context.User.SendMessage("Successfully updated: " + pluginName, Color.DarkGreen);
+            context.User.SendMessage($"Successfully updated \"{pluginName}\"", Color.DarkGreen);
             context.User.SendMessage("Restart server to finish update.", Color.Red);
         }
     }

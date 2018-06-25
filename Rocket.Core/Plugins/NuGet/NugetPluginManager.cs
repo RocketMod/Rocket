@@ -55,19 +55,29 @@ namespace Rocket.Core.Plugins.NuGet
                         {
                             Name = "universal",
                             Url = "http://nuget.rocketmod.net/",
-                            Enabled = true
+                            Enabled = true,
+                            Type = "Plugins"
                         },
                         new Repository
                         {
                             Name = "unturned",
                             Url = "http://unturned.nuget.rocketmod.net/",
-                            Enabled = false
+                            Enabled = false,
+                            Type = "Plugins"
                         },
                         new Repository
                         {
                             Name = "eco",
                             Url = "http://eco.nuget.rocketmod.net/",
-                            Enabled = false
+                            Enabled = false,
+                            Type = "Plugins"
+                        },
+                        new Repository
+                        {
+                            Name = "nuget",
+                            Url = "",
+                            Enabled = true,
+                            Type = "Libraries"
                         }
                     }
                 });
@@ -79,20 +89,20 @@ namespace Rocket.Core.Plugins.NuGet
         public virtual IEnumerable<Repository> Repositories
             => Configuration["Repositories"].Get<Repository[]>();
 
-        public bool Update(string repoName, string packageName, string version = null)
+        public NuGetInstallResult Update(string repoName, string packageName, string version = null, bool isPreRelease = false)
         {
-            return InstallInternal(repoName, packageName, version, true);
+            return InstallInternal(repoName, packageName, version, isPreRelease, true);
         }
 
-        public bool Install(string repoName, string packageName, string version = null)
+        public NuGetInstallResult Install(string repoName, string packageName, string version = null, bool isPreRelease = false)
         {
-            return InstallInternal(repoName, packageName, version);
+            return InstallInternal(repoName, packageName, version, isPreRelease);
         }
 
-        protected virtual bool InstallInternal(string repoName, string packageName, string version = null, bool isUpdate = false)
+        protected virtual NuGetInstallResult InstallInternal(string repoName, string packageName, string version = null, bool isPreRelease = false, bool isUpdate = false)
         {
             if (isUpdate != PluginExists(repoName, packageName))
-                return false;
+                return NuGetInstallResult.PackageNotFound;
 
             if (isUpdate)
                 Uninstall(repoName, packageName);
@@ -110,12 +120,12 @@ namespace Rocket.Core.Plugins.NuGet
             List<NuGetPackage> packages = client.QueryPackages(repo, new NuGetQuery
             {
                 Name = packageName
-            })
+            }, isPreRelease)
             //Todo: remove after queries are fixed                                    
             .Where(c => c.Id.ToLower().Contains(packageName.ToLower())).ToList();
 
             if (packages.Count == 0)
-                return false;
+                return NuGetInstallResult.PackageNotFound;
 
             if (packages.Count > 1)
                 throw new Exception("Multiple packages matched.");
@@ -126,7 +136,7 @@ namespace Rocket.Core.Plugins.NuGet
                 package.Versions.FirstOrDefault(c => c.Version.Equals(version, StringComparison.OrdinalIgnoreCase));
 
             if (targetVersion == null)
-                throw new Exception("Version not found");
+                return NuGetInstallResult.VersionNotFound;
 
             byte[] data = client.DownloadPackage(repo, targetVersion);
 
@@ -136,7 +146,7 @@ namespace Rocket.Core.Plugins.NuGet
                 Directory.CreateDirectory(targetDir);
 
             File.WriteAllBytes(Path.Combine(targetDir, uid + ".nupkg"), data);
-            return true;
+            return NuGetInstallResult.Success;
         }
 
         public virtual bool Uninstall(string repoName, string packageName, string version = null)
@@ -188,7 +198,11 @@ namespace Rocket.Core.Plugins.NuGet
 
         public virtual string GetNugetPackageFile(string repo, string pluginName)
         {
-            foreach (var dir in Directory.GetDirectories(Path.Combine(RepositoriesDirectory, repo)))
+            var repoDir = Path.Combine(RepositoriesDirectory, repo);
+            if (!Directory.Exists(repoDir))
+                return null;
+
+            foreach (var dir in Directory.GetDirectories(repoDir))
             {
                 var dirName = new DirectoryInfo(dir).Name;
                 if (dirName.ToLower().StartsWith(pluginName.ToLower() + "."))

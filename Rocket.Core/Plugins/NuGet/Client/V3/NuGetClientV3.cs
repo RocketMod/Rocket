@@ -24,10 +24,13 @@ namespace Rocket.Core.Plugins.NuGet.Client.V3
             return repo;
         }
 
-        public IEnumerable<NuGetPackage> QueryPackages(NuGetRepository repository, NuGetQuery query = null)
+        public IEnumerable<NuGetPackage> QueryPackages(NuGetRepository repository, NuGetQuery query = null, bool isPreRelease = false)
         {
             var client = GetRestClient(repository.BaseUrl);
-            var request = new RestRequest(query == null ? "query" : "query?q={QUERY}", Method.GET);
+            var prereleaseSuffix = isPreRelease ? (query == null ? "?" : "&") + "prerelease=true" : "";
+
+            RestRequest request = new RestRequest(query == null ? "query" + prereleaseSuffix: "query?q={QUERY}" + prereleaseSuffix, Method.GET);
+
             if (query != null)
                 request.AddParameter("QUERY", query.Name, ParameterType.UrlSegment);
 
