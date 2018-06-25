@@ -46,7 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleUserManager.cs" />
     <Compile Include="ConsoleHost.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\DependencyRegistrator.cs" />

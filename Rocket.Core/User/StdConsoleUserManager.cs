@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rocket.API.Drawing;
 using Rocket.API;
 using Rocket.API.Commands;
+using Rocket.API.Drawing;
 using Rocket.API.User;
 
-namespace Rocket.Console
+namespace Rocket.Core.User
 {
-    public class ConsoleUserManager : IUserManager
+    public class StdConsoleUserManager : IUserManager
     {
         private readonly IConsole console;
 
-        public ConsoleUserManager(IHost impl)
+        public StdConsoleUserManager(IHost host)
         {
-            console = impl.Console;
+            console = host.Console;
         }
 
         public IEnumerable<IUser> OnlineUsers => new List<IUser> { console };

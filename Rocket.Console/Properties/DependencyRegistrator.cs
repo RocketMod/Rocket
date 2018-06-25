@@ -2,6 +2,7 @@
 using Rocket.API.DependencyInjection;
 using Rocket.API.Scheduler;
 using Rocket.API.User;
+using Rocket.Core.User;
 
 namespace Rocket.Console.Properties
 {
@@ -9,9 +10,9 @@ namespace Rocket.Console.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
-            container.RegisterSingletonType<IHost, ConsoleHost>();
             container.RegisterSingletonType<ITaskScheduler, SimpleTaskScheduler>();
-            container.RegisterSingletonType<IUserManager, ConsoleUserManager>("host");
+            container.RegisterSingletonType<IHost, ConsoleHost>();
+            container.RegisterSingletonType<IUserManager, StdConsoleUserManager>("host", "stdconsole");
         }
     }
 }

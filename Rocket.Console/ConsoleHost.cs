@@ -15,14 +15,13 @@ namespace Rocket.Console
 {
     public class ConsoleHost : IHost
     {
-        private readonly ILogger logger;
-
         public ConsoleHost(IRuntime runtime)
         {
-            logger = runtime.Container.Resolve<ILogger>();
-            runtime.Container.TryResolve<IUserManager>("host", out var userMgr);
-            Console = new DefaultConsole(runtime.Container, userMgr);
+            Console = new StdConsole(runtime.Container);
         }
+
+        private ILogger logger;
+
         public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "Rocket.Console";
 
@@ -30,6 +29,8 @@ namespace Rocket.Console
 
         public void Init(IRuntime runtime)
         {
+            logger = runtime.Container.Resolve<ILogger>();
+
             runtime.Container.Resolve<IPluginManager>().Init();
             ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
 
@@ -62,7 +63,7 @@ namespace Rocket.Console
 
         public void Reload() { }
 
-        public IConsole Console { get; private set; }
+        public IConsole Console { get; set; }
 
         public bool IsAlive => true;
 

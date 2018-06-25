@@ -10,14 +10,13 @@ using Rocket.Core.Logging;
 namespace Rocket.Core.User
 {
     [DontAutoRegister]
-    public class DefaultConsole : IConsole
+    public class StdConsole : IConsole
     {
         private ConsoleLogger consoleLogger => (ConsoleLogger)Container.Resolve<ILogger>("console_logger");
         public IDependencyContainer Container { get; }
 
-        public DefaultConsole(IDependencyContainer container, IUserManager userManager)
+        public StdConsole(IDependencyContainer container)
         {
-            UserManager = userManager;
             SessionConnectTime = DateTime.Now;
             BaseLogger.SkipTypeFromLogging(GetType());
             Container = container.CreateChildContainer();
@@ -27,7 +26,8 @@ namespace Rocket.Core.User
         public string Name => "Console";
         public string IdentityType => IdentityTypes.Console;
 
-        public IUserManager UserManager { get; }
+        public IUserManager UserManager => Container.Resolve<IUserManager>("stdconsole");
+
         public bool IsOnline => true;
         public DateTime SessionConnectTime { get; }
         public DateTime? SessionDisconnectTime => null;
@@ -38,7 +38,9 @@ namespace Rocket.Core.User
             => WriteLine(LogLevel.Information, format, Color.White, bindings);
 
         public virtual void WriteLine(string format, Color? color = null, params object[] bindings)
-            => WriteLine(LogLevel.Information, format, color, bindings);
+        {
+            WriteLine(LogLevel.Information, format, color, bindings);
+        }
 
         public virtual void Write(string format, Color? color = null, params object[] bindings)
         {
@@ -51,7 +53,9 @@ namespace Rocket.Core.User
         }
 
         public virtual void WriteLine(LogLevel level, string format, params object[] bindings)
-            => WriteLine(LogLevel.Information, format, Color.White, bindings);
+        {
+            WriteLine(LogLevel.Information, format, Color.White, bindings);
+        }
 
         public virtual void WriteLine(LogLevel level, string format, Color? color = null, params object[] bindings)
         {
