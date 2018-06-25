@@ -52,7 +52,7 @@ namespace Rocket.Core.Plugins
 
         public virtual void Init()
         {
-            Logger.LogDebug($"[{GetType().Name}] Initializing plugins.");
+            Logger.LogDebug($"[{GetType().Name}] Initializing CLR plugins.");
 
             assemblies = LoadAssemblies();
 
@@ -64,7 +64,7 @@ namespace Rocket.Core.Plugins
 
             if (pluginManagerInitEvent.IsCancelled)
             {
-                Logger.LogDebug($"[{GetType().Name}] Loading of plugins was canacelled.");
+                Logger.LogDebug($"[{GetType().Name}] Loading of plugins was cancalled.");
                 return;
             }
 
@@ -94,42 +94,50 @@ namespace Rocket.Core.Plugins
             }
 
             foreach (IDependencyContainer childContainer in pluginContainers)
-            {
-                IPlugin plugin = childContainer.Resolve<IPlugin>();
-                Logger.LogDebug($"[{GetType().Name}] Trying to load plugin: " + plugin.Name);
+                RegisterAndLoadPluginFromContainer(childContainer);
+        }
 
-                PluginCommandProvider cmdProvider = new PluginCommandProvider(plugin, childContainer);
-                ParentContainer.RegisterSingletonInstance<ICommandProvider>(cmdProvider, plugin.Name);
+        protected bool RegisterAndLoadPluginFromContainer(IDependencyContainer container)
+        {
+            IPlugin plugin = container.Resolve<IPlugin>();
 
-                Assembly asm = plugin.GetType().Assembly;
-                string pluginDir = plugin.WorkingDirectory;
-                if (!Directory.Exists(pluginDir))
-                    Directory.CreateDirectory(pluginDir);
+            Logger.LogDebug($"[{GetType().Name}] Trying to load plugin: " + plugin.Name);
 
-                foreach (string s in asm.GetManifestResourceNames())
-                    using (Stream stream = asm.GetManifestResourceStream(s))
+            PluginCommandProvider cmdProvider = new PluginCommandProvider(plugin, container);
+            ParentContainer.RegisterSingletonInstance<ICommandProvider>(cmdProvider, plugin.Name);
+
+            var asm = plugin.GetType().Assembly;
+            string pluginDir = plugin.WorkingDirectory;
+            if (!Directory.Exists(pluginDir))
+                Directory.CreateDirectory(pluginDir);
+
+            foreach (string s in asm.GetManifestResourceNames())
+                using (Stream stream = asm.GetManifestResourceStream(s))
+                {
+                    using (MemoryStream ms = new MemoryStream())
                     {
-                        using (MemoryStream ms = new MemoryStream())
+                        if (stream != null)
                         {
-                            if (stream == null)
-                                return;
-
                             stream.CopyTo(ms);
                             byte[] data = ms.ToArray();
                             string fileName = s.Replace(plugin.GetType().Namespace, "");
                             File.WriteAllBytes(Path.Combine(pluginDir, fileName), data);
                         }
                     }
-
-                plugin.Load(false);
-
-                IEnumerable<Type> listeners = plugin.FindTypes<IAutoRegisteredEventListener>(false);
-                foreach (Type listener in listeners)
-                {
-                    IAutoRegisteredEventListener instance = (IAutoRegisteredEventListener)childContainer.Activate(listener);
-                    EventManager.AddEventListener(plugin, instance);
                 }
+
+            bool success = plugin.Load(false);
+            if (!success)
+                return false;
+
+            IEnumerable<Type> listeners = plugin.FindTypes<IAutoRegisteredEventListener>(false);
+            foreach (Type listener in listeners)
+            {
+                IAutoRegisteredEventListener instance = (IAutoRegisteredEventListener)container.Activate(listener);
+                EventManager.AddEventListener(plugin, instance);
             }
+
+            return true;
         }
 
         public virtual IPlugin GetPlugin(string name)
@@ -327,7 +335,7 @@ namespace Rocket.Core.Plugins
                     if (cmdInstance != null)
                         childContainer.RegisterSingletonInstance(cmdInstance, cmdInstance.Name);
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Logger.LogError(null, ex);
                 }

@@ -9,7 +9,10 @@ using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
+using Rocket.API.Plugins;
 using Rocket.Core.Configuration;
+using Rocket.Core.Logging;
+using Rocket.Core.Plugins.Events;
 using Rocket.Core.Plugins.NuGet.Client.V3;
 #if NET35
 using Theraot.Core;
@@ -19,6 +22,7 @@ namespace Rocket.Core.Plugins.NuGet
 {
     public class NuGetPluginManager : CLRPluginManager
     {
+        private readonly IRuntime runtime;
         private readonly NuGetClientV3 client;
         private IConfiguration configuration;
 
@@ -26,9 +30,11 @@ namespace Rocket.Core.Plugins.NuGet
 
         public NuGetPluginManager(IDependencyContainer container,
                                   IEventManager eventManager,
-                                  ILogger logger) :
+                                  ILogger logger,
+                                  IRuntime runtime) :
             base(container, eventManager, logger)
         {
+            this.runtime = runtime;
             client = new NuGetClientV3();
         }
 
@@ -180,16 +186,20 @@ namespace Rocket.Core.Plugins.NuGet
         {
             var pkg = GetNugetPackageFile(repo, pluginName);
             if (pkg == null)
-                throw new Exception($"Plugin \"{pluginName}\" was not found in repo: \"{repo}\".");
+                throw new Exception($"Plugin \"{pluginName}\" was not found in repo \"{repo}\".");
 
-            var assemblies = LoadAssembliesFromNugetPackage(pkg);
+            return LoadPluginFromNugetPackage(pkg);
+        }
+
+        protected virtual bool LoadPluginFromNugetPackage(string packagePath)
+        {
+            var assemblies = LoadAssembliesFromNugetPackage(packagePath);
             bool success = false;
             foreach (var asm in assemblies)
             {
-                if (LoadPluginFromAssembly(asm, out _) != null)
+                if (LoadPluginFromAssembly(asm, out var pluginChildContainer) != null)
                 {
-                    success = true;
-                    break; //only load one plugin per package
+                    success = RegisterAndLoadPluginFromContainer(pluginChildContainer);
                 }
             }
 
@@ -241,6 +251,37 @@ namespace Rocket.Core.Plugins.NuGet
             }
 
             return assemblies;
+        }
+
+        public override void Init()
+        {
+            Logger.LogDebug($"[{GetType().Name}] Initializing Nuget plugins.");
+
+            PluginManagerInitEvent pluginManagerInitEvent =
+                new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
+            EventManager.Emit(runtime, pluginManagerInitEvent);
+
+            if (pluginManagerInitEvent.IsCancelled)
+            {
+                Logger.LogDebug($"[{GetType().Name}] Loading of plugins was cancalled.");
+                return;
+            }
+
+            foreach (var repo in Repositories)
+            {
+                var repoDir = Path.Combine(RepositoriesDirectory, repo.Name);
+                if(!Directory.Exists(repoDir))
+                    continue;
+
+                foreach (var dir in Directory.GetDirectories(repoDir))
+                {
+                    foreach (var file in Directory.GetFiles(dir))
+                    {
+                        if (file.EndsWith(".nupkg"))
+                            LoadPluginFromNugetPackage(file);
+                    }
+                }
+            }
         }
 
         public virtual IEnumerable<Assembly> LoadAssembliesFromNugetPackage(string nugetPackageFile)
