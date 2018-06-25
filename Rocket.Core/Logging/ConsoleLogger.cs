@@ -64,9 +64,9 @@ namespace Rocket.Core.Logging
             return Color.FromArgb(cColors[(int)Console.ForegroundColor]);
         }
 
-        public static void SetForegroundColor(Color color)
+        public void SetForegroundColor(Color color)
         {
-            lock (ConsoleLock)
+            lock (OutputLock)
             {
                 ConsoleColor ret = 0;
                 double rr = color.R, gg = color.G, bb = color.B, delta = double.MaxValue;

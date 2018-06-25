@@ -8,7 +8,7 @@ namespace Rocket.Core.Logging
 {
     public abstract class FormattedLogger : BaseLogger
     {
-        protected static readonly object ConsoleLock = new object();
+        public readonly object OutputLock = new object();
 
         protected FormattedLogger(IDependencyContainer container) : base(container)
         {
@@ -27,7 +27,7 @@ namespace Rocket.Core.Logging
 
         public void WriteLine(LogLevel level, string message, Color? color = null, params object[] bindings)
         {
-            lock (ConsoleLock)
+            lock (OutputLock)
             {
                 WriteColored("[", Color.White);
                 WriteColored(GetLogLevelPrefix(level), GetLogLevelColor(level));
