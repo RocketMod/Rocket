@@ -23,17 +23,22 @@ namespace Rocket.Core.Extensions
             return filter;
         }
 
-        public static MethodBase GetCallingMethod(params Type[] skipTypes)
+        public static MethodBase GetCallingMethod(Type[] skipTypes = null, MethodBase[] skipMethods = null)
         {
-            List<Type> list = skipTypes?.ToList() ?? new List<Type>();
-            list.Add(typeof(ReflectionExtensions));
+            var skipList = new List<Type>(skipTypes ?? new Type[0]);
+            skipList.Add(typeof(ReflectionExtensions));
 
             StackTrace st = new StackTrace();
             StackFrame target = null;
             for (int i = 0; i < st.FrameCount; i++)
             {
                 StackFrame frame = st.GetFrame(i);
-                if (list.Any(c => c == frame.GetMethod()?.DeclaringType))
+                var frameMethod = frame.GetMethod();
+
+                if (skipList.Any(c => c == frameMethod?.DeclaringType))
+                    continue;
+
+                if (skipMethods?.Any(c => c == frameMethod) ?? false)
                     continue;
 
                 target = frame;

@@ -7,6 +7,7 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core.Configuration;
 using Rocket.Core.Extensions;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Logging
 {
@@ -17,7 +18,12 @@ namespace Rocket.Core.Logging
             typeof(BaseLogger),
             typeof(ProxyLogger),
             typeof(FormattedLogger),
-            typeof(LoggingExtensions)
+            typeof(LoggingExtensions),
+            typeof(StdConsoleUserManager)
+        };
+
+        private static readonly ICollection<MethodBase> ignoredLoggingMethods = new HashSet<MethodBase>
+        {
         };
 
         protected Configuration.LogSettings LogSettings
@@ -60,6 +66,11 @@ namespace Rocket.Core.Logging
         public static void SkipTypeFromLogging(Type type)
         {
             ignoredLoggingTypes.Add(type);
+        }
+
+        public static void SkipMethodFromLogging(MethodBase method)
+        {
+            ignoredLoggingMethods.Add(method);
         }
 
         public abstract void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
@@ -112,7 +123,7 @@ namespace Rocket.Core.Logging
         }
 
         public virtual MethodBase GetLoggerCallingMethod()
-            => ReflectionExtensions.GetCallingMethod(ignoredLoggingTypes.ToArray());
+            => ReflectionExtensions.GetCallingMethod(ignoredLoggingTypes.ToArray(), ignoredLoggingMethods.ToArray());
 
         public abstract string ServiceName { get; }
     }
