@@ -38,6 +38,11 @@ namespace Rocket.API
         IConsole Console { get; }
 
         /// <summary>
+        ///     The name of the game.
+        /// </summary>
+        string GameName { get; }
+
+        /// <summary>
         ///     Initializes the implementation.
         /// </summary>
         /// <param name="runtime">The RocketMod runtime.</param>

@@ -65,6 +65,8 @@ namespace Rocket.Console
 
         public IConsole Console { get; set; }
 
+        public string GameName => "Rocket.Standalone";
+
         public bool IsAlive => true;
 
         public string ConfigurationName => "ConsoleHost";

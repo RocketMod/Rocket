@@ -32,6 +32,8 @@ namespace Rocket.Tests.Mock.Providers
 
         public bool IsAlive => true;
 
+        public string GameName => "Rocket.Test";
+
         public void Init(IRuntime runtime)
         {
             logger.LogInformation("Loading host");
