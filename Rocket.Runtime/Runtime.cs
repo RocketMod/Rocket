@@ -21,7 +21,7 @@ namespace Rocket
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, NullLogger>();
 
-            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(Runtime).Assembly.Location);
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(IRuntime).Assembly.Location);
             Container.Activate(typeof(RegistrationByConvention));
 
             Container.Resolve<ICommandProvider>().Init();

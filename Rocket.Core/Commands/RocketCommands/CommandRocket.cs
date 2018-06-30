@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using Rocket.API.Drawing;
 using System.Linq;
+using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Plugins;
@@ -21,7 +23,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => new IChildCommand[]
         {
             new CommandRocketInstall(), new CommandRocketUninstall(),
-            new CommandRocketReload(), new CommandRocketUpdate()
+            new CommandRocketReload(), new CommandRocketUpdate(),
+            new CommandRocketVersion()
         };
 
         public void Execute(ICommandContext context)
@@ -75,7 +78,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length < 2)
                 throw new CommandWrongUsageException();
 
-            NuGetPluginManager pm = (NuGetPluginManager) context.Container.Resolve<IPluginManager>("nuget_plugins");
+            NuGetPluginManager pm = (NuGetPluginManager)context.Container.Resolve<IPluginManager>("nuget_plugins");
 
             var args = context.Parameters.ToList();
 
@@ -139,7 +142,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length != 2)
                 throw new CommandWrongUsageException();
 
-            NuGetPluginManager pm = (NuGetPluginManager) context.Container.Resolve<IPluginManager>("nuget_plugins");
+            NuGetPluginManager pm = (NuGetPluginManager)context.Container.Resolve<IPluginManager>("nuget_plugins");
 
             string repoName = context.Parameters.Get<string>(0);
             string pluginName = context.Parameters.Get<string>(1);
@@ -183,7 +186,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length < 2)
                 throw new CommandWrongUsageException();
 
-            NuGetPluginManager pm = (NuGetPluginManager) context.Container.Resolve<IPluginManager>("nuget_plugins");
+            NuGetPluginManager pm = (NuGetPluginManager)context.Container.Resolve<IPluginManager>("nuget_plugins");
 
             var args = context.Parameters.ToList();
 
@@ -219,6 +222,35 @@ namespace Rocket.Core.Commands.RocketCommands
 
             context.User.SendMessage($"Successfully updated \"{pluginName}\"", Color.DarkGreen);
             context.User.SendMessage("Restart server to finish update.", Color.Red);
+        }
+    }
+
+    public class CommandRocketVersion : IChildCommand
+    {
+        public string Name => "Version";
+        public string[] Aliases => new[] { "v" };
+        public string Summary => "RocketMod version";
+        public string Description => null;
+        public string Syntax => "";
+        public IChildCommand[] ChildCommands => null;
+        public bool SupportsUser(Type user)
+        {
+            return true;
+        }
+
+        public void Execute(ICommandContext context)
+        {
+            var runtime = context.Container.Resolve<IRuntime>();
+            var host = context.Container.Resolve<IHost>();
+
+            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(IRuntime).Assembly.Location);
+
+            context.User.SendMessage("Rocket Version: " + versionInfo.FileVersion, Color.Cyan);
+            context.User.SendMessage(runtime.Name + " Version: " + runtime.Version, Color.Cyan);
+            context.User.SendMessage(host.Name + " Version: " + host.HostVersion, Color.Blue);
+
+            if (host.Name != host.GameName)
+                context.User.SendMessage(host.GameName + " Version: " + host.GameVersion, Color.Green);
         }
     }
 }

@@ -8,13 +8,12 @@ about: Create a report to help us improve
      READ AND FILL THIS CAREFULLY OR YOUR ISSUE WILL GET CLOSED. ISSUES WITH NO TEMPLATE WILL LIKELY GET CLOSED DIRECTLY.
      
      If this is your first issue, please take the time to read this introduction.
-     We use GitHub to track reproducable bugs, and feature requests. 
+     We use GitHub to track reproducable bugs and feature requests. 
      Please consult https://github.com/RocketMod/Rocket/wiki/Fixing-Issues to figure a solution for most common problems.
-     If you can reproduce the bug in Unturned without RocketMod being installed
-     you may report it directly to the https://github.com/SmartlyDressedGames/Unturned/issues.
+     If you can reproduce the bug in Unturned without RocketMod being installed you should report it to https://github.com/SmartlyDressedGames/Unturned/issues.
 -->
 
-**What problem did you noticed?**
+**What problem did you notice?**
 
 **What is the expected result?**
 
@@ -24,10 +23,8 @@ about: Create a report to help us improve
 
 
 Operating System and Version:
-<!-- Please specify the versions you use, you can see them with /rocket -->
-Unturned Version:
 
-Rocketmod Version:
+Output of `/rocket install`:
 
 <!-- 
      Please be as accurate as possible, and include as much information as possible.
