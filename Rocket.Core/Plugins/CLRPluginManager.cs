@@ -265,7 +265,10 @@ namespace Rocket.Core.Plugins
             if (cachedAssemblies.ContainsKey(path))
                 return cachedAssemblies[path];
 
-            Assembly asm = Assembly.LoadFile(path);
+
+            var data = File.ReadAllBytes(path);
+
+            Assembly asm = Assembly.Load(data);
             cachedAssemblies.Add(path, asm);
             return asm;
         }
