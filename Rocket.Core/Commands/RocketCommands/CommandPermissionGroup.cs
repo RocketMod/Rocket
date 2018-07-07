@@ -50,20 +50,21 @@ namespace Rocket.Core.Commands.RocketCommands
             string groupName = context.Parameters.Get<string>(1);
 
             string permission = "Rocket.Permissions.ManageGroups." + groupName;
-            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
+            IPermissionProvider configPermissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
+            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
 
             if (permissions.CheckPermission(context.User, permission) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(context.User, permission,
                     "You don't have permissions to manage this group.");
 
-            IPermissionGroup groupToUpdate = permissions.GetGroup(groupName);
+            IPermissionGroup groupToUpdate = configPermissions.GetGroup(groupName);
             if (groupToUpdate == null)
             {
                 context.User.SendMessage($"Group \"{groupName}\" was not found.", Color.Red);
                 return;
             }
 
-            UpdateGroup(context.User, permissions, targetPlayer, groupToUpdate);
+            UpdateGroup(context.User, configPermissions, targetPlayer, groupToUpdate);
         }
 
         protected abstract void UpdateGroup(IUser user, IPermissionProvider permissions,

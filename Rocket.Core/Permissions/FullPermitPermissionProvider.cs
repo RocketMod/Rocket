@@ -17,11 +17,13 @@ namespace Rocket.Core.Permissions
     {
         public IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true)
         {
+            GuardTarget(target);
             return new List<string>();
         }
 
         public IEnumerable<string> GetDeniedPermissions(IIdentity target, bool inherit = true)
         {
+            GuardTarget(target);
             return new List<string>();
         }
 

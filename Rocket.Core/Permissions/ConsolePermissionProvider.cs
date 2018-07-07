@@ -8,7 +8,7 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions
 {
-    [ServicePriority(Priority = ServicePriority.High)]
+    [ServicePriority(Priority = ServicePriority.Highest)]
     public class ConsolePermissionProvider : FullPermitPermissionProvider<IConsole>
     {
 
