@@ -35,7 +35,7 @@ namespace Rocket.Core.Plugins.NuGet
             base(container, eventManager, logger)
         {
             this.runtime = runtime;
-            client = new NuGetClientV3();
+            client = new NuGetClientV3(container);
         }
 
         protected virtual IConfiguration Configuration
