@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using ICSharpCode.SharpZipLib.Zip;
+using MoreLinq;
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -25,6 +26,7 @@ namespace Rocket.Core.Plugins.NuGet
         private readonly IRuntime runtime;
         private readonly NuGetClientV3 client;
         private IConfiguration configuration;
+        private IConfiguration packagesConfiguration;
 
         public virtual string RepositoriesDirectory { get; protected set; }
 
@@ -38,6 +40,29 @@ namespace Rocket.Core.Plugins.NuGet
             client = new NuGetClientV3(container);
         }
 
+        protected IConfiguration PackagesConfiguration
+        {
+            get
+            {
+                if (packagesConfiguration != null)
+                    return packagesConfiguration;
+
+                packagesConfiguration = Container.Resolve<IConfiguration>();
+
+                RepositoriesDirectory = Path.Combine(runtime.WorkingDirectory, "Repositories");
+                if (!Directory.Exists(RepositoriesDirectory))
+                    Directory.CreateDirectory(RepositoriesDirectory);
+
+                ConfigurationContext context = new ConfigurationContext(RepositoriesDirectory, "packages");
+                packagesConfiguration.Load(context, new PackagesConfiguration());
+
+                return packagesConfiguration;
+            }
+        }
+
+        public virtual PackagesConfiguration Packages
+            => PackagesConfiguration.Get<PackagesConfiguration>();
+
         protected virtual IConfiguration Configuration
         {
             get
@@ -45,7 +70,6 @@ namespace Rocket.Core.Plugins.NuGet
                 if (configuration != null)
                     return configuration;
 
-                var runtime = Container.Resolve<IRuntime>();
                 configuration = Container.Resolve<IConfiguration>();
 
                 RepositoriesDirectory = Path.Combine(runtime.WorkingDirectory, "Repositories");
@@ -97,20 +121,22 @@ namespace Rocket.Core.Plugins.NuGet
 
         public NuGetInstallResult Update(string repoName, string packageName, string version = null, bool isPreRelease = false)
         {
-            return InstallInternal(repoName, packageName, version, isPreRelease, true);
+            return InstallOrUpdate(repoName, packageName, version, isPreRelease, true);
         }
 
         public NuGetInstallResult Install(string repoName, string packageName, string version = null, bool isPreRelease = false)
         {
-            return InstallInternal(repoName, packageName, version, isPreRelease);
+            return InstallOrUpdate(repoName, packageName, version, isPreRelease);
         }
 
-        protected virtual NuGetInstallResult InstallInternal(string repoName, string packageName, string version = null, bool isPreRelease = false, bool isUpdate = false)
+        protected virtual NuGetInstallResult InstallOrUpdate(string repoName, string packageName, string version = null, bool isPreRelease = false, bool isUpdate = false)
         {
-            if (isUpdate != PluginExists(repoName, packageName))
+            if (isUpdate && !PluginExists(repoName, packageName))
                 return NuGetInstallResult.PackageNotFound;
 
-            if (isUpdate)
+            if (isUpdate 
+                || Packages.NugetPackages.Any(c => c.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase) && c.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase)) 
+                || PluginExists(repoName, packageName))
                 Uninstall(repoName, packageName);
 
             var configRepo = Repositories
@@ -152,11 +178,45 @@ namespace Rocket.Core.Plugins.NuGet
                 Directory.CreateDirectory(targetDir);
 
             File.WriteAllBytes(Path.Combine(targetDir, uid + ".nupkg"), data);
+            PackagesConfiguration config = Packages;
+
+            bool wasInstalled = false;
+            foreach (var np in config.NugetPackages)
+            {
+                if (!np.Id.Equals(package.Id, StringComparison.OrdinalIgnoreCase) || np.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                wasInstalled = true;
+                np.Version = package.Version;
+            }
+
+            if (!wasInstalled)
+            {
+                var list = config.NugetPackages.ToList();
+                list.Add(new ConfigurationNuGetPackage()
+                {
+                    Id = package.Id,
+                    Repository = repoName,
+                    Version = package.Version
+                });
+                config.NugetPackages = list.ToArray();
+            }
+
+            PackagesConfiguration.Set(config);
+            PackagesConfiguration.Save();
+
             return NuGetInstallResult.Success;
         }
 
-        public virtual bool Uninstall(string repoName, string packageName, string version = null)
+        public virtual bool Uninstall(string repoName, string packageName)
         {
+            PackagesConfiguration config = Packages;
+            var list = config.NugetPackages.ToList();
+            list.RemoveAll(d => d.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase) && d.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase));
+            config.NugetPackages = list.ToArray();
+            PackagesConfiguration.Set(config);
+            PackagesConfiguration.Save();
+
             var repoDir = Path.Combine(RepositoriesDirectory, repoName);
             if (!Directory.Exists(repoDir))
                 return true;
@@ -164,15 +224,7 @@ namespace Rocket.Core.Plugins.NuGet
             foreach (var directory in Directory.GetDirectories(repoDir))
             {
                 var name = new DirectoryInfo(directory).Name;
-                if (version == null
-                    && name.ToLowerInvariant().StartsWith(packageName.ToLowerInvariant()))
-                {
-                    Directory.Delete(directory, true);
-                    return true;
-                }
-
-                if (version != null
-                    && name.Equals(packageName + "." + version, StringComparison.OrdinalIgnoreCase))
+                if (name.ToLowerInvariant().StartsWith(packageName.ToLowerInvariant()))
                 {
                     Directory.Delete(directory, true);
                     return true;
@@ -263,24 +315,65 @@ namespace Rocket.Core.Plugins.NuGet
 
             if (pluginManagerInitEvent.IsCancelled)
             {
-                Logger.LogDebug($"[{GetType().Name}] Loading of plugins was cancalled.");
+                Logger.LogDebug($"[{GetType().Name}] Loading of plugins was cancelled.");
                 return;
             }
 
-            foreach (var repo in Repositories)
+            foreach (var package in Packages.NugetPackages.DistinctBy(d => d.Id.Trim().ToLowerInvariant()))
             {
-                var repoDir = Path.Combine(RepositoriesDirectory, repo.Name);
-                if(!Directory.Exists(repoDir))
+                var repo = Repositories.FirstOrDefault(c
+                    => c.Enabled && c.Name.Equals(package.Repository, StringComparison.OrdinalIgnoreCase));
+
+                if (repo == null)
+                {
+                    Logger.LogWarning($"Skipped package \"{package.Id}\" in repository \"{package.Repository}\" because repository was not found or is not enabed.");
                     continue;
+                }
+
+                var repoDir = Path.Combine(RepositoriesDirectory, repo.Name);
+
+                if (!Directory.Exists(repoDir))
+                    Directory.CreateDirectory(repoDir);
+
+                bool isInstalled = false;
+                bool isLatest = package.Version == null || package.Version == "*" || package.Version == "latest";
 
                 foreach (var dir in Directory.GetDirectories(repoDir))
                 {
+                    var dirName = new DirectoryInfo(dir).Name;
+                    if (isLatest)
+                    {
+                        if (!dirName.StartsWith(package.Id + "."))
+                            continue;
+                    }
+                    else
+                    {
+                        if (!dirName.Equals(package.Id + "." + package.Version))
+                            continue;
+                    }
+
                     foreach (var file in Directory.GetFiles(dir))
                     {
                         if (file.EndsWith(".nupkg"))
+                        {
                             LoadPluginFromNugetPackage(file);
+                            isInstalled = true;
+                            break;
+                        }
                     }
+
+                    if (isInstalled)
+                        break;
                 }
+
+                if (isInstalled)
+                    continue;
+
+                var result = Install(package.Repository, package.Id, isLatest ? null : package.Version, true);
+                if (result != NuGetInstallResult.Success)
+                    Logger.LogWarning($"Package \"{package.Id}\" in repository \"{package.Repository}\" failed to install: " + result);
+                else
+                    LoadPlugin(package.Repository, package.Id);
             }
         }
 

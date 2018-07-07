@@ -69,6 +69,11 @@ namespace Rocket.Core.Plugins.NuGet.Client.V3
             if (isHttps)
                 url = url.Replace("http://", "https://");
 
+            if (!url.Contains("http://") && !url.Contains("https://"))
+            {
+                url = repo.BaseUrl + url;
+            }
+
             var client = GetRestClient(url);
             var request = new RestRequest(Method.GET);
             var result = client.Execute<NuGetPackageVersionRegistration>(request);
