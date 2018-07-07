@@ -6,7 +6,9 @@ using System.Reflection;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core.Configuration;
+using Rocket.Core.Entities;
 using Rocket.Core.Extensions;
+using Rocket.Core.Player;
 using Rocket.Core.User;
 
 namespace Rocket.Core.Logging
@@ -19,7 +21,10 @@ namespace Rocket.Core.Logging
             typeof(ProxyLogger),
             typeof(FormattedLogger),
             typeof(LoggingExtensions),
-            typeof(StdConsoleUserManager)
+            typeof(StdConsoleUserManager),
+            typeof(UserExtensions),
+            typeof(PlayerExtensions),
+            typeof(EntityExtensions)
         };
 
         private static readonly ICollection<MethodBase> ignoredLoggingMethods = new HashSet<MethodBase>
