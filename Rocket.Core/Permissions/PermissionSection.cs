@@ -19,7 +19,7 @@ namespace Rocket.Core.Permissions
 
         public virtual string Id { get; set; }
 
-        [ConfigArray(ElementName = "Permission")]
+        [ConfigArray("Permission")]
         public virtual string[] Permissions { get; set; } = new string[0];
 
         public virtual void Save() => throw new NotSupportedException();

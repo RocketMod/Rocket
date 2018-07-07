@@ -17,10 +17,10 @@ namespace Rocket.Core.Permissions
 
         public override string Id { get; set; }
 
-        [ConfigArray(ElementName = "Permission")]
+        [ConfigArray("Permission")]
         public override string[] Permissions { get; set; } = new string[0];
 
-        [ConfigArray(ElementName = "Group")]
+        [ConfigArray("Group")]
         public string[] Groups { get; set; } = new string[0];
 
         public override void Save()

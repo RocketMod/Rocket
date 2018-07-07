@@ -8,10 +8,10 @@ namespace Rocket.Core.Migration.LegacyPermissions
         public string DisplayName { get; set; }
         public string Color { get; set; }
 
-        [ConfigArray(ElementName = "Member")]
+        [ConfigArray("Member")]
         public string[] Members { get; set; }
 
-        [ConfigArray(ElementName = "Permission")]
+        [ConfigArray("Permission")]
         public Permission[] Permissions { get; set; }
 
         public string ParentGroup { get; set; }

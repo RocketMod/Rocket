@@ -20,10 +20,10 @@ namespace Rocket.Core.Permissions
 
         public string Name { get; set; }
 
-        [ConfigArray(ElementName = "Permission")]
+        [ConfigArray("Permission")]
         public override string[] Permissions { get; set; } = new string[0];
 
-        [ConfigArray(ElementName = "Group")]
+        [ConfigArray("Group")]
         public string[] ParentGroups { get; set; } = new string[0];
 
         public int Priority { get; set; }

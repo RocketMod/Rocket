@@ -6,7 +6,7 @@ namespace Rocket.Core.Migration.LegacyPermissions
     {
         public string DefaultGroup { get; set; }
 
-        [ConfigArray(ElementName = "Group")]
+        [ConfigArray("Group")]
         public RocketPermissionsGroup[] Groups { get; set; }
     }
 }
