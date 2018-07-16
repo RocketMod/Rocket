@@ -11,12 +11,12 @@ using Rocket.Core.Logging;
 
 namespace Rocket.Core.Plugins
 {
-    public class DllPluginManager : CLRPluginManager
+    public class RocketPluginManager : CLRPluginManager
     {
         private Dictionary<string, string> packageAssemblies;
         private Dictionary<string, string> pluginAssemblies;
 
-        public DllPluginManager(IDependencyContainer dependencyContainer,
+        public RocketPluginManager(IDependencyContainer dependencyContainer,
                              IEventManager eventManager,
                              ILogger logger) :
             base(dependencyContainer, eventManager, logger)
@@ -90,6 +90,6 @@ namespace Rocket.Core.Plugins
             return assemblies;
         }
 
-        public override string ServiceName => "DllPlugins";
+        public override string ServiceName => "RocketPlugins";
     }
 }

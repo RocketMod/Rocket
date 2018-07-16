@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Rocket.API.Scheduler
+namespace Rocket.API.Scheduling
 {
     /// <summary>
     ///     Represents a scheduled task.

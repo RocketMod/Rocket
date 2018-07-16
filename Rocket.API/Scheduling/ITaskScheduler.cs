@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Rocket.API.DependencyInjection;
 
-namespace Rocket.API.Scheduler
+namespace Rocket.API.Scheduling
 {
     /// <summary>
     ///     The service responsible for scheduling and managing tasks.

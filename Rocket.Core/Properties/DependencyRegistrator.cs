@@ -34,27 +34,27 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IRocketSettingsProvider, RocketSettingsProvider>();
 
             container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
-            container.RegisterSingletonType<ILogger, ProxyLogger>("proxy_logger", null);
+            container.RegisterSingletonType<ILogger, LoggerProxy>("proxy_logger", null);
 
             container.RegisterSingletonType<IEventManager, EventManager>();
 
             container.RegisterSingletonType<ICommandHandler, DefaultCommandHandler>("default_cmdhandler");
-            container.RegisterSingletonType<ICommandHandler, ProxyCommandHandler>("proxy_cmdhandler", null);
+            container.RegisterSingletonType<ICommandHandler, CommandHandlerProxy>("proxy_cmdhandler", null);
 
-            container.RegisterSingletonType<IPluginManager, DllPluginManager>("dll_plugins");
+            container.RegisterSingletonType<IPluginManager, RocketPluginManager>("rocket_plugins");
             container.RegisterSingletonType<IPluginManager, NuGetPluginManager>("nuget_plugins");
-            container.RegisterSingletonType<IPluginManager, ProxyPluginManager>("proxy_plugins", null);
+            container.RegisterSingletonType<IPluginManager, PluginManagerProxy>("proxy_plugins", null);
 
             container.RegisterSingletonType<ICommandProvider, RocketCommandProvider>("rocket_cmdprovider");
-            container.RegisterSingletonType<ICommandProvider, ProxyCommandProvider>("proxy_cmdprovider", null);
+            container.RegisterSingletonType<ICommandProvider, CommandProviderProxy>("proxy_cmdprovider", null);
 
             container.RegisterSingletonType<IPermissionProvider, ConfigurationPermissionProvider>("default_permissions");
             container.RegisterSingletonType<IPermissionProvider, ConsolePermissionProvider>("console_permissions");
-            container.RegisterSingletonType<IPermissionProvider, ProxyPermissionProvider>("proxy_permissions", null);
+            container.RegisterSingletonType<IPermissionProvider, PermissionProviderProxy>("proxy_permissions", null);
 
             container.RegisterType<ITranslationCollection, TranslationCollection>();
 
-            container.RegisterSingletonType<IUserManager, ProxyUserManager>();
+            container.RegisterSingletonType<IUserManager, UserManagerProxy>();
         }
     }
 }

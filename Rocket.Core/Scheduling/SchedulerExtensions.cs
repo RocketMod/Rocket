@@ -1,8 +1,8 @@
 ﻿using System;
 using Rocket.API;
-using Rocket.API.Scheduler;
+using Rocket.API.Scheduling;
 
-namespace Rocket.Core.Scheduler
+namespace Rocket.Core.Scheduling
 {
     public static class SchedulerExtensions
     {        

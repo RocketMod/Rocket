@@ -69,7 +69,7 @@ namespace Rocket.Core.Plugins
             Name = Name.Replace(" ", "_");
 
             Container = container;
-            container.RegisterSingletonInstance<ILogger>(new ProxyLogger(Container), null, "proxy_logger");
+            container.RegisterSingletonInstance<ILogger>(new LoggerProxy(Container), null, "proxy_logger");
             Container.RegisterSingletonInstance<IPlugin>(this);
 
             WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name.Replace("_", " "));
@@ -206,7 +206,7 @@ namespace Rocket.Core.Plugins
 
         public void RegisterCommandsFromObject(object o)
         {
-            DllPluginManager p = PluginManager as DllPluginManager;
+            RocketPluginManager p = PluginManager as RocketPluginManager;
             p?.RegisterCommands(Container, o);
         }
 

@@ -18,7 +18,7 @@ namespace Rocket.Core.Logging
         private static readonly ICollection<Type> ignoredLoggingTypes = new HashSet<Type>
         {
             typeof(BaseLogger),
-            typeof(ProxyLogger),
+            typeof(LoggerProxy),
             typeof(FormattedLogger),
             typeof(LoggingExtensions),
             typeof(StdConsoleUserManager),

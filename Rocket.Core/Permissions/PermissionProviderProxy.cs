@@ -10,9 +10,9 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Permissions
 {
-    public class ProxyPermissionProvider : ServiceProxy<IPermissionProvider>, IPermissionProvider
+    public class PermissionProviderProxy : ServiceProxy<IPermissionProvider>, IPermissionProvider
     {
-        public ProxyPermissionProvider(IDependencyContainer container) : base(container) { }
+        public PermissionProviderProxy(IDependencyContainer container) : base(container) { }
 
         public IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true)
         {

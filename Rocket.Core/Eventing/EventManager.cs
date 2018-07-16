@@ -6,7 +6,7 @@ using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
-using Rocket.API.Scheduler;
+using Rocket.API.Scheduling;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.ServiceProxies;

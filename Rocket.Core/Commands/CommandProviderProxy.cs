@@ -10,12 +10,12 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Commands
 {
-    public class ProxyCommandProvider : ServiceProxy<ICommandProvider>, ICommandProvider
+    public class CommandProviderProxy : ServiceProxy<ICommandProvider>, ICommandProvider
     {
         private readonly IDependencyContainer container;
         private readonly IConfiguration configuration;
 
-        public ProxyCommandProvider(IDependencyContainer container, IConfiguration configuration) : base(container)
+        public CommandProviderProxy(IDependencyContainer container, IConfiguration configuration) : base(container)
         {
             this.container = container;
             this.configuration = configuration;
@@ -38,7 +38,7 @@ namespace Rocket.Core.Commands
 
             IRuntime runtime = container.Resolve<IRuntime>();
             var context = runtime.CreateChildConfigurationContext("Commands");
-            configuration.Load(context, new ProxyCommandProviderConfig());
+            configuration.Load(context, new CommandProviderProxyConfig());
         }
 
         public ICommandProvider GetProvider(ICommand command)
@@ -65,7 +65,7 @@ namespace Rocket.Core.Commands
             Dictionary<ICommand, ICommandProvider> commands = new Dictionary<ICommand, ICommandProvider>();
 
             //first register from config
-            foreach (var command in configuration.Get<ProxyCommandProviderConfig>().Commands)
+            foreach (var command in configuration.Get<CommandProviderProxyConfig>().Commands)
             {
                 var providerName = command.Provider.Split('/')[0];
                 var originalCommandName = command.Provider.Split('/')[1];
@@ -121,17 +121,17 @@ namespace Rocket.Core.Commands
                 }
 
             registeredCommands = commands.Keys;
-            IEnumerable<ProxyConfigCommand> configCommands =
+            IEnumerable<ConfigCommandProxy> configCommands =
                 registeredCommands.Select(c => GetProxyCommand(c, commands[c]));
 
-            configuration.Set(new ProxyCommandProviderConfig { Commands = configCommands.ToArray() });
+            configuration.Set(new CommandProviderProxyConfig { Commands = configCommands.ToArray() });
             configuration.Save();
         }
 
-        private ProxyConfigCommand GetProxyCommand(ICommand command, ICommandProvider provider)
+        private ConfigCommandProxy GetProxyCommand(ICommand command, ICommandProvider provider)
         {
             var implName = (command as ProxyCommand)?.BaseCommand?.Name ?? command.Name;
-            return new ProxyConfigCommand
+            return new ConfigCommandProxy
             {
                 Name = command.Name,
                 Provider = provider.ServiceName + "/" + implName,
@@ -161,9 +161,9 @@ namespace Rocket.Core.Commands
         public string ServiceName => "ProxyCommands";
     }
 
-    class ProxyCommandProviderConfig
+    class CommandProviderProxyConfig
     {
         [ConfigArray]
-        public ProxyConfigCommand[] Commands { get; set; } = new ProxyConfigCommand[0];
+        public ConfigCommandProxy[] Commands { get; set; } = new ConfigCommandProxy[0];
     }
 }

@@ -8,11 +8,11 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.User
 {
-    public class ProxyUserManager : ServiceProxy<IUserManager>, IUserManager
+    public class UserManagerProxy : ServiceProxy<IUserManager>, IUserManager
     {
         private readonly IDependencyContainer container;
 
-        public ProxyUserManager(IDependencyContainer container) : base(container)
+        public UserManagerProxy(IDependencyContainer container) : base(container)
         {
             this.container = container;
         }

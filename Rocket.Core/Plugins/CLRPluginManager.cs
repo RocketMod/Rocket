@@ -64,7 +64,7 @@ namespace Rocket.Core.Plugins
 
             if (pluginManagerInitEvent.IsCancelled)
             {
-                Logger.LogDebug($"[{GetType().Name}] Loading of plugins was cancalled.");
+                Logger.LogDebug($"[{GetType().Name}] Loading of plugins was cancelled.");
                 return;
             }
 

@@ -1,4 +1,4 @@
-﻿namespace Rocket.API.Scheduler
+﻿namespace Rocket.API.Scheduling
 {
     /// <summary>
     ///     Defines when and how an action should be executed.

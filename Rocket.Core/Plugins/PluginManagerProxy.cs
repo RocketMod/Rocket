@@ -8,9 +8,9 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Plugins
 {
-    public class ProxyPluginManager : ServiceProxy<IPluginManager>, IPluginManager
+    public class PluginManagerProxy : ServiceProxy<IPluginManager>, IPluginManager
     {
-        public ProxyPluginManager(IDependencyContainer container) : base(container) { }
+        public PluginManagerProxy(IDependencyContainer container) : base(container) { }
 
         public IEnumerator<IPlugin> GetEnumerator() => Plugins.GetEnumerator();
 
