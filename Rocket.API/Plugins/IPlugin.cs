@@ -12,7 +12,7 @@ namespace Rocket.API.Plugins
         /// <summary>
         ///     The related plugin manager.
         /// </summary>
-        IPluginManager PluginManager { get; }
+        IPluginLoader PluginLoader { get; }
 
         /// <summary>
         ///     The dependency container;
@@ -23,12 +23,12 @@ namespace Rocket.API.Plugins
         ///     Activates the plugin.
         /// </summary>
         /// <returns><b>true</b> if the plugin could be activated; otherwise, <b>false</b>.</returns>
-        bool Load(bool isReload);
+        bool Activate(bool isReload);
 
         /// <summary>
         ///     Deactivates the plugin.
         /// </summary>
         /// <returns><b>true</b> if the plugin could be deactivated; otherwise, <b>false</b>.</returns>
-        bool Unload();
+        bool Deactivate();
     }
 }

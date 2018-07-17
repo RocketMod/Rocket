@@ -7,13 +7,14 @@ namespace Rocket.API.Plugins
     /// <summary>
     ///     A service which provides plugins and is responsible for managing them.
     /// </summary>
-    public interface IPluginManager : IEnumerable<IPlugin>, IProxyableService
+    public interface IPluginLoader : IEnumerable<IPlugin>, IProxyableService
     {
         /// <summary>
         ///     The provided plugins.
         /// </summary>
         IEnumerable<IPlugin> Plugins { get; }
 
+        /* Todo: make extension methods:
         /// <summary>
         ///     Gets a plugin by name.
         /// </summary>
@@ -27,11 +28,16 @@ namespace Rocket.API.Plugins
         /// <param name="name">The name to check.</param>
         /// <returns><b>true</b> if the plugin exists; otherwise, <b>false</b>.</returns>
         bool PluginExists(string name);
+        */
 
         /// <summary>
         ///     Initializes the plugin manager.
         /// </summary>
         void Init();
+
+        bool ActivatePlugin(string name);
+
+        bool DeactivatePlugin(string name);
 
         /// <summary>
         ///     Executes soft depend code if the given plugin was loaded.

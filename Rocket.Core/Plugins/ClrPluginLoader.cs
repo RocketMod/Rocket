@@ -22,7 +22,7 @@ using Theraot.Core;
 
 namespace Rocket.Core.Plugins
 {
-    public abstract class CLRPluginManager : IPluginManager, IDisposable
+    public abstract class ClrPluginLoader : IPluginLoader, IDisposable
     {
         protected IDependencyContainer Container { get; }
         protected IEventBus EventBus { get; }
@@ -32,7 +32,7 @@ namespace Rocket.Core.Plugins
         private readonly Dictionary<string, Assembly> cachedAssemblies;
         private IEnumerable<Assembly> assemblies;
 
-        protected CLRPluginManager(IDependencyContainer dependencyContainer,
+        protected ClrPluginLoader(IDependencyContainer dependencyContainer,
                                    IEventBus eventBus, ILogger logger)
         {
             EventBus = eventBus;
@@ -47,7 +47,7 @@ namespace Rocket.Core.Plugins
             IEnumerable<IPlugin> plugins = Container.ResolveAll<IPlugin>();
 
             foreach (IPlugin plugin in plugins)
-                plugin.Unload();
+                plugin.Deactivate();
         }
 
         public virtual void Init()
@@ -126,7 +126,7 @@ namespace Rocket.Core.Plugins
                     }
                 }
 
-            bool success = plugin.Load(false);
+            bool success = plugin.Activate(false);
             if (!success)
                 return false;
 
@@ -191,7 +191,7 @@ namespace Rocket.Core.Plugins
 
         public abstract string ServiceName { get; }
 
-        public virtual bool LoadPlugin(string name)
+        public virtual bool ActivatePlugin(string name)
         {
             IPlugin plugin = GetPlugin(name);
             if (plugin != null)
@@ -199,7 +199,7 @@ namespace Rocket.Core.Plugins
                 if (plugin.IsAlive)
                     return false;
 
-                plugin.Load(false);
+                plugin.Activate(false);
                 return plugin.IsAlive;
             }
 
@@ -211,20 +211,20 @@ namespace Rocket.Core.Plugins
                     return false;
 
                 if (!plugin.IsAlive)
-                    plugin.Load(true);
+                    plugin.Activate(true);
                 return true;
             }
 
             return true;
         }
 
-        public virtual bool UnloadPlugin(string name)
+        public virtual bool DeactivatePlugin(string name)
         {
             IPlugin plugin = GetPlugin(name);
             if (plugin == null || !plugin.IsAlive)
                 return false;
 
-            plugin.Unload();
+            plugin.Deactivate();
             return !plugin.IsAlive;
         }
 
@@ -310,7 +310,7 @@ namespace Rocket.Core.Plugins
                 return null;
 
             childContainer = Container.CreateChildContainer();
-            childContainer.RegisterInstance<IPluginManager>(this);
+            childContainer.RegisterInstance<IPluginLoader>(this);
 
             IPlugin pluginInstance = (IPlugin)childContainer.Activate(pluginType);
             if (pluginInstance == null)

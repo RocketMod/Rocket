@@ -7,28 +7,28 @@ namespace Rocket.Core.Plugins.Events
     /// <summary>
     ///     This event is before plugin were loaded but after dependencies were set up.
     ///     It should not be used by plugins itself, only by implementations.<br /><br />
-    ///     Plugins can use <see cref="PluginLoadEvent" /> and <see cref="PluginLoadedEvent" />
+    ///     Plugins can use <see cref="PluginActivateEvent" /> and <see cref="PluginActivatedEvent" />
     /// </summary>
     public class PluginManagerInitEvent : Event, ICancellableEvent
     {
-        public PluginManagerInitEvent(IPluginManager pluginManager, bool global = true) : base(global)
+        public PluginManagerInitEvent(IPluginLoader pluginLoader, bool global = true) : base(global)
         {
-            PluginManager = pluginManager;
+            PluginLoader = pluginLoader;
         }
 
-        public PluginManagerInitEvent(IPluginManager pluginManager,
+        public PluginManagerInitEvent(IPluginLoader pluginLoader,
                                       EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                                       bool global = true) : base(executionTarget, global)
         {
-            PluginManager = pluginManager;
+            PluginLoader = pluginLoader;
         }
 
-        public PluginManagerInitEvent(IPluginManager pluginManager) : this(pluginManager, true)
+        public PluginManagerInitEvent(IPluginLoader pluginLoader) : this(pluginLoader, true)
         {
-            PluginManager = pluginManager;
+            PluginLoader = pluginLoader;
         }
 
-        public IPluginManager PluginManager { get; }
+        public IPluginLoader PluginLoader { get; }
 
         public bool IsCancelled { get; set; }
     }

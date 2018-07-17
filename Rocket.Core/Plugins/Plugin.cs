@@ -97,14 +97,14 @@ namespace Rocket.Core.Plugins
 
         public IDependencyContainer Container { get; }
 
-        public virtual IPluginManager PluginManager => Container.Resolve<IPluginManager>();
+        public virtual IPluginLoader PluginLoader => Container.Resolve<IPluginLoader>();
 
         public string Name { get; }
 
         public virtual string WorkingDirectory { get; set; }
         public string ConfigurationName => Name;
 
-        public bool Load(bool isReload)
+        public bool Activate(bool isReload)
         {
             if (IsAlive)
                 return false;
@@ -119,9 +119,9 @@ namespace Rocket.Core.Plugins
 
             if (EventBus != null)
             {
-                PluginLoadEvent loadEvent = new PluginLoadEvent(PluginManager, this);
-                EventBus.Emit(Runtime, loadEvent);
-                if (loadEvent.IsCancelled)
+                PluginActivateEvent activateEvent = new PluginActivateEvent(PluginLoader, this);
+                EventBus.Emit(Runtime, activateEvent);
+                if (activateEvent.IsCancelled)
                     return false;
             }
 
@@ -137,7 +137,7 @@ namespace Rocket.Core.Plugins
             IsAlive = true;
             try
             {
-                OnLoad(isReload);
+                OnActivate(isReload);
             }
             catch (Exception ex)
             {
@@ -148,7 +148,7 @@ namespace Rocket.Core.Plugins
 
             if (EventBus != null)
             {
-                PluginLoadedEvent loadedEvent = new PluginLoadedEvent(PluginManager, this);
+                PluginActivatedEvent loadedEvent = new PluginActivatedEvent(PluginLoader, this);
                 EventBus.Emit(Runtime, loadedEvent);
             }
 
@@ -166,7 +166,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public bool Unload()
+        public bool Deactivate()
         {
             if (!IsAlive)
                 return false;
@@ -175,13 +175,13 @@ namespace Rocket.Core.Plugins
 
             if (EventBus != null)
             {
-                PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
+                PluginDeactivateEvent loadedEvent = new PluginDeactivateEvent(PluginLoader, this);
                 EventBus.Emit(Runtime, loadedEvent);
             }
 
             try
             {
-                OnUnload();
+                OnDeactivate();
             }
             catch (Exception ex)
             {
@@ -192,7 +192,7 @@ namespace Rocket.Core.Plugins
 
             if (EventBus != null)
             {
-                PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
+                PluginDeactivatedEvent loadedEvent = new PluginDeactivatedEvent(PluginLoader, this);
                 EventBus.Emit(Runtime, loadedEvent);
             }
 
@@ -206,12 +206,12 @@ namespace Rocket.Core.Plugins
 
         public void RegisterCommandsFromObject(object o)
         {
-            DefaultCLRPluginManager p = PluginManager as DefaultCLRPluginManager;
+            DefaultClrPluginLoader p = PluginLoader as DefaultClrPluginLoader;
             p?.RegisterCommands(Container, o);
         }
 
-        protected virtual void OnLoad(bool isFromReload) { }
-        protected virtual void OnUnload() { }
+        protected virtual void OnActivate(bool isFromReload) { }
+        protected virtual void OnDeactivate() { }
 
         public void Subscribe(IEventListener listener)
         {

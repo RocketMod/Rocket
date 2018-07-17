@@ -37,7 +37,7 @@ namespace Rocket.Tests.Mock.Providers
         public void Init(IRuntime runtime)
         {
             logger.LogInformation("Loading host");
-            runtime.Container.Resolve<IPluginManager>().Init();
+            runtime.Container.Resolve<IPluginLoader>().Init();
         }
 
         public void Reload()

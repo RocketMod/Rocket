@@ -21,7 +21,7 @@ using Theraot.Core;
 
 namespace Rocket.Core.Plugins.NuGet
 {
-    public class NuGetPluginManager : CLRPluginManager
+    public class NuGetPluginLoader : ClrPluginLoader
     {
         private readonly IRuntime runtime;
         private readonly NuGetClientV3 client;
@@ -30,7 +30,7 @@ namespace Rocket.Core.Plugins.NuGet
 
         public virtual string RepositoriesDirectory { get; protected set; }
 
-        public NuGetPluginManager(IDependencyContainer container,
+        public NuGetPluginLoader(IDependencyContainer container,
                                   IEventBus eventBus,
                                   ILogger logger,
                                   IRuntime runtime) :

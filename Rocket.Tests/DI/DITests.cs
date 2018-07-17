@@ -34,10 +34,10 @@ namespace Rocket.Tests.DI
             Assert.IsNotNull(Runtime.Container.Resolve<ICommandHandler>("proxy_cmdhandler"));
             Assert.IsNotNull(Runtime.Container.Resolve<ICommandHandler>("default_cmdhandler"));
 
-            Assert.IsNotNull(Runtime.Container.Resolve<IPluginManager>());
-            Assert.IsNotNull(Runtime.Container.Resolve<IPluginManager>("dll_plugins"));
-            Assert.IsNotNull(Runtime.Container.Resolve<IPluginManager>("nuget_plugins"));
-            Assert.IsNotNull(Runtime.Container.Resolve<IPluginManager>("proxy_plugins"));
+            Assert.IsNotNull(Runtime.Container.Resolve<IPluginLoader>());
+            Assert.IsNotNull(Runtime.Container.Resolve<IPluginLoader>("dll_plugins"));
+            Assert.IsNotNull(Runtime.Container.Resolve<IPluginLoader>("nuget_plugins"));
+            Assert.IsNotNull(Runtime.Container.Resolve<IPluginLoader>("proxy_plugins"));
 
             Assert.IsNotNull(Runtime.Container.Resolve<IConfiguration>());
             Assert.IsNotNull(Runtime.Container.Resolve<IConfiguration>("json"));

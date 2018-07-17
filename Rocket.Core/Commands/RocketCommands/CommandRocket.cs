@@ -51,9 +51,9 @@ namespace Rocket.Core.Commands.RocketCommands
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
             permissions.Reload();
 
-            foreach (IPlugin plugin in context.Container.Resolve<IPluginManager>()) plugin.Unload();
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.Deactivate();
 
-            foreach (IPlugin plugin in context.Container.Resolve<IPluginManager>()) plugin.Load(true);
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.Activate(true);
 
             context.User.SendMessage("Reload completed.", Color.DarkGreen);
         }
@@ -78,7 +78,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length < 2)
                 throw new CommandWrongUsageException();
 
-            NuGetPluginManager pm = (NuGetPluginManager)context.Container.Resolve<IPluginManager>("nuget_plugins");
+            NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
 
             var args = context.Parameters.ToList();
 
@@ -142,7 +142,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length != 2)
                 throw new CommandWrongUsageException();
 
-            NuGetPluginManager pm = (NuGetPluginManager)context.Container.Resolve<IPluginManager>("nuget_plugins");
+            NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
 
             string repoName = context.Parameters.Get<string>(0);
             string pluginName = context.Parameters.Get<string>(1);
@@ -186,7 +186,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length < 2)
                 throw new CommandWrongUsageException();
 
-            NuGetPluginManager pm = (NuGetPluginManager)context.Container.Resolve<IPluginManager>("nuget_plugins");
+            NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
 
             var args = context.Parameters.ToList();
 

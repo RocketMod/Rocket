@@ -8,17 +8,17 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Plugins
 {
-    public class PluginManagerProxy : ServiceProxy<IPluginManager>, IPluginManager
+    public class PluginLoaderProxy : ServiceProxy<IPluginLoader>, IPluginLoader
     {
-        public PluginManagerProxy(IDependencyContainer container) : base(container) { }
+        public PluginLoaderProxy(IDependencyContainer container) : base(container) { }
 
         public IEnumerator<IPlugin> GetEnumerator() => Plugins.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
+        /*
         public IPlugin GetPlugin(string name)
         {
-            foreach (IPluginManager pluginManager in ProxiedServices)
+            foreach (IPluginLoader pluginManager in ProxiedServices)
             {
                 if (!pluginManager.PluginExists(name))
                     continue;
@@ -35,10 +35,11 @@ namespace Rocket.Core.Plugins
         {
             return ProxiedServices.Any(c => c.PluginExists(name));
         }
+        */
 
         public void Init()
         {
-            foreach (IPluginManager pluginManager in ProxiedServices)
+            foreach (IPluginLoader pluginManager in ProxiedServices)
                 pluginManager.Init();
         }
 
@@ -47,10 +48,10 @@ namespace Rocket.Core.Plugins
         public void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
             => throw new NotSupportedException("Not supported on proxies");
 
-        public bool LoadPlugin(string name)
+        public bool ActivatePlugin(string name)
             => throw new NotSupportedException("Activate plugins is not supported through proxy");
 
-        public bool UnloadPlugin(string name)
+        public bool DeactivatePlugin(string name)
             => throw new NotSupportedException("Unloading plugins is not supported through proxy");
 
         public string ServiceName => "ProxyPlugins";

@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Plugins;
+using Rocket.Core.Plugins;
 using Rocket.Tests.Mock;
 
 namespace Rocket.Tests.Plugins
@@ -11,8 +12,8 @@ namespace Rocket.Tests.Plugins
         [TestMethod]
         public void PluginImplementation()
         {
-            IPluginManager pluginManager = Runtime.Container.Resolve<IPluginManager>();
-            TestPlugin plugin = (TestPlugin) pluginManager.GetPlugin("TestPlugin");
+            IPluginLoader pluginLoader = Runtime.Container.Resolve<IPluginLoader>();
+            TestPlugin plugin = (TestPlugin) ((ClrPluginLoader) pluginLoader).GetPlugin("TestPlugin");
             Assert.IsTrue(plugin.IsAlive);
 
             Assert.IsNull(plugin.Configuration); //No config for test plugin

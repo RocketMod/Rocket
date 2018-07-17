@@ -31,7 +31,7 @@ namespace Rocket.Console
         {
             logger = runtime.Container.Resolve<ILogger>();
 
-            runtime.Container.Resolve<IPluginManager>().Init();
+            runtime.Container.Resolve<IPluginLoader>().Init();
             ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
 
             Directory.SetCurrentDirectory(WorkingDirectory);

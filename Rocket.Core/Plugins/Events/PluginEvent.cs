@@ -6,22 +6,22 @@ namespace Rocket.Core.Plugins.Events
 {
     public abstract class PluginEvent : Event
     {
-        protected PluginEvent(IPluginManager pluginManager, IPlugin plugin, bool global = true) : base(global)
+        protected PluginEvent(IPluginLoader pluginLoader, IPlugin plugin, bool global = true) : base(global)
         {
-            PluginManager = pluginManager;
+            PluginLoader = pluginLoader;
             Plugin = plugin;
         }
 
-        protected PluginEvent(IPluginManager pluginManager, IPlugin plugin,
+        protected PluginEvent(IPluginLoader pluginLoader, IPlugin plugin,
                               EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
                               bool global = true) : base(executionTarget, global)
         {
-            PluginManager = pluginManager;
+            PluginLoader = pluginLoader;
             Plugin = plugin;
         }
 
-        protected PluginEvent(IPluginManager pluginManager, IPlugin plugin) : this(pluginManager, plugin, true) { }
-        public IPluginManager PluginManager { get; }
+        protected PluginEvent(IPluginLoader pluginLoader, IPlugin plugin) : this(pluginLoader, plugin, true) { }
+        public IPluginLoader PluginLoader { get; }
         public IPlugin Plugin { get; }
     }
 }
