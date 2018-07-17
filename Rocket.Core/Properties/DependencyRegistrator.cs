@@ -41,7 +41,7 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<ICommandHandler, DefaultCommandHandler>("default_cmdhandler");
             container.RegisterSingletonType<ICommandHandler, CommandHandlerProxy>("proxy_cmdhandler", null);
 
-            container.RegisterSingletonType<IPluginManager, RocketPluginManager>("rocket_plugins");
+            container.RegisterSingletonType<IPluginManager, RocketPluginManager>("dll_plugins");
             container.RegisterSingletonType<IPluginManager, NuGetPluginManager>("nuget_plugins");
             container.RegisterSingletonType<IPluginManager, PluginManagerProxy>("proxy_plugins", null);
 

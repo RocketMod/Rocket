@@ -90,6 +90,6 @@ namespace Rocket.Core.Plugins
             return assemblies;
         }
 
-        public override string ServiceName => "RocketPlugins";
+        public override string ServiceName => "DllPlugins";
     }
 }
