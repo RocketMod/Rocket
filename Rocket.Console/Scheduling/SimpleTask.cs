@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Rocket.API;
-using Rocket.API.Scheduler;
+using Rocket.API.Scheduling;
 
 namespace Rocket.Console.Scheduling
 {

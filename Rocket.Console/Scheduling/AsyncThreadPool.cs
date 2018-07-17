@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Threading;
-using Rocket.API.Scheduler;
+using Rocket.API.Scheduling;
 
 namespace Rocket.Console.Scheduling
 {

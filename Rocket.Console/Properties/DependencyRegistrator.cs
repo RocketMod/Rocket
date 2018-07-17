@@ -1,6 +1,6 @@
 ﻿using Rocket.API;
 using Rocket.API.DependencyInjection;
-using Rocket.API.Scheduler;
+using Rocket.API.Scheduling;
 using Rocket.API.User;
 using Rocket.Console.Scheduling;
 using Rocket.Core.User;
