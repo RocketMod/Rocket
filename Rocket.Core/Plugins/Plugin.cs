@@ -206,7 +206,7 @@ namespace Rocket.Core.Plugins
 
         public void RegisterCommandsFromObject(object o)
         {
-            RocketPluginManager p = PluginManager as RocketPluginManager;
+            DefaultCLRPluginManager p = PluginManager as DefaultCLRPluginManager;
             p?.RegisterCommands(Container, o);
         }
 
