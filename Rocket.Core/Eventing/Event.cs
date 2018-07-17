@@ -20,7 +20,7 @@ namespace Rocket.Core.Eventing
         {
             IsGlobal = global;
 
-            List<string> names = EventManager.GetEventNames(GetType());
+            List<string> names = EventBus.GetEventNames(GetType());
 
             Names = names;
 
@@ -35,7 +35,7 @@ namespace Rocket.Core.Eventing
             IsGlobal = global;
 
             List<string> names = new List<string> { name };
-            names.AddRange(EventManager.GetEventNames(GetType().BaseType));
+            names.AddRange(EventBus.GetEventNames(GetType().BaseType));
 
             Names = names;
 

@@ -17,9 +17,9 @@ namespace Rocket.Core.Plugins
         private Dictionary<string, string> pluginAssemblies;
 
         public RocketPluginManager(IDependencyContainer dependencyContainer,
-                             IEventManager eventManager,
+                             IEventBus eventBus,
                              ILogger logger) :
-            base(dependencyContainer, eventManager, logger)
+            base(dependencyContainer, eventBus, logger)
         { }
 
         protected override IEnumerable<Assembly> LoadAssemblies()

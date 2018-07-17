@@ -11,11 +11,11 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestSyncEventingWithType()
         {
-            IEventManager manager = GetEventManager();
-            manager.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
+            IEventBus bus = GetEventManager();
+            bus.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync);
-            EmitTestEvent(manager, e);
+            EmitTestEvent(bus, e);
 
             Assert.AreEqual(true, e.ValueChanged, "The subscription callback did not get called");
         }
@@ -23,11 +23,11 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestSyncEventingWithName()
         {
-            IEventManager manager = GetEventManager();
-            manager.Subscribe(GetListener(), "test", (sender, @event) => ((TestEvent) @event).ValueChanged = true);
+            IEventBus bus = GetEventManager();
+            bus.Subscribe(GetListener(), "test", (sender, @event) => ((TestEvent) @event).ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync);
-            EmitTestEvent(manager, e);
+            EmitTestEvent(bus, e);
 
             Assert.AreEqual(true, e.ValueChanged, "The subscription callback did not get called");
         }
@@ -35,11 +35,11 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestCancellationWithoutIgnore()
         {
-            IEventManager manager = GetEventManager();
-            manager.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
+            IEventBus bus = GetEventManager();
+            bus.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync) {IsCancelled = true};
-            EmitTestEvent(manager, e);
+            EmitTestEvent(bus, e);
 
             Assert.AreEqual(false, e.ValueChanged,
                 "The subscription callback was called on a cancelled event when it shouldn't be");
@@ -48,11 +48,11 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestCancellationWithIgnore()
         {
-            IEventManager manager = GetEventManager();
-            manager.Subscribe<TestEvent>(GetListener(), CancelIgnoreEventHandler);
+            IEventBus bus = GetEventManager();
+            bus.Subscribe<TestEvent>(GetListener(), CancelIgnoreEventHandler);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync) {IsCancelled = true};
-            EmitTestEvent(manager, e);
+            EmitTestEvent(bus, e);
 
             Assert.AreEqual(true, e.ValueChanged,
                 "The subscription callback was not called on a cancelled event but it has IgnoreCancelled set to true");
@@ -64,10 +64,10 @@ namespace Rocket.Tests.Eventing
             ((TestEvent) @event).ValueChanged = true;
         }
 
-        private void EmitTestEvent(IEventManager manager, TestEvent @event)
+        private void EmitTestEvent(IEventBus bus, TestEvent @event)
         {
             bool finished = false;
-            manager.Emit(GetEmitter(), @event, e => finished = true);
+            bus.Emit(GetEmitter(), @event, e => finished = true);
 
             while (!finished)
                 ;
@@ -77,6 +77,6 @@ namespace Rocket.Tests.Eventing
 
         protected virtual ILifecycleObject GetListener() => Runtime.Container.Resolve<IRuntime>();
 
-        protected abstract IEventManager GetEventManager();
+        protected abstract IEventBus GetEventManager();
     }
 }

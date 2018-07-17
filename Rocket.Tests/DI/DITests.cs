@@ -22,7 +22,7 @@ namespace Rocket.Tests.DI
         [TestMethod]
         public void CoreDependenciesAvailable()
         {
-            Assert.IsNotNull(Runtime.Container.Resolve<IEventManager>());
+            Assert.IsNotNull(Runtime.Container.Resolve<IEventBus>());
             Assert.IsNotNull(Runtime.Container.Resolve<ITranslationCollection>());
 
             Assert.IsNotNull(Runtime.Container.Resolve<IPermissionProvider>());

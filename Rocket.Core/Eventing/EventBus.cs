@@ -13,7 +13,7 @@ using Rocket.Core.ServiceProxies;
 
 namespace Rocket.Core.Eventing
 {
-    public class EventManager : IEventManager
+    public class EventBus : IEventBus
     {
         private readonly IDependencyContainer container;
         private readonly List<EventAction> eventListeners = new List<EventAction>();
@@ -21,7 +21,7 @@ namespace Rocket.Core.Eventing
         private readonly List<IEvent> inProgress = new List<IEvent>();
         private readonly ILogger logger;
 
-        public EventManager(IDependencyContainer container)
+        public EventBus(IDependencyContainer container)
         {
             this.container = container;
             container.TryResolve(null, out logger);

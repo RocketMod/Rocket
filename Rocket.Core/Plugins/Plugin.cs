@@ -84,7 +84,7 @@ namespace Rocket.Core.Plugins
             Configuration?.Save();
         }
 
-        protected IEventManager EventManager => Container.Resolve<IEventManager>();
+        protected IEventBus EventBus => Container.Resolve<IEventBus>();
         protected ILogger Logger => Container.Resolve<ILogger>();
 
         protected IRuntime Runtime => Container.Resolve<IRuntime>();
@@ -117,10 +117,10 @@ namespace Rocket.Core.Plugins
                 Translations?.Reload();
             }
 
-            if (EventManager != null)
+            if (EventBus != null)
             {
                 PluginLoadEvent loadEvent = new PluginLoadEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadEvent);
+                EventBus.Emit(Runtime, loadEvent);
                 if (loadEvent.IsCancelled)
                     return false;
             }
@@ -146,10 +146,10 @@ namespace Rocket.Core.Plugins
                 return false;
             }
 
-            if (EventManager != null)
+            if (EventBus != null)
             {
                 PluginLoadedEvent loadedEvent = new PluginLoadedEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadedEvent);
+                EventBus.Emit(Runtime, loadedEvent);
             }
 
             return true;
@@ -173,10 +173,10 @@ namespace Rocket.Core.Plugins
 
             parentLogger.LogInformation($"Unloading {Name}.");
 
-            if (EventManager != null)
+            if (EventBus != null)
             {
                 PluginUnloadEvent loadedEvent = new PluginUnloadEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadedEvent);
+                EventBus.Emit(Runtime, loadedEvent);
             }
 
             try
@@ -190,10 +190,10 @@ namespace Rocket.Core.Plugins
 
             IsAlive = false;
 
-            if (EventManager != null)
+            if (EventBus != null)
             {
                 PluginUnloadedEvent loadedEvent = new PluginUnloadedEvent(PluginManager, this);
-                EventManager.Emit(Runtime, loadedEvent);
+                EventBus.Emit(Runtime, loadedEvent);
             }
 
             return true;
@@ -215,22 +215,22 @@ namespace Rocket.Core.Plugins
 
         public void Subscribe(IEventListener listener)
         {
-            EventManager.AddEventListener(this, listener);
+            EventBus.AddEventListener(this, listener);
         }
 
         public void Subscribe<T>(EventCallback<T> callback) where T : IEvent
         {
-            EventManager.Subscribe(this, callback);
+            EventBus.Subscribe(this, callback);
         }
 
         public void Subscribe(string eventName, EventCallback callback)
         {
-            EventManager.Subscribe(this, eventName, callback);
+            EventBus.Subscribe(this, eventName, callback);
         }
 
         public void Emit(IEvent @event)
         {
-            EventManager.Emit(this, @event);
+            EventBus.Emit(this, @event);
         }
     }
 }

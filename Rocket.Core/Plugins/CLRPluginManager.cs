@@ -25,7 +25,7 @@ namespace Rocket.Core.Plugins
     public abstract class CLRPluginManager : IPluginManager, IDisposable
     {
         protected IDependencyContainer Container { get; }
-        protected IEventManager EventManager { get; }
+        protected IEventBus EventBus { get; }
         protected ILogger Logger { get; }
         protected IDependencyContainer ParentContainer { get; }
 
@@ -33,9 +33,9 @@ namespace Rocket.Core.Plugins
         private IEnumerable<Assembly> assemblies;
 
         protected CLRPluginManager(IDependencyContainer dependencyContainer,
-                                   IEventManager eventManager, ILogger logger)
+                                   IEventBus eventBus, ILogger logger)
         {
-            EventManager = eventManager;
+            EventBus = eventBus;
             Logger = logger;
             ParentContainer = dependencyContainer;
             Container = dependencyContainer.CreateChildContainer();
@@ -60,7 +60,7 @@ namespace Rocket.Core.Plugins
 
             PluginManagerInitEvent pluginManagerInitEvent =
                 new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
-            EventManager.Emit(runtime, pluginManagerInitEvent);
+            EventBus.Emit(runtime, pluginManagerInitEvent);
 
             if (pluginManagerInitEvent.IsCancelled)
             {
@@ -134,7 +134,7 @@ namespace Rocket.Core.Plugins
             foreach (Type listener in listeners)
             {
                 IAutoRegisteredEventListener instance = (IAutoRegisteredEventListener)container.Activate(listener);
-                EventManager.AddEventListener(plugin, instance);
+                EventBus.AddEventListener(plugin, instance);
             }
 
             return true;

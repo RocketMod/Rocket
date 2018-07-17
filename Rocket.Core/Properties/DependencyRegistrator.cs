@@ -36,7 +36,7 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
             container.RegisterSingletonType<ILogger, LoggerProxy>("proxy_logger", null);
 
-            container.RegisterSingletonType<IEventManager, EventManager>();
+            container.RegisterSingletonType<IEventBus, EventBus>();
 
             container.RegisterSingletonType<ICommandHandler, DefaultCommandHandler>("default_cmdhandler");
             container.RegisterSingletonType<ICommandHandler, CommandHandlerProxy>("proxy_cmdhandler", null);

@@ -87,16 +87,16 @@ namespace Rocket.Console.Scheduling
 
             if (!(task.Owner is IEventEmitter owner)) return;
 
-            IEventManager eventManager = Container.Resolve<IEventManager>();
+            IEventBus eventBus = Container.Resolve<IEventBus>();
 
-            if (eventManager == null)
+            if (eventBus == null)
             {
                 InternalTasks.Add(task);
                 cb?.Invoke(owner, null);
                 return;
             }
 
-            eventManager.Emit(owner, e, @event =>
+            eventBus.Emit(owner, e, @event =>
             {
                 task.IsCancelled = e.IsCancelled;
 

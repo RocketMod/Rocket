@@ -29,7 +29,7 @@ namespace Rocket.Core.Eventing
             Listener = listener;
             Action = (sender, @event) => method.Invoke(listener, new object[] {sender, @event});
             Handler = handler;
-            TargetEventNames = EventManager.GetEventNames(type);
+            TargetEventNames = EventBus.GetEventNames(type);
             TargetEventType = type;
         }
 
@@ -38,7 +38,7 @@ namespace Rocket.Core.Eventing
             Owner = owner;
             Action = action;
             Handler = handler;
-            TargetEventNames = EventManager.GetEventNames(eventType);
+            TargetEventNames = EventBus.GetEventNames(eventType);
             TargetEventType = eventType;
         }
 

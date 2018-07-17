@@ -31,10 +31,10 @@ namespace Rocket.Core.Plugins.NuGet
         public virtual string RepositoriesDirectory { get; protected set; }
 
         public NuGetPluginManager(IDependencyContainer container,
-                                  IEventManager eventManager,
+                                  IEventBus eventBus,
                                   ILogger logger,
                                   IRuntime runtime) :
-            base(container, eventManager, logger)
+            base(container, eventBus, logger)
         {
             this.runtime = runtime;
             client = new NuGetClientV3(container);
@@ -311,7 +311,7 @@ namespace Rocket.Core.Plugins.NuGet
 
             PluginManagerInitEvent pluginManagerInitEvent =
                 new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
-            EventManager.Emit(runtime, pluginManagerInitEvent);
+            EventBus.Emit(runtime, pluginManagerInitEvent);
 
             if (pluginManagerInitEvent.IsCancelled)
             {

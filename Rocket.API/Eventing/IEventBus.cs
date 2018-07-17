@@ -27,7 +27,7 @@ namespace Rocket.API.Eventing
     /// <summary>
     ///     The event manager is responsible for emitting events and for managing their subscriptions.
     /// </summary>
-    public interface IEventManager: IService
+    public interface IEventBus: IService
     {
         /// <summary>
         ///     Subscribe to an event.
