@@ -31,10 +31,10 @@ namespace Rocket.Core.Plugins.NuGet
         public virtual string RepositoriesDirectory { get; protected set; }
 
         public NuGetPluginManager(IDependencyContainer container,
-                                  IEventManager eventManager,
+                                  IEventBus eventBus,
                                   ILogger logger,
                                   IRuntime runtime) :
-            base(container, eventManager, logger)
+            base(container, eventBus, logger)
         {
             this.runtime = runtime;
             client = new NuGetClientV3(container);
@@ -311,7 +311,7 @@ namespace Rocket.Core.Plugins.NuGet
 
             PluginManagerInitEvent pluginManagerInitEvent =
                 new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
-            EventManager.Emit(runtime, pluginManagerInitEvent);
+            EventBus.Emit(runtime, pluginManagerInitEvent);
 
             if (pluginManagerInitEvent.IsCancelled)
             {
@@ -388,19 +388,19 @@ namespace Rocket.Core.Plugins.NuGet
                     if (entry.Name.ToLower().StartsWith("lib/net35") && entry.Name.EndsWith(".dll"))
                         assemblies.Add(entry);
 
-#elif NETSTANDARD20
+#elif NETSTANDARD2_0
                 foreach (ZipEntry entry in zf)
                     if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
                         assemblies.Add(entry);
-#elif NET461 || NETSTANDARD20
-#if NETSTANDARD20
-                if(ze == null) 
+#elif NET461 || NETSTANDARD2_0
+#if NETSTANDARD2_0
+                if (ze == null) 
                 {
 #endif
                     foreach (ZipEntry entry in zf)
                         if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
                         assemblies.Add(entry);
-#if NETSTANDARD20
+#if NETSTANDARD2_0
                 }
 #endif
 #else
