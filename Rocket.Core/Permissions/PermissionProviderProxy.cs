@@ -14,26 +14,26 @@ namespace Rocket.Core.Permissions
     {
         public PermissionProviderProxy(IDependencyContainer container) : base(container) { }
 
-        public IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true)
+        public IEnumerable<string> GetGrantedPermissions(IPermissionEntity target, bool inherit = true)
         {
             return ProxiedServices
                    .Where(c => c.SupportsTarget(target))
                    .SelectMany(c => c.GetGrantedPermissions(target, inherit));
         }
 
-        public IEnumerable<string> GetDeniedPermissions(IIdentity target, bool inherit = true)
+        public IEnumerable<string> GetDeniedPermissions(IPermissionEntity target, bool inherit = true)
         {
             return ProxiedServices
                    .Where(c => c.SupportsTarget(target))
                    .SelectMany(c => c.GetDeniedPermissions(target, inherit));
         }
 
-        public bool SupportsTarget(IIdentity target)
+        public bool SupportsTarget(IPermissionEntity target)
         {
             return ProxiedServices.Any(c => c.SupportsTarget(target));
         }
 
-        public PermissionResult CheckPermission(IIdentity target, string permission)
+        public PermissionResult CheckPermission(IPermissionEntity target, string permission)
         {
             GuardTarget(target);
 
@@ -49,7 +49,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAllPermissions(IIdentity target, params string[] permissions)
+        public PermissionResult CheckHasAllPermissions(IPermissionEntity target, params string[] permissions)
         {
             GuardTarget(target);
 
@@ -65,7 +65,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAnyPermission(IIdentity target, params string[] permissions)
+        public PermissionResult CheckHasAnyPermission(IPermissionEntity target, params string[] permissions)
         {
             GuardTarget(target);
 
@@ -81,16 +81,16 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public bool AddPermission(IIdentity target, string permission)
+        public bool AddPermission(IPermissionEntity target, string permission)
             => throw new NotSupportedException("Adding permissions from proxy is not supported.");
 
-        public bool AddDeniedPermission(IIdentity target, string permission)
+        public bool AddDeniedPermission(IPermissionEntity target, string permission)
             => throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
 
-        public bool RemovePermission(IIdentity target, string permission)
+        public bool RemovePermission(IPermissionEntity target, string permission)
             => throw new NotSupportedException("Removing permissions from proxy is not supported.");
 
-        public bool RemoveDeniedPermission(IIdentity target, string permission)
+        public bool RemoveDeniedPermission(IPermissionEntity target, string permission)
             => throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
 
         public IPermissionGroup GetPrimaryGroup(IUser user)
@@ -108,7 +108,7 @@ namespace Rocket.Core.Permissions
             return GetGroups().FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups(IIdentity target)
+        public IEnumerable<IPermissionGroup> GetGroups(IPermissionEntity target)
         {
             return ProxiedServices.Where(c => c.SupportsTarget(target))
                                   .SelectMany(c => c.GetGroups(target));
@@ -122,10 +122,10 @@ namespace Rocket.Core.Permissions
         public bool UpdateGroup(IPermissionGroup group)
             => throw new NotSupportedException("Updating groups from proxy is not supported.");
 
-        public bool AddGroup(IIdentity target, IPermissionGroup group)
+        public bool AddGroup(IPermissionEntity target, IPermissionGroup group)
             => throw new NotSupportedException("Adding groups from proxy is not supported.");
 
-        public bool RemoveGroup(IIdentity target, IPermissionGroup group)
+        public bool RemoveGroup(IPermissionEntity target, IPermissionGroup group)
             => throw new NotSupportedException("Removing groups from proxy is not supported.");
 
         public bool CreateGroup(IPermissionGroup group)
@@ -149,7 +149,7 @@ namespace Rocket.Core.Permissions
             ProxiedServices.ForEach(c => c.Save());
         }
 
-        private void GuardTarget(IIdentity target)
+        private void GuardTarget(IPermissionEntity target)
         {
             if (!SupportsTarget(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");

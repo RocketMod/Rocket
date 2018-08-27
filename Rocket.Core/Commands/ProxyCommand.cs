@@ -1,5 +1,6 @@
 ﻿using System;
 using Rocket.API.Commands;
+using Rocket.API.User;
 using Rocket.Core.DependencyInjection;
 
 namespace Rocket.Core.Commands {
@@ -21,7 +22,7 @@ namespace Rocket.Core.Commands {
         public string Description => BaseCommand.Description;
         public string Syntax => BaseCommand.Syntax;
         public IChildCommand[] ChildCommands => BaseCommand.ChildCommands;
-        public bool SupportsUser(Type user) => BaseCommand.SupportsUser(user);
+        public bool SupportsUser(UserType user) => BaseCommand.SupportsUser(user);
         public void Execute(ICommandContext context) => BaseCommand.Execute(context);
     }
 }

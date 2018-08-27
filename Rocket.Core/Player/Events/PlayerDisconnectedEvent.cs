@@ -1,29 +1,34 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.Player;
 using Rocket.API.User;
-using Rocket.Core.Player.Events;
-using Rocket.Core.User.Events;
+using Rocket.Core.Eventing;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerDisconnectedEvent: UserDisconnectedEvent
+    public class PlayerDisconnectedEvent : PlayerEvent
     {
-        public IPlayer Player { get; }
-        public PlayerDisconnectedEvent(IPlayer player) : base(player.GetUser())
+        public PlayerDisconnectedEvent(IPlayer player) : base(player,true)
         {
-            Player = player;
+            Reason = null;
         }
-        public PlayerDisconnectedEvent(IPlayer player, string reason = null) : base(player.GetUser(), reason)
+
+        public PlayerDisconnectedEvent(IPlayer player, string reason = null) : base(player, true)
         {
-            Player = player;
+            Reason = reason;
         }
-        public PlayerDisconnectedEvent(IPlayer player, string reason = null, bool global = true) : base(player.GetUser(), reason, global)
+
+        public PlayerDisconnectedEvent(IPlayer player, string reason = null, bool global = true) : base(player, global)
         {
-            Player = player;
+            Reason = reason;
         }
-        public PlayerDisconnectedEvent(IPlayer player, string reason = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), reason, executionTarget, global)
+
+        public PlayerDisconnectedEvent(IPlayer player, string reason = null,
+                                     EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                                     bool global = true) : base(player, executionTarget, global)
         {
-            Player = player;
+            Reason = reason;
         }
+        
+        public string Reason { get; }
     }
 }

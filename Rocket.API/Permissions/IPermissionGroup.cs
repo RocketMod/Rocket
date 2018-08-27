@@ -5,7 +5,7 @@ namespace Rocket.API.Permissions
     /// <summary>
     ///     A permission group contains a collection of permissions.
     /// </summary>
-    public interface IPermissionGroup : IIdentity
+    public interface IPermissionGroup : IPermissionEntity
     {
         /// <summary>
         ///     The priority of this group.
@@ -16,5 +16,7 @@ namespace Rocket.API.Permissions
         ///     Defines if the group should be auto assigned.
         /// </summary>
         bool AutoAssign { get; }
+
+        string Name { get; }
     }
 }

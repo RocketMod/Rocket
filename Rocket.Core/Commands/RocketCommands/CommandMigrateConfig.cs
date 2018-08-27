@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
+using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.User;
 
@@ -17,7 +18,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "[<from type> <to type> <path>]";
         public IChildCommand[] ChildCommands { get; }
 
-        public bool SupportsUser(Type user) => typeof(IConsole).IsAssignableFrom(user);
+        public bool SupportsUser(UserType type) => type == UserType.Console;
 
         public void Execute(ICommandContext context)
         {

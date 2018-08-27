@@ -9,10 +9,9 @@ using Rocket.API.User;
 namespace Rocket.Core.Player
 {
     [TypeConverter(typeof(PlayerTypeConverter))]
-    public abstract class BasePlayer<TEntity, TUser, TSelf> : IPlayer<TEntity, TUser, TSelf> 
-        where TEntity : IPlayerEntity<TSelf> 
-        where TUser : IPlayerUser<TSelf> 
-        where TSelf : IPlayer
+    public abstract class BasePlayer<TUser, TEntity> : IPlayer<TUser, TEntity> 
+        where TEntity : IPlayerEntity
+        where TUser : IUser
     {
         protected BasePlayer(IDependencyContainer container)
         {
@@ -25,13 +24,13 @@ namespace Rocket.Core.Player
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {
             if (format == null)
-                return Name.ToString(formatProvider);
+                return User.ToString();
 
             if (format.Equals("id", StringComparison.OrdinalIgnoreCase))
-                return Id.ToString(formatProvider);
+                return User.Id.ToString().ToString(formatProvider);
 
             if (format.Equals("name", StringComparison.OrdinalIgnoreCase))
-                return Name.ToString(formatProvider);
+                return User.UserName.ToString(formatProvider);
 
             string[] subFormats = format.Split(':');
 
@@ -63,11 +62,18 @@ namespace Rocket.Core.Player
             throw new FormatException($"\"{format}\" is not a valid format.");
         }
 
-        public abstract string Id { get; }
-        public abstract string Name { get; }
-        public string IdentityType => IdentityTypes.Player;
-        public abstract TUser User { get; }
         public abstract TEntity Entity { get; }
+        
+        public abstract TUser User { get; }
+
         public abstract bool IsOnline { get; }
+        
+        public abstract DateTime SessionConnectTime { get; }
+
+        public abstract DateTime? SessionDisconnectTime { get; }
+
+        IUser IPlayer.User =>  User;
+
+        IPlayerEntity IPlayer.Entity => Entity;
     }
 }

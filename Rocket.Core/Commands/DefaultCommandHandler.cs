@@ -11,6 +11,7 @@ using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
 using Rocket.Core.User;
+using Rocket.API.Player;
 
 namespace Rocket.Core.Commands
 {
@@ -23,7 +24,18 @@ namespace Rocket.Core.Commands
             this.container = container;
         }
 
+
+        public bool HandleCommand(IPlayer player, string commandLine, string prefix)
+        {
+            return HandleCommand(player.User, player, commandLine, prefix);
+        }
+
         public bool HandleCommand(IUser user, string commandLine, string prefix)
+        {
+            return HandleCommand(user,null, commandLine, prefix);
+        }
+
+        public bool HandleCommand(IUser user,IPlayer player,string commandLine, string prefix)
         {
             GuardUser(user);
 
@@ -34,10 +46,10 @@ namespace Rocket.Core.Commands
             IRocketSettingsProvider settings = contextContainer.Resolve<IRocketSettingsProvider>();
 
             if (settings.Settings.Logging.EnableCommandExecutionsLogs)
-                contextContainer.Resolve<ILogger>().LogInformation($"{user.Name} executed command: \"{commandLine}\"");
+                contextContainer.Resolve<ILogger>().LogInformation($"{user.ToString()} executed command: \"{commandLine}\"");
 
             CommandContext context = new CommandContext(contextContainer,
-                user, prefix, null,
+                user,player, prefix, null,
                 args[0], args.Skip(1).ToArray(), null, null);
 
             ICommand target = context.Container.Resolve<ICommandProvider>()
@@ -61,7 +73,7 @@ namespace Rocket.Core.Commands
             if (provider.CheckPermission(user, permission) != PermissionResult.Grant)
             {
                 var logger = container.Resolve<ILogger>();
-                logger.LogInformation($"{user.Name} does not have permissions to execute: \"{commandLine}\"");
+                logger.LogInformation($"{user.ToString()} does not have permissions to execute: \"{commandLine}\"");
                 throw new NotEnoughPermissionsException(user, permission);
             }
 
@@ -84,7 +96,7 @@ namespace Rocket.Core.Commands
             return true;
         }
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(UserType user) => true;
 
         //Builds a defalt permission
         //If the command is "A" with Child Command "B", the default permission will be "A.B"
@@ -118,14 +130,15 @@ namespace Rocket.Core.Commands
             if (cmd == null)
                 return context;
 
-            if (!cmd.SupportsUser(context.User.GetType()))
-                throw new NotSupportedException(context.User.GetType().Name + " can not use this command.");
+            if (!cmd.SupportsUser(context.User.Type))
+                throw new NotSupportedException(context.User.Type.ToString() + " can not use this command.");
 
             tree.Add(cmd);
 
             CommandContext childContext = new CommandContext(
                 context.Container.CreateChildContainer(),
                 context.User,
+                context.Player,
                 context.CommandPrefix + context.CommandAlias + " ",
                 cmd,
                 alias,
@@ -140,8 +153,8 @@ namespace Rocket.Core.Commands
 
         private void GuardUser(IUser user)
         {
-            if (!SupportsUser(user.GetType()))
-                throw new NotSupportedException(user.GetType().FullName + " is not supported!");
+            if (!SupportsUser(user.Type))
+                throw new NotSupportedException(user.Type.ToString() + " is not supported!");
         }
 
         public string ServiceName => "RocketCommandHandler";

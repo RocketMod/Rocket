@@ -28,7 +28,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(UserType user) => true;
     }
 
     public abstract class CommandGroupUpdate : IChildCommand
@@ -42,11 +42,11 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(UserType user) => true;
 
         public void Execute(ICommandContext context)
         {
-            IUserInfo targetPlayer = context.Parameters.Get<IUserInfo>(0);
+            IUser targetPlayer = context.Parameters.Get<IUser>(0);
             string groupName = context.Parameters.Get<string>(1);
 
             string permission = "Rocket.Permissions.ManageGroups." + groupName;
@@ -68,7 +68,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
 
         protected abstract void UpdateGroup(IUser user, IPermissionProvider permissions,
-                                            IUserInfo targetUser, IPermissionGroup groupToUpdate);
+                                            IUser targetUser, IPermissionGroup groupToUpdate);
     }
 
     public class CommandGroupAdd : CommandGroupUpdate
@@ -79,7 +79,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] { "a", "+" };
 
         protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
-                                            IUserInfo targetUser, IPermissionGroup groupToUpdate)
+                                            IUser targetUser, IPermissionGroup groupToUpdate)
         {
             if (permissions.AddGroup(targetUser, groupToUpdate))
                 user.SendMessage($"Successfully added {targetUser:Name} to \"{groupToUpdate:Name}\"!",
@@ -97,7 +97,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] { "r", "-" };
 
         protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
-                                            IUserInfo targetUser, IPermissionGroup groupToUpdate)
+                                            IUser targetUser, IPermissionGroup groupToUpdate)
         {
             if (permissions.RemoveGroup(targetUser, groupToUpdate))
                 user.SendMessage($"Successfully removed {targetUser:Name} from \"{groupToUpdate:Name}\"!",

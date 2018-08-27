@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Player;
 using Rocket.API.User;
 
 namespace Rocket.API.Commands
@@ -27,11 +28,27 @@ namespace Rocket.API.Commands
         bool HandleCommand(IUser user, string commandLine, string prefix);
 
         /// <summary>
+        ///     Handles a command
+        /// </summary>
+        /// <param name="user">
+        ///     The <see cref="IPlayer">command user</see> of the command. Guaranteed to be a
+        ///     <see cref="SupportsUser">supported command player</see>.
+        /// </param>
+        /// <param name="commandLine">The command line (e.g. "/mycommand sub").</param>
+        /// <param name="prefix">The <see cref="ICommandContext.CommandPrefix">prefix</see> of the command.</param>
+        /// <returns><b>true</b> if the command was handled; otherwise, <b>false</b>.</returns>
+        /// <remarks>
+        ///     When returning false, the next command handler will be called.
+        ///     If no command handler could handle the command, it will be assumed that the command does not exist.
+        /// </remarks>
+        bool HandleCommand(IPlayer player, string commandLine, string prefix);
+
+        /// <summary>
         ///     Defines if this command handler can handle the given command user type.
         /// </summary>
         /// <param name="user">The <see cref="IUser">command user</see> type to check.</param>
         /// <returns><b>true</b> if the command user type is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsUser(Type user);
+        bool SupportsUser(UserType type);
 
         /// <summary>
         ///     The permission required to execute the command.

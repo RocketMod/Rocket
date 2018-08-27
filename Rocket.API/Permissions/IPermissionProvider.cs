@@ -17,7 +17,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target whichs permissions to get.</param>
         /// <param name="inherit">Defines if the parent groups permissions should be included.</param>
         /// <returns>A list of all permissions of the target.</returns>
-        IEnumerable<string> GetGrantedPermissions(IIdentity target, bool inherit = true);
+        IEnumerable<string> GetGrantedPermissions(IPermissionEntity target, bool inherit = true);
 
         /// <summary>
         ///     Gets the denied permissions of the given target.
@@ -25,14 +25,14 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target whichs denied permissions to get.</param>
         /// <param name="inherit">Defines if the parent groups denied permissions should be included.</param>
         /// <returns>A list of all denied permissions of the target.</returns>
-        IEnumerable<string> GetDeniedPermissions(IIdentity target, bool inherit = true);
+        IEnumerable<string> GetDeniedPermissions(IPermissionEntity target, bool inherit = true);
 
         /// <summary>
         ///     Defines if the given target is supported by this provider.
         /// </summary>
         /// <param name="target">The target to check.</param>
         /// <returns><b>true</b> if the given target is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsTarget(IIdentity target);
+        bool SupportsTarget(IPermissionEntity target);
 
         /// <summary>
         ///     Check if the target has the given permission.
@@ -44,7 +44,7 @@ namespace Rocket.API.Permissions
         ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have the permission; otherwise,
         ///     <see cref="PermissionResult.Default" />
         /// </returns>
-        PermissionResult CheckPermission(IIdentity target, string permission);
+        PermissionResult CheckPermission(IPermissionEntity target, string permission);
 
         /// <summary>
         ///     Checks if the target has all of the given permissions.
@@ -56,7 +56,7 @@ namespace Rocket.API.Permissions
         ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have access to any of the permissions;
         ///     otherwise, <see cref="PermissionResult.Default" />
         /// </returns>
-        PermissionResult CheckHasAllPermissions(IIdentity target, params string[] permissions);
+        PermissionResult CheckHasAllPermissions(IPermissionEntity target, params string[] permissions);
 
         /// <summary>
         ///     Checks if the target has any of the given permissions.
@@ -68,7 +68,7 @@ namespace Rocket.API.Permissions
         ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have access to any of the permissions;
         ///     otherwise, <see cref="PermissionResult.Default" />
         /// </returns>
-        PermissionResult CheckHasAnyPermission(IIdentity target, params string[] permissions);
+        PermissionResult CheckHasAnyPermission(IPermissionEntity target, params string[] permissions);
 
         /// <summary>
         ///     Adds an explicitly granted permission to the target.
@@ -76,7 +76,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <param name="permission">The permission to add.</param>
         /// <returns><b>true</b> if the permission was successfully added; otherwise, <b>false</b>.</returns>
-        bool AddPermission(IIdentity target, string permission);
+        bool AddPermission(IPermissionEntity target, string permission);
 
         /// <summary>
         ///     Adds an explicitly denied permission to the target.
@@ -84,7 +84,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <param name="permission">The denied permission to add.</param>
         /// <returns><b>true</b> if the permission was successfully added; otherwise, <b>false</b>.</returns>
-        bool AddDeniedPermission(IIdentity target, string permission);
+        bool AddDeniedPermission(IPermissionEntity target, string permission);
 
         /// <summary>
         ///     Removes an explicitly granted permission from the target.
@@ -92,7 +92,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <param name="permission">The permission to remove.</param>
         /// <returns><b>true</b> if the permission was successfully removed; otherwise, <b>false</b>.</returns>
-        bool RemovePermission(IIdentity target, string permission);
+        bool RemovePermission(IPermissionEntity target, string permission);
 
         /// <summary>
         ///     Removes an explicitly denied permission from the target.
@@ -100,7 +100,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <param name="permission">The permission to remove.</param>
         /// <returns><b>true</b> if the permission was successfully removed; otherwise, <b>false</b>.</returns>
-        bool RemoveDeniedPermission(IIdentity target, string permission);
+        bool RemoveDeniedPermission(IPermissionEntity target, string permission);
 
         /// <summary>
         ///     Gets the primary group of the given user.
@@ -122,7 +122,7 @@ namespace Rocket.API.Permissions
         /// </summary>
         /// <param name="target">The target.</param>
         /// <returns>the inherited groups of the target.</returns>
-        IEnumerable<IPermissionGroup> GetGroups(IIdentity target);
+        IEnumerable<IPermissionGroup> GetGroups(IPermissionEntity target);
 
         /// <summary>
         ///     Gets all registered groups.
@@ -143,7 +143,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to add.</param>
         /// <returns><b>true</b> if the group was successfully added; otherwise, <b>false</b>.</returns>
-        bool AddGroup(IIdentity target, IPermissionGroup group);
+        bool AddGroup(IPermissionEntity target, IPermissionGroup group);
 
         /// <summary>
         ///     Removes the given group from the user.
@@ -151,7 +151,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to remove.</param>
         /// <returns><b>true</b> if the group was successfully removed; otherwise, <b>false</b>.</returns>
-        bool RemoveGroup(IIdentity target, IPermissionGroup group);
+        bool RemoveGroup(IPermissionEntity target, IPermissionGroup group);
 
         /// <summary>
         ///     Creates a new permission group.

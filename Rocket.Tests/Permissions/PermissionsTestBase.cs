@@ -57,7 +57,7 @@ namespace Rocket.Tests.Permissions
 
             object samplePlayers = new
             {
-                TestPlayer = new object[]
+                Users = new object[]
                 {
                     new PlayerPermissionSection
                     {

@@ -6,6 +6,7 @@ using Rocket.API.Logging;
 using Rocket.API.User;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Logging;
+using System.Collections.Generic;
 
 namespace Rocket.Core.User
 {
@@ -22,9 +23,10 @@ namespace Rocket.Core.User
             Container = container.CreateChildContainer();
         }
 
-        public string Id => "Console";
-        public string Name => "Console";
-        public string IdentityType => IdentityTypes.Console;
+        public string Id => "console";
+        public string DisplayName => "Console";
+        public string UserName => "Console";
+        public UserType Type => UserType.Console;
 
         public IUserManager UserManager => Container.Resolve<IUserManager>("stdconsole");
 
@@ -32,7 +34,8 @@ namespace Rocket.Core.User
         public DateTime SessionConnectTime { get; }
         public DateTime? SessionDisconnectTime => null;
         public DateTime? LastSeen => DateTime.Now;
-        public string UserType => "Console";
+
+        public List<IIdentity> Identities => new List<IIdentity>();
 
         public virtual void WriteLine(string format, params object[] bindings)
             => WriteLine(LogLevel.Information, format, Color.White, bindings);

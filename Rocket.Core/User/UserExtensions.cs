@@ -26,14 +26,6 @@ namespace Rocket.Core.User
             user.UserManager.SendMessage(user, message, color, bindings);
         }
 
-        public static TimeSpan GetOnlineTime(this IUser user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            return (user.SessionDisconnectTime ?? DateTime.Now) - user.SessionConnectTime;
-        }
-
         public static void SendMessage(this IUserManager manager, IUser sender, IUser receiver, string message,
                                        params object[] arguments)
         {
@@ -75,22 +67,6 @@ namespace Rocket.Core.User
                 throw new ArgumentNullException(nameof(manager));
 
             manager.SendMessage(null, receiver, message, null, arguments);
-        }
-
-        public static IPlayer GetPlayer(this IPlayerUser user)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            return user.GetPrivateProperty<IPlayer>("Player");
-        }
-
-        public static bool Kick(this IUser user, IUser kickedBy = null, string reason = null)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            return user.UserManager.Kick(user, kickedBy, reason);
         }
 
         public static bool Ban(this IUser user, IUser kickedBy = null, string reason = null, TimeSpan? duration = null)

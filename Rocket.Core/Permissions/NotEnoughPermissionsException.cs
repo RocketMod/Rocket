@@ -39,8 +39,8 @@ namespace Rocket.Core.Permissions
             get
             {
                 string message = any 
-                    ? $"{User.Name} does not have any of the following permissions: " 
-                    : $"{User.Name} does not have the following permissions: ";
+                    ? $"{User.DisplayName} does not have any of the following permissions: " 
+                    : $"{User.DisplayName} does not have the following permissions: ";
 
                 message += Environment.NewLine;
                 foreach (string perm in Permissions) message += "* " + perm + Environment.NewLine;

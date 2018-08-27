@@ -10,6 +10,7 @@ using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.Migration;
 using Rocket.Core.User;
+using Rocket.API.User;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -22,7 +23,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "[step]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(Type user) => typeof(IConsole).IsAssignableFrom(user);
+        public bool SupportsUser(UserType type) => type == UserType.Console;
 
         public void Execute(ICommandContext context)
         {

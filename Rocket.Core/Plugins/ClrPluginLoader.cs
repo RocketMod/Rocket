@@ -249,8 +249,7 @@ namespace Rocket.Core.Plugins
                                                                        .Cast<CommandUserAttribute>();
 
                 CommandAttributeWrapper wrapper = new CommandAttributeWrapper(@object, method, cmdAttr,
-                    aliasAttrs.Select(c => c.AliasName).ToArray(),
-                    supportedTypeAttrs.Select(c => c.UserType).ToArray());
+                    aliasAttrs.Select(c => c.AliasName).ToArray(), supportedTypeAttrs.Select(c => c.Type).ToArray());
 
                 pluginContainer.RegisterSingletonInstance<ICommand>(wrapper, wrapper.Name);
             }

@@ -12,12 +12,12 @@ namespace Rocket.Core.Commands
     [DontAutoRegister]
     public class CommandAttributeWrapper : ICommand
     {
-        private readonly Type[] supportedUsers;
+        private readonly UserType[] supportedUsers;
 
         public CommandAttributeWrapper(object instance, MethodBase method,
                                        CommandAttribute attribute,
                                        string[] aliases,
-                                       Type[] supportedUsers)
+                                       UserType[] supportedUsers)
         {
             this.supportedUsers = supportedUsers;
             Instance = instance;
@@ -40,12 +40,9 @@ namespace Rocket.Core.Commands
         public IChildCommand[] ChildCommands { get; } //todo
         public string[] Aliases { get; }
 
-        public bool SupportsUser(Type user)
+        public bool SupportsUser(UserType user)
         {
-            if (supportedUsers.Length == 0)
-                return true;
-
-            return supportedUsers.Any(c => c.IsAssignableFrom(user));
+            return supportedUsers.Any(u => (u & user) == user);
         }
 
         public void Execute(ICommandContext context)

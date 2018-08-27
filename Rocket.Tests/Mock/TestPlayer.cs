@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Numerics;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Entities;
@@ -8,26 +9,51 @@ using Rocket.Core.Player;
 
 namespace Rocket.Tests.Mock
 {
-    public sealed class TestPlayer : BasePlayer<TestPlayer, TestUser, TestPlayer>, 
-        IPlayerEntity<TestPlayer>, 
-        ILivingEntity
+    public sealed class TestEntity : IPlayerEntity, ILivingEntity
     {
-        public TestPlayer(IDependencyContainer container, string id, string name) : base(container)
+        public string EntityTypeName => throw new NotImplementedException();
+
+        public Vector3 Position => throw new NotImplementedException();
+
+        public double MaxHealth => throw new NotImplementedException();
+
+        public double Health { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public void Kill()
         {
-            Id = id;
-            Name = name;
+            throw new NotImplementedException();
         }
 
-        public TestPlayer(IDependencyContainer container) : this(container, "TestPlayerId", "TestPlayer") { }
+        public void Kill(IEntity killer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Kill(IUser killer)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool Teleport(Vector3 position)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
+    public sealed class TestPlayer : BasePlayer<TestUser, TestEntity>
+    {
+        public override string ToString()
+        {
+            return User.DisplayName;
+        }
+        public TestPlayer(IDependencyContainer container) : base(container)
+        {
+            User = new TestUser(container);
+        }
 
         public override IPlayerManager PlayerManager => throw new NotImplementedException();
-        public override string Id { get; }
-        public override string Name { get; }
-
-        public override TestPlayer Entity => this;
         public override bool IsOnline => true;
-
-        public override TestUser User => new TestUser(this);
 
         public double MaxHealth
         {
@@ -56,35 +82,31 @@ namespace Rocket.Tests.Mock
             throw new NotImplementedException();
         }
 
-        public string EntityTypeName => "Player";
-        public Vector3 Position => Vector3.Zero;
-        public TestPlayer Player => this;
-        public bool Teleport(Vector3 position)
-        {
-            return false;
-        }
+        public override DateTime SessionConnectTime => DateTime.Now;
+
+        public override DateTime? SessionDisconnectTime => DateTime.Now;
+
+        public override TestEntity Entity => new TestEntity();
+        public override TestUser User { get; }
     }
 
-    public class TestUser : IPlayerUser<TestPlayer>
+    public class TestUser : IUser
     {
-        private readonly TestPlayer testPlayer;
-
-        public TestUser(TestPlayer testPlayer)
+        public TestUser(IDependencyContainer container)
         {
-            this.testPlayer = testPlayer;
-            SessionConnectTime = DateTime.Now;
+            Container = container;
         }
 
-        public string Id => testPlayer.Id;
-        public string Name => testPlayer.Name;
-        public string IdentityType => testPlayer.IdentityType;
+        public string Id => "TestPlayerId";
+        public string UserName => "TestPlayer";
+        public string DisplayName => "TestPlayer";
+        public UserType Type => UserType.Player;
         public IUserManager UserManager => throw new NotImplementedException();
         public bool IsOnline => true;
-        public DateTime SessionConnectTime { get; }
-        public DateTime? SessionDisconnectTime => null;
         public DateTime? LastSeen => DateTime.Now;
-        public string UserType => "TestPlayer";
-        public IDependencyContainer Container => Player.Container;
-        public TestPlayer Player => testPlayer;
+
+        public List<IIdentity> Identities => throw new NotImplementedException();
+
+        public IDependencyContainer Container { get; private set; }
     }
 }

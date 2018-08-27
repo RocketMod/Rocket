@@ -1,4 +1,5 @@
 ﻿using Rocket.API.DependencyInjection;
+using Rocket.API.Player;
 using Rocket.API.User;
 
 namespace Rocket.API.Commands
@@ -73,6 +74,15 @@ namespace Rocket.API.Commands
         ///     </para>
         /// </summary>
         IUser User { get; }
+
+        /// <summary>
+        ///     <para>The user of the command.</para>
+        ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsUser">supported user</see>.</para>
+        ///     <para>
+        ///         <b>This property can be null if the caller is not a online player.</b>
+        ///     </para>
+        /// </summary>
+        IPlayer Player { get; }
 
         /// <summary>
         ///     <para>The parameters of the (sub) command.</para>

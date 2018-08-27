@@ -4,17 +4,6 @@ using Rocket.API.Entities;
 namespace Rocket.API.Player
 {
     /// <summary>
-    ///     <inheritdoc cref="IPlayerEntity"/>
-    /// </summary>
-    public interface IPlayerEntity<out TPlayer>: IPlayerEntity where TPlayer: IPlayer
-    {
-        /// <summary>
-        ///     The player instance.
-        /// </summary>
-        TPlayer Player { get; }
-    }
-
-    /// <summary>
     ///     Represents a player entity.
     /// </summary>
     public interface IPlayerEntity : IEntity

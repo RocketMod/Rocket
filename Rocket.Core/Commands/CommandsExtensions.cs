@@ -13,13 +13,13 @@ namespace Rocket.Core.Commands
             List<ICommand> commands = commandsEnumerable.ToList();
             ICommand command =
                 commands
-                    .Where(c => user == null || c.SupportsUser(user.GetType()))
+                    .Where(c => user == null || c.SupportsUser(user.Type))
                     .FirstOrDefault(c => c.Name.Equals(commandName, StringComparison.OrdinalIgnoreCase));
             if (command != null)
                 return command;
 
             return commands
-                   .Where(c => user == null || c.SupportsUser(user.GetType()))
+                   .Where(c => user == null || c.SupportsUser(user.Type))
                    .FirstOrDefault(c
                        => c.Aliases != null
                            && c.Aliases.Any(a => a.Equals(commandName, StringComparison.OrdinalIgnoreCase)));

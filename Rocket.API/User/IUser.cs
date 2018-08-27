@@ -1,37 +1,35 @@
 ﻿using System;
+using System.Collections.Generic;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Permissions;
 
 namespace Rocket.API.User
 {
+    [Flags]
+    public enum UserType { Console = 0, Player = 1, Bot = 2 }
+
     /// <summary>
     ///     A message communication User.
     /// </summary>
-    public interface IUser : IUserInfo
+    public interface IUser : IPermissionEntity
     {
-        /// <summary>
-        ///     Checks if the user is online.
-        /// </summary>
-        bool IsOnline { get; }
-
-        /// <summary>
-        ///     The User connect time.
-        /// </summary>
-        DateTime SessionConnectTime { get; }
-
-        /// <summary>
-        ///     The User disconnect time.
-        /// </summary>
-        DateTime? SessionDisconnectTime { get; }
-
         /// <summary>
         ///     Gets the last time the user was online on the server or null if the user was never online before.
         /// </summary>
         DateTime? LastSeen { get; }
 
         /// <summary>
-        ///     The user type (e.g. "DiscordUser", "Unturned", etc...)
+        ///     The related user manager.
         /// </summary>
-        string UserType { get; }
+        IUserManager UserManager { get; }
+
+        UserType Type { get; }
+
+        string UserName { get; }
+
+        string DisplayName { get; }
+
+        List<IIdentity> Identities { get; }
 
         /// <summary>
         ///     The distinct dependency container of the user.

@@ -9,6 +9,15 @@ namespace Rocket.API.Player
     public interface IPlayerManager : IUserManager
     {
         /// <summary>
+        ///     Kicks (disconnects) the given user from the server.
+        /// </summary>
+        /// <param name="user">The user to kick.</param>
+        /// <param name="kickedBy">The user which kicks (optional).</param>
+        /// <param name="reason">The kick reason whicht might be shown to the user (optional).</param>
+        /// <returns><b>true</b> if the user could be kicked; otherwise, <b>false</b>.</returns>
+        bool Kick(IPlayer user, IUser kickedBy = null, string reason = null);
+
+        /// <summary>
         ///     Gets all online players.
         /// </summary>
         IEnumerable<IPlayer> OnlinePlayers { get; }
@@ -68,6 +77,6 @@ namespace Rocket.API.Player
         /// </summary>
         /// <param name="id">The id of the player to get.</param>
         /// <returns>The player instance.</returns>
-        IPlayer GetPlayer(string id);
+        IPlayer GetPlayer(string id, IdentityProvider provider = IdentityProvider.Builtin);
     }
 }

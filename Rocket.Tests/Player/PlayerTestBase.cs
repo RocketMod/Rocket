@@ -23,10 +23,6 @@ namespace Rocket.Tests.Player
         [TestMethod]
         public void TestFormatting()
         {
-            Assert.AreEqual(TestPlayer.Name, $"{TestPlayer}");
-            Assert.AreEqual(TestPlayer.Name, $"{TestPlayer:Name}");
-            Assert.AreEqual(TestPlayer.Id, $"{TestPlayer:Id}");
-
             Assert.AreEqual("0.00", string.Format(CultureInfo.InvariantCulture, "{0:Health:0.00}", TestPlayer));
             Assert.AreEqual("0", string.Format(CultureInfo.InvariantCulture, "{0:Health}", TestPlayer));
             Assert.AreEqual("0", string.Format(CultureInfo.InvariantCulture, "{0:Health:0}", TestPlayer));
@@ -48,8 +44,8 @@ namespace Rocket.Tests.Player
         {
             TypeConverter playerConverter = TypeConverterExtensions.GetConverter(typeof(IPlayer));
 
-            Assert.AreEqual(TestPlayer.Id,
-                ((IPlayer) playerConverter.ConvertFromWithContext(Runtime.Container, TestPlayer.Id)).Id);
+            Assert.AreEqual(TestPlayer.User.Id,
+                ((IPlayer) playerConverter.ConvertFromWithContext(Runtime.Container, TestPlayer.User.Id)).User.Id);
         }
 
         protected abstract IPlayerManager GetPlayerManager();

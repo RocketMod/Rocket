@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Rocket.API.User;
+using System;
 
 namespace Rocket.Core.Commands
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class CommandUserAttribute : Attribute
     {
-        public CommandUserAttribute(Type userType)
+        public CommandUserAttribute(UserType type)
         {
-            UserType = userType;
+            Type = type;
         }
 
-        public Type UserType { get; }
+        public UserType Type { get; }
     }
 }

@@ -5,40 +5,36 @@ using Rocket.Core.Eventing;
 
 namespace Rocket.Core.User.Events
 {
-    public class UserBanEvent : Event, ICancellableEvent
+    public class UserBanEvent : UserEvent, ICancellableEvent
     {
-        public UserBanEvent(IUserInfo user, IUser bannedBy = null, string reason = null,
-                            TimeSpan? duration = null) : base(true)
+        public UserBanEvent(IUser user, IUser bannedBy = null, string reason = null,
+                            TimeSpan? duration = null) : base(user,true)
         {
             BannedBy = bannedBy;
-            User = user;
             Reason = reason;
             Duration = duration;
         }
 
-        public UserBanEvent(IUserInfo user, IUser bannedBy = null, string reason = null,
-                            TimeSpan? duration = null, bool global = true) : base(global)
+        public UserBanEvent(IUser user, IUser bannedBy = null, string reason = null,
+                            TimeSpan? duration = null, bool global = true) : base(user,global)
         {
             BannedBy = bannedBy;
-            User = user;
             Reason = reason;
             Duration = duration;
         }
 
-        public UserBanEvent(IUserInfo user, IUser bannedBy = null, string reason = null,
+        public UserBanEvent(IUser user, IUser bannedBy = null, string reason = null,
                             TimeSpan? duration = null,
                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
-                            bool global = true) : base(executionTarget, global)
+                            bool global = true) : base(user,executionTarget, global)
         {
             BannedBy = bannedBy;
-            User = user;
             Reason = reason;
             Duration = duration;
         }
 
         public TimeSpan? Duration { get; set; }
         public IUser BannedBy { get; }
-        public IUserInfo User { get; }
         public string Reason { get; set; }
 
         public bool IsCancelled { get; set; }

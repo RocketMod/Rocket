@@ -1,6 +1,7 @@
 ﻿using System;
 using Rocket.API.Drawing;
 using Rocket.API.Logging;
+using Rocket.API.Player;
 using Rocket.API.User;
 using Color = Rocket.API.Drawing.Color;
 

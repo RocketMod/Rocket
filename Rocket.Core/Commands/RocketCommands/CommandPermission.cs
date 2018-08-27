@@ -29,7 +29,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(UserType type) => true;
     }
 
     public abstract class CommandPermissionUpdate : IChildCommand
@@ -43,14 +43,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(UserType type) => true;
 
         public void Execute(ICommandContext context)
         {
             if (context.Parameters.Length != 3)
                 throw new CommandWrongUsageException();
 
-            IIdentity target;
+            IPermissionEntity target;
             string permission;
             string permissionFailMessage;
 
@@ -81,7 +81,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 case "player":
                     permission = "Rocket.Permissions.ManagePlayers";
                     permissionFailMessage = "You don't have permissions to manage permissions of players.";
-                    target = context.Parameters.Get<IUserInfo>(1);
+                    target = context.Parameters.Get<IUser>(1);
                     break;
 
                 default:
@@ -95,7 +95,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
 
         protected abstract void UpdatePermission(IUser user, IPermissionProvider permissions,
-                                                 IIdentity target, string permissionToUpdate);
+                                                 IPermissionEntity target, string permissionToUpdate);
     }
 
     public class CommandPermissionAdd : CommandPermissionUpdate
@@ -106,13 +106,13 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] {"a", "+"};
 
         protected override void UpdatePermission(IUser user, IPermissionProvider permissions,
-                                                 IIdentity target, string permissionToUpdate)
+                                                 IPermissionEntity target, string permissionToUpdate)
         {
             if (permissions.AddPermission(target, permissionToUpdate))
-                user.SendMessage($"Successfully added \"{permissionToUpdate}\" to \"{target.Name}\"!",
+                user.SendMessage($"Successfully added \"{permissionToUpdate}\" to \"{target.ToString()}\"!",
                     Color.DarkGreen);
             else
-                user.SendMessage($"Failed to add \"{permissionToUpdate}\" to \"{target.Name}\"!", Color.Red);
+                user.SendMessage($"Failed to add \"{permissionToUpdate}\" to \"{target.ToString()}\"!", Color.Red);
         }
     }
 
@@ -124,13 +124,13 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] {"r", "-"};
 
         protected override void UpdatePermission(IUser user, IPermissionProvider permissions,
-                                                 IIdentity target, string permissionToUpdate)
+                                                 IPermissionEntity target, string permissionToUpdate)
         {
             if (permissions.RemovePermission(target, permissionToUpdate))
-                user.SendMessage($"Successfully removed \"{permissionToUpdate}\" from \"{target.Name}\"!",
+                user.SendMessage($"Successfully removed \"{permissionToUpdate}\" from \"{target.ToString()}\"!",
                     Color.DarkGreen);
             else
-                user.SendMessage($"Failed to remove \"{permissionToUpdate}\" from \"{target.Name}\"!",
+                user.SendMessage($"Failed to remove \"{permissionToUpdate}\" from \"{target.ToString()}\"!",
                     Color.Red);
         }
     }
@@ -144,7 +144,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"R"};
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(UserType type) => true;
 
         public void Execute(ICommandContext context)
         {

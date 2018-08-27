@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Drawing;
+using Rocket.API.Player;
 using Rocket.API.User;
 
 namespace Rocket.Core.User
@@ -20,17 +21,16 @@ namespace Rocket.Core.User
 
         public bool Kick(IUser user, IUser kickedBy = null, string reason = null) => throw new NotSupportedException();
 
-        public bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
-            => throw new NotSupportedException();
+        public bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null) => throw new NotSupportedException();
 
-        public bool Unban(IUserInfo user, IUser unbannedBy = null) => throw new NotSupportedException();
+        public bool Unban(IUser user, IUser unbannedBy = null) => throw new NotSupportedException();
 
-        public void SendMessage(IUser sender, IUser receiver, string message, Color? color = null, params object[] arguments)
+        public void SendMessage(IUser sender, IPlayer receiver, string message, Color? color = null, params object[] arguments)
         {
             console.WriteLine(message, color, arguments);
         }
 
-        public void Broadcast(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null, params object[] arguments)
+        public void Broadcast(IUser sender, IEnumerable<IPlayer> receivers, string message, Color? color = null, params object[] arguments)
         {
             WriteLine(message, color, arguments);
         }
@@ -40,7 +40,7 @@ namespace Rocket.Core.User
             WriteLine(message, color, arguments);
         }
 
-        public IUserInfo GetUser(string id)
+        public IUser GetUser(string id, IdentityProvider identityProvider = IdentityProvider.Builtin)
         {
             return console;
         }

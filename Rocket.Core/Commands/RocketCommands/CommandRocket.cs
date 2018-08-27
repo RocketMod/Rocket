@@ -9,6 +9,7 @@ using Rocket.API.Plugins;
 using Rocket.Core.Commands;
 using Rocket.Core.Plugins.NuGet;
 using Rocket.Core.User;
+using Rocket.API.User;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -32,7 +33,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(UserType user) => true;
     }
 
     public class CommandRocketReload : IChildCommand
@@ -44,7 +45,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => null;
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(UserType user) => true;
 
         public void Execute(ICommandContext context)
         {
@@ -68,11 +69,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "<repo> <plugin> [version] [-Pre]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(Type user)
-        {
-            return true;
-        }
-
+        public bool SupportsUser(UserType user) => true;
         public void Execute(ICommandContext context)
         {
             if (context.Parameters.Length < 2)
@@ -132,10 +129,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "<repo> <plugin>";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(Type user)
-        {
-            return true;
-        }
+        public bool SupportsUser(UserType user) => true;
 
         public void Execute(ICommandContext context)
         {
@@ -176,10 +170,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "<repo> <plugin> [version] [-Pre]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(Type user)
-        {
-            return true;
-        }
+        public bool SupportsUser(UserType user) => true;
 
         public void Execute(ICommandContext context)
         {
@@ -233,10 +224,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Description => null;
         public string Syntax => "";
         public IChildCommand[] ChildCommands => null;
-        public bool SupportsUser(Type user)
-        {
-            return true;
-        }
+        public bool SupportsUser(UserType user) => true;
 
         public void Execute(ICommandContext context)
         {

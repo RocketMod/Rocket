@@ -1,24 +1,31 @@
 ﻿using Rocket.API.Eventing;
 using Rocket.API.Player;
 using Rocket.API.User;
-using Rocket.Core.User.Events;
+using Rocket.Core.Player.Events;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerChatEvent: UserChatEvent
+    public class PlayerChatEvent : PlayerEvent, ICancellableEvent
     {
-        public IPlayer Player { get; }
-        public PlayerChatEvent(IPlayer player, string message) : base(player.GetUser(), message)
+        public PlayerChatEvent(IPlayer player, string message) : base(player)
         {
-            Player = player;
+            Message = message;
         }
-        public PlayerChatEvent(IPlayer player, string message, bool global = true) : base(player.GetUser(), message, global)
+
+        public PlayerChatEvent(IPlayer player, string message, bool global = true) : base(player, global)
         {
-            Player = player;
+            Message = message;
         }
-        public PlayerChatEvent(IPlayer player, string message, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), message, executionTarget, global)
+
+        public PlayerChatEvent(IPlayer player, string message,
+                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                             bool global = true) : base(player, executionTarget, global)
         {
-            Player = player;
+            Message = message;
         }
+
+        public string Message { get; set; }
+
+        public bool IsCancelled { get; set; }
     }
 }

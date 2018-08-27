@@ -1,26 +1,35 @@
-﻿using System;
-using Rocket.API.Eventing;
-using Rocket.API.Player;
+﻿using Rocket.API.Eventing;
 using Rocket.API.User;
-using Rocket.Core.Player.Events;
-using Rocket.Core.User.Events;
+using Rocket.API.Player;
 
 namespace Rocket.Core.Player.Events
 {
-    public class PlayerKickEvent: UserKickEvent
+    public class PlayerKickEvent : PlayerEvent, ICancellableEvent
     {
-        public IPlayer Player { get; }
-        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null) : base(player.GetUser(), kickedBy, reason)
+        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null) : base(player)
         {
-            Player = player;
+            KickedBy = kickedBy;
+            Reason = reason;
         }
-        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, bool global = true) : base(player.GetUser(), kickedBy, reason, global)
+
+        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null,
+                             bool global = true) : base(player,
+            global)
         {
-            Player = player;
+            KickedBy = kickedBy;
+            Reason = reason;
         }
-        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null, EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync, bool global = true) : base(player.GetUser(), kickedBy, reason, executionTarget, global)
+
+        public PlayerKickEvent(IPlayer player, IUser kickedBy = null, string reason = null,
+                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,
+                             bool global = true) : base(player, executionTarget, global)
         {
-            Player = player;
+            KickedBy = kickedBy;
+            Reason = reason;
         }
+
+        public string Reason { get; set; }
+        public IUser KickedBy { get; set; }
+        public bool IsCancelled { get; set; }
     }
 }

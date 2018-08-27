@@ -56,12 +56,11 @@ namespace Rocket.Core.Commands
 
 
 
-            bool isUserInfo = typeof(IUserInfo).IsAssignableFrom(type);
             bool isUser = typeof(IUser).IsAssignableFrom(type);
 
 
             //todo make type converters
-            if (isUserInfo || isUser)
+            if ( isUser)
             {
                 /*
                  * The logic for getting IUser and IUserInfo is as follows:
@@ -85,13 +84,6 @@ namespace Rocket.Core.Commands
                             break;
                         }
                     }
-                }
-
-                if (!isUserInfo)
-                {
-                    return targetUserManager.OnlineUsers
-                                            .OrderBy(c => c.Name)
-                                            .First(c => c.Name.Equals(userName, StringComparison.OrdinalIgnoreCase));
                 }
 
                 return targetUserManager.GetUser(userName);

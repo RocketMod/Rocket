@@ -18,19 +18,19 @@ namespace Rocket.Tests.Mock.Providers
 
         public IDependencyContainer Container { get; }
 
-        public IEnumerable<IPlayer> OnlinePlayers => new List<IPlayer> {new TestPlayer(Container)};
+        public IEnumerable<IPlayer> OnlinePlayers => new List<IPlayer> { new TestPlayer(Container) };
 
-        public IEnumerable<IUser> OnlineUsers => OnlinePlayers.Select(c => (IUser)(c.GetUser()));
+        public IEnumerable<IUser> OnlineUsers => OnlinePlayers.Select(c => c.User);
 
-        public bool Kick(IUser user, IUser kickedBy = null, string reason = null) => false;
+        public bool Kick(IPlayer user, IUser kickedBy = null, string reason = null) => false;
 
-        public bool Ban(IUserInfo user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
+        public bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
             => false;
 
-        public bool Unban(IUserInfo user, IUser unbannedBy = null)
+        public bool Unban(IUser user, IUser unbannedBy = null)
             => false;
 
-        public void SendMessage(IUser sender, IUser receiver, string message, Color? color = null, params object[] arguments)
+        public void SendMessage(IUser sender, IPlayer receiver, string message, Color? color = null, params object[] arguments)
         {
             throw new NotImplementedException();
         }
@@ -40,12 +40,12 @@ namespace Rocket.Tests.Mock.Providers
             throw new NotImplementedException();
         }
 
-        public IUserInfo GetUser(string id)
+        public IUser GetUser(string id, IdentityProvider provider = IdentityProvider.Builtin)
         {
-            return GetPlayer(id)?.GetUser();
+            return GetPlayer(id)?.User;
         }
 
-        public void Broadcast(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null,
+        public void Broadcast(IUser sender, IEnumerable<IPlayer> receivers, string message, Color? color = null,
                               params object[] arguments)
         {
             throw new NotImplementedException();
@@ -53,8 +53,8 @@ namespace Rocket.Tests.Mock.Providers
 
         public IPlayer GetOnlinePlayer(string nameOrId)
         {
-            return OnlinePlayers.FirstOrDefault(c => c.Id.Equals(nameOrId, StringComparison.OrdinalIgnoreCase)
-                || c.Name.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
+            return OnlinePlayers.FirstOrDefault(c => c.User.Id.Equals(nameOrId, StringComparison.OrdinalIgnoreCase)
+                || c.User.DisplayName.Equals(nameOrId, StringComparison.OrdinalIgnoreCase) || c.User.UserName.Equals(nameOrId, StringComparison.OrdinalIgnoreCase));
         }
 
         public IPlayer GetOnlinePlayerByName(string name) => GetOnlinePlayer(name);
@@ -70,7 +70,7 @@ namespace Rocket.Tests.Mock.Providers
         public bool TryGetOnlinePlayerByName(string displayName, out IPlayer output)
             => throw new NotImplementedException();
 
-        public IPlayer GetPlayer(string id) => GetOnlinePlayer(id);
+        public IPlayer GetPlayer(string id, IdentityProvider identityProvider = IdentityProvider.Builtin) => GetOnlinePlayer(id);
         public string ServiceName => "TestPlayers";
     }
 }

@@ -52,7 +52,8 @@ namespace Rocket.API.Player
         /// <inheritdoc />
         public void SendErrorMessage(ICommandContext context)
         {
-            context.User.UserManager.SendMessage(null, context.User, Message, Color.Red);
+            if(context.Player != null)
+                context.User.UserManager.SendMessage(null, context.Player, Message, Color.Red);
         }
     }
 }

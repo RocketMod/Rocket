@@ -18,7 +18,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "[command] [1. Child Command] [2. Child Command] [...]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(Type User) => true;
+        public bool SupportsUser(UserType User) => true;
 
         public void Execute(ICommandContext context)
         {
@@ -81,7 +81,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
 
         public bool HasAccess(ICommand command, IUser user) 
-            => command.SupportsUser(user.GetType());
+            => command.SupportsUser(user.Type);
 
         public string GetCommandUsage(ICommand command, string prefix) => prefix
             + command.Name.ToLower()
