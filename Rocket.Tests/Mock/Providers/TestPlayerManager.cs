@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Rocket.API.DependencyInjection;
 using Rocket.API.Drawing;
-using System.Linq;
-using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
 using Rocket.API.User;
-using Rocket.Core.Player;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rocket.Tests.Mock.Providers
 {

@@ -89,7 +89,7 @@ namespace Rocket.Core.Commands
                 }
 
                 context.User.SendMessage("An internal error occured.", Color.DarkRed);
-                throw new Exception($"Command {commandLine} of user {user.Name} caused an exception: ", e);
+                throw new Exception($"Command {commandLine} of user {user.ToString()} caused an exception: ", e);
             }
 #endif
 
