@@ -17,7 +17,7 @@ namespace Rocket.Tests.Player
         public override void Bootstrap()
         {
             base.Bootstrap();
-            TestPlayer = new TestPlayer(Runtime.Container);
+            TestPlayer = new TestPlayer(Runtime.Container, GetPlayerManager());
         }
 
         [TestMethod]

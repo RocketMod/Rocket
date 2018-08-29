@@ -17,7 +17,7 @@ namespace Rocket.Tests.Mock.Providers
 
         public IDependencyContainer Container { get; }
 
-        public IEnumerable<IPlayer> OnlinePlayers => new List<IPlayer> { new TestPlayer(Container) };
+        public IEnumerable<IPlayer> OnlinePlayers => new List<IPlayer> { new TestPlayer(Container, this) };
 
         public IEnumerable<IUser> OnlineUsers => OnlinePlayers.Select(c => c.User);
 

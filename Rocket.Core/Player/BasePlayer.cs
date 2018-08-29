@@ -13,13 +13,15 @@ namespace Rocket.Core.Player
         where TEntity : IPlayerEntity
         where TUser : IUser
     {
-        protected BasePlayer(IDependencyContainer container)
+        protected BasePlayer(IDependencyContainer container, IPlayerManager manager)
         {
             Container = container.CreateChildContainer();
+            PlayerManager = manager;
         }
 
         public IDependencyContainer Container { get; }
-        public abstract IPlayerManager PlayerManager { get; }
+
+        public IPlayerManager PlayerManager { get; }
 
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {

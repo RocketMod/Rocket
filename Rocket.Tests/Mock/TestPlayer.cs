@@ -47,12 +47,11 @@ namespace Rocket.Tests.Mock
         {
             return User.DisplayName;
         }
-        public TestPlayer(IDependencyContainer container) : base(container)
+        public TestPlayer(IDependencyContainer container,  IPlayerManager manager) : base(container, manager)
         {
             User = new TestUser(container);
         }
 
-        public override IPlayerManager PlayerManager => throw new NotImplementedException();
         public override bool IsOnline => true;
 
         public double MaxHealth

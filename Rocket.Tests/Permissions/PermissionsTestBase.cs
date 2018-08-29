@@ -83,7 +83,7 @@ namespace Rocket.Tests.Permissions
             GroupsConfig = GetConfigurationProvider();
             GroupsConfig.LoadFromObject(sampleGroupsPermissions);
 
-            TestPlayer = new TestPlayer(Runtime.Container).User;
+            TestPlayer = new TestPlayer(Runtime.Container, null).User;
         }
 
         public virtual IConfiguration GetConfigurationProvider() => Runtime.Container.Resolve<IConfiguration>();
