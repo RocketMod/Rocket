@@ -77,6 +77,6 @@ namespace Rocket.API.Player
         /// </summary>
         /// <param name="id">The id of the player to get.</param>
         /// <returns>The player instance.</returns>
-        IPlayer GetPlayer(string id, IdentityProvider provider = IdentityProvider.Builtin);
+        IPlayer GetPlayer(string id);
     }
 }
