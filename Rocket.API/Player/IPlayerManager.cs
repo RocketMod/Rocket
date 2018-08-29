@@ -20,7 +20,7 @@ namespace Rocket.API.Player
         /// <summary>
         ///     Gets all online players.
         /// </summary>
-        IEnumerable<IPlayer> OnlinePlayers { get; }
+        IEnumerable<IPlayer> Players { get; }
 
         /// <summary>
         ///     Gets an online player by name or id.
