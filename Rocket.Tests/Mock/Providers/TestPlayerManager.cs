@@ -106,6 +106,16 @@ namespace Rocket.Tests.Mock.Providers
             throw new NotImplementedException();
         }
 
+        public IPlayer GetPlayerByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetPlayerByName(string name, out IPlayer output)
+        {
+            throw new NotImplementedException();
+        }
+
         public string ServiceName => "TestPlayers";
     }
 }
