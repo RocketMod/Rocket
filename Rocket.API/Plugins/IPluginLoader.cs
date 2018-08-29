@@ -39,6 +39,10 @@ namespace Rocket.API.Plugins
 
         bool DeactivatePlugin(string name);
 
+        bool PluginExists(string name);
+
+        IPlugin GetPlugin(string name);
+
         /// <summary>
         ///     Executes soft depend code if the given plugin was loaded.
         /// </summary>

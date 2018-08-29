@@ -11,14 +11,14 @@ namespace Rocket.Tests.Mock
 {
     public sealed class TestEntity : IPlayerEntity, ILivingEntity
     {
-        public string EntityTypeName => throw new NotImplementedException();
+        public string EntityTypeName => "";
 
-        public Vector3 Position => throw new NotImplementedException();
+        public Vector3 Position => new Vector3();
 
-        public double MaxHealth => throw new NotImplementedException();
+        public double MaxHealth => 100;
 
-        public double Health { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+        public double Health { get => 0; set { } }
+    
         public void Kill()
         {
             throw new NotImplementedException();

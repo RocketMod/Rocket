@@ -15,7 +15,7 @@ namespace Rocket.Core.Plugins
         public IEnumerator<IPlugin> GetEnumerator() => Plugins.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        /*
+        
         public IPlugin GetPlugin(string name)
         {
             foreach (IPluginLoader pluginManager in ProxiedServices)
@@ -35,7 +35,7 @@ namespace Rocket.Core.Plugins
         {
             return ProxiedServices.Any(c => c.PluginExists(name));
         }
-        */
+        
 
         public void Init()
         {
