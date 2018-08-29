@@ -34,7 +34,7 @@ namespace Rocket.Tests.Mock
             throw new NotImplementedException();
         }
 
-        public bool Teleport(Vector3 position)
+        public bool Teleport(Vector3 position, float rotation)
         {
             throw new NotImplementedException();
         }

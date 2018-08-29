@@ -70,6 +70,42 @@ namespace Rocket.Tests.Mock.Providers
             => throw new NotImplementedException();
 
         public IPlayer GetPlayer(string id) => GetOnlinePlayer(id);
+
+        public IPlayer GetPlayerByDisplayName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPlayer GetPlayerByUserName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPlayer GetPlayerById(string id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetPlayer(string nameOrId, out IPlayer output)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetPlayerById(string id, out IPlayer output)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetPlayerByDisplayName(string name, out IPlayer output)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryGetPlayerByUserName(string name, out IPlayer output)
+        {
+            throw new NotImplementedException();
+        }
+
         public string ServiceName => "TestPlayers";
     }
 }
