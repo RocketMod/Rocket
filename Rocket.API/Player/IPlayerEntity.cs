@@ -13,6 +13,6 @@ namespace Rocket.API.Player
         /// </summary>
         /// <param name="position">The position to teleport to.</param>
         /// <returns><b>True</b> if the teleport was succesful, otherwise; <b>false</b>.</returns>
-        bool Teleport(Vector3 position);
+        bool Teleport(Vector3 position, float rotation);
     }
 }

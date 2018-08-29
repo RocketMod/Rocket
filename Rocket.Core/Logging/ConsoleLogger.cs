@@ -39,7 +39,7 @@ namespace Rocket.Core.Logging
         }
 
 
-        protected static Color GetForegroundColor()
+        public static Color GetForegroundColor()
         {
             int[] cColors =
             {
