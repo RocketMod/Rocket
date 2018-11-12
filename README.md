@@ -1,4 +1,5 @@
-# RocketMod [![Build status](https://ci.appveyor.com/api/projects/status/aprg0tagb5t4m6dc/branch/rework?svg=true)](https://ci.appveyor.com/project/RocketMod/rocket/branch/rework) [![Backers on Open Collective](https://opencollective.com/RocketMod/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/RocketMod/sponsors/badge.svg)](#sponsors)  
+# RocketMod [![Build status](https://ci.appveyor.com/api/projects/status/aprg0tagb5t4m6dc/branch/rework?svg=true)](https://ci.appveyor.com/project/RocketMod/rocket/branch/rework) [![Backers on Open Collective](https://opencollective.com/RocketMod/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/RocketMod/sponsors/badge.svg)](#sponsors) [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FRocketMod%2FRocket.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FRocketMod%2FRocket?ref=badge_shield)
+ 
 This repository contains the core components, the central issue tracker and wiki for the Rocket Plugin Framework.
 
 Latest build (NuGet): [![Rocket.Core NuGet](https://img.shields.io/nuget/v/Rocket.Core.svg)](https://www.nuget.org/packages/Rocket.Core) 
@@ -72,3 +73,7 @@ Support this project by becoming a sponsor. Your logo will show up here with a l
 <a href="https://opencollective.com/RocketMod/sponsor/9/website" target="_blank"><img src="https://opencollective.com/RocketMod/sponsor/9/avatar.svg"></a>
 
 
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FRocketMod%2FRocket.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FRocketMod%2FRocket?ref=badge_large)
