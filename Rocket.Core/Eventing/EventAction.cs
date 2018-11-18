@@ -14,7 +14,7 @@ namespace Rocket.Core.Eventing
             EventHandler handler,
             List<string> eventNames)
         {
-            Owner = owner;
+            Owner = new Util.WeakReference<ILifecycleObject>(owner);
             Action = action;
             Handler = handler;
             TargetEventNames = eventNames;
@@ -25,7 +25,7 @@ namespace Rocket.Core.Eventing
                            MethodInfo method,
                            EventHandler handler, Type type)
         {
-            Owner = owner;
+            Owner = new Util.WeakReference<ILifecycleObject>(owner);
             Listener = listener;
             Action = (sender, @event) => method.Invoke(listener, new object[] {sender, @event});
             Handler = handler;
@@ -35,7 +35,7 @@ namespace Rocket.Core.Eventing
 
         public EventAction(ILifecycleObject owner, EventCallback action, EventHandler handler, Type eventType)
         {
-            Owner = owner;
+            Owner = new Util.WeakReference<ILifecycleObject>(owner);
             Action = action;
             Handler = handler;
             TargetEventNames = EventBus.GetEventNames(eventType);
@@ -44,7 +44,7 @@ namespace Rocket.Core.Eventing
 
         public Type TargetEventType { get; set; }
 
-        public ILifecycleObject Owner { get; set; }
+        public Util.WeakReference<ILifecycleObject> Owner { get; set; }
 
         public EventCallback Action { get; }
 

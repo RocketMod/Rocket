@@ -91,7 +91,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object);
+            eventListeners.RemoveAll(c => !c.Owner.IsAlive || c.Owner.Target == @object);
         }
 
         public void Unsubscribe(ILifecycleObject @object, string eventName)
@@ -99,7 +99,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, new List<string> { eventName }));
+            eventListeners.RemoveAll(c => !c.Owner.IsAlive || c.Owner.Target == @object && CheckEvent(c, new List<string> { eventName }));
         }
 
         public void Unsubscribe<TEvent>(ILifecycleObject @object) where TEvent : IEvent
@@ -107,7 +107,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object);
+            eventListeners.RemoveAll(c => !c.Owner.IsAlive || c.Owner.Target == @object);
         }
 
         public void Unsubscribe(ILifecycleObject @object, Type eventType)
@@ -115,7 +115,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object && CheckEvent(c, GetEventNames(eventType)));
+            eventListeners.RemoveAll(c => !c.Owner.IsAlive || c.Owner.Target == @object && CheckEvent(c, GetEventNames(eventType)));
         }
 
         public void Unsubscribe(ILifecycleObject @object, string emitterName, string eventName)
@@ -123,7 +123,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object
+            eventListeners.RemoveAll(c => !c.Owner.IsAlive || c.Owner.Target == @object
                 && c.Handler.EmitterName.Equals(emitterName,
                     StringComparison.OrdinalIgnoreCase)
                 && CheckEvent(c, new List<string> { eventName }));
@@ -135,7 +135,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object
+            eventListeners.RemoveAll(c => !c.Owner.IsAlive || c.Owner.Target == @object
                 && CheckEvent(c, GetEventNames(typeof(TEvent)))
                 && CheckEmitter(c, GetEmitterName(typeof(TEmitter)), false));
         }
@@ -145,7 +145,7 @@ namespace Rocket.Core.Eventing
             if (!@object.IsAlive)
                 return;
 
-            eventListeners.RemoveAll(c => c.Owner == @object
+            eventListeners.RemoveAll(c => !c.Owner.IsAlive || c.Owner.Target == @object
                 && CheckEvent(c, GetEventNames(eventType))
                 && CheckEmitter(c, GetEmitterName(eventEmitterType), false));
         }
@@ -250,7 +250,14 @@ namespace Rocket.Core.Eventing
             int executionCount = 0;
             foreach (EventAction info in targetActions)
             {
-                ILifecycleObject pl = info.Owner;
+                Util.WeakReference<ILifecycleObject> wk = info.Owner;
+                if (!wk.IsAlive)
+                {
+                    actions.Remove(info);
+                    continue;
+                }
+
+                var pl = wk.Target;
 
                 if (scheduler == null)
                 {
@@ -310,11 +317,11 @@ namespace Rocket.Core.Eventing
 
             if (eventAction.Handler.EmitterName?.Equals(emitterName, StringComparison.OrdinalIgnoreCase) ?? true)
             {
-                logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName ?? "null"} == {emitterName ?? "null"}; returning true");
+                logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName ?? "null"} == {emitterName}; returning true");
                 return true;
             }
 
-            logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName ?? "null"} != {emitterName ?? "null"}; returning false");
+            logger.LogTrace($"CheckEmitter: {eventAction.Handler.EmitterName ?? "null"} != {emitterName}; returning false");
             return false;
         }
 

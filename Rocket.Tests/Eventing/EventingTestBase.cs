@@ -11,7 +11,7 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestSyncEventingWithType()
         {
-            IEventBus bus = GetEventManager();
+            IEventBus bus = GetEventBus();
             bus.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync);
@@ -23,7 +23,7 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestSyncEventingWithName()
         {
-            IEventBus bus = GetEventManager();
+            IEventBus bus = GetEventBus();
             bus.Subscribe(GetListener(), "test", (sender, @event) => ((TestEvent) @event).ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync);
@@ -35,7 +35,7 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestCancellationWithoutIgnore()
         {
-            IEventBus bus = GetEventManager();
+            IEventBus bus = GetEventBus();
             bus.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync) {IsCancelled = true};
@@ -48,7 +48,7 @@ namespace Rocket.Tests.Eventing
         [TestMethod]
         public virtual void TestCancellationWithIgnore()
         {
-            IEventBus bus = GetEventManager();
+            IEventBus bus = GetEventBus();
             bus.Subscribe<TestEvent>(GetListener(), CancelIgnoreEventHandler);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync) {IsCancelled = true};
@@ -77,6 +77,6 @@ namespace Rocket.Tests.Eventing
 
         protected virtual ILifecycleObject GetListener() => Runtime.Container.Resolve<IRuntime>();
 
-        protected abstract IEventBus GetEventManager();
+        protected abstract IEventBus GetEventBus();
     }
 }
