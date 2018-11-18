@@ -7,11 +7,13 @@ namespace Rocket.Console.Scheduling
 {
     public class SimpleTask : ITask
     {
+        private Core.Util.WeakReference<ILifecycleObject> ownerRef;
+
         internal SimpleTask(int taskId, string taskName, ITaskScheduler scheduler, ILifecycleObject owner, Action action,
                             ExecutionTargetContext executionTarget)
         {
             Name = taskName;
-            Owner = owner;
+            ownerRef = new Core.Util.WeakReference<ILifecycleObject>(owner);
             Action = action;
             ExecutionTarget = executionTarget;
             Scheduler = scheduler;
@@ -25,7 +27,19 @@ namespace Rocket.Console.Scheduling
         public DateTime? StartTime { get; internal set; }
         public DateTime? EndTime { get; internal set; }
         public DateTime? LastRunTime { get; internal set; }
-        public ILifecycleObject Owner { get; }
+
+        public bool IsReferenceAlive => ownerRef.IsAlive;
+
+        public ILifecycleObject Owner
+        {
+            get
+            {
+                if (ownerRef.IsAlive)
+                    return ownerRef.Target;
+
+                throw new ObjectDisposedException("The owner has been collected by the GC.");
+            }
+        }
 
         public Action Action { get; }
         public bool IsCancelled { get; internal set; }

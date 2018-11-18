@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Scheduling;
 using Rocket.Core.Logging;
 using Rocket.Core.Scheduling;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Rocket.Console.Scheduling
 {
     public class SimpleTaskScheduler : ITaskScheduler
     {
         protected IDependencyContainer Container { get; set; }
-        protected List<ITask> InternalTasks { get; set; }
+        protected List<SimpleTask> InternalTasks { get; set; }
 
         private volatile int taskIds;
 
@@ -22,14 +22,17 @@ namespace Rocket.Console.Scheduling
         {
             Container = container;
             (new AsyncThreadPool(this)).Start();
-            InternalTasks = new List<ITask>();
+            InternalTasks = new List<SimpleTask>();
         }
 
         public IEnumerable<ITask> Tasks =>
-            InternalTasks.Where(c => c.Owner.IsAlive);
+            InternalTasks.Where(c => c.IsReferenceAlive && c.Owner.IsAlive);
 
         public ITask ScheduleUpdate(ILifecycleObject @object, Action action, string taskName, ExecutionTargetContext target)
         {
+            if (!@object.IsAlive)
+                return null;
+
             SimpleTask task = new SimpleTask(++taskIds, taskName, this, @object, action, target);
 
             TriggerEvent(task, (sender, @event) =>
@@ -47,6 +50,9 @@ namespace Rocket.Console.Scheduling
 
         public ITask ScheduleAt(ILifecycleObject @object, Action action, string taskName, DateTime date, bool runAsync = false)
         {
+            if (!@object.IsAlive)
+                return null;
+
             SimpleTask task = new SimpleTask(++taskIds, taskName, this, @object, action,
                 runAsync ? ExecutionTargetContext.Async : ExecutionTargetContext.Sync)
             {
@@ -59,6 +65,9 @@ namespace Rocket.Console.Scheduling
         public ITask SchedulePeriodically(ILifecycleObject @object, Action action, string taskName, TimeSpan period, TimeSpan? delay = null,
                                           bool runAsync = false)
         {
+            if (!@object.IsAlive)
+                return null;
+
             SimpleTask task = new SimpleTask(++taskIds, taskName, this, @object, action,
                 runAsync ? ExecutionTargetContext.Async : ExecutionTargetContext.Sync)
             {
@@ -107,8 +116,18 @@ namespace Rocket.Console.Scheduling
             });
         }
 
-        protected internal virtual void RunTask(ITask task)
+        protected internal virtual void RunTask(ITask t)
         {
+            var task = (SimpleTask) t;
+            if (!task.IsReferenceAlive)
+            {
+                InternalTasks.Remove(task);
+                return;
+            }
+
+            if (!t.Owner.IsAlive)
+                return;
+
             if (task.StartTime != null && task.StartTime > DateTime.Now)
                 return;
 
@@ -147,7 +166,7 @@ namespace Rocket.Console.Scheduling
 
         protected virtual void RemoveTask(ITask task)
         {
-            InternalTasks.Remove(task);
+            InternalTasks.Remove((SimpleTask)task);
         }
     }
 }
