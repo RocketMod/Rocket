@@ -2,6 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net35;net461</TargetFrameworks>
     <AssemblyName>Rocket.Runtime</AssemblyName>
+	<Description>RocketMod .NET Game Server Plugin Framework Runtime implementation</Description>
     <RootNamespace>Rocket</RootNamespace>
     <OutputType>Library</OutputType>
   </PropertyGroup> 
@@ -20,22 +21,6 @@
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj" />
     <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj" />
   </ItemGroup>
-  <PropertyGroup>
-    <PackageId>Rocket.Runtime</PackageId>
-    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-    <PackageTags>RocketMod Rocket UnityEngine UnrealEngine Plugin Framework</PackageTags>
-    <PackageLicenseUrl>https://github.com/RocketMod/Rocket/blob/master/LICENSE</PackageLicenseUrl>
-    <PackageProjectUrl>https://rocketmod.net/</PackageProjectUrl>
-	<PackageAuthors>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;, Enes Sadık Özbek &lt;esozbek.me&gt;</PackageAuthors>
-    <PackageOwners>Sven Mawby&lt;fr34kyn01535@bam.yt&gt;</PackageOwners>
-    <Version>0.0.0.0</Version>
-	<PackageVersion>0.0.0.0</PackageVersion>
-    <Authors>Sven Mawby &lt;fr34kyn01535@bam.yt&gt;, Enes Sadık Özbek &lt;esozbek.me&gt;</Authors>
-    <Company>RocketMod</Company>
-    <Description>RocketMod .NET Game Server Plugin Framework Runtime implementation</Description>
-    <Copyright>Sven Mawby &lt;fr34kyn01535@bam.yt&gt;</Copyright>
-    <AssemblyVersion>0.0.0.0</AssemblyVersion>
-    <FileVersion>0.0.0.0</FileVersion>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-  </PropertyGroup>
+  
+  <Import Project="$(MSBuildThisFileDirectory)..\props\SharedNuGet.props" />
 </Project>
