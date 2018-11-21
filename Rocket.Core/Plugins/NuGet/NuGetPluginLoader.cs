@@ -15,9 +15,6 @@ using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
 using Rocket.Core.Plugins.NuGet.Client.V3;
-#if NET35
-using Theraot.Core;
-#endif
 
 namespace Rocket.Core.Plugins.NuGet
 {
@@ -383,12 +380,7 @@ namespace Rocket.Core.Plugins.NuGet
             {
                 ZipFile zf = new ZipFile(fs);
                 List<ZipEntry> assemblies = new List<ZipEntry>();
-#if NET35
-                foreach (ZipEntry entry in zf)
-                    if (entry.Name.ToLower().StartsWith("lib/net35") && entry.Name.EndsWith(".dll"))
-                        assemblies.Add(entry);
-
-#elif NETSTANDARD2_0
+#if NETSTANDARD2_0
                 foreach (ZipEntry entry in zf)
                     if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
                         assemblies.Add(entry);

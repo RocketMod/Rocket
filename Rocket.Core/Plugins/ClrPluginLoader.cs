@@ -16,9 +16,6 @@ using Rocket.Core.Eventing;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
-#if NET35
-using Theraot.Core;
-#endif
 
 namespace Rocket.Core.Plugins
 {
