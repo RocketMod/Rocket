@@ -39,7 +39,7 @@ namespace Rocket.API.User
         /// <param name="receiver">The receiver of the message.</param>
         /// <param name="message">The message to send.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
-        Task SendMessageAsync(IUser sender, IPlayer receiver, string message, Color? color = null, params object[] arguments);
+        Task SendMessageAsync(IUser sender, IUser receiver, string message, Color? color = null, params object[] arguments);
 
         /// <summary>
         ///     Sends a message without sender to the given Users.

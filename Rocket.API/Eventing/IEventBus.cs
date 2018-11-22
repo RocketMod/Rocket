@@ -1,5 +1,6 @@
-﻿using System;
-using Rocket.API.DependencyInjection;
+﻿using Rocket.API.DependencyInjection;
+using System;
+using System.Threading.Tasks;
 
 namespace Rocket.API.Eventing
 {
@@ -9,25 +10,25 @@ namespace Rocket.API.Eventing
     /// <typeparam name="TEvent">The event type.</typeparam>
     /// <param name="sender">The event emitter.</param>
     /// <param name="event">The event instance.</param>
-    public delegate void EventCallback<in TEvent>(IEventEmitter sender, TEvent @event) where TEvent : IEvent;
+    public delegate Task EventCallback<in TEvent>(IEventEmitter sender, TEvent @event) where TEvent : IEvent;
 
     /// <summary>
     ///     The callback for event notifications.
     /// </summary>
     /// <param name="sender">The event emitter.</param>
     /// <param name="event">The event instance.</param>
-    public delegate void EventCallback(IEventEmitter sender, IEvent @event);
+    public delegate Task EventCallback(IEventEmitter sender, IEvent @event);
 
     /// <summary>
     ///     The emit callback for events that have finished and notified all listeners.
     /// </summary>
     /// <param name="event"></param>
-    public delegate void EventExecutedCallback(IEvent @event);
+    public delegate Task EventExecutedCallback(IEvent @event);
 
     /// <summary>
     ///     The event manager is responsible for emitting events and for managing their subscriptions.
     /// </summary>
-    public interface IEventBus: IService
+    public interface IEventBus : IService
     {
         /// <summary>
         ///     Subscribe to an event.
@@ -38,7 +39,7 @@ namespace Rocket.API.Eventing
         void Subscribe(ILifecycleObject @object, string eventName, EventCallback callback);
 
         /// <summary>
-        ///     <inheritdoc cref="Subscribe(Rocket.API.ILifecycleObject,string,Rocket.API.Eventing.EventCallback)" />
+        ///     <inheritdoc cref="Subscribe(ILifecycleObject,string,EventCallback)" />
         /// </summary>
         /// <param name="object">The associated lifecycle object.</param>
         /// <param name="callback">The action to execute after all listeners were notified.</param>
@@ -48,7 +49,7 @@ namespace Rocket.API.Eventing
             where TEvent : IEvent;
 
         /// <summary>
-        ///     <inheritdoc cref="Subscribe(Rocket.API.ILifecycleObject,string,Rocket.API.Eventing.EventCallback)" />
+        ///     <inheritdoc cref="Subscribe(ILifecycleObject,string,EventCallback)" />
         /// </summary>
         /// <param name="object">The associated lifecycle object.</param>
         /// <param name="callback">The action to execute after all listeners were notified.</param>
@@ -57,7 +58,7 @@ namespace Rocket.API.Eventing
         void Subscribe(ILifecycleObject @object, Type eventType, EventCallback callback, string emitterName = null);
 
         /// <summary>
-        ///     <inheritdoc cref="Subscribe(Rocket.API.ILifecycleObject,string,Rocket.API.Eventing.EventCallback)" />
+        ///     <inheritdoc cref="Subscribe(ILifecycleObject,string,EventCallback)" />
         /// </summary>
         /// <param name="object">The associated lifecycle object.</param>
         /// <param name="callback">The action to execute after all listeners were notified.</param>
@@ -66,7 +67,7 @@ namespace Rocket.API.Eventing
         void Subscribe(ILifecycleObject @object, string emitterName, string eventName, EventCallback callback);
 
         /// <summary>
-        ///     <inheritdoc cref="Subscribe(Rocket.API.ILifecycleObject,string,Rocket.API.Eventing.EventCallback)" />
+        ///     <inheritdoc cref="Subscribe(ILifecycleObject,string,EventCallback)" />
         /// </summary>
         /// <param name="object">The associated lifecycle object.</param>
         /// <param name="callback">The action to execute after all listeners were notified.</param>
@@ -76,7 +77,7 @@ namespace Rocket.API.Eventing
             where TEvent : IEvent where TEmitter : IEventEmitter;
 
         /// <summary>
-        ///     <inheritdoc cref="Subscribe(Rocket.API.ILifecycleObject,string,Rocket.API.Eventing.EventCallback)" />
+        ///     <inheritdoc cref="Subscribe(ILifecycleObject,string,EventCallback)" />
         /// </summary>
         /// <param name="object">The associated lifecycle object.</param>
         /// <param name="callback">The action to execute after all listeners were notified.</param>

@@ -1,4 +1,6 @@
-﻿namespace Rocket.API.Commands
+﻿using System.Threading.Tasks;
+
+namespace Rocket.API.Commands
 {
     /// <summary>
     ///     Defines a user friendly exception.
@@ -9,6 +11,6 @@
         ///     Sends the error message to the user of the command context.
         /// </summary>
         /// <param name="context">The related command context.</param>
-        void SendErrorMessage(ICommandContext context);
+        Task SendErrorMessageAsync(ICommandContext context);
     }
 }

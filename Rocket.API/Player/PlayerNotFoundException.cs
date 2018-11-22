@@ -1,5 +1,6 @@
-﻿using System;
-using Rocket.API.Commands;
+﻿using Rocket.API.Commands;
+using System;
+using System.Threading.Tasks;
 using Color = Rocket.API.Drawing.Color;
 
 namespace Rocket.API.Player
@@ -47,13 +48,13 @@ namespace Rocket.API.Player
         public PlayerNotFoundException(string nameOrId)
             : base(string.IsNullOrEmpty(nameOrId)
                 ? "The requested player was not found."
-                : $"The requested player: \"{nameOrId}\" was not found.") { }
+                : $"The requested player: \"{nameOrId}\" was not found.")
+        { }
 
         /// <inheritdoc />
-        public void SendErrorMessage(ICommandContext context)
+        public async Task SendErrorMessageAsync(ICommandContext context)
         {
-            if(context.Player != null)
-                context.User.UserManager.SendMessage(null, context.Player, Message, Color.Red);
+            await context.User.UserManager.SendMessageAsync(null, context.User, Message, Color.Red);
         }
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.Plugins
@@ -33,13 +34,13 @@ namespace Rocket.API.Plugins
         /// <summary>
         ///     Initializes the plugin manager.
         /// </summary>
-        void Init();
+        Task<bool> InitAsync();
 
-        bool ActivatePlugin(string name);
+        Task<bool> ActivatePlugin(string name);
 
-        bool DeactivatePlugin(string name);
+        Task<bool> DeactivatePlugin(string name);
 
-        bool PluginExists(string name);
+        Task<bool> PluginExists(string name);
 
         IPlugin GetPlugin(string name);
 
@@ -62,6 +63,6 @@ namespace Rocket.API.Plugins
         /// </remarks>
         /// <param name="pluginName">The name of the referenced plugin.</param>
         /// <param name="action">The action to be invoked when the plugin was found.</param>
-        void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action);
+        void ExecuteSoftDependCode(string pluginName, Func<IPlugin, Task> action);
     }
 }

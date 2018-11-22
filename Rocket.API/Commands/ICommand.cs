@@ -105,7 +105,7 @@ namespace Rocket.API.Commands
         /// </summary>
         /// <param name="user">The user type to check.</param>
         /// <returns><b>true</b> if the given user type can execute this command; otherwise, <b>false</b>.</returns>
-        bool SupportsUser(UserType user);
+        bool SupportsUser(IUser user);
 
         /// <summary>
         ///     Executes the command if no Child Command is involved.

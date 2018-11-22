@@ -1,4 +1,5 @@
-﻿using Rocket.API.Configuration;
+﻿using System.Threading.Tasks;
+using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 
@@ -23,12 +24,12 @@ namespace Rocket.API.Plugins
         ///     Activates the plugin.
         /// </summary>
         /// <returns><b>true</b> if the plugin could be activated; otherwise, <b>false</b>.</returns>
-        bool Activate(bool isReload);
+        Task<bool> Activate(bool isReload);
 
         /// <summary>
         ///     Deactivates the plugin.
         /// </summary>
         /// <returns><b>true</b> if the plugin could be deactivated; otherwise, <b>false</b>.</returns>
-        bool Deactivate();
+        Task<bool> Deactivate();
     }
 }

@@ -67,22 +67,13 @@ namespace Rocket.API.Commands
         ICommand Command { get; }
 
         /// <summary>
-        ///     <para>The user of the command.</para>
+        ///     <para>The user executing command.</para>
         ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsUser">supported user</see>.</para>
         ///     <para>
         ///         <b>This property will never return null.</b>
         ///     </para>
         /// </summary>
         IUser User { get; }
-
-        /// <summary>
-        ///     <para>The user of the command.</para>
-        ///     <para>Is guaranteed to be a <see cref="ICommand.SupportsUser">supported user</see>.</para>
-        ///     <para>
-        ///         <b>This property can be null if the caller is not a online player.</b>
-        ///     </para>
-        /// </summary>
-        IPlayer Player { get; }
 
         /// <summary>
         ///     <para>The parameters of the (sub) command.</para>
