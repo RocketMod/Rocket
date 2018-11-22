@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using Rocket.API.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
@@ -103,10 +104,13 @@ namespace Rocket
             if (!Directory.Exists(WorkingDirectory))
                 Directory.CreateDirectory(WorkingDirectory);
 
-            permissions.Load(this);
+            Task.Run(async () =>
+            {
+                await permissions.LoadAsync(this);
 
-            Container.Resolve<ILogger>().LogInformation($"Initializing host: {impl.Name}", Color.Green);
-            impl.Init(this);
+                Container.Resolve<ILogger>().LogInformation($"Initializing host: {impl.Name}", Color.Green);
+                await impl.InitAsync(this);
+            });
         }
 
         public IDependencyResolver Resolver { get; private set; }
@@ -132,7 +136,7 @@ namespace Rocket
 
         public static IRuntime Bootstrap() => new Runtime();
 
-        public void Shutdown()
+        public async Task ShutdownAsync()
         {
             Container.Dispose();
         }
