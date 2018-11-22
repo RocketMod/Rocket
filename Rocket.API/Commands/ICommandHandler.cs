@@ -24,23 +24,7 @@ namespace Rocket.API.Commands
         ///     When returning false, the next command handler will be called.
         ///     If no command handler could handle the command, it will be assumed that the command does not exist.
         /// </remarks>
-        Task<bool> HandleCommand(IUser user, string commandLine, string prefix);
-
-        /// <summary>
-        ///    Handles a command by finding and executing the correct ICommand instance.
-        /// </summary>
-        /// <param name="user">
-        ///     The <see cref="IPlayer">command user</see> of the command. Guaranteed to be a
-        ///     <see cref="SupportsUser">supported user</see>.
-        /// </param>
-        /// <param name="commandLine">The command line (e.g. "/mycommand sub").</param>
-        /// <param name="prefix">The <see cref="ICommandContext.CommandPrefix">prefix</see> of the command.</param>
-        /// <returns><b>true</b> if the command was handled; otherwise, <b>false</b>.</returns>
-        /// <remarks>
-        ///     When returning false, the next command handler will be called.
-        ///     If no command handler could handle the command, it will be assumed that the command does not exist.
-        /// </remarks>
-        Task<bool> HandleCommand(IPlayer player, string commandLine, string prefix);
+        Task<bool> HandleCommandAsync(IUser user, string commandLine, string prefix);
 
         /// <summary>
         ///     Defines if this command handler can handle the given command user type.

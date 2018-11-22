@@ -47,7 +47,7 @@ namespace Rocket.API
         ///     Initializes the implementation.
         /// </summary>
         /// <param name="runtime">The RocketMod runtime.</param>
-        void Init(IRuntime runtime);
+        Task InitAsync(IRuntime runtime);
 
         /// <summary>
         ///     Shuts the hots down.
