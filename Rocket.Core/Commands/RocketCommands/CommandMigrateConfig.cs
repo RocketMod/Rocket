@@ -1,12 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using Rocket.API.Commands;
+﻿using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.User;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -30,7 +30,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length == 0)
             {
                 await context.User.SendMessageAsync(GetConfigTypes(configProviders));
-                context.SendCommandUsage();
+                await context.SendCommandUsage();
                 return;
             }
 
@@ -63,14 +63,13 @@ namespace Rocket.Core.Commands.RocketCommands
 
             ConfigurationContext cc = new ConfigurationContext(workingDir, fileName);
 
-            fromProvider.Load(cc);
+            await fromProvider.LoadAsync(cc);
             toProvider.ConfigurationContext = cc;
             toProvider.LoadEmpty();
 
             CopyConfigElement(fromProvider, toProvider);
 
-            toProvider.Save();
-
+            await toProvider.SaveAsync();
             await context.User.SendMessageAsync("Configuration was successfully migrated.");
         }
 
