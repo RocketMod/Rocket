@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.User;
 
 namespace Rocket.API.Commands
@@ -117,6 +118,6 @@ namespace Rocket.API.Commands
         /// </example>
         /// <seealso cref="ChildCommands" />
         /// <param name="context">The <see cref="ICommandContext">context</see> of the command.</param>
-        void Execute(ICommandContext context);
+        Task ExecuteAsync(ICommandContext context);
     }
 }

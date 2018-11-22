@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Rocket.API.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
@@ -23,9 +24,9 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "[step]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(UserType type) => type == UserType.Console;
+        public bool SupportsUser(IUser user) => user is IConsole;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             ILogger logger = context.Container.Resolve<ILogger>();
             IRuntime runtime = context.Container.Resolve<IRuntime>();
@@ -37,11 +38,11 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (!Directory.Exists(basePath))
             {
-                context.User.SendMessage($"Migration failed: Path \"{basePath}\" does not exist.", Color.Red);
+                await context.User.SendMessageAsync($"Migration failed: Path \"{basePath}\" does not exist.", Color.Red);
                 return;
             }
 
-            string targetStep = context.Parameters.Get<string>(0, null);
+            string targetStep = context.Parameters[0];
 
             foreach (Type migrationStep in migrationSteps)
             {

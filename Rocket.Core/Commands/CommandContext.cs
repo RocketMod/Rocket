@@ -1,9 +1,10 @@
-﻿using Rocket.API.Drawing;
+﻿using System.Threading.Tasks;
+using Rocket.API.Drawing;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.User;
-using Rocket.Core.User;
 using Rocket.API.Player;
+using Rocket.Core.User;
 
 namespace Rocket.Core.Commands
 {
@@ -41,9 +42,9 @@ namespace Rocket.Core.Commands
         public ICommandParameters Parameters { get; }
         public IDependencyContainer Container { get; }
 
-        public void SendCommandUsage()
+        public async Task SendCommandUsage()
         {
-            User.SendMessage("Usage: " + CommandPrefix + CommandAlias + " " + Command.Syntax, Color.Blue);
+            await User.SendMessageAsync("Usage: " + CommandPrefix + CommandAlias + " " + Command.Syntax, Color.Blue);
         }
     }
 }

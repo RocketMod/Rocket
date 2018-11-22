@@ -1,4 +1,5 @@
-﻿using Rocket.API.DependencyInjection;
+﻿using System.Threading.Tasks;
+using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
 using Rocket.API.User;
 
@@ -94,6 +95,6 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     Sends the command usage to the user.
         /// </summary>
-        void SendCommandUsage();
+        async Task SendCommandUsage();
     }
 }

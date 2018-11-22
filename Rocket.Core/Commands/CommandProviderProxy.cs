@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
@@ -29,11 +30,11 @@ namespace Rocket.Core.Commands
             return GetProvider(command)?.GetOwner(command) ?? throw new Exception("Owner not found.");
         }
 
-        public void Init()
+        public async Task InitAsync()
         {
             foreach (var service in ProxiedServices)
             {
-                service.Init();
+                await service.InitAsync();
             }
 
             IRuntime runtime = container.Resolve<IRuntime>();

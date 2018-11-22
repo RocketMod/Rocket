@@ -2,7 +2,6 @@
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 using Rocket.API.User;
-using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Player
 {

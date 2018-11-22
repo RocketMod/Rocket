@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using Rocket.API.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
 using Rocket.API.Plugins;
-using Rocket.Core.Commands;
 using Rocket.Core.Plugins.NuGet;
 using Rocket.Core.User;
 using Rocket.API.User;
@@ -28,12 +28,12 @@ namespace Rocket.Core.Commands.RocketCommands
             new CommandRocketVersion()
         };
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(UserType user) => true;
+        public bool  SupportsUser(IUser user) => true;
     }
 
     public class CommandRocketReload : IChildCommand
@@ -45,18 +45,18 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => null;
 
-        public bool SupportsUser(UserType user) => true;
+        public bool  SupportsUser(IUser user) => true;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
-            permissions.Reload();
+            await permissions.ReloadAsync();
 
             foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.Deactivate();
 
             foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.Activate(true);
 
-            context.User.SendMessage("Reload completed.", Color.DarkGreen);
+            await context.User.SendMessageAsync("Reload completed.", Color.DarkGreen);
         }
     }
 
@@ -69,8 +69,8 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "<repo> <plugin> [version] [-Pre]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(UserType user) => true;
-        public void Execute(ICommandContext context)
+        public bool  SupportsUser(IUser user) => true;
+        public async Task ExecuteAsync(ICommandContext context)
         {
             if (context.Parameters.Length < 2)
                 throw new CommandWrongUsageException();
@@ -98,25 +98,25 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (repo == null)
             {
-                context.User.SendMessage("Repository not found: " + repoName, Color.DarkRed);
+                await context.User.SendMessageAsync("Repository not found: " + repoName, Color.DarkRed);
                 return;
             }
 
             var result = pm.Install(repoName, pluginName, version, isPre);
             if (result != NuGetInstallResult.Success)
             {
-                context.User.SendMessage($"Failed to install \"{pluginName}\": " + result, Color.DarkRed);
+                await context.User.SendMessageAsync($"Failed to install \"{pluginName}\": " + result, Color.DarkRed);
                 return;
             }
 
             if (!pm.LoadPlugin(repoName, pluginName))
             {
-                context.User.SendMessage($"Failed to initialize \"{pluginName}\"", Color.DarkRed);
+                await context.User.SendMessageAsync($"Failed to initialize \"{pluginName}\"", Color.DarkRed);
                 pm.Uninstall(repoName, pluginName);
                 return;
             }
 
-            context.User.SendMessage($"Successfully installed \"{pluginName}\"", Color.DarkGreen);
+            await context.User.SendMessageAsync($"Successfully installed \"{pluginName}\"", Color.DarkGreen);
         }
     }
 
@@ -129,35 +129,35 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "<repo> <plugin>";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(UserType user) => true;
+        public bool  SupportsUser(IUser user) => true;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             if (context.Parameters.Length != 2)
                 throw new CommandWrongUsageException();
 
             NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
 
-            string repoName = context.Parameters.Get<string>(0);
-            string pluginName = context.Parameters.Get<string>(1);
+            string repoName = context.Parameters[0];
+            string pluginName = context.Parameters[1];
 
             var repo = pm.Repositories.FirstOrDefault(c
                 => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
 
             if (repo == null)
             {
-                context.User.SendMessage("Repository not found: " + repoName, Color.DarkRed);
+                await context.User.SendMessageAsync("Repository not found: " + repoName, Color.DarkRed);
                 return;
             }
 
             if (!pm.Uninstall(repoName, pluginName))
             {
-                context.User.SendMessage($"Failed to uninstall \"{pluginName}\"", Color.DarkRed);
+                await context.User.SendMessageAsync($"Failed to uninstall \"{pluginName}\"", Color.DarkRed);
                 return;
             }
 
-            context.User.SendMessage($"Successfully uninstalled  \"{pluginName}\"", Color.DarkGreen);
-            context.User.SendMessage("Restart server to finish uninstall.", Color.Red);
+            await context.User.SendMessageAsync($"Successfully uninstalled  \"{pluginName}\"", Color.DarkGreen);
+            await context.User.SendMessageAsync("Restart server to finish uninstall.", Color.Red);
         }
     }
 
@@ -170,9 +170,9 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "<repo> <plugin> [version] [-Pre]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool SupportsUser(UserType user) => true;
+        public bool  SupportsUser(IUser user) => true;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             if (context.Parameters.Length < 2)
                 throw new CommandWrongUsageException();
@@ -200,19 +200,19 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (repo == null)
             {
-                context.User.SendMessage("Repository not found: " + repoName, Color.DarkRed);
+                await context.User.SendMessageAsync("Repository not found: " + repoName, Color.DarkRed);
                 return;
             }
 
             var result = pm.Update(repoName, pluginName, version, isPre);
             if (result != NuGetInstallResult.Success)
             {
-                context.User.SendMessage($"Failed to update \"{pluginName}\": " + result, Color.DarkRed);
+                await context.User.SendMessageAsync($"Failed to update \"{pluginName}\": " + result, Color.DarkRed);
                 return;
             }
 
-            context.User.SendMessage($"Successfully updated \"{pluginName}\"", Color.DarkGreen);
-            context.User.SendMessage("Restart server to finish update.", Color.Red);
+            await context.User.SendMessageAsync($"Successfully updated \"{pluginName}\"", Color.DarkGreen);
+            await context.User.SendMessageAsync("Restart server to finish update.", Color.Red);
         }
     }
 
@@ -224,21 +224,21 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Description => null;
         public string Syntax => "";
         public IChildCommand[] ChildCommands => null;
-        public bool SupportsUser(UserType user) => true;
+        public bool  SupportsUser(IUser user) => true;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             var runtime = context.Container.Resolve<IRuntime>();
             var host = context.Container.Resolve<IHost>();
 
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(IRuntime).Assembly.Location);
 
-            context.User.SendMessage("Rocket Version: " + versionInfo.FileVersion, Color.Cyan);
-            context.User.SendMessage(runtime.Name + " Version: " + runtime.Version, Color.Cyan);
-            context.User.SendMessage(host.Name + " Version: " + host.HostVersion, Color.Blue);
+            await context.User.SendMessageAsync("Rocket Version: " + versionInfo.FileVersion, Color.Cyan);
+            await context.User.SendMessageAsync(runtime.Name + " Version: " + runtime.Version, Color.Cyan);
+            await context.User.SendMessageAsync(host.Name + " Version: " + host.HostVersion, Color.Blue);
 
             if (host.Name != host.GameName)
-                context.User.SendMessage(host.GameName + " Version: " + host.GameVersion, Color.Green);
+                await context.User.SendMessageAsync(host.GameName + " Version: " + host.GameVersion, Color.Green);
         }
     }
 }

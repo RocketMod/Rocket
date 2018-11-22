@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Rocket.API.I18N;
 using Rocket.API.User;
-using Rocket.Core.User;
 
 namespace Rocket.Core.I18N
 {

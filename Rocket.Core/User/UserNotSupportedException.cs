@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.Drawing;
 
@@ -15,9 +16,9 @@ namespace Rocket.Core.User
             
         }
 
-        public void SendErrorMessage(ICommandContext context)
+        public async Task SendErrorMessageAsync(ICommandContext context)
         {
-            context.User.SendMessage(Message, Color.Red);
+            await context.User.SendMessageAsync(Message, Color.Red);
         }
     }
 }

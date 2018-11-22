@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
-using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.ServiceProxies;
 
@@ -12,29 +12,18 @@ namespace Rocket.Core.Commands
     {
         public CommandHandlerProxy(IDependencyContainer container) : base(container) { }
 
-        public bool HandleCommand(IUser user, string commandLine, string prefix)
+        public async Task<bool> HandleCommandAsync(IUser user, string commandLine, string prefix)
         {
             GuardUser(user);
 
-            foreach (ICommandHandler handler in ProxiedServices.Where(c => c.SupportsUser(user.Type)))
-                if (handler.HandleCommand(user, commandLine, prefix))
+            foreach (ICommandHandler handler in ProxiedServices.Where(c => c.SupportsUser(user)))
+                if (await handler.HandleCommandAsync(user, commandLine, prefix))
                     return true;
 
             return false;
         }
 
-        public bool HandleCommand(IPlayer player, string commandLine, string prefix)
-        {
-            GuardUser(player.User);
-
-            foreach (ICommandHandler handler in ProxiedServices.Where(c => c.SupportsUser(player.User.Type)))
-                if (handler.HandleCommand(player, commandLine, prefix))
-                    return true;
-
-            return false;
-        }
-
-        public bool SupportsUser(UserType user)
+        public bool SupportsUser(IUser user)
         {
             return ProxiedServices.Any(c => c.SupportsUser(user));
         }
@@ -53,7 +42,7 @@ namespace Rocket.Core.Commands
 
         private void GuardUser(IUser user)
         {
-            if (!SupportsUser(user.Type))
+            if (!SupportsUser(user))
                 throw new NotSupportedException(user.GetType().FullName + " is not supported!");
         }
 

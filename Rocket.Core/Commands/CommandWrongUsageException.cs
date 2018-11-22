@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.Drawing;
 using Rocket.API.Commands;
 using Rocket.Core.User;
@@ -35,9 +36,9 @@ namespace Rocket.Core.Commands
 
         public CommandWrongUsageException(string message) : base(message) { }
 
-        public virtual void SendErrorMessage(ICommandContext context)
+        public virtual async Task SendErrorMessageAsync(ICommandContext context)
         {
-            context.User.SendMessage(Message, Color.DarkRed);
+            await context.User.SendMessageAsync(Message, Color.DarkRed);
             context.SendCommandUsage();
         }
     }

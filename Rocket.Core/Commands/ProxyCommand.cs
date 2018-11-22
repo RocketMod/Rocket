@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.User;
 using Rocket.Core.DependencyInjection;
@@ -22,7 +22,7 @@ namespace Rocket.Core.Commands {
         public string Description => BaseCommand.Description;
         public string Syntax => BaseCommand.Syntax;
         public IChildCommand[] ChildCommands => BaseCommand.ChildCommands;
-        public bool SupportsUser(UserType user) => BaseCommand.SupportsUser(user);
-        public void Execute(ICommandContext context) => BaseCommand.Execute(context);
+        public bool  SupportsUser(IUser user) => BaseCommand.SupportsUser(user);
+        public async Task ExecuteAsync(ICommandContext context) => await BaseCommand.ExecuteAsync(context);
     }
 }

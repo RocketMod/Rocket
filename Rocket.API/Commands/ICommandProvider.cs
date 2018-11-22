@@ -26,6 +26,6 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     Inits the commands provider.
         /// </summary>
-        Task Init();
+        Task InitAsync();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
@@ -20,7 +21,7 @@ namespace Rocket.Core.Commands
         }
 
         public ILifecycleObject GetOwner(ICommand command) => plugin;
-        public void Init()
+        public async Task InitAsync()
         {
             
         }
