@@ -39,7 +39,7 @@ namespace Rocket.Core.Commands
 
             IRuntime runtime = container.Resolve<IRuntime>();
             var context = runtime.CreateChildConfigurationContext("Commands");
-            configuration.Load(context, new CommandProviderProxyConfig());
+            await configuration.LoadAsync(context, new CommandProviderProxyConfig());
         }
 
         public ICommandProvider GetProvider(ICommand command)
@@ -126,7 +126,7 @@ namespace Rocket.Core.Commands
                 registeredCommands.Select(c => GetProxyCommand(c, commands[c]));
 
             configuration.Set(new CommandProviderProxyConfig { Commands = configCommands.ToArray() });
-            configuration.Save();
+            configuration.SaveAsync().GetAwaiter().GetResult();
         }
 
         private ConfigCommandProxy GetProxyCommand(ICommand command, ICommandProvider provider)

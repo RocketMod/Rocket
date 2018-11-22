@@ -10,7 +10,7 @@ namespace Rocket.Console.Scheduling
     {
         private readonly Core.Util.WeakReference<ILifecycleObject> ownerRef;
 
-        internal SimpleTask(int taskId, string taskName, ITaskScheduler scheduler, ILifecycleObject owner, Task action,
+        internal SimpleTask(int taskId, string taskName, ITaskScheduler scheduler, ILifecycleObject owner, Action action,
                             ExecutionTargetContext executionTarget)
         {
             Name = taskName;
@@ -42,7 +42,7 @@ namespace Rocket.Console.Scheduling
             }
         }
 
-        public Task Action { get; }
+        public Action Action { get; }
         public bool IsCancelled { get; internal set; }
         public ExecutionTargetContext ExecutionTarget { get; }
         public bool IsFinished => !Scheduler.Tasks.Contains(this);

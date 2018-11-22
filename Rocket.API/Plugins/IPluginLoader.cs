@@ -34,13 +34,13 @@ namespace Rocket.API.Plugins
         /// <summary>
         ///     Initializes the plugin manager.
         /// </summary>
-        Task<bool> InitAsync();
+        Task InitAsync();
 
-        Task<bool> ActivatePlugin(string name);
+        Task<bool> ActivatePluginAsync(string name);
 
-        Task<bool> DeactivatePlugin(string name);
+        Task<bool> DeactivatePluginAsync(string name);
 
-        Task<bool> PluginExists(string name);
+        Task<bool> PluginExistsAsync(string name);
 
         IPlugin GetPlugin(string name);
 
@@ -63,6 +63,6 @@ namespace Rocket.API.Plugins
         /// </remarks>
         /// <param name="pluginName">The name of the referenced plugin.</param>
         /// <param name="action">The action to be invoked when the plugin was found.</param>
-        void ExecuteSoftDependCode(string pluginName, Func<IPlugin, Task> action);
+        Task ExecuteSoftDependCodeAsync(string pluginName, Func<IPlugin, Task> action);
     }
 }

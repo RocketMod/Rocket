@@ -46,7 +46,7 @@ namespace Rocket.API.Scheduling
         /// <summary>
         ///     The action to execute.
         /// </summary>
-        Task Action { get; }
+        Action Action { get; }
 
         /// <summary>
         ///     Checks if the task was cancelled.

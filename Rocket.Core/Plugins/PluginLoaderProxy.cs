@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Rocket.API.DependencyInjection;
+using Rocket.API.Plugins;
+using Rocket.Core.ServiceProxies;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Rocket.API.DependencyInjection;
-using Rocket.API.Plugins;
-using Rocket.Core.ServiceProxies;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Plugins
 {
@@ -15,13 +16,15 @@ namespace Rocket.Core.Plugins
         public IEnumerator<IPlugin> GetEnumerator() => Plugins.GetEnumerator();
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        
+
         public IPlugin GetPlugin(string name)
         {
             foreach (IPluginLoader pluginManager in ProxiedServices)
             {
-                if (!pluginManager.PluginExists(name))
+                /*
+                if (! pluginManager.PluginExistsAsync(name).GetAwaiter().GetResult())
                     continue;
+                */
 
                 IPlugin plugin = pluginManager.GetPlugin(name);
                 if (plugin != null)
@@ -31,27 +34,31 @@ namespace Rocket.Core.Plugins
             return null;
         }
 
-        public bool PluginExists(string name)
+        public async Task<bool> PluginExistsAsync(string name)
         {
-            return ProxiedServices.Any(c => c.PluginExists(name));
-        }
-        
+            foreach(var service in ProxiedServices)
+                if (await service.PluginExistsAsync(name))
+                    return true;
 
-        public void Init()
+            return false;
+        }
+
+
+        public async Task InitAsync()
         {
             foreach (IPluginLoader pluginManager in ProxiedServices)
-                pluginManager.Init();
+                await pluginManager.InitAsync();
         }
 
         public IEnumerable<IPlugin> Plugins => ProxiedServices.SelectMany(c => c.Plugins);
 
-        public void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
-            => throw new NotSupportedException("Not supported on proxies");
+        public Task ExecuteSoftDependCodeAsync(string pluginName, Func<IPlugin, Task> action)
+             => throw new NotSupportedException("Not supported on proxies");
 
-        public bool ActivatePlugin(string name)
+        public Task<bool> ActivatePluginAsync(string name)
             => throw new NotSupportedException("Activate plugins is not supported through proxy");
 
-        public bool DeactivatePlugin(string name)
+        public Task<bool> DeactivatePluginAsync(string name)
             => throw new NotSupportedException("Unloading plugins is not supported through proxy");
 
         public string ServiceName => "ProxyPlugins";

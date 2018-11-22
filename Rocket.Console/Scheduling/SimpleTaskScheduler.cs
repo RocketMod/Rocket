@@ -29,27 +29,27 @@ namespace Rocket.Console.Scheduling
         public IEnumerable<ITask> Tasks =>
             InternalTasks.Where(c => c.IsReferenceAlive && c.Owner.IsAlive);
 
-        public ITask ScheduleUpdate(ILifecycleObject @object, Task action, string taskName, ExecutionTargetContext target)
+        public ITask ScheduleUpdate(ILifecycleObject @object, Action action, string taskName, ExecutionTargetContext target)
         {
             if (!@object.IsAlive)
                 return null;
 
             SimpleTask task = new SimpleTask(++taskIds, taskName, this, @object, action, target);
 
-            TriggerEvent(task, (sender, @event) =>
+            TriggerEvent(task, async (sender, @event) =>
             {
                 if (target != ExecutionTargetContext.Sync && @object.IsAlive) return;
 
                 if (@event != null && ((ICancellableEvent)@event).IsCancelled) return;
 
-                action.GetAwaiter().GetResult();
+                action();
                 InternalTasks.Remove(task);
             });
 
             return task;
         }
 
-        public ITask ScheduleAt(ILifecycleObject @object, Task action, string taskName, DateTime date, bool runAsync = false)
+        public ITask ScheduleAt(ILifecycleObject @object, Action action, string taskName, DateTime date, bool runAsync = false)
         {
             if (!@object.IsAlive)
                 return null;
@@ -63,7 +63,7 @@ namespace Rocket.Console.Scheduling
             return task;
         }
 
-        public ITask SchedulePeriodically(ILifecycleObject @object, Task action, string taskName, TimeSpan period, TimeSpan? delay = null,
+        public ITask SchedulePeriodically(ILifecycleObject @object, Action action, string taskName, TimeSpan period, TimeSpan? delay = null,
                                           bool runAsync = false)
         {
             if (!@object.IsAlive)
@@ -106,7 +106,7 @@ namespace Rocket.Console.Scheduling
                 return;
             }
 
-            eventBus.Emit(owner, e, @event =>
+            eventBus.Emit(owner, e, async @event =>
             {
                 task.IsCancelled = e.IsCancelled;
 
@@ -146,7 +146,7 @@ namespace Rocket.Console.Scheduling
 
             try
             {
-                task.Action.GetAwaiter().GetResult();
+                task.Action();
                 ((SimpleTask)task).LastRunTime = DateTime.Now;
             }
             catch (Exception e)

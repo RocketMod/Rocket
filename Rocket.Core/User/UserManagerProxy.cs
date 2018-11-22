@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Rocket.API.DependencyInjection;
 using Rocket.API.Drawing;
-using System.Linq;
-using Rocket.API.DependencyInjection;
+using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.ServiceProxies;
-using Rocket.API.Player;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.User
 {
@@ -18,56 +19,70 @@ namespace Rocket.Core.User
             this.container = container;
         }
 
-        public bool Ban(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
+        public Task<bool> BanAsync(IUser user, IUser bannedBy = null, string reason = null, TimeSpan? timeSpan = null)
         {
-            return user.UserManager.Ban(user, bannedBy, reason, timeSpan);
+            return user.UserManager.BanAsync(user, bannedBy, reason, timeSpan);
         }
 
-        public bool Kick(IPlayer player, IUser kickedBy = null, string reason = null)
+        public Task<bool> KickAsync(IUser user, IUser kickedBy = null, string reason = null)
         {
-            return player.PlayerManager.Kick(player, kickedBy, reason);
+            return user.UserManager.KickAsync(user, kickedBy, reason);
         }
 
-        public void SendMessage(IUser sender, IPlayer receiver, string message, Color? color = null, params object[] arguments)
+        public async Task SendMessageAsync(IUser sender, IUser receiver, string message, Color? color = null, params object[] arguments)
         {
-            receiver.PlayerManager.SendMessage(sender, receiver, message, color, arguments);
+            if (receiver == null)
+            {
+                foreach (var mgr in ProxiedServices)
+                {
+                    await mgr.SendMessageAsync(sender, receiver, message, color, arguments);
+                }
+
+                return;
+            }
+
+            await receiver.UserManager.SendMessageAsync(sender, receiver, message, color, arguments);
         }
 
-        public void Broadcast(IUser sender, IEnumerable<IPlayer> receivers, string message, Color? color = null, params object[] arguments)
+        public async Task BroadcastAsync(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null, params object[] arguments)
         {
             if (sender == null)
             {
                 var rec = receivers.ToList();
                 foreach (var service in ProxiedServices)
-                    service.Broadcast(null, rec, message, color, arguments);
+                    await service.BroadcastAsync(null, rec, message, color, arguments);
                 return;
             }
-            sender.UserManager.Broadcast(sender, receivers, message, color, arguments);
+
+            await sender.UserManager.BroadcastAsync(sender, receivers, message, color, arguments);
         }
 
-        public void Broadcast(IUser sender, string message, Color? color = null, params object[] arguments)
+        public async Task BroadcastAsync(IUser sender, string message, Color? color = null, params object[] arguments)
         {
             if (sender == null)
             {
                 foreach (var service in ProxiedServices)
-                    service.Broadcast(null, message, color, arguments);
+                    await service.BroadcastAsync(null, message, color, arguments);
                 return;
             }
 
-            sender.UserManager.Broadcast(sender, message, color, arguments);
+            await sender.UserManager.BroadcastAsync(sender, message, color, arguments);
         }
 
-        public IUser GetUser(string id, IdentityProvider identityProvider = IdentityProvider.Builtin)
+        public Task<IUser> GetUserAsync(string id)
         {
-            throw new Exception("Not supported on proxy.");
+            throw new NotSupportedException();
         }
 
-        public bool Unban(IUser user, IUser unbannedBy = null)
+        public Task<bool> UnbanAsync(IUser user, IUser unbannedBy = null)
         {
-            return user.UserManager.Unban(user, unbannedBy);
+            return user.UserManager.UnbanAsync(user, unbannedBy);
         }
 
 
         public string ServiceName => "ProxyUsers";
+
+        public Task<IIdentity> GetIdentity(string id) 
+            => throw new NotSupportedException();
     }
 }

@@ -61,11 +61,23 @@ namespace Rocket.Core.Logging
 
         public virtual bool IsEnabled(LogLevel level)
         {
+            if (logLevels.ContainsKey(level))
+                return logLevels[level];
+
             if (level == LogLevel.Game)
                 return !LogSettings.IgnoreGameLogs;
 
             var settingsLevel = (LogLevel) Enum.Parse(typeof(LogLevel), LogSettings.LogLevel, true);
             return level >= settingsLevel;
+        }
+
+        private Dictionary<LogLevel, bool> logLevels = new Dictionary<LogLevel, bool>();
+        public virtual void SetEnabled(LogLevel level, bool enabled)
+        {
+            if (logLevels.ContainsKey(level))
+                logLevels[level] = enabled;
+            else
+                logLevels.Add(level, enabled);
         }
 
         public static void SkipTypeFromLogging(Type type)

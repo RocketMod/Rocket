@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration;
 
@@ -23,7 +24,7 @@ namespace Rocket.Core.Permissions
         [ConfigArray("Group")]
         public string[] Groups { get; set; } = new string[0];
 
-        public override void Save()
+        public override async Task SaveAsync()
         {
             List<PlayerPermissionSection> players = element.Get<PlayerPermissionSection[]>().ToList();
             players.RemoveAll(c => c.Id.Equals(Id, StringComparison.OrdinalIgnoreCase));
@@ -31,7 +32,7 @@ namespace Rocket.Core.Permissions
             element.Set(players.ToArray());
 
             if (element.Root.ConfigurationContext != null)
-                element.Root.Save();
+                await element.Root.SaveAsync();
         }
 
         public override string[] GetGroups() => Groups;

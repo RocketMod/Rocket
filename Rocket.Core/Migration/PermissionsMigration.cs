@@ -70,7 +70,7 @@ namespace Rocket.Core.Migration
                 if (legacyPermissions.DefaultGroup.Equals(group.Id))
                 {
                     GroupPermissionSection section =
-                        permissions.GetConfigSection<GroupPermissionSection>(sourceGroup, false);
+                        permissions.GetConfigSectionAsync<GroupPermissionSection>(sourceGroup, false);
                     section.AutoAssign = true;
                     section.Save();
                 }

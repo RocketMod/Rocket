@@ -27,6 +27,11 @@ namespace Rocket.API.User
         List<IIdentity> Identities { get; }
 
         /// <summary>
+        /// The user type (e.g. "Player", "Console", "Discord" etc)
+        /// </summary>
+        string UserType { get; }
+
+        /// <summary>
         ///     The distinct dependency container of the user.
         /// </summary>
         IDependencyContainer Container { get; }

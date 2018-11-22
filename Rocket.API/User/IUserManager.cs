@@ -32,6 +32,15 @@ namespace Rocket.API.User
         Task<bool> UnbanAsync(IUser user, IUser unbannedBy = null);
 
         /// <summary>
+        ///     Kicks (disconnects) the given user from the server.
+        /// </summary>
+        /// <param name="user">The user to kick.</param>
+        /// <param name="kickedBy">The user which kicks (optional).</param>
+        /// <param name="reason">The kick reason whicht might be shown to the user (optional).</param>
+        /// <returns><b>true</b> if the user could be kicked; otherwise, <b>false</b>.</returns>
+        Task<bool> KickAsync(IUser user, IUser kickedBy = null, string reason = null);
+
+        /// <summary>
         ///     Sends a message to the given User.
         /// </summary>
         /// <param name="color">The message color.</param>
@@ -49,7 +58,7 @@ namespace Rocket.API.User
         /// <param name="message">The message to send.</param>
         /// <param name="color">The message color.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" />.</param>
-        Task BroadcastAsync(IUser sender, IEnumerable<IPlayer> receivers, string message, Color? color = null, params object[] arguments);
+        Task BroadcastAsync(IUser sender, IEnumerable<IUser> receivers, string message, Color? color = null, params object[] arguments);
 
         /// <summary>
         ///     Broadcasts the given message.

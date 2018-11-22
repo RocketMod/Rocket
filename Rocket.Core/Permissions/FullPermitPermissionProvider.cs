@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API.Configuration;
 using Rocket.API.Permissions;
 using Rocket.API.User;
@@ -13,13 +14,13 @@ namespace Rocket.Core.Permissions
 
     public abstract class FullPermitPermissionProvider : IPermissionProvider
     {
-        public IEnumerable<string> GetGrantedPermissions(IPermissionEntity target, bool inherit = true)
+        public async Task<IEnumerable<string>> GetGrantedPermissionsAsync(IPermissionEntity target, bool inherit = true)
         {
             GuardTarget(target);
             return new List<string>();
         }
 
-        public IEnumerable<string> GetDeniedPermissions(IPermissionEntity target, bool inherit = true)
+        public async Task<IEnumerable<string>> GetDeniedPermissionsAsync(IPermissionEntity target, bool inherit = true)
         {
             GuardTarget(target);
             return new List<string>();
@@ -27,61 +28,61 @@ namespace Rocket.Core.Permissions
 
         public abstract bool SupportsTarget(IPermissionEntity target);
 
-        public PermissionResult CheckPermission(IPermissionEntity target, string permission)
+        public async Task<PermissionResult> CheckPermissionAsync(IPermissionEntity target, string permission)
         {
             GuardTarget(target);
             return PermissionResult.Grant;
         }
 
-        public PermissionResult CheckHasAllPermissions(IPermissionEntity target, params string[] permissions)
+        public async Task<PermissionResult> CheckHasAllPermissionsAsync(IPermissionEntity target, params string[] permissions)
         {
             GuardTarget(target);
             return PermissionResult.Grant;
         }
 
-        public PermissionResult CheckHasAnyPermission(IPermissionEntity target, params string[] permissions)
+        public async Task<PermissionResult> CheckHasAnyPermissionAsync(IPermissionEntity target, params string[] permissions)
         {
             GuardTarget(target);
             return PermissionResult.Grant;
         }
 
-        public bool AddPermission(IPermissionEntity target, string permission) => false;
+        public async Task<bool> AddPermissionAsync(IPermissionEntity target, string permission) => false;
 
-        public bool AddDeniedPermission(IPermissionEntity target, string permission) => false;
+        public async Task<bool> AddDeniedPermissionAsync(IPermissionEntity target, string permission) => false;
 
-        public bool RemovePermission(IPermissionEntity target, string permission) => false;
+        public async Task<bool> RemovePermissionAsync(IPermissionEntity target, string permission) => false;
 
-        public bool RemoveDeniedPermission(IPermissionEntity target, string permission) => false;
+        public async Task<bool> RemoveDeniedPermissionAsync(IPermissionEntity target, string permission) => false;
 
-        public IPermissionGroup GetPrimaryGroup(IUser user) => null;
+        public async Task<IPermissionGroup> GetPrimaryGroupAsync(IPermissionEntity user) => null;
 
-        public IPermissionGroup GetGroup(string id) => null;
+        public async Task<IPermissionGroup> GetGroupAsync(string id) => null;
 
-        public IEnumerable<IPermissionGroup> GetGroups(IPermissionEntity target) => new IPermissionGroup[0];
+        public async Task<IEnumerable<IPermissionGroup>> GetGroupsAsync(IPermissionEntity target) => new IPermissionGroup[0];
 
-        public IEnumerable<IPermissionGroup> GetGroups() => new IPermissionGroup[0];
+        public async Task<IEnumerable<IPermissionGroup>> GetGroupsAsync() => new IPermissionGroup[0];
 
-        public bool UpdateGroup(IPermissionGroup group) => false;
+        public async Task<bool> UpdateGroupAsync(IPermissionGroup group) => false;
 
-        public bool AddGroup(IPermissionEntity target, IPermissionGroup group) => false;
+        public async Task<bool> AddGroupAsync(IPermissionEntity target, IPermissionGroup group) => false;
 
-        public bool RemoveGroup(IPermissionEntity target, IPermissionGroup group) => false;
+        public async Task<bool> RemoveGroupAsync(IPermissionEntity target, IPermissionGroup group) => false;
 
-        public bool CreateGroup(IPermissionGroup group) => false;
+        public async Task<bool> CreateGroupAsync(IPermissionGroup group) => false;
 
-        public bool DeleteGroup(IPermissionGroup group) => false;
+        public async Task<bool> DeleteGroupAsync(IPermissionGroup group) => false;
 
-        public void Load(IConfigurationContext context)
+        public async Task LoadAsync(IConfigurationContext context)
         {
             // do nothing
         }
 
-        public void Reload()
+        public async Task ReloadAsync()
         {
             // do nothing
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
             // do nothing
         }

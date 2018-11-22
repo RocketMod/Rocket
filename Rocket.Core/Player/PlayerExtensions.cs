@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 using Rocket.API.User;
@@ -7,47 +8,47 @@ namespace Rocket.Core.Player
 {
     public static class PlayerExtensions
     {
-        public static bool Kick(this IPlayer player, IUser kickedBy = null, string reason = null)
+        public static Task<bool> KickAsync(this IPlayer player, IUser kickedBy = null, string reason = null)
         {
             if (player == null)
                 throw new ArgumentNullException(nameof(player));
 
-            return player.PlayerManager.Kick(player, kickedBy, reason);
+            return player.PlayerManager.KickAsync(player.User, kickedBy, reason);
         }
 
-        public static bool Ban(this IPlayer player, IUser kickedBy = null, string reason = null, TimeSpan? duration = null)
+        public static Task<bool> BanAsync(this IPlayer player, IUser kickedBy = null, string reason = null, TimeSpan? duration = null)
         {
             if (player == null)
                 throw new ArgumentNullException(nameof(player));
 
-            return player.PlayerManager.Ban(player.User, kickedBy, reason, duration);
+            return player.PlayerManager.BanAsync(player.User, kickedBy, reason, duration);
         }
 
-        public static PermissionResult CheckPermission(this IPlayer player, string permission)
+        public static Task<PermissionResult> CheckPermissionAsync(this IPlayer player, string permission)
         {
             if (player == null)
                 throw new ArgumentNullException(nameof(player));
 
             var permissionProvider = player.Container.Resolve<IPermissionProvider>();
-            return permissionProvider.CheckPermission(player.User, permission);
+            return permissionProvider.CheckPermissionAsync(player.User, permission);
         }
 
-        public static PermissionResult CheckHasAnyPermission(this IPlayer player, params string[] permissions)
+        public static Task<PermissionResult> CheckHasAnyPermissionAsync(this IPlayer player, params string[] permissions)
         {
             if (player == null)
                 throw new ArgumentNullException(nameof(player));
 
             var permissionProvider = player.Container.Resolve<IPermissionProvider>();
-            return permissionProvider.CheckHasAnyPermission(player.User, permissions);
+            return permissionProvider.CheckHasAnyPermissionAsync(player.User, permissions);
         }
 
-        public static PermissionResult CheckHasAllPermissions(this IPlayer player, params string[] permissions)
+        public static Task<PermissionResult> CheckHasAllPermissionsAsync(this IPlayer player, params string[] permissions)
         {
             if (player == null)
                 throw new ArgumentNullException(nameof(player));
 
             var permissionProvider = player.Container.Resolve<IPermissionProvider>();
-            return permissionProvider.CheckHasAllPermissions(player.User, permissions);
+            return permissionProvider.CheckHasAllPermissionsAsync(player.User, permissions);
         }
     }
 }

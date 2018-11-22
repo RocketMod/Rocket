@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.Configuration
@@ -33,7 +34,7 @@ namespace Rocket.API.Configuration
         /// </summary>
         /// <param name="context">The context to check.</param>
         /// <returns><b>true</b> if the configuration exists; otherwise, <b>false</b>.</returns>
-        bool Exists(IConfigurationContext context);
+        Task<bool> ExistsAsync(IConfigurationContext context);
 
         /// <summary>
         ///     Loads the configuration.
@@ -41,7 +42,7 @@ namespace Rocket.API.Configuration
         ///     <b><see cref="ConfigurationContext" /> must be set before.</b>
         /// </summary>
         /// <param name="defaultConfiguration">The default configuration to be used if the configuration does not exist already.</param>
-        void Load(object defaultConfiguration = null);
+        Task LoadAsync(object defaultConfiguration = null);
 
         /// <summary>
         ///     Loads the configuration from the given context.
@@ -49,7 +50,7 @@ namespace Rocket.API.Configuration
         /// </summary>
         /// <param name="context">The context to load from.</param>
         /// <param name="defaultConfiguration">The default configuration to be used if the configuration does not exist already.</param>
-        void Load(IConfigurationContext context, object defaultConfiguration = null);
+        Task LoadAsync(IConfigurationContext context, object defaultConfiguration = null);
 
         /// <summary>
         ///     Loads a new empty configuration without any context.
@@ -66,12 +67,12 @@ namespace Rocket.API.Configuration
         ///     Reloads the configuration from the provided context.<br /><br />
         ///     <b><see cref="ConfigurationContext" /> must be set before.</b>
         /// </summary>
-        void Reload();
+        Task ReloadAsync();
 
         /// <summary>
         ///     Saves the configuration to the provided context.<br /><br />
         ///     <b><see cref="ConfigurationContext" /> must be set before.</b>
         /// </summary>
-        void Save();
+        Task SaveAsync();
     }
 }

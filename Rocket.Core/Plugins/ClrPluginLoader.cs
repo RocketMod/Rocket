@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
@@ -16,6 +10,13 @@ using Rocket.Core.Eventing;
 using Rocket.Core.Extensions;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Plugins
 {
@@ -44,14 +45,14 @@ namespace Rocket.Core.Plugins
             IEnumerable<IPlugin> plugins = Container.ResolveAll<IPlugin>();
 
             foreach (IPlugin plugin in plugins)
-                plugin.Deactivate();
+                plugin.DeactivateAsync().GetAwaiter().GetResult();
         }
 
-        public virtual void Init()
+        public virtual async Task InitAsync()
         {
             Logger.LogDebug($"[{GetType().Name}] Initializing CLR plugins.");
 
-            assemblies = LoadAssemblies();
+            assemblies = await LoadAssemblies();
 
             IRuntime runtime = Container.Resolve<IRuntime>();
 
@@ -64,7 +65,6 @@ namespace Rocket.Core.Plugins
                 Logger.LogDebug($"[{GetType().Name}] Loading of plugins was cancelled.");
                 return;
             }
-
 
             List<IDependencyContainer> pluginContainers = new List<IDependencyContainer>();
             foreach (Assembly assembly in assemblies)
@@ -91,10 +91,10 @@ namespace Rocket.Core.Plugins
             }
 
             foreach (IDependencyContainer childContainer in pluginContainers)
-                RegisterAndLoadPluginFromContainer(childContainer);
+                await RegisterAndLoadPluginFromContainer(childContainer);
         }
 
-        protected bool RegisterAndLoadPluginFromContainer(IDependencyContainer container)
+        protected async Task<bool> RegisterAndLoadPluginFromContainer(IDependencyContainer container)
         {
             IPlugin plugin = container.Resolve<IPlugin>();
 
@@ -123,7 +123,7 @@ namespace Rocket.Core.Plugins
                     }
                 }
 
-            bool success = plugin.Activate(false);
+            bool success = await plugin.ActivateAsync(false);
             if (!success)
                 return false;
 
@@ -159,18 +159,18 @@ namespace Rocket.Core.Plugins
             return null;
         }
 
-        public virtual bool PluginExists(string name) => Container.IsRegistered<IPlugin>(name);
+        public virtual async Task<bool> PluginExistsAsync(string name) => Container.IsRegistered<IPlugin>(name);
 
         public IEnumerable<IPlugin> Plugins => Container.ResolveAll<IPlugin>();
 
-        public virtual void ExecuteSoftDependCode(string pluginName, Action<IPlugin> action)
+        public virtual async Task ExecuteSoftDependCodeAsync(string pluginName, Func<IPlugin, Task> action)
         {
-            if (!PluginExists(pluginName))
+            if (!await PluginExistsAsync(pluginName))
                 return;
 
             try
             {
-                action(GetPlugin(pluginName));
+                await action(GetPlugin(pluginName));
             }
             catch (TypeLoadException)
             {
@@ -188,7 +188,7 @@ namespace Rocket.Core.Plugins
 
         public abstract string ServiceName { get; }
 
-        public virtual bool ActivatePlugin(string name)
+        public virtual async Task<bool> ActivatePluginAsync(string name)
         {
             IPlugin plugin = GetPlugin(name);
             if (plugin != null)
@@ -196,7 +196,7 @@ namespace Rocket.Core.Plugins
                 if (plugin.IsAlive)
                     return false;
 
-                plugin.Activate(false);
+                await plugin.ActivateAsync(false);
                 return plugin.IsAlive;
             }
 
@@ -208,20 +208,20 @@ namespace Rocket.Core.Plugins
                     return false;
 
                 if (!plugin.IsAlive)
-                    plugin.Activate(true);
+                    await plugin.ActivateAsync(true);
                 return true;
             }
 
             return true;
         }
 
-        public virtual bool DeactivatePlugin(string name)
+        public virtual async Task<bool> DeactivatePluginAsync(string name)
         {
             IPlugin plugin = GetPlugin(name);
             if (plugin == null || !plugin.IsAlive)
                 return false;
 
-            plugin.Deactivate();
+            await plugin.DeactivateAsync();
             return !plugin.IsAlive;
         }
 
@@ -252,7 +252,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        protected abstract IEnumerable<Assembly> LoadAssemblies();
+        protected abstract Task<IEnumerable<Assembly>> LoadAssemblies();
 
         protected virtual Assembly LoadCachedAssembly(string path)
         {

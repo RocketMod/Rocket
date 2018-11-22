@@ -27,7 +27,7 @@ namespace Rocket.Core.Eventing
         {
             Owner = new Util.WeakReference<ILifecycleObject>(owner);
             Listener = listener;
-            Action = (sender, @event) => method.Invoke(listener, new object[] {sender, @event});
+            Action = async (sender, @event) => method.Invoke(listener, new object[] {sender, @event});
             Handler = handler;
             TargetEventNames = EventBus.GetEventNames(type);
             TargetEventType = type;

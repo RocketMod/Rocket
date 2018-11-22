@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
@@ -26,11 +27,11 @@ namespace Rocket.Core.Configuration.JsonNetBase
         protected abstract string FileEnding { get; }
         public Type Scheme { get; set; }
 
-        public bool Exists(IConfigurationContext context)
+        public async Task<bool> ExistsAsync(IConfigurationContext context)
             => File.Exists(System.IO.Path.Combine(context.WorkingDirectory,
                 context.ConfigurationName + "." + FileEnding));
 
-        public virtual void Load(object defaultConfiguration = null)
+        public virtual async Task LoadAsync(object defaultConfiguration = null)
         {
             if (ConfigurationContext == null)
                 throw new Exception("ConfigurationContext is null!");
@@ -43,13 +44,13 @@ namespace Rocket.Core.Configuration.JsonNetBase
             if (File.Exists(ConfigurationFile))
                 LoadFromFile(ConfigurationFile);
 
-            Save(); // save model changes
+            await SaveAsync(); // save model changes
         }
 
-        public virtual void Load(IConfigurationContext context, object defaultConfiguration = null)
+        public virtual async Task LoadAsync(IConfigurationContext context, object defaultConfiguration = null)
         {
             ConfigurationContext = context ?? throw new ArgumentNullException(nameof(context));
-            Load(defaultConfiguration);
+            await LoadAsync(defaultConfiguration);
         }
 
         public IConfigurationContext ConfigurationContext { get; set; }
@@ -67,7 +68,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
             IsLoaded = true;
         }
 
-        public void Reload()
+        public async Task ReloadAsync()
         {
             GuardLoaded();
             if (ConfigurationFile == null)
@@ -76,7 +77,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
             LoadFromFile(ConfigurationFile);
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
             GuardLoaded();
 

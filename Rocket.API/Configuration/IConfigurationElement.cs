@@ -35,6 +35,7 @@ namespace Rocket.API.Configuration
         /// </summary>
         string Path { get; }
 
+
         /// <summary>
         ///     Gets a configuration sub-section with the specified path.
         /// </summary>

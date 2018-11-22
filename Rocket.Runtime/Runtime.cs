@@ -25,10 +25,10 @@ namespace Rocket
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(IRuntime).Assembly.Location);
             Container.Activate(typeof(RegistrationByConvention));
 
-            Container.Resolve<ICommandProvider>().Init();
+            Container.Resolve<ICommandProvider>().InitAsync().GetAwaiter().GetResult();
 
             var settingsProvider = Container.Resolve<IRocketSettingsProvider>();
-            settingsProvider.Load();
+            settingsProvider.LoadAsync().GetAwaiter().GetResult();
 
             int p = (int)Environment.OSVersion.Platform;
             bool isLinux = (p == 4) || (p == 6) || (p == 128);

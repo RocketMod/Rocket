@@ -52,9 +52,9 @@ namespace Rocket.Core.Commands.RocketCommands
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
             await permissions.ReloadAsync();
 
-            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.Deactivate();
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.DeactivateAsync();
 
-            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.Activate(true);
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.ActivateAsync(true);
 
             await context.User.SendMessageAsync("Reload completed.", Color.DarkGreen);
         }
@@ -102,17 +102,17 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            var result = pm.Install(repoName, pluginName, version, isPre);
+            var result = await pm.Install(repoName, pluginName, version, isPre);
             if (result != NuGetInstallResult.Success)
             {
                 await context.User.SendMessageAsync($"Failed to install \"{pluginName}\": " + result, Color.DarkRed);
                 return;
             }
 
-            if (!pm.LoadPlugin(repoName, pluginName))
+            if (!await pm.LoadPluginAsync(repoName, pluginName))
             {
                 await context.User.SendMessageAsync($"Failed to initialize \"{pluginName}\"", Color.DarkRed);
-                pm.Uninstall(repoName, pluginName);
+                await pm.Uninstall(repoName, pluginName);
                 return;
             }
 
@@ -150,7 +150,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            if (!pm.Uninstall(repoName, pluginName))
+            if (!await pm.Uninstall(repoName, pluginName))
             {
                 await context.User.SendMessageAsync($"Failed to uninstall \"{pluginName}\"", Color.DarkRed);
                 return;
@@ -204,7 +204,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            var result = pm.Update(repoName, pluginName, version, isPre);
+            var result = await pm.Update(repoName, pluginName, version, isPre);
             if (result != NuGetInstallResult.Success)
             {
                 await context.User.SendMessageAsync($"Failed to update \"{pluginName}\": " + result, Color.DarkRed);

@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Rocket.API.Configuration;
+﻿using Rocket.API.Configuration;
 using Rocket.API.Permissions;
 using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.ServiceProxies;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Permissions
 {
@@ -22,11 +23,11 @@ namespace Rocket.Core.Permissions
         public IConfiguration GroupsConfig { get; protected set; }
         public IConfiguration PlayersConfig { get; protected set; }
 
-        public IEnumerable<string> GetGrantedPermissions(IPermissionEntity target, bool inherit = true)
+        public async Task<IEnumerable<string>> GetGrantedPermissionsAsync(IPermissionEntity target, bool inherit = true)
         {
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
-                : GetConfigSection<PlayerPermissionSection>(target, false);
+                ? (PermissionSection)await GetConfigSectionAsync<GroupPermissionSection>(target, false)
+                : await GetConfigSectionAsync<PlayerPermissionSection>(target, false);
 
             List<string> permissions;
             if (section != null)
@@ -43,19 +44,19 @@ namespace Rocket.Core.Permissions
 
             if (inherit)
             {
-                foreach (var parent in GetGroups(target))
+                foreach (var parent in await GetGroupsAsync(target))
                     permissions
-                        .AddRange(GetGrantedPermissions(parent, true));
+                        .AddRange(await GetGrantedPermissionsAsync(parent, true));
             }
 
             return permissions.Distinct();
         }
 
-        public IEnumerable<string> GetDeniedPermissions(IPermissionEntity target, bool inherit = true)
+        public async Task<IEnumerable<string>> GetDeniedPermissionsAsync(IPermissionEntity target, bool inherit = true)
         {
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
-                : GetConfigSection<PlayerPermissionSection>(target, false);
+                ? (PermissionSection)await GetConfigSectionAsync<GroupPermissionSection>(target, false)
+                : await GetConfigSectionAsync<PlayerPermissionSection>(target, false);
 
             List<string> permissions;
             if (section != null)
@@ -72,9 +73,9 @@ namespace Rocket.Core.Permissions
 
             if (inherit)
             {
-                foreach (var parent in GetGroups(target))
+                foreach (var parent in await GetGroupsAsync(target))
                     permissions
-                        .AddRange(GetDeniedPermissions(parent, true));
+                        .AddRange(await GetDeniedPermissionsAsync(parent, true));
             }
 
             return permissions.Distinct();
@@ -83,7 +84,7 @@ namespace Rocket.Core.Permissions
         public bool SupportsTarget(IPermissionEntity target)
             => target is IPermissionGroup || target is IUser;
 
-        public PermissionResult CheckPermission(IPermissionEntity target, string permission)
+        public async Task<PermissionResult> CheckPermissionAsync(IPermissionEntity target, string permission)
         {
             GuardLoaded();
             GuardPermission(ref permission);
@@ -91,14 +92,14 @@ namespace Rocket.Core.Permissions
 
             permission = permission.Replace("!!", ""); //remove double negations
 
-            if (!permission.StartsWith("!") && CheckPermission(target, "!" + permission) == PermissionResult.Grant)
+            if (!permission.StartsWith("!") && await CheckPermissionAsync(target, "!" + permission) == PermissionResult.Grant)
                 return PermissionResult.Deny;
 
             IEnumerable<string> permissionTree = BuildPermissionTree(permission);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
-                : GetConfigSection<PlayerPermissionSection>(target, false);
+                ? (PermissionSection) await GetConfigSectionAsync<GroupPermissionSection>(target, false)
+                : await GetConfigSectionAsync<PlayerPermissionSection>(target, false);
 
             string[] permissions = section?.Permissions ?? new string[0];
 
@@ -106,7 +107,7 @@ namespace Rocket.Core.Permissions
             {
                 foreach (string c in permissions)
                 {
-                    if(c.Contains("*") && !c.StartsWith("!") && permission.StartsWith("!"))
+                    if (c.Contains("*") && !c.StartsWith("!") && permission.StartsWith("!"))
                         continue;
 
                     if (c.Trim().Equals(permissionNode, StringComparison.OrdinalIgnoreCase))
@@ -117,13 +118,13 @@ namespace Rocket.Core.Permissions
             }
 
             // check parent group permissions / player group permissions
-            IEnumerable<IPermissionGroup> groups = GetGroups(target);
+            IEnumerable<IPermissionGroup> groups = await GetGroupsAsync(target);
             foreach (IPermissionGroup group in groups)
             {
-                PermissionResult result = CheckPermission(group, permission);
+                PermissionResult result = await CheckPermissionAsync(group, permission);
                 if (result == PermissionResult.Grant)
                     return PermissionResult.Grant;
-                
+
                 if (result == PermissionResult.Deny)
                     return PermissionResult.Deny;
             }
@@ -131,7 +132,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAllPermissions(IPermissionEntity target, params string[] permissions)
+        public async Task<PermissionResult> CheckHasAllPermissionsAsync(IPermissionEntity target, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
@@ -141,7 +142,7 @@ namespace Rocket.Core.Permissions
 
             foreach (string permission in permissions)
             {
-                PermissionResult tmp = CheckPermission(target, permission);
+                PermissionResult tmp = await CheckPermissionAsync(target, permission);
                 if (tmp == PermissionResult.Deny)
                     return PermissionResult.Deny;
 
@@ -152,7 +153,7 @@ namespace Rocket.Core.Permissions
             return result;
         }
 
-        public PermissionResult CheckHasAnyPermission(IPermissionEntity target, params string[] permissions)
+        public async Task<PermissionResult> CheckHasAnyPermissionAsync(IPermissionEntity target, params string[] permissions)
         {
             GuardLoaded();
             GuardPermissions(permissions);
@@ -161,14 +162,15 @@ namespace Rocket.Core.Permissions
             foreach (string permission in permissions)
             {
                 Console.WriteLine("Checking: " + permission);
-                
-                PermissionResult result = CheckPermission(target, permission);
+
+                PermissionResult result = await CheckPermissionAsync(target, permission);
                 if (result == PermissionResult.Deny)
                 {
                     Console.WriteLine("Denied: " + permission);
                     return PermissionResult.Deny;
                 }
-                if (result == PermissionResult.Grant) {
+                if (result == PermissionResult.Grant)
+                {
                     Console.WriteLine("Granted: " + permission);
                     return PermissionResult.Grant;
                 }
@@ -179,37 +181,37 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public bool AddPermission(IPermissionEntity target, string permission)
+        public async Task<bool> AddPermissionAsync(IPermissionEntity target, string permission)
         {
             GuardPermission(ref permission);
             GuardTarget(target);
 
-            PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, true)
-                : GetConfigSection<PlayerPermissionSection>(target, true);
+            PermissionSection section = (target is IPermissionGroup
+                ? (PermissionSection)await GetConfigSectionAsync<GroupPermissionSection>(target, true)
+                : await GetConfigSectionAsync<PlayerPermissionSection>(target, true));
 
             List<string> permissions = section.Permissions.ToList();
             permissions.Add(permission);
             section.Permissions = permissions.ToArray();
-            section.Save();
+            await section.SaveAsync();
             return true;
         }
 
-        public bool AddDeniedPermission(IPermissionEntity target, string permission)
+        public Task<bool> AddDeniedPermissionAsync(IPermissionEntity target, string permission)
         {
             GuardPermission(ref permission);
             GuardTarget(target);
 
-            return AddPermission(target, "!" + permission);
+            return AddPermissionAsync(target, "!" + permission);
         }
 
-        public bool RemovePermission(IPermissionEntity target, string permission)
+        public async Task<bool> RemovePermissionAsync(IPermissionEntity target, string permission)
         {
             GuardPermission(ref permission);
 
-            PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
-                : GetConfigSection<PlayerPermissionSection>(target, false);
+            PermissionSection section = (target is IPermissionGroup
+                ? (PermissionSection)await GetConfigSectionAsync<GroupPermissionSection>(target, false)
+                : await GetConfigSectionAsync<PlayerPermissionSection>(target, false));
 
             if (section == null)
                 return false;
@@ -217,49 +219,52 @@ namespace Rocket.Core.Permissions
             List<string> permissions = section.Permissions.ToList();
             int i = permissions.RemoveAll(c => c.Trim().Equals(permission, StringComparison.OrdinalIgnoreCase));
             section.Permissions = permissions.ToArray();
-            section.Save();
+            await section.SaveAsync();
             return i > 0;
         }
 
-        public bool RemoveDeniedPermission(IPermissionEntity target, string permission)
+        public async Task<bool> RemoveDeniedPermissionAsync(IPermissionEntity target, string permission)
         {
             GuardPermission(ref permission);
             GuardTarget(target);
 
-            return RemovePermission(target, "!" + permission);
+            return await RemovePermissionAsync(target, "!" + permission);
         }
 
-        public IPermissionGroup GetPrimaryGroup(IUser user)
+        public async Task<IPermissionGroup> GetPrimaryGroupAsync(IPermissionEntity permissionEntity)
         {
             GuardLoaded();
-            return GetGroups(user).OrderByDescending(c => c.Priority).FirstOrDefault();
+            if (!(permissionEntity is IUser))
+                throw new NotSupportedException();
+
+            return (await GetGroupsAsync(permissionEntity)).OrderByDescending(c => c.Priority).FirstOrDefault();
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups(IPermissionEntity target)
+        public async Task<IEnumerable<IPermissionGroup>> GetGroupsAsync(IPermissionEntity target)
         {
             GuardLoaded();
             GuardTarget(target);
 
-            PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
-                : GetConfigSection<PlayerPermissionSection>(target, false);
+            PermissionSection section =(target is IPermissionGroup
+                ? (PermissionSection) await GetConfigSectionAsync<GroupPermissionSection>(target, false)
+                : await GetConfigSectionAsync<PlayerPermissionSection>(target, false));
 
             if (section == null)
             {
-                return GetGroups().Where(c => c.AutoAssign);
+                return (await GetGroupsAsync()).Where(c => c.AutoAssign);
             }
 
             return section.GetGroups()
-                          .Select(GetGroup)
+                          .Select(e => GetGroupAsync(e).GetAwaiter().GetResult())
                           .Where(c => c != null);
         }
 
-        public IPermissionGroup GetGroup(string id)
+        public async Task<IPermissionGroup> GetGroupAsync(string id)
         {
-            return GetGroups().FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
+            return (await GetGroupsAsync()).FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups()
+        public async Task<IEnumerable<IPermissionGroup>> GetGroupsAsync()
         {
             GuardLoaded();
             return GroupsConfig["Groups"]
@@ -275,48 +280,48 @@ namespace Rocket.Core.Permissions
                    .ToList();
         }
 
-        public bool UpdateGroup(IPermissionGroup group)
+        public async Task<bool> UpdateGroupAsync(IPermissionGroup group)
         {
             GuardLoaded();
             GuardTarget(group);
 
-            GroupPermissionSection section = GetConfigSection<GroupPermissionSection>(group, false);
+            GroupPermissionSection section = await GetConfigSectionAsync<GroupPermissionSection>(group, false);
             if (section == null)
                 return false;
 
             section.Name = group.Name;
             section.Priority = group.Priority;
-            section.Save();
+            await section.SaveAsync();
             return true;
         }
 
-        public bool AddGroup(IPermissionEntity target, IPermissionGroup group)
+        public async Task<bool> AddGroupAsync(IPermissionEntity target, IPermissionGroup group)
         {
             GuardLoaded();
             GuardTarget(target);
             GuardTarget(group);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, true)
-                : GetConfigSection<PlayerPermissionSection>(target, true);
+                ? (PermissionSection) await GetConfigSectionAsync<GroupPermissionSection>(target, true)
+                : await GetConfigSectionAsync<PlayerPermissionSection>(target, true);
 
             List<string> groups = section.GetGroups().ToList();
             if (!groups.Any(c => c.Equals(group.Id, StringComparison.OrdinalIgnoreCase)))
                 groups.Add(group.Id);
             section.SetGroups(groups.ToArray());
-            section.Save();
+            await section.SaveAsync();
             return true;
         }
 
-        public bool RemoveGroup(IPermissionEntity target, IPermissionGroup group)
+        public async Task<bool> RemoveGroupAsync(IPermissionEntity target, IPermissionGroup group)
         {
             GuardLoaded();
             GuardTarget(target);
             GuardTarget(group);
 
             PermissionSection section = target is IPermissionGroup
-                ? (PermissionSection)GetConfigSection<GroupPermissionSection>(target, false)
-                : GetConfigSection<PlayerPermissionSection>(target, false);
+                ? (PermissionSection)await GetConfigSectionAsync<GroupPermissionSection>(target, false)
+                : await GetConfigSectionAsync<PlayerPermissionSection>(target, false);
 
             if (section == null)
                 return false;
@@ -324,35 +329,35 @@ namespace Rocket.Core.Permissions
             List<string> groups = section.GetGroups().ToList();
             int i = groups.RemoveAll(c => c.Equals(group.Id, StringComparison.OrdinalIgnoreCase));
             section.SetGroups(groups.ToArray());
-            section.Save();
+            await section.SaveAsync();
             return i > 0;
         }
 
-        public bool CreateGroup(IPermissionGroup group)
+        public async Task<bool> CreateGroupAsync(IPermissionGroup group)
         {
             GuardLoaded();
             GuardTarget(group);
 
-            GroupPermissionSection section = GetConfigSection<GroupPermissionSection>(group, true);
+            GroupPermissionSection section = await GetConfigSectionAsync<GroupPermissionSection>(group, true);
             section.Name = group.Name;
             section.Priority = group.Priority;
-            section.Save();
+            await section.SaveAsync();
             return true;
         }
 
-        public bool DeleteGroup(IPermissionGroup group)
+        public async Task<bool> DeleteGroupAsync(IPermissionGroup group)
         {
             GuardLoaded();
             GuardTarget(group);
             return DeleteConfigSection(group);
         }
 
-        public void Load(IConfigurationContext context)
+        public async Task LoadAsync(IConfigurationContext context)
         {
             IConfigurationContext permissionsContext = context.CreateChildConfigurationContext("Permissions");
             IConfigurationContext groupsContext = permissionsContext.CreateChildConfigurationContext("Groups");
             GroupsConfig.ConfigurationContext = groupsContext;
-            GroupsConfig.Load(new
+            await GroupsConfig.LoadAsync(new
             {
                 Groups = new object[]
                 {
@@ -373,33 +378,27 @@ namespace Rocket.Core.Permissions
 
             IConfigurationContext playersContext = permissionsContext.CreateChildConfigurationContext("Players");
             PlayersConfig.ConfigurationContext = playersContext;
-            PlayersConfig.Load(new { });
+            await PlayersConfig.LoadAsync(new { });
         }
 
-        public void Reload()
+        public async Task ReloadAsync()
         {
-            GroupsConfig.Root?.Reload();
-            PlayersConfig.Root?.Reload();
+            if (GroupsConfig != null)
+                await GroupsConfig.Root.ReloadAsync();
+
+            if (PlayersConfig != null)
+                await PlayersConfig.Root.ReloadAsync();
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            GroupsConfig.Root?.Save();
-            PlayersConfig.Root?.Save();
+            if (GroupsConfig != null)
+                await GroupsConfig.Root.SaveAsync();
+
+            if (PlayersConfig != null)
+                await PlayersConfig.Root.SaveAsync();
         }
 
-        public bool AddPermission(IUser user, string permission)
-        {
-            GuardPermission(ref permission);
-            GuardTarget(user);
-
-            PlayerPermissionSection permsSection = GetConfigSection<PlayerPermissionSection>(user, true);
-            List<string> groupPermissions = permsSection.Permissions.ToList();
-            groupPermissions.Add(permission);
-            permsSection.Permissions = groupPermissions.ToArray();
-            permsSection.Save();
-            return true;
-        }
 
         /// <summary>
         ///     Builds a parent permission tree for the given permission <br />
@@ -465,7 +464,7 @@ namespace Rocket.Core.Permissions
         {
             IConfigurationElement config = target is IPermissionGroup
                 ? GroupsConfig["Groups"]
-                : PlayersConfig[((IUser)target).Type.ToString()];
+                : PlayersConfig[((IUser)target).UserType];
 
             List<PermissionSection> values = config.Get<PermissionSection[]>().ToList();
             int i = values.RemoveAll(c => c.Id.Equals(target.Id, StringComparison.OrdinalIgnoreCase));
@@ -473,7 +472,7 @@ namespace Rocket.Core.Permissions
             return i > 0;
         }
 
-        public T GetConfigSection<T>(IPermissionEntity target, bool createIfNotFound) where T : PermissionSection
+        public async Task<T> GetConfigSectionAsync<T>(IPermissionEntity target, bool createIfNotFound) where T : PermissionSection
         {
             GuardTarget(target);
 
@@ -496,7 +495,7 @@ namespace Rocket.Core.Permissions
             if (createIfNotFound && !config.ChildExists(path))
             {
                 config.CreateSection(path, SectionType.Array);
-                config.Save();
+                await config.SaveAsync();
             }
             else if (!createIfNotFound && !config.ChildExists(path))
             {
@@ -520,7 +519,7 @@ namespace Rocket.Core.Permissions
                 else
                     toCreate = new PlayerPermissionSection(target.Id, configElement);
 
-                toCreate.Save();
+                await toCreate.SaveAsync();
             }
 
             T section = configElement.Get<T[]>().FirstOrDefault(c => c.Id == target.Id);

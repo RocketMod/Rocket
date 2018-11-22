@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using ICSharpCode.SharpZipLib.Zip;
 using MoreLinq;
 using Rocket.API;
 using Rocket.API.Configuration;
@@ -14,6 +9,12 @@ using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
 using Rocket.Core.Plugins.NuGet.Client.V3;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Plugins.NuGet
 {
@@ -50,7 +51,7 @@ namespace Rocket.Core.Plugins.NuGet
                     Directory.CreateDirectory(RepositoriesDirectory);
 
                 ConfigurationContext context = new ConfigurationContext(RepositoriesDirectory, "packages");
-                packagesConfiguration.Load(context, new PackagesConfiguration());
+                packagesConfiguration.LoadAsync(context, new PackagesConfiguration()).GetAwaiter().GetResult();
 
                 return packagesConfiguration;
             }
@@ -73,7 +74,7 @@ namespace Rocket.Core.Plugins.NuGet
                     Directory.CreateDirectory(RepositoriesDirectory);
 
                 ConfigurationContext context = new ConfigurationContext(RepositoriesDirectory, "Repositories");
-                configuration.Load(context, new
+                configuration.LoadAsync(context, new
                 {
                     Repositories = new[]
                     {
@@ -106,7 +107,7 @@ namespace Rocket.Core.Plugins.NuGet
                             Type = "Libraries"
                         }
                     }
-                });
+                }).GetAwaiter().GetResult();
 
                 return configuration;
             }
@@ -115,25 +116,25 @@ namespace Rocket.Core.Plugins.NuGet
         public virtual IEnumerable<Repository> Repositories
             => Configuration["Repositories"].Get<Repository[]>();
 
-        public NuGetInstallResult Update(string repoName, string packageName, string version = null, bool isPreRelease = false)
+        public async Task<NuGetInstallResult> Update(string repoName, string packageName, string version = null, bool isPreRelease = false)
         {
-            return InstallOrUpdate(repoName, packageName, version, isPreRelease, true);
+            return await InstallOrUpdate(repoName, packageName, version, isPreRelease, true);
         }
 
-        public NuGetInstallResult Install(string repoName, string packageName, string version = null, bool isPreRelease = false)
+        public async Task<NuGetInstallResult> Install(string repoName, string packageName, string version = null, bool isPreRelease = false)
         {
-            return InstallOrUpdate(repoName, packageName, version, isPreRelease);
+            return await InstallOrUpdate(repoName, packageName, version, isPreRelease);
         }
 
-        protected virtual NuGetInstallResult InstallOrUpdate(string repoName, string packageName, string version = null, bool isPreRelease = false, bool isUpdate = false)
+        protected virtual async Task<NuGetInstallResult> InstallOrUpdate(string repoName, string packageName, string version = null, bool isPreRelease = false, bool isUpdate = false)
         {
             if (isUpdate && !PluginExists(repoName, packageName))
                 return NuGetInstallResult.PackageNotFound;
 
-            if (isUpdate 
-                || Packages.NugetPackages.Any(c => c.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase) && c.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase)) 
+            if (isUpdate
+                || Packages.NugetPackages.Any(c => c.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase) && c.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase))
                 || PluginExists(repoName, packageName))
-                Uninstall(repoName, packageName);
+                await Uninstall(repoName, packageName);
 
             var configRepo = Repositories
                 .FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
@@ -199,19 +200,19 @@ namespace Rocket.Core.Plugins.NuGet
             }
 
             PackagesConfiguration.Set(config);
-            PackagesConfiguration.Save();
+            await PackagesConfiguration.SaveAsync();
 
             return NuGetInstallResult.Success;
         }
 
-        public virtual bool Uninstall(string repoName, string packageName)
+        public virtual async Task<bool> Uninstall(string repoName, string packageName)
         {
             PackagesConfiguration config = Packages;
             var list = config.NugetPackages.ToList();
             list.RemoveAll(d => d.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase) && d.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase));
             config.NugetPackages = list.ToArray();
             PackagesConfiguration.Set(config);
-            PackagesConfiguration.Save();
+            await PackagesConfiguration.SaveAsync();
 
             var repoDir = Path.Combine(RepositoriesDirectory, repoName);
             if (!Directory.Exists(repoDir))
@@ -230,24 +231,24 @@ namespace Rocket.Core.Plugins.NuGet
             return false;
         }
 
-        public virtual bool LoadPlugin(string repo, string pluginName)
+        public virtual async Task<bool> LoadPluginAsync(string repo, string pluginName)
         {
             var pkg = GetNugetPackageFile(repo, pluginName);
             if (pkg == null)
                 throw new Exception($"Plugin \"{pluginName}\" was not found in repo \"{repo}\".");
 
-            return LoadPluginFromNugetPackage(pkg);
+            return await LoadPluginFromNugetPackageAsync(pkg);
         }
 
-        protected virtual bool LoadPluginFromNugetPackage(string packagePath)
+        protected virtual async Task<bool> LoadPluginFromNugetPackageAsync(string packagePath)
         {
-            var assemblies = LoadAssembliesFromNugetPackage(packagePath);
+            var assemblies = await LoadAssembliesFromNugetPackageAync(packagePath);
             bool success = false;
             foreach (var asm in assemblies)
             {
                 if (LoadPluginFromAssembly(asm, out var pluginChildContainer) != null)
                 {
-                    success = RegisterAndLoadPluginFromContainer(pluginChildContainer);
+                    success = await RegisterAndLoadPluginFromContainer(pluginChildContainer);
                 }
             }
 
@@ -278,7 +279,7 @@ namespace Rocket.Core.Plugins.NuGet
         }
 
         public override string ServiceName => "NuGet Plugins";
-        protected override IEnumerable<Assembly> LoadAssemblies()
+        protected override async Task<IEnumerable<Assembly>> LoadAssemblies()
         {
             List<Assembly> assemblies = new List<Assembly>();
             foreach (var repo in Repositories.Where(c => c.Enabled))
@@ -294,14 +295,14 @@ namespace Rocket.Core.Plugins.NuGet
                     if (!File.Exists(nugetPackageFile))
                         continue;
 
-                    assemblies.AddRange(LoadAssembliesFromNugetPackage(nugetPackageFile));
+                    assemblies.AddRange(await LoadAssembliesFromNugetPackageAync(nugetPackageFile));
                 }
             }
 
             return assemblies;
         }
 
-        public override void Init()
+        public override async Task InitAsync()
         {
             Logger.LogDebug($"[{GetType().Name}] Initializing Nuget plugins.");
 
@@ -352,7 +353,7 @@ namespace Rocket.Core.Plugins.NuGet
                     {
                         if (file.EndsWith(".nupkg"))
                         {
-                            LoadPluginFromNugetPackage(file);
+                            await LoadPluginFromNugetPackageAsync(file);
                             isInstalled = true;
                             break;
                         }
@@ -365,16 +366,17 @@ namespace Rocket.Core.Plugins.NuGet
                 if (isInstalled)
                     continue;
 
-                var result = Install(package.Repository, package.Id, isLatest ? null : package.Version, true);
+                var result = await Install(package.Repository, package.Id, isLatest ? null : package.Version, true);
                 if (result != NuGetInstallResult.Success)
                     Logger.LogWarning($"Package \"{package.Id}\" in repository \"{package.Repository}\" failed to install: " + result);
                 else
-                    LoadPlugin(package.Repository, package.Id);
+                    await LoadPluginAsync(package.Repository, package.Id);
             }
         }
 
-        public virtual IEnumerable<Assembly> LoadAssembliesFromNugetPackage(string nugetPackageFile)
+        public virtual async Task<IEnumerable<Assembly>> LoadAssembliesFromNugetPackageAync(string nugetPackageFile)
         {
+            List<Assembly> allAssemblies = new List<Assembly>();
             using (Stream fs = new FileStream(nugetPackageFile, FileMode.Open))
             {
                 ZipFile zf = new ZipFile(fs);
@@ -405,7 +407,7 @@ namespace Rocket.Core.Plugins.NuGet
                 {
                     Stream inputStream = zf.GetInputStream(ze);
                     MemoryStream ms = new MemoryStream();
-                    inputStream.CopyTo(ms);
+                    await inputStream.CopyToAsync(ms);
 
                     var asm = Assembly.Load(ms.ToArray());
 
@@ -413,9 +415,11 @@ namespace Rocket.Core.Plugins.NuGet
                     inputStream.Close();
                     zf.Close();
 
-                    yield return asm;
+                    allAssemblies.Add(asm);
                 }
             }
+
+            return allAssemblies;
         }
     }
 }
