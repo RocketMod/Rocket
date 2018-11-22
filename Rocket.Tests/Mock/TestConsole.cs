@@ -22,7 +22,6 @@ namespace Rocket.Tests.Mock
         public string Id => "console";
         public string DisplayName => "Console";
         public string UserName => "Console";
-        public UserType Type => UserType.Console;
 
         public IUserManager UserManager => Container.Resolve<IUserManager>("console");
         public DateTime? LastSeen => DateTime.Now;

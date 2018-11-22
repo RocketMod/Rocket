@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
@@ -34,20 +35,20 @@ namespace Rocket.Tests.Mock.Providers
 
         public string GameName => "Rocket.Test";
 
-        public void Init(IRuntime runtime)
+        public async Task InitAsync(IRuntime runtime)
         {
             logger.LogInformation("Loading host");
-            runtime.Container.Resolve<IPluginLoader>().Init();
+            await runtime.Container.Resolve<IPluginLoader>().InitAsync();
         }
 
-        public void Reload()
+        public async Task ReloadAsync()
         {
             logger.LogInformation("Reloading host");
         }
 
         public IConsole Console { get; }
 
-        public void Shutdown()
+        public async Task ShutdownAsync()
         {
             logger.LogInformation("Shutting down host");
         }
