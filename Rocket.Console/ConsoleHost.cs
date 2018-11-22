@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
@@ -27,7 +28,7 @@ namespace Rocket.Console
 
         public string WorkingDirectory { get; set; } = Path.Combine(Environment.CurrentDirectory, "Rocket");
 
-        public void Init(IRuntime runtime)
+        public async Task InitAsync(IRuntime runtime)
         {
             logger = runtime.Container.Resolve<ILogger>();
 
@@ -45,13 +46,13 @@ namespace Rocket.Console
             string line;
             while (!(line = System.Console.ReadLine())?.Equals("exit", StringComparison.OrdinalIgnoreCase) ?? false)
             {
-                if (!cmdHandler.HandleCommand(Console, line, ""))
+                if (!await cmdHandler.HandleCommandAsync(Console, line, ""))
                     System.Console.WriteLine("Command not found: " + line);
                 System.Console.Write("> ");
             }
         }
 
-        public void Shutdown()
+        public async Task ShutdownAsync()
         {
             Environment.Exit(0);
         }
@@ -61,7 +62,7 @@ namespace Rocket.Console
         public string ServerName => "Rocket Console";
         public ushort ServerPort => 0;
 
-        public void Reload() { }
+        public async Task ReloadAsync() { }
 
         public IConsole Console { get; set; }
 

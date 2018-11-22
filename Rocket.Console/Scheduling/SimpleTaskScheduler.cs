@@ -8,6 +8,7 @@ using Rocket.Core.Scheduling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Console.Scheduling
 {
@@ -28,7 +29,7 @@ namespace Rocket.Console.Scheduling
         public IEnumerable<ITask> Tasks =>
             InternalTasks.Where(c => c.IsReferenceAlive && c.Owner.IsAlive);
 
-        public ITask ScheduleUpdate(ILifecycleObject @object, Action action, string taskName, ExecutionTargetContext target)
+        public ITask ScheduleUpdate(ILifecycleObject @object, Task action, string taskName, ExecutionTargetContext target)
         {
             if (!@object.IsAlive)
                 return null;
@@ -41,14 +42,14 @@ namespace Rocket.Console.Scheduling
 
                 if (@event != null && ((ICancellableEvent)@event).IsCancelled) return;
 
-                action();
+                action.GetAwaiter().GetResult();
                 InternalTasks.Remove(task);
             });
 
             return task;
         }
 
-        public ITask ScheduleAt(ILifecycleObject @object, Action action, string taskName, DateTime date, bool runAsync = false)
+        public ITask ScheduleAt(ILifecycleObject @object, Task action, string taskName, DateTime date, bool runAsync = false)
         {
             if (!@object.IsAlive)
                 return null;
@@ -62,7 +63,7 @@ namespace Rocket.Console.Scheduling
             return task;
         }
 
-        public ITask SchedulePeriodically(ILifecycleObject @object, Action action, string taskName, TimeSpan period, TimeSpan? delay = null,
+        public ITask SchedulePeriodically(ILifecycleObject @object, Task action, string taskName, TimeSpan period, TimeSpan? delay = null,
                                           bool runAsync = false)
         {
             if (!@object.IsAlive)
@@ -145,7 +146,7 @@ namespace Rocket.Console.Scheduling
 
             try
             {
-                task.Action.Invoke();
+                task.Action.GetAwaiter().GetResult();
                 ((SimpleTask)task).LastRunTime = DateTime.Now;
             }
             catch (Exception e)

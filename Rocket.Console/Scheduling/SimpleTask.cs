@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Scheduling;
 
@@ -7,9 +8,9 @@ namespace Rocket.Console.Scheduling
 {
     public class SimpleTask : ITask
     {
-        private Core.Util.WeakReference<ILifecycleObject> ownerRef;
+        private readonly Core.Util.WeakReference<ILifecycleObject> ownerRef;
 
-        internal SimpleTask(int taskId, string taskName, ITaskScheduler scheduler, ILifecycleObject owner, Action action,
+        internal SimpleTask(int taskId, string taskName, ITaskScheduler scheduler, ILifecycleObject owner, Task action,
                             ExecutionTargetContext executionTarget)
         {
             Name = taskName;
@@ -41,7 +42,7 @@ namespace Rocket.Console.Scheduling
             }
         }
 
-        public Action Action { get; }
+        public Task Action { get; }
         public bool IsCancelled { get; internal set; }
         public ExecutionTargetContext ExecutionTarget { get; }
         public bool IsFinished => !Scheduler.Tasks.Contains(this);
