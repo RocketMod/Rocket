@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 using Rocket.API.User;
 
@@ -25,7 +26,7 @@ namespace Rocket.API.Economy
         /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to add. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
-        void AddBalance(IIdentity owner, decimal amount, string reason = null);
+        Task AddBalanceAsync(IUser owner, decimal amount, string reason = null);
 
         /// <summary>
         ///     Makes a transaction from one account to another.
@@ -35,7 +36,7 @@ namespace Rocket.API.Economy
         /// <param name="amount">The amount to transfer. Must not be negative.</param>
         /// <param name="reason">The transaction reason (optional).</param>
         /// <returns><b>True</b> if the transaction was successful; otherwise, <b>false</b>.</returns>
-        bool Transfer(IEconomyAccount source, IEconomyAccount target, decimal amount, string reason = null);
+        Task<bool> TransferAsync(IEconomyAccount source, IEconomyAccount target, decimal amount, string reason = null);
 
         /// <summary>
         ///     Adds balance to the given account.
@@ -43,7 +44,7 @@ namespace Rocket.API.Economy
         /// <param name="amount">The amount to add. Should not be negative.</param>
         /// <param name="account">The account to add balance to.</param>
         /// <param name="reason">The reason of the transaction.</param>
-        void AddBalance(IEconomyAccount account, decimal amount, string reason = null);
+        Task<bool> AddBalanceAsync(IEconomyAccount account, decimal amount, string reason = null);
 
         /// <summary>
         ///     Removes balance from the users account.
@@ -51,9 +52,8 @@ namespace Rocket.API.Economy
         /// <param name="owner">The account owner.</param>
         /// <param name="amount">The amount to remove. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
-        /// <seealso cref="SupportsNegativeBalance(IIdentity)" />
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
-        bool RemoveBalance(IIdentity owner, decimal amount, string reason = null);
+        Task<bool> RemoveBalanceAsync(IUser owner, decimal amount, string reason = null);
 
         /// <summary>
         ///     Removes balance from the users account based on a specific currency.
@@ -61,37 +61,27 @@ namespace Rocket.API.Economy
         /// <param name="amount">The amount to remove. Should not be negative.</param>
         /// <param name="reason">The reason of the transaction.</param>
         /// <param name="account">The account to remove balance from.</param>
-        /// <seealso cref="SupportsNegativeBalance(IIdentity)" />
         /// <returns><b>true</b> if the balance could be removed; otherwise, <b>false</b>.</returns>
-        bool RemoveBalance(IEconomyAccount account, decimal amount, string reason = null);
+        Task<bool> RemoveBalanceAsync(IEconomyAccount account, decimal amount, string reason = null);
 
         /// <summary>
         ///     Sets the balance of the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
-        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)" />.</param>
-        void SetBalance(IIdentity owner, decimal amount);
+        Task SetBalanceAsync(IUser owner, decimal amount);
 
         /// <summary>
         ///     Sets the balance of the users account in a specific currency.
         /// </summary>
-        /// <param name="amount">The amount to set. See <see cref="SupportsNegativeBalance(IIdentity)" />.</param>
         /// <param name="account">The account to set the balance of.</param>
-        void SetBalance(IEconomyAccount account, decimal amount);
-
-        /// <summary>
-        ///     Checks if the account of the owner can have negative balance.
-        /// </summary>
-        /// <param name="owner">The account owner whose account to check.</param>
-        /// <returns><b>true</b> if the account can have negative balance; otherwise, <b>false</b>.</returns>
-        bool SupportsNegativeBalance(IIdentity owner);
+        Task SetBalanceAsync(IEconomyAccount account, decimal amount);
 
         /// <summary>
         ///     Checks if the account of the user can have negative balance.
         /// </summary>
         /// <param name="account">Checks if the given account has access.</param>
         /// <returns><b>true</b> if the account can have negative balance; otherwise, <b>false</b>.</returns>
-        bool SupportsNegativeBalance(IEconomyAccount account);
+        Task<bool> SupportsNegativeBalanceAsync(IEconomyAccount account);
 
         /// <summary>
         ///     Creates an account.
@@ -104,7 +94,7 @@ namespace Rocket.API.Economy
         ///     <b>true</b> if account creation is supported and the account didn't exist already, and was created; otherwise,
         ///     <b>false</b>.
         /// </returns>
-        bool CreateAccount(IIdentity owner, string name, out IEconomyAccount account);
+        Task<bool> CreateAccountAsync(IUser owner, string name, out IEconomyAccount account);
 
         /// <summary>
         ///     Creates an account.
@@ -114,14 +104,14 @@ namespace Rocket.API.Economy
         /// <param name="currency">The accounts currency.</param>
         /// <param name="account">The account instance if it was created; otherwise, <b>null</b>.</param>
         /// <returns><b>true</b> if account creation is supported and the account could be created; otherwise, <b>false</b>.</returns>
-        bool CreateAccount(IIdentity owner, string name, IEconomyCurrency currency, out IEconomyAccount account);
+        Task<bool> CreateAccountAsync(IUser owner, string name, IEconomyCurrency currency, out IEconomyAccount account);
 
         /// <summary>
         ///     Deletes an account.
         /// </summary>
         /// <param name="account">The account to delete.</param>
         /// <returns><b>true</b> if the account could be deleted; otherwise, <b>false</b>.</returns>
-        bool DeleteAccount(IEconomyAccount account);
+        Task<bool> DeleteAccountAsync(IEconomyAccount account);
 
         /// <summary>
         ///     Gets a specific account.
@@ -129,32 +119,32 @@ namespace Rocket.API.Economy
         /// <param name="owner">The account owner.</param>
         /// <param name="accountName">The account name or null for the default account.</param>
         /// <returns>The requested account or null if it was not found.</returns>
-        IEconomyAccount GetAccount(IIdentity owner, string accountName = null);
+        Task<IEconomyAccount> GetAccountAsync(IUser owner, string accountName = null);
 
         /// <summary>
         ///     Gets the accounts of the given user. Can return an empty set if no accounts were created yet.
         /// </summary>
         /// <param name="owner">The user whose accounts to get.</param>
         /// <returns>the accounts of the given user</returns>
-        IEnumerable<IEconomyAccount> GetAccounts(IIdentity owner);
+        Task<IEnumerable<IEconomyAccount>> GetAccountsAsync(IUser owner);
 
         /// <summary>
-        ///     Checks if the given identity is supported by the economy provider.
+        ///     Checks if the given user is supported by the economy provider.
         /// </summary>
-        /// <param name="identity">The identity to check.</param>
-        /// <returns><b>True</b> if the identity is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsIdentity(IIdentity identity);
+        /// <param name="user">The user to check.</param>
+        /// <returns><b>True</b> if the user is supported; otherwise, <b>false</b>.</returns>
+        bool SupportsUser(IUser user);
 
         /// <summary>
-        ///     Gets the (total) balance for the given identity.
+        ///     Gets the (total) balance for the given user.
         /// </summary>
-        /// <param name="identity">The identitiy whose balance to get.</param>
-        /// <returns>The balance of the identity. Might be negative.</returns>
-        decimal GetBalance(IIdentity identity);
+        /// <param name="user">The identitiy whose balance to get.</param>
+        /// <returns>The balance of the user. Might be negative.</returns>
+        Task<decimal> GetBalanceAsync(IUser user);
 
         /// <summary>
         ///     Checks if the provider supports multiple accounts per user.
         /// </summary>
-        bool SupportsMultipleAccounts { get; }
+        Task<bool> SupportsMultipleAccountsAsync { get; }
     }
 }

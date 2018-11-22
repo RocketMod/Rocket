@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -49,13 +50,13 @@ namespace Rocket.API
         void Init(IRuntime runtime);
 
         /// <summary>
-        ///     Shuts the implementation down.
+        ///     Shuts the hots down.
         /// </summary>
-        void Shutdown();
+        Task ShutdownAsync();
 
         /// <summary>
-        ///     Reloads the implementation.
+        ///     Reloads the host (e.g. reload configs, commands, etc.)
         /// </summary>
-        void Reload();
+        Task ReloadAsync();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Rocket.API.Scheduling
 {
@@ -45,7 +46,7 @@ namespace Rocket.API.Scheduling
         /// <summary>
         ///     The action to execute.
         /// </summary>
-        Action Action { get; }
+        Task Action { get; }
 
         /// <summary>
         ///     Checks if the task was cancelled.

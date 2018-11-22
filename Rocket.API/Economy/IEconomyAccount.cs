@@ -10,7 +10,7 @@ namespace Rocket.API.Economy
         /// <summary>
         ///     The owner of the account.
         /// </summary>
-        IIdentity Owner { get; }
+        IUser Owner { get; }
 
         /// <summary>
         ///     The name of the account.

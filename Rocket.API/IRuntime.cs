@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
@@ -18,7 +19,7 @@ namespace Rocket.API
         /// <summary>
         ///     Shuts down RocketMod and disposes all services.
         /// </summary>
-        void Shutdown();
+        Task ShutdownAsync();
 
         /// <summary>
         ///     The RocketMod version.
