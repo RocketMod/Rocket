@@ -174,7 +174,7 @@ namespace Rocket.Tests.Permissions
             IPermissionProvider provider = LoadProvider();
             await provider.AddPermissionAsync(TestPlayer, "DynamicGroupPermission");
 
-            Assert.AreEqual(PermissionResult.Grant, provider.CheckPermissionAsync(TestPlayer, "DynamicGroupPermission"));
+            Assert.AreEqual(PermissionResult.Grant, await provider.CheckPermissionAsync(TestPlayer, "DynamicGroupPermission"));
         }
 
         [TestMethod]
@@ -183,7 +183,7 @@ namespace Rocket.Tests.Permissions
             IPermissionProvider provider = LoadProvider();
 
             Assert.IsTrue(await provider.RemovePermissionAsync(TestPlayer, "PlayerPermission.Test"));
-            Assert.AreEqual(PermissionResult.Default, provider.CheckPermissionAsync(TestPlayer, "PlayerPermission.Test"));
+            Assert.AreEqual(PermissionResult.Default, await provider.CheckPermissionAsync(TestPlayer, "PlayerPermission.Test"));
         }
 
         [TestMethod]
@@ -269,7 +269,7 @@ namespace Rocket.Tests.Permissions
             // Config of permission provider has not been loaded from a file so it can not be saved
 
             IPermissionProvider permissionProvider = LoadProvider();
-            Assert.ThrowsException<ConfigurationContextNotSetException>(async () => await permissionProvider.SaveAsync());
+            Assert.ThrowsException<ConfigurationContextNotSetException>(() => permissionProvider.SaveAsync().GetAwaiter().GetResult());
         }
 
         [TestMethod]

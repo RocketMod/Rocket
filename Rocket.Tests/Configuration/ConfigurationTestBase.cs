@@ -146,7 +146,7 @@ namespace Rocket.Tests.Configuration
         public void AssertSaveException(IConfiguration config)
         {
             // Config has not been loaded from a file so it can not be saved
-            Assert.ThrowsException<ConfigurationContextNotSetException>(() => config.Save());
+            Assert.ThrowsException<ConfigurationContextNotSetException>(() => config.SaveAsync().GetAwaiter().GetResult());
         }
 
         protected IConfiguration LoadConfigFromObject()

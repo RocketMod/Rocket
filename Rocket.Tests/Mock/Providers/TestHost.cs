@@ -8,6 +8,7 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
 using Rocket.Core.Logging;
+using Rocket.Core.User;
 
 namespace Rocket.Tests.Mock.Providers
 {
@@ -18,7 +19,7 @@ namespace Rocket.Tests.Mock.Providers
         public TestHost(IDependencyContainer container, ILogger logger)
         {
             this.logger = logger;
-            Console = new TestConsole(container);
+            Console = new StdConsole(container);
         }
 
         public IEnumerable<string> Capabilities => new List<string>

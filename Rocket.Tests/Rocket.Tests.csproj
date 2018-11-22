@@ -69,7 +69,6 @@
     <Compile Include="Player\DefaultPlayerTests.cs" />
     <Compile Include="Player\PlayerTestBase.cs" />
     <Compile Include="Plugins\PluginTests.cs" />
-    <Compile Include="Mock\TestConsole.cs" />
     <Compile Include="Mock\TestPlayer.cs" />
     <Compile Include="Configuration\ConfigurationTestBase.cs" />
     <Compile Include="RocketTestBase.cs" />

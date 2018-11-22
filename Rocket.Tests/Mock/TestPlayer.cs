@@ -91,6 +91,7 @@ namespace Rocket.Tests.Mock
         public DateTime? LastSeen => DateTime.Now;
 
         public List<IIdentity> Identities => throw new NotImplementedException();
+        public string UserType => "TestPlayer";
 
         public IDependencyContainer Container { get; private set; }
     }
