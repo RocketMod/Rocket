@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.Commands
@@ -25,6 +26,6 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     Inits the commands provider.
         /// </summary>
-        void Init();
+        Task Init();
     }
 }
