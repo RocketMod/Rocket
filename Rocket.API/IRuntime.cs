@@ -16,6 +16,8 @@ namespace Rocket.API
         /// </summary>
         IDependencyContainer Container { get; }
 
+        Task InitAsync();
+
         /// <summary>
         ///     Shuts down RocketMod and disposes all services.
         /// </summary>
