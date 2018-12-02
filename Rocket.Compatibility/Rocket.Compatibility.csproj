@@ -2,11 +2,15 @@
   <PropertyGroup>
     <TargetFramework>net35</TargetFramework>
     <AssemblyName>Rocket.Compatibility</AssemblyName>
-	<Description>.NET backports for RocketMod .NET Game Server Plugin Framework</Description>
+    <Description>.NET backports for RocketMod .NET Game Server Plugin Framework</Description>
     <RootNamespace>System</RootNamespace>
     <OutputType>Library</OutputType>
-	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-  </PropertyGroup> 
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AsyncBridge" Version="0.3.1" />
+  </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\props\SharedNuGet.props" />
 </Project>

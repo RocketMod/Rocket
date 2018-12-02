@@ -1,5 +1,16 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
+using ICSharpCode.SharpZipLib.Zip;
+#if NET35
 using MoreLinq;
+#else
+using MoreLinq.Extensions;
+#endif
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -9,15 +20,6 @@ using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
 using Rocket.Core.Plugins.NuGet.Client.V3;
-#if NET35
-using Theraot.Core;
-#endif
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace Rocket.Core.Plugins.NuGet
 {
@@ -393,19 +395,11 @@ namespace Rocket.Core.Plugins.NuGet
                 foreach (ZipEntry entry in zf)
                     if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
                         assemblies.Add(entry);
-#elif NET461 || NETSTANDARD2_0
-#if NETSTANDARD2_0
-                if (ze == null) 
-                {
-#endif
-                    foreach (ZipEntry entry in zf)
-                        if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
+#elif NET461
+                foreach (ZipEntry entry in zf)
+                    if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
                         assemblies.Add(entry);
-#if NETSTANDARD2_0
-                }
-#endif
 #else
-#error Not supported runtime
 #endif
 
                 if (assemblies.Count == 0)
@@ -415,8 +409,12 @@ namespace Rocket.Core.Plugins.NuGet
                 {
                     Stream inputStream = zf.GetInputStream(ze);
                     MemoryStream ms = new MemoryStream();
-                    await inputStream.CopyToAsync(ms);
 
+#if NET35
+                    inputStream.CopyTo(ms);
+#else
+                    await inputStream.CopyToAsync(ms);
+#endif
                     var asm = Assembly.Load(ms.ToArray());
 
                     ms.Close();

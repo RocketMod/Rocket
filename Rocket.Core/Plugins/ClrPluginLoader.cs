@@ -17,9 +17,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-#if NET35
-using Theraot.Core;
-#endif
 
 namespace Rocket.Core.Plugins
 {

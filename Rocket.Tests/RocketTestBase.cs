@@ -1,7 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API;
 using Rocket.API.Logging;
-using Rocket.Tests.Mock;
 
 namespace Rocket.Tests
 {
@@ -15,7 +14,8 @@ namespace Rocket.Tests
         [TestInitialize]
         public virtual void Bootstrap()
         {
-            Runtime = Rocket.Runtime.Bootstrap();
+            Runtime = new Rocket.Runtime();
+            Runtime.BootstrapAsync().GetAwaiter().GetResult();
             Runtime.Container.RegisterSingletonType<ILogger, NullLogger>("default_file_logger");
         }
     }

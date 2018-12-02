@@ -16,12 +16,12 @@ namespace Rocket
 {
     public class Runtime : IRuntime
     {
-        protected Runtime()
+        public Runtime()
         {
             // non public constructor
         }
 
-        public async Task InitAsync()
+        public async Task BootstrapAsync()
         {
             Container = new UnityDependencyContainer();
             Container.RegisterInstance<IRuntime>(this);
@@ -135,13 +135,6 @@ namespace Rocket
         }
 
         public string ConfigurationName { get; } = "Rocket";
-
-        public static async Task<IRuntime> CreateAsync()
-        {
-            var runtime = new Runtime();
-            await runtime.InitAsync();
-            return runtime;
-        }
 
         public async Task ShutdownAsync()
         {
