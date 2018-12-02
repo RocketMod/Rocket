@@ -1,5 +1,8 @@
 ﻿using System.IO;
 using System.Text;
+#if NET35
+using Theraot.Core;
+#endif
 
 namespace Rocket.Core.Extensions
 {

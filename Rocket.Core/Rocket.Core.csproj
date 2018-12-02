@@ -1,23 +1,37 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net35;net461</TargetFrameworks>
     <AssemblyName>Rocket.Core</AssemblyName>
     <Description>RocketMod .NET Game Server Plugin Framework Core implementations</Description>
     <RootNamespace>Rocket.Core</RootNamespace>
     <OutputType>Library</OutputType>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup> 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Unity" Version="2.1.505.2" />
-    <PackageReference Include="System.Numerics.Vectors">
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
+	<PackageReference Include="Theraot.Core" Version="1.0.5" />
+	<PackageReference Include="AsyncBridge" Version="0.3.1" />
+	<ProjectReference Include="..\Rocket.Compatibility\Rocket.Compatibility.csproj" />
+	<!-- Packages where only a specific version is compatible with NET35 -->
+	<PackageReference Include="RestSharp" Version="105.2.3" />
+	<PackageReference Include="SharpZipLib" Version="0.86.0" />
+    <PackageReference Include="morelinq">
+      <Version>2.10.0</Version>
+    </PackageReference>		
+  </ItemGroup>
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net461' ">
+    <!-- Stuff which isn't compatible with NET35 -->
+	<PackageReference Include="System.Numerics.Vectors">
       <Version>4.5.0</Version>
     </PackageReference>
-    <PackageReference Include="RestSharp" Version="106.3.1" />
-    <PackageReference Include="SharpZipLib" Version="1.0.0-alpha2" />
+	<PackageReference Include="RestSharp" Version="106.3.1" />
+	<PackageReference Include="SharpZipLib" Version="1.0.0-alpha2" />
     <PackageReference Include="morelinq">
       <Version>3.0.0</Version>
-    </PackageReference>
+    </PackageReference>	
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj" />
