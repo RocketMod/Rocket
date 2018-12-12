@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API;
 using Rocket.API.Eventing;
 using Rocket.Core.Eventing;
@@ -12,7 +13,7 @@ namespace Rocket.Tests.Eventing
         public virtual void TestSyncEventingWithType()
         {
             IEventBus bus = GetEventBus();
-            bus.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
+            bus.Subscribe<TestEvent>(GetListener(), async (sender, @event) => @event.ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync);
             EmitTestEvent(bus, e);
@@ -24,7 +25,7 @@ namespace Rocket.Tests.Eventing
         public virtual void TestSyncEventingWithName()
         {
             IEventBus bus = GetEventBus();
-            bus.Subscribe(GetListener(), "test", (sender, @event) => ((TestEvent) @event).ValueChanged = true);
+            bus.Subscribe(GetListener(), "test", async (sender, @event) => ((TestEvent) @event).ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync);
             EmitTestEvent(bus, e);
@@ -36,7 +37,7 @@ namespace Rocket.Tests.Eventing
         public virtual void TestCancellationWithoutIgnore()
         {
             IEventBus bus = GetEventBus();
-            bus.Subscribe<TestEvent>(GetListener(), (sender, @event) => @event.ValueChanged = true);
+            bus.Subscribe<TestEvent>(GetListener(), async (sender, @event) => @event.ValueChanged = true);
 
             TestEvent e = new TestEvent(EventExecutionTargetContext.Sync) {IsCancelled = true};
             EmitTestEvent(bus, e);
@@ -59,7 +60,7 @@ namespace Rocket.Tests.Eventing
         }
 
         [EventHandler(IgnoreCancelled = true)]
-        private void CancelIgnoreEventHandler(IEventEmitter sender, IEvent @event)
+        private async Task CancelIgnoreEventHandler(IEventEmitter sender, IEvent @event)
         {
             ((TestEvent) @event).ValueChanged = true;
         }
@@ -67,7 +68,7 @@ namespace Rocket.Tests.Eventing
         private void EmitTestEvent(IEventBus bus, TestEvent @event)
         {
             bool finished = false;
-            bus.Emit(GetEmitter(), @event, e => finished = true);
+            bus.Emit(GetEmitter(), @event, async e => finished = true);
 
             while (!finished)
                 ;

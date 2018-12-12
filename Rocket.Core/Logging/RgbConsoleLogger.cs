@@ -10,7 +10,7 @@ namespace Rocket.Core.Logging
     {
         private const ConsoleColor placeHolder = ConsoleColor.Blue;
 
-        const int STD_OUTPUT_HANDLE = -11;                                        // per WinBase.h
+        private const int STD_OUTPUT_HANDLE = -11;                                        // per WinBase.h
         internal static readonly IntPtr INVALID_HANDLE_VALUE = new IntPtr(-1);    // per WinBase.h
 
         [DllImport("kernel32.dll")]

@@ -2,106 +2,105 @@
 using Rocket.API.Drawing;
 using Rocket.API.User;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API.Permissions;
-using Rocket.API.Player;
-using Rocket.Core.Extensions;
 
 namespace Rocket.Core.User
 {
     public static class UserExtensions
     {
-        public static void SendMessage(this IUser user, string message, params object[] bindings)
+        public static async Task SendMessageAsync(this IUser user, string message, params object[] bindings)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            SendMessage(user, message, null, bindings);
+            await SendMessageAsync(user, message, null, bindings);
         }
 
-        public static void SendMessage(this IUser user, string message, Color? color = null, params object[] bindings)
+        public static async Task SendMessageAsync(this IUser user, string message, Color? color = null, params object[] bindings)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            user.UserManager.SendMessage(user, message, color, bindings);
+            await user.UserManager.SendMessageAsync(user, message, color, bindings);
         }
 
-        public static void SendMessage(this IUserManager manager, IUser sender, IUser receiver, string message,
+        public static async Task SendMessageAsync(this IUserManager manager, IUser sender, IUser receiver, string message,
                                        params object[] arguments)
         {
             if (manager == null)
                 throw new ArgumentNullException(nameof(manager));
 
-            manager.SendMessage(sender, receiver, message, null, arguments);
+            await manager.SendMessageAsync(sender, receiver, message, null, arguments);
         }
 
-        public static void Broadcast(this IUserManager manager, IUser sender, IEnumerable<IUser> receivers,
+        public static async Task BroadcastAsync(this IUserManager manager, IUser sender, IEnumerable<IUser> receivers,
                                      string message, params object[] arguments)
         {
             if (manager == null)
                 throw new ArgumentNullException(nameof(manager));
 
-            manager.Broadcast(sender, receivers, message, null, arguments);
+            await manager.BroadcastAsync(sender, receivers, message, null, arguments);
         }
 
-        public static void Broadcast(this IUserManager manager, IUser sender, string message, params object[] arguments)
+        public static async Task BroadcastAsync(this IUserManager manager, IUser sender, string message, params object[] arguments)
         {
             if (manager == null)
                 throw new ArgumentNullException(nameof(manager));
 
-            manager.Broadcast(sender, message, null, arguments);
+            await manager.BroadcastAsync(sender, message, null, arguments);
         }
 
-        public static void SendMessage(this IUserManager manager, IUser receiver, string message, Color? color = null,
+        public static async Task SendMessageAsync(this IUserManager manager, IUser receiver, string message, Color? color = null,
                                        params object[] arguments)
         {
             if (manager == null)
                 throw new ArgumentNullException(nameof(manager));
 
-            manager.SendMessage(null, receiver, message, color, arguments);
+            await manager.SendMessageAsync(null, receiver, message, color, arguments);
         }
 
-        public static void SendMessage(this IUserManager manager, IUser receiver, string message, params object[] arguments)
+        public static async Task SendMessageAsync(this IUserManager manager, IUser receiver, string message, params object[] arguments)
         {
             if (manager == null)
                 throw new ArgumentNullException(nameof(manager));
 
-            manager.SendMessage(null, receiver, message, null, arguments);
+            await manager.SendMessageAsync(null, receiver, message, null, arguments);
         }
 
-        public static bool Ban(this IUser user, IUser kickedBy = null, string reason = null, TimeSpan? duration = null)
+        public static async Task<bool> BanAsync(this IUser user, IUser kickedBy = null, string reason = null, TimeSpan? duration = null)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
-            return user.UserManager.Ban(user, kickedBy, reason, duration);
+            return await user.UserManager.BanAsync(user, kickedBy, reason, duration);
         }
 
-        public static PermissionResult CheckPermission(this IUser user, string permission)
-        {
-            if (user == null)
-                throw new ArgumentNullException(nameof(user));
-
-            var permissionProvider = user.Container.Resolve<IPermissionProvider>();
-            return permissionProvider.CheckPermission(user, permission);
-        }
-
-        public static PermissionResult CheckHasAnyPermission(this IUser user, params string[] permissions)
+        public static async Task<PermissionResult> CheckPermissionAsync(this IUser user, string permission)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
             var permissionProvider = user.Container.Resolve<IPermissionProvider>();
-            return permissionProvider.CheckHasAnyPermission(user, permissions);
+            return await permissionProvider.CheckPermissionAsync(user, permission);
         }
 
-        public static PermissionResult CheckHasAllPermissions(this IUser user, params string[] permissions)
+        public static async Task<PermissionResult> CheckHasAnyPermissionAsync(this IUser user, params string[] permissions)
         {
             if (user == null)
                 throw new ArgumentNullException(nameof(user));
 
             var permissionProvider = user.Container.Resolve<IPermissionProvider>();
-            return permissionProvider.CheckHasAllPermissions(user, permissions);
+            return await permissionProvider.CheckHasAnyPermissionAsync(user, permissions);
+        }
+
+        public static async Task<PermissionResult> CheckHasAllPermissionsAsync(this IUser user, params string[] permissions)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
+
+            var permissionProvider = user.Container.Resolve<IPermissionProvider>();
+            return await permissionProvider.CheckHasAllPermissionsAsync(user, permissions);
         }
     }
 }

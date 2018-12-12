@@ -19,7 +19,7 @@ namespace Rocket.Tests.Mock
         {
             TaskCompletionSource<bool> promise = new TaskCompletionSource<bool>();
 
-            Subscribe<TestEvent>((sender, arguments) =>
+            Subscribe<TestEvent>(async (sender, arguments) =>
             {
                 Assert.Equals(sender, this);
                 promise.SetResult(arguments.Value);
@@ -37,7 +37,7 @@ namespace Rocket.Tests.Mock
         {
             TaskCompletionSource<bool> promise = new TaskCompletionSource<bool>();
 
-            Subscribe("test", (sender, arguments) =>
+            Subscribe("test", async (sender, arguments) =>
             {
                 Assert.Equals(sender, this);
                 promise.SetResult(((TestEvent) arguments).Value);

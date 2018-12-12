@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Rocket.API.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
@@ -10,7 +10,6 @@ using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
-using Rocket.Core.User;
 using Rocket.API.Player;
 
 namespace Rocket.Core.Commands
@@ -25,17 +24,17 @@ namespace Rocket.Core.Commands
         }
 
 
-        public bool HandleCommand(IPlayer player, string commandLine, string prefix)
+        public Task<bool> HandleCommandAsync(IPlayer player, string commandLine, string prefix)
         {
-            return HandleCommand(player.User, player, commandLine, prefix);
+            return HandleCommandAsync(player.User, player, commandLine, prefix);
         }
 
-        public bool HandleCommand(IUser user, string commandLine, string prefix)
+        public Task<bool> HandleCommandAsync(IUser user, string commandLine, string prefix)
         {
-            return HandleCommand(user,null, commandLine, prefix);
+            return HandleCommandAsync(user,null, commandLine, prefix);
         }
 
-        public bool HandleCommand(IUser user,IPlayer player,string commandLine, string prefix)
+        public async Task<bool> HandleCommandAsync(IUser user,IPlayer player,string commandLine, string prefix)
         {
             GuardUser(user);
 
@@ -70,14 +69,14 @@ namespace Rocket.Core.Commands
 #endif
             IPermissionProvider provider = container.Resolve<IPermissionProvider>();
 
-            if (provider.CheckPermission(user, permission) != PermissionResult.Grant)
+            if (await provider.CheckPermissionAsync(user, permission) != PermissionResult.Grant)
             {
                 var logger = container.Resolve<ILogger>();
                 logger.LogInformation($"{user.ToString()} does not have permissions to execute: \"{commandLine}\"");
                 throw new NotEnoughPermissionsException(user, permission);
             }
 
-            context.Command.Execute(context);
+            await context.Command.ExecuteAsync(context);
 #if !DEBUG
             }
             catch (Exception e)
@@ -88,7 +87,7 @@ namespace Rocket.Core.Commands
                     return true;
                 }
 
-                context.User.SendMessage("An internal error occured.", Color.DarkRed);
+                await context.User.SendMessageAsync("An internal error occured.", Color.DarkRed);
                 throw new Exception($"Command {commandLine} of user {user.ToString()} caused an exception: ", e);
             }
 #endif
@@ -96,7 +95,7 @@ namespace Rocket.Core.Commands
             return true;
         }
 
-        public bool SupportsUser(UserType user) => true;
+        public bool  SupportsUser(IUser user) => true;
 
         //Builds a defalt permission
         //If the command is "A" with Child Command "B", the default permission will be "A.B"
@@ -130,8 +129,8 @@ namespace Rocket.Core.Commands
             if (cmd == null)
                 return context;
 
-            if (!cmd.SupportsUser(context.User.Type))
-                throw new NotSupportedException(context.User.Type.ToString() + " can not use this command.");
+            if (!cmd.SupportsUser(context.User))
+                throw new NotSupportedException(context.User.UserName + " can not use this command.");
 
             tree.Add(cmd);
 
@@ -153,8 +152,8 @@ namespace Rocket.Core.Commands
 
         private void GuardUser(IUser user)
         {
-            if (!SupportsUser(user.Type))
-                throw new NotSupportedException(user.Type.ToString() + " is not supported!");
+            if (!SupportsUser(user))
+                throw new NotSupportedException(user.UserName + " can not use this command!");
         }
 
         public string ServiceName => "RocketCommandHandler";

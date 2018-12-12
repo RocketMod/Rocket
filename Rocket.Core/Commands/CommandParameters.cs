@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Player;
@@ -36,10 +37,10 @@ namespace Rocket.Core.Commands
         public int Length => ToArray().Length;
 
         /// <inheritdoc />
-        public T Get<T>(int index) => (T)Get(index, typeof(T));
+        public async Task<T> GetAsync<T>(int index) => (T) await GetAsync(index, typeof(T));
 
         /// <inheritdoc />
-        public object Get(int index, Type type)
+        public async Task<object> GetAsync(int index, Type type)
         {
             if (type == null)
                 throw new ArgumentNullException(nameof(type));
@@ -86,7 +87,7 @@ namespace Rocket.Core.Commands
                     }
                 }
 
-                return targetUserManager.GetUser(userName);
+                return await targetUserManager.GetUserAsync(userName);
             }
 
             TypeConverter converter = TypeConverterExtensions.GetConverter(type);
@@ -98,10 +99,10 @@ namespace Rocket.Core.Commands
         }
 
         /// <inheritdoc />
-        public T Get<T>(int index, T defaultValue) => (T)Get(index, typeof(T), defaultValue);
+        public async Task<T> GetAsync<T>(int index, T defaultValue) => (T) await GetAsync(index, typeof(T), defaultValue);
 
         /// <inheritdoc />
-        public object Get(int index, Type type, object defaultValue)
+        public async Task<object> GetAsync(int index, Type type, object defaultValue)
         {
             if (TryGet(index, type, out object val))
                 return val;
@@ -146,7 +147,7 @@ namespace Rocket.Core.Commands
             value = null;
             try
             {
-                value = Get(index, type);
+                value = GetAsync(index, type).GetAwaiter().GetResult();
                 return true;
             }
             catch

@@ -8,6 +8,7 @@ using Rocket.Core.Scheduling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Console.Scheduling
 {
@@ -35,7 +36,7 @@ namespace Rocket.Console.Scheduling
 
             SimpleTask task = new SimpleTask(++taskIds, taskName, this, @object, action, target);
 
-            TriggerEvent(task, (sender, @event) =>
+            TriggerEvent(task, async (sender, @event) =>
             {
                 if (target != ExecutionTargetContext.Sync && @object.IsAlive) return;
 
@@ -105,7 +106,7 @@ namespace Rocket.Console.Scheduling
                 return;
             }
 
-            eventBus.Emit(owner, e, @event =>
+            eventBus.Emit(owner, e, async @event =>
             {
                 task.IsCancelled = e.IsCancelled;
 
@@ -145,7 +146,7 @@ namespace Rocket.Console.Scheduling
 
             try
             {
-                task.Action.Invoke();
+                task.Action();
                 ((SimpleTask)task).LastRunTime = DateTime.Now;
             }
             catch (Exception e)

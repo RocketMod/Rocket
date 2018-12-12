@@ -1,11 +1,12 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Rocket.API.Commands;
+﻿using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.User;
+using System;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -18,9 +19,9 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Syntax => "[<from type> <to type> <path>]";
         public IChildCommand[] ChildCommands { get; }
 
-        public bool SupportsUser(UserType type) => type == UserType.Console;
+        public bool SupportsUser(IUser user) => user is IConsole;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             if (context.Parameters.Length != 0 && context.Parameters.Length < 3) throw new CommandWrongUsageException();
 
@@ -28,18 +29,18 @@ namespace Rocket.Core.Commands.RocketCommands
 
             if (context.Parameters.Length == 0)
             {
-                context.User.SendMessage(GetConfigTypes(configProviders));
-                context.SendCommandUsage();
+                await context.User.SendMessageAsync(GetConfigTypes(configProviders));
+                await context.SendCommandUsage();
                 return;
             }
 
-            string from = context.Parameters.Get<string>(0);
-            string to = context.Parameters.Get<string>(1);
+            string from = context.Parameters[0];
+            string to = context.Parameters[1];
             string path = context.Parameters.GetArgumentLine(2);
 
             if (from.Equals(to, StringComparison.OrdinalIgnoreCase))
             {
-                context.User.SendMessage("\"from\" and \"to\" can not be the same config type!");
+                await context.User.SendMessageAsync("\"from\" and \"to\" can not be the same config type!");
                 return;
             }
 
@@ -62,15 +63,14 @@ namespace Rocket.Core.Commands.RocketCommands
 
             ConfigurationContext cc = new ConfigurationContext(workingDir, fileName);
 
-            fromProvider.Load(cc);
+            await fromProvider.LoadAsync(cc);
             toProvider.ConfigurationContext = cc;
             toProvider.LoadEmpty();
 
             CopyConfigElement(fromProvider, toProvider);
 
-            toProvider.Save();
-
-            context.User.SendMessage("Configuration was successfully migrated.");
+            await toProvider.SaveAsync();
+            await context.User.SendMessageAsync("Configuration was successfully migrated.");
         }
 
         private void CopyConfigElement(IConfigurationElement fromSection, IConfigurationElement toSection)

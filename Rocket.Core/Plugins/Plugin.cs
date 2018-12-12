@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
@@ -11,6 +8,10 @@ using Rocket.API.Plugins;
 using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Plugins
 {
@@ -23,16 +24,19 @@ namespace Rocket.Core.Plugins
 
         public override object DefaultConfiguration => new TConfig();
 
-        public override void SaveConfiguration()
+        public override async Task SaveConfiguration()
         {
-            base.SaveConfiguration();
-            Configuration.Set(ConfigurationInstance);
-            Configuration?.Save();
+            await base.SaveConfiguration();
+            if (Configuration != null)
+            {
+                Configuration.Set(ConfigurationInstance);
+                await Configuration.SaveAsync();
+            }
         }
 
-        public override void LoadConfiguration()
+        public override async Task LoadConfiguration()
         {
-            base.LoadConfiguration();
+            await base.LoadConfiguration();
             if (Configuration == null)
                 return;
 
@@ -79,9 +83,10 @@ namespace Rocket.Core.Plugins
                 Container.RegisterSingletonType<ILogger, PluginLogger>("plugin_logger");
         }
 
-        public virtual void SaveConfiguration()
+        public virtual async Task SaveConfiguration()
         {
-            Configuration?.Save();
+            if (Configuration != null)
+                await Configuration.SaveAsync();
         }
 
         protected IEventBus EventBus => Container.Resolve<IEventBus>();
@@ -104,7 +109,7 @@ namespace Rocket.Core.Plugins
         public virtual string WorkingDirectory { get; set; }
         public string ConfigurationName => Name;
 
-        public bool Activate(bool isReload)
+        public async Task<bool> ActivateAsync(bool isReload)
         {
             if (IsAlive)
                 return false;
@@ -113,8 +118,11 @@ namespace Rocket.Core.Plugins
 
             if (isReload)
             {
-                Configuration?.Reload();
-                Translations?.Reload();
+                if (Configuration != null)
+                    await Configuration.ReloadAsync();
+
+                if (Translations != null)
+                    await Translations.ReloadAsync();
             }
 
             if (EventBus != null)
@@ -125,13 +133,13 @@ namespace Rocket.Core.Plugins
                     return false;
             }
 
-            LoadConfiguration();
+            await LoadConfiguration();
 
             if (DefaultTranslations != null)
             {
                 Translations = Container.Resolve<ITranslationCollection>();
                 IConfigurationContext context = this.CreateChildConfigurationContext("Translations");
-                Translations.Load(context, DefaultTranslations);
+                await Translations.LoadAsync(context, DefaultTranslations);
             }
 
             IsAlive = true;
@@ -155,18 +163,18 @@ namespace Rocket.Core.Plugins
             return true;
         }
 
-        public virtual void LoadConfiguration()
+        public virtual async Task LoadConfiguration()
         {
             if (DefaultConfiguration != null)
             {
                 Configuration = Container.Resolve<IConfiguration>();
                 IConfigurationContext context = this.CreateChildConfigurationContext("Configuration");
                 Configuration.Scheme = DefaultConfiguration.GetType();
-                Configuration.Load(context, DefaultConfiguration);
+                await Configuration.LoadAsync(context, DefaultConfiguration);
             }
         }
 
-        public bool Deactivate()
+        public async Task<bool> DeactivateAsync()
         {
             if (!IsAlive)
                 return false;

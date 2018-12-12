@@ -1,4 +1,5 @@
-﻿using Rocket.API.DependencyInjection;
+﻿using System.Threading.Tasks;
+using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.Configuration
 {
@@ -15,16 +16,16 @@ namespace Rocket.Core.Configuration
         /// <summary>
         ///     Loads the settings.
         /// </summary>
-        void Load();
+        Task LoadAsync();
 
         /// <summary>
         ///     Reloads the settings.
         /// </summary>
-        void Reload();
+        Task ReloadAsync();
 
         /// <summary>
         ///     Saves the settings.
         /// </summary>
-        void Save();
+        Task SaveAsync();
     }
 }

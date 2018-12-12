@@ -3,17 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2027
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Runtime", "Rocket.Runtime\Rocket.Runtime.csproj", "{5D260F94-BB23-4397-94DF-BA4AF0CD8BCB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Runtime", "Rocket.Runtime\Rocket.Runtime.csproj", "{5D260F94-BB23-4397-94DF-BA4AF0CD8BCB}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Tests", "Rocket.Tests\Rocket.Tests.csproj", "{BE1381DE-6771-4F2E-8F31-8949EDC6CFC1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.Console", "Rocket.Console\Rocket.Console.csproj", "{2C208038-27DA-4F7B-AA8C-276BB2531E1E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Core", "Rocket.Core\Rocket.Core.csproj", "{BBDBF33A-40B7-41DD-9957-7740E65B5027}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.API", "Rocket.API\Rocket.API.csproj", "{01764DBE-B6FA-4C8F-9690-ADBD67EDBD3A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Compatibility", "Rocket.Compatibility\Rocket.Compatibility.csproj", "{C14F1138-42CC-475E-AFDF-78AB23DB7AE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Console", "Rocket.Console\Rocket.Console.csproj", "{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Compatibility", "Rocket.Compatibility\Rocket.Compatibility.csproj", "{A1EED28A-6852-48AA-85CD-FAC70290C4DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,6 @@ Global
 		{BE1381DE-6771-4F2E-8F31-8949EDC6CFC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE1381DE-6771-4F2E-8F31-8949EDC6CFC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE1381DE-6771-4F2E-8F31-8949EDC6CFC1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2C208038-27DA-4F7B-AA8C-276BB2531E1E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2C208038-27DA-4F7B-AA8C-276BB2531E1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2C208038-27DA-4F7B-AA8C-276BB2531E1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2C208038-27DA-4F7B-AA8C-276BB2531E1E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BBDBF33A-40B7-41DD-9957-7740E65B5027}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BBDBF33A-40B7-41DD-9957-7740E65B5027}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBDBF33A-40B7-41DD-9957-7740E65B5027}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -41,10 +37,14 @@ Global
 		{01764DBE-B6FA-4C8F-9690-ADBD67EDBD3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01764DBE-B6FA-4C8F-9690-ADBD67EDBD3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{01764DBE-B6FA-4C8F-9690-ADBD67EDBD3A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C14F1138-42CC-475E-AFDF-78AB23DB7AE4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C14F1138-42CC-475E-AFDF-78AB23DB7AE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C14F1138-42CC-475E-AFDF-78AB23DB7AE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C14F1138-42CC-475E-AFDF-78AB23DB7AE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1EED28A-6852-48AA-85CD-FAC70290C4DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1EED28A-6852-48AA-85CD-FAC70290C4DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1EED28A-6852-48AA-85CD-FAC70290C4DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1EED28A-6852-48AA-85CD-FAC70290C4DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

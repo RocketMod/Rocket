@@ -1,4 +1,5 @@
-﻿using Rocket.API.User;
+﻿using System.Threading.Tasks;
+using Rocket.API.User;
 
 namespace Rocket.API.Entities
 {
@@ -20,18 +21,18 @@ namespace Rocket.API.Entities
         /// <summary>
         ///     Kills the entity.
         /// </summary>
-        void Kill();
+        Task KillAsync();
 
         /// <summary>
         ///     <inheritdoc cref="Kill()" />
         /// </summary>
         /// <param name="killer">the killer of the entity.</param>
-        void Kill(IEntity killer);
+        Task KillAsync(IEntity killer);
 
         /// <summary>
         ///     <inheritdoc cref="Kill()" />
         /// </summary>
         /// <param name="killer">the killer of the entity.</param>
-        void Kill(IUser killer);
+        Task KillAsync(IUser killer);
     }
 }

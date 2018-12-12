@@ -265,10 +265,10 @@ namespace Rocket.Core.Eventing
                     continue;
                 }
 
-                scheduler.ScheduleUpdate(pl, () =>
+                scheduler.ScheduleUpdate(pl, async () =>
                 {
                     executionCount++;
-                    info.Action.Invoke(sender, @event);
+                    await info.Action.Invoke(sender, @event);
 
                     //all actions called; run OnEventExecuted
                     if (executionCount == targetActions.Count) FinishEvent();

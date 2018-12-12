@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Rocket.API.Drawing;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
-using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.Permissions;
 using Rocket.Core.User;
@@ -23,12 +22,12 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public string Name => "PermissionGroup";
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(UserType user) => true;
+        public bool  SupportsUser(IUser user) => true;
     }
 
     public abstract class CommandGroupUpdate : IChildCommand
@@ -42,32 +41,32 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsUser(UserType user) => true;
+        public bool  SupportsUser(IUser user) => true;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
-            IUser targetPlayer = context.Parameters.Get<IUser>(0);
-            string groupName = context.Parameters.Get<string>(1);
+            IUser targetPlayer = await context.Parameters.GetAsync<IUser>(0);
+            string groupName = context.Parameters[1];
 
             string permission = "Rocket.Permissions.ManageGroups." + groupName;
             IPermissionProvider configPermissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
 
-            if (permissions.CheckPermission(context.User, permission) != PermissionResult.Grant)
+            if (await permissions.CheckPermissionAsync(context.User, permission) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(context.User, permission,
                     "You don't have permissions to manage this group.");
 
-            IPermissionGroup groupToUpdate = configPermissions.GetGroup(groupName);
+            IPermissionGroup groupToUpdate = await configPermissions.GetGroupAsync(groupName);
             if (groupToUpdate == null)
             {
-                context.User.SendMessage($"Group \"{groupName}\" was not found.", Color.Red);
+                await context.User.SendMessageAsync($"Group \"{groupName}\" was not found.", Color.Red);
                 return;
             }
 
-            UpdateGroup(context.User, configPermissions, targetPlayer, groupToUpdate);
+            await UpdateGroup(context.User, configPermissions, targetPlayer, groupToUpdate);
         }
 
-        protected abstract void UpdateGroup(IUser user, IPermissionProvider permissions,
+        protected abstract Task UpdateGroup(IUser user, IPermissionProvider permissions,
                                             IUser targetUser, IPermissionGroup groupToUpdate);
     }
 
@@ -78,14 +77,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Permission => "Rocket.Permissions.ManageGroups.Add";
         public override string[] Aliases => new[] { "a", "+" };
 
-        protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
+        protected override async Task UpdateGroup(IUser user, IPermissionProvider permissions,
                                             IUser targetUser, IPermissionGroup groupToUpdate)
         {
-            if (permissions.AddGroup(targetUser, groupToUpdate))
-                user.SendMessage($"Successfully added {targetUser:Name} to \"{groupToUpdate:Name}\"!",
+            if (await permissions.AddGroupAsync(targetUser, groupToUpdate))
+                await user.SendMessageAsync($"Successfully added {targetUser:Name} to \"{groupToUpdate:Name}\"!",
                     Color.DarkGreen);
             else
-                user.SendMessage($"Failed to add {targetUser:Name} to \"{groupToUpdate:Name}\"!", Color.Red);
+                await user.SendMessageAsync($"Failed to add {targetUser:Name} to \"{groupToUpdate:Name}\"!", Color.Red);
         }
     }
 
@@ -96,14 +95,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Permission => "Rocket.Permissions.ManageGroups.Remove";
         public override string[] Aliases => new[] { "r", "-" };
 
-        protected override void UpdateGroup(IUser user, IPermissionProvider permissions,
+        protected override async Task UpdateGroup(IUser user, IPermissionProvider permissions,
                                             IUser targetUser, IPermissionGroup groupToUpdate)
         {
-            if (permissions.RemoveGroup(targetUser, groupToUpdate))
-                user.SendMessage($"Successfully removed {targetUser:Name} from \"{groupToUpdate:Name}\"!",
+            if (await permissions.RemoveGroupAsync(targetUser, groupToUpdate))
+                await user.SendMessageAsync($"Successfully removed {targetUser:Name} from \"{groupToUpdate:Name}\"!",
                     Color.DarkGreen);
             else
-                user.SendMessage($"Failed to remove {targetUser:Name} from \"{groupToUpdate:Name}\"!",
+                await user.SendMessageAsync($"Failed to remove {targetUser:Name} from \"{groupToUpdate:Name}\"!",
                     Color.Red);
         }
     }

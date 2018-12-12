@@ -1,8 +1,7 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Rocket.API.Drawing;
 using Rocket.API.Commands;
 using Rocket.API.Permissions;
-using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.Permissions;
 using Rocket.Core.User;
@@ -24,12 +23,12 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public string[] Aliases => new[] {"P"};
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             throw new CommandWrongUsageException();
         }
 
-        public bool SupportsUser(UserType type) => true;
+        public bool SupportsUser(IUser user) => true;
     }
 
     public abstract class CommandPermissionUpdate : IChildCommand
@@ -43,9 +42,9 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public abstract string[] Aliases { get; }
 
-        public bool SupportsUser(UserType type) => true;
+        public bool SupportsUser(IUser user) => true;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             if (context.Parameters.Length != 3)
                 throw new CommandWrongUsageException();
@@ -54,9 +53,9 @@ namespace Rocket.Core.Commands.RocketCommands
             string permission;
             string permissionFailMessage;
 
-            string type = context.Parameters.Get<string>(0).ToLower();
-            string targetName = context.Parameters.Get<string>(1);
-            string permissionToUpdate = context.Parameters.Get<string>(2);
+            string type = context.Parameters[0].ToLower();
+            string targetName = context.Parameters[1];
+            string permissionToUpdate = context.Parameters[2];
 
             IPermissionProvider configPermissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
@@ -68,10 +67,10 @@ namespace Rocket.Core.Commands.RocketCommands
                     permission = "Rocket.Permissions.ManageGroups." + targetName;
                     permissionFailMessage = "You don't have permissions to manage this group.";
 
-                    target = configPermissions.GetGroup(targetName);
+                    target = await configPermissions.GetGroupAsync(targetName);
                     if (target == null)
                     {
-                        context.User.SendMessage($"Group \"{targetName}\" was not found.", Color.Red);
+                        await context.User.SendMessageAsync($"Group \"{targetName}\" was not found.", Color.Red);
                         return;
                     }
 
@@ -81,20 +80,20 @@ namespace Rocket.Core.Commands.RocketCommands
                 case "player":
                     permission = "Rocket.Permissions.ManagePlayers";
                     permissionFailMessage = "You don't have permissions to manage permissions of players.";
-                    target = context.Parameters.Get<IUser>(1);
+                    target = await context.Parameters.GetAsync<IUser>(1);
                     break;
 
                 default:
                     throw new CommandWrongUsageException();
             }
 
-            if (permissions.CheckPermission(context.User, permission) != PermissionResult.Grant)
+            if (await permissions.CheckPermissionAsync(context.User, permission) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(context.User, permission, permissionFailMessage);
 
-            UpdatePermission(context.User, configPermissions, target, permissionToUpdate);
+            await UpdatePermissionAsync(context.User, configPermissions, target, permissionToUpdate);
         }
 
-        protected abstract void UpdatePermission(IUser user, IPermissionProvider permissions,
+        protected abstract Task UpdatePermissionAsync(IUser user, IPermissionProvider permissions,
                                                  IPermissionEntity target, string permissionToUpdate);
     }
 
@@ -105,14 +104,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Permission => "Rocket.Permissions.ManagePermissions.Add";
         public override string[] Aliases => new[] {"a", "+"};
 
-        protected override void UpdatePermission(IUser user, IPermissionProvider permissions,
+        protected override async Task UpdatePermissionAsync(IUser user, IPermissionProvider permissions,
                                                  IPermissionEntity target, string permissionToUpdate)
         {
-            if (permissions.AddPermission(target, permissionToUpdate))
-                user.SendMessage($"Successfully added \"{permissionToUpdate}\" to \"{target.ToString()}\"!",
+            if (await permissions.AddPermissionAsync(target, permissionToUpdate))
+                await user.SendMessageAsync($"Successfully added \"{permissionToUpdate}\" to \"{target.ToString()}\"!",
                     Color.DarkGreen);
             else
-                user.SendMessage($"Failed to add \"{permissionToUpdate}\" to \"{target.ToString()}\"!", Color.Red);
+                await user.SendMessageAsync($"Failed to add \"{permissionToUpdate}\" to \"{target.ToString()}\"!", Color.Red);
         }
     }
 
@@ -123,14 +122,14 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Permission => "Rocket.Permissions.ManagePermissions.Remove";
         public override string[] Aliases => new[] {"r", "-"};
 
-        protected override void UpdatePermission(IUser user, IPermissionProvider permissions,
+        protected override async Task UpdatePermissionAsync(IUser user, IPermissionProvider permissions,
                                                  IPermissionEntity target, string permissionToUpdate)
         {
-            if (permissions.RemovePermission(target, permissionToUpdate))
-                user.SendMessage($"Successfully removed \"{permissionToUpdate}\" from \"{target.ToString()}\"!",
+            if (await permissions.RemovePermissionAsync(target, permissionToUpdate))
+                await user.SendMessageAsync($"Successfully removed \"{permissionToUpdate}\" from \"{target.ToString()}\"!",
                     Color.DarkGreen);
             else
-                user.SendMessage($"Failed to remove \"{permissionToUpdate}\" from \"{target.ToString()}\"!",
+                await user.SendMessageAsync($"Failed to remove \"{permissionToUpdate}\" from \"{target.ToString()}\"!",
                     Color.Red);
         }
     }
@@ -144,13 +143,13 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"R"};
 
-        public bool SupportsUser(UserType type) => true;
+        public bool SupportsUser(IUser user) => true;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
-            permissions.Reload();
-            context.User.SendMessage("Permissions have been reloaded.", Color.DarkGreen);
+            await permissions.ReloadAsync();
+            await context.User.SendMessageAsync("Permissions have been reloaded.", Color.DarkGreen);
         }
     }
 }

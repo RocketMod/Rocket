@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Rocket.API.Commands
 {
@@ -51,7 +52,7 @@ namespace Rocket.API.Commands
         /// <typeparam name="T">The type to parse the parameter as.</typeparam>
         /// <param name="index">The zero-based parameter index.</param>
         /// <returns>The parsed parameter value.</returns>
-        T Get<T>(int index);
+        Task<T> GetAsync<T>(int index);
 
         /// <summary>
         ///     <inheritdoc cref="Get{T}(int)" />
@@ -66,7 +67,7 @@ namespace Rocket.API.Commands
         /// <returns>
         ///     <inheritdoc cref="Get{T}(int)" />
         /// </returns>
-        object Get(int index, Type type);
+        Task<object> GetAsync(int index, Type type);
 
         /// <summary>
         ///     <inheritdoc cref="Get{T}(int)" />
@@ -82,7 +83,7 @@ namespace Rocket.API.Commands
         ///     the parsed parameter value if the given index was valid and the parameter could be parsed to the given type;
         ///     otherwise <i>defaultValue</i>.
         /// </returns>
-        T Get<T>(int index, T defaultValue);
+        Task<T> GetAsync<T>(int index, T defaultValue);
 
         /// <summary>
         ///     <inheritdoc cref="Get{T}(int, T)" />
@@ -95,7 +96,7 @@ namespace Rocket.API.Commands
         /// <returns>
         ///     <inheritdoc cref="Get{T}(int, T)" />
         /// </returns>
-        object Get(int index, Type type, object defaultValue);
+        Task<object> GetAsync(int index, Type type, object defaultValue);
 
         /// <summary>
         ///     Tries to get and parse a parameter. See <see cref="Get{T}(int)" />.

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.User;
 
 namespace Rocket.API.Commands
@@ -105,7 +106,7 @@ namespace Rocket.API.Commands
         /// </summary>
         /// <param name="user">The user type to check.</param>
         /// <returns><b>true</b> if the given user type can execute this command; otherwise, <b>false</b>.</returns>
-        bool SupportsUser(UserType user);
+        bool SupportsUser(IUser user);
 
         /// <summary>
         ///     Executes the command if no Child Command is involved.
@@ -117,6 +118,6 @@ namespace Rocket.API.Commands
         /// </example>
         /// <seealso cref="ChildCommands" />
         /// <param name="context">The <see cref="ICommandContext">context</see> of the command.</param>
-        void Execute(ICommandContext context);
+        Task ExecuteAsync(ICommandContext context);
     }
 }

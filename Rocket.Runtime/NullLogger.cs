@@ -11,6 +11,7 @@ namespace Rocket
         public bool IsEnabled(LogLevel level) => false;
 
         public void SetEnabled(LogLevel level, bool enabled) { }
+
         public string ServiceName => "NullLogger";
     }
 }

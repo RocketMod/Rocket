@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Entities;
 using Rocket.API.Player;
@@ -14,30 +15,16 @@ namespace Rocket.Tests.Mock
         public string EntityTypeName => "";
 
         public Vector3 Position => new Vector3();
+        public Task<bool> TeleportAsync(Vector3 position, float rotation) => throw new NotImplementedException();
 
         public double MaxHealth => 100;
 
         public double Health { get => 0; set { } }
-    
-        public void Kill()
-        {
-            throw new NotImplementedException();
-        }
+        public Task KillAsync() => throw new NotImplementedException();
 
-        public void Kill(IEntity killer)
-        {
-            throw new NotImplementedException();
-        }
+        public Task KillAsync(IEntity killer) => throw new NotImplementedException();
 
-        public void Kill(IUser killer)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool Teleport(Vector3 position, float rotation)
-        {
-            throw new NotImplementedException();
-        }
+        public Task KillAsync(IUser killer) => throw new NotImplementedException();
     }
 
 
@@ -99,12 +86,12 @@ namespace Rocket.Tests.Mock
         public string Id => "TestPlayerId";
         public string UserName => "TestPlayer";
         public string DisplayName => "TestPlayer";
-        public UserType Type => UserType.Player;
         public IUserManager UserManager => throw new NotImplementedException();
         public bool IsOnline => true;
         public DateTime? LastSeen => DateTime.Now;
 
         public List<IIdentity> Identities => throw new NotImplementedException();
+        public string UserType => "TestPlayer";
 
         public IDependencyContainer Container { get; private set; }
     }

@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Practices.ObjectBuilder2;
+﻿using Microsoft.Practices.ObjectBuilder2;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
 using Rocket.API.User;
 using Rocket.Core.ServiceProxies;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Permissions
 {
@@ -14,18 +15,18 @@ namespace Rocket.Core.Permissions
     {
         public PermissionProviderProxy(IDependencyContainer container) : base(container) { }
 
-        public IEnumerable<string> GetGrantedPermissions(IPermissionEntity target, bool inherit = true)
+        public async Task<IEnumerable<string>> GetGrantedPermissionsAsync(IPermissionEntity target, bool inherit = true)
         {
             return ProxiedServices
                    .Where(c => c.SupportsTarget(target))
-                   .SelectMany(c => c.GetGrantedPermissions(target, inherit));
+                   .SelectMany(c => c.GetGrantedPermissionsAsync(target, inherit).GetAwaiter().GetResult());
         }
 
-        public IEnumerable<string> GetDeniedPermissions(IPermissionEntity target, bool inherit = true)
+        public async Task<IEnumerable<string>> GetDeniedPermissionsAsync(IPermissionEntity target, bool inherit = true)
         {
             return ProxiedServices
                    .Where(c => c.SupportsTarget(target))
-                   .SelectMany(c => c.GetDeniedPermissions(target, inherit));
+                   .SelectMany(c => c.GetDeniedPermissionsAsync(target, inherit).GetAwaiter().GetResult());
         }
 
         public bool SupportsTarget(IPermissionEntity target)
@@ -33,13 +34,13 @@ namespace Rocket.Core.Permissions
             return ProxiedServices.Any(c => c.SupportsTarget(target));
         }
 
-        public PermissionResult CheckPermission(IPermissionEntity target, string permission)
+        public async Task<PermissionResult> CheckPermissionAsync(IPermissionEntity target, string permission)
         {
             GuardTarget(target);
 
             foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsTarget(target)))
             {
-                PermissionResult result = provider.CheckPermission(target, permission);
+                PermissionResult result = await provider.CheckPermissionAsync(target, permission);
                 if (result == PermissionResult.Default)
                     continue;
 
@@ -49,13 +50,13 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAllPermissions(IPermissionEntity target, params string[] permissions)
+        public async Task<PermissionResult> CheckHasAllPermissionsAsync(IPermissionEntity target, params string[] permissions)
         {
             GuardTarget(target);
 
             foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsTarget(target)))
             {
-                PermissionResult result = provider.CheckHasAllPermissions(target, permissions);
+                PermissionResult result = await provider.CheckHasAllPermissionsAsync(target, permissions);
                 if (result == PermissionResult.Default)
                     continue;
 
@@ -65,13 +66,13 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public PermissionResult CheckHasAnyPermission(IPermissionEntity target, params string[] permissions)
+        public async Task<PermissionResult> CheckHasAnyPermissionAsync(IPermissionEntity target, params string[] permissions)
         {
             GuardTarget(target);
 
             foreach (IPermissionProvider provider in ProxiedServices.Where(c => c.SupportsTarget(target)))
             {
-                PermissionResult result = provider.CheckHasAnyPermission(target, permissions);
+                PermissionResult result = await provider.CheckHasAnyPermissionAsync(target, permissions);
                 if (result == PermissionResult.Default)
                     continue;
 
@@ -81,72 +82,75 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public bool AddPermission(IPermissionEntity target, string permission)
+        public Task<bool> AddPermissionAsync(IPermissionEntity target, string permission)
             => throw new NotSupportedException("Adding permissions from proxy is not supported.");
 
-        public bool AddDeniedPermission(IPermissionEntity target, string permission)
+        public Task<bool> AddDeniedPermissionAsync(IPermissionEntity target, string permission)
             => throw new NotSupportedException("Adding inverted permissions from proxy is not supported.");
 
-        public bool RemovePermission(IPermissionEntity target, string permission)
+        public Task<bool> RemovePermissionAsync(IPermissionEntity target, string permission)
             => throw new NotSupportedException("Removing permissions from proxy is not supported.");
 
-        public bool RemoveDeniedPermission(IPermissionEntity target, string permission)
+        public Task<bool> RemoveDeniedPermissionAsync(IPermissionEntity target, string permission)
             => throw new NotSupportedException("Removing inverted permissions from proxy is not supported.");
 
-        public IPermissionGroup GetPrimaryGroup(IUser user)
+        public async Task<IPermissionGroup> GetPrimaryGroupAsync(IPermissionEntity user)
         {
             IPermissionGroup group;
             foreach (IPermissionProvider service in ProxiedServices.Where(c => c.SupportsTarget(user)))
-                if ((group = service.GetPrimaryGroup(user)) != null)
+                if ((group = await service.GetPrimaryGroupAsync(user)) != null)
                     return group;
 
             return null;
         }
 
-        public IPermissionGroup GetGroup(string id)
+        public async Task<IPermissionGroup> GetGroupAsync(string id)
         {
-            return GetGroups().FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
+            return (await GetGroupsAsync()).FirstOrDefault(c => c.Id.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups(IPermissionEntity target)
+        public async Task<IEnumerable<IPermissionGroup>> GetGroupsAsync(IPermissionEntity target)
         {
             return ProxiedServices.Where(c => c.SupportsTarget(target))
-                                  .SelectMany(c => c.GetGroups(target));
+                                  .SelectMany(c => c.GetGroupsAsync(target).GetAwaiter().GetResult());
         }
 
-        public IEnumerable<IPermissionGroup> GetGroups()
+        public async Task<IEnumerable<IPermissionGroup>> GetGroupsAsync()
         {
-            return ProxiedServices.SelectMany(c => c.GetGroups());
+            return ProxiedServices.SelectMany(c => c.GetGroupsAsync().GetAwaiter().GetResult());
         }
 
-        public bool UpdateGroup(IPermissionGroup group)
+        public Task<bool> UpdateGroupAsync(IPermissionGroup group)
             => throw new NotSupportedException("Updating groups from proxy is not supported.");
 
-        public bool AddGroup(IPermissionEntity target, IPermissionGroup group)
+        public Task<bool> AddGroupAsync(IPermissionEntity target, IPermissionGroup group)
             => throw new NotSupportedException("Adding groups from proxy is not supported.");
 
-        public bool RemoveGroup(IPermissionEntity target, IPermissionGroup group)
+        public Task<bool> RemoveGroupAsync(IPermissionEntity target, IPermissionGroup group)
             => throw new NotSupportedException("Removing groups from proxy is not supported.");
 
-        public bool CreateGroup(IPermissionGroup group)
+        public Task<bool> CreateGroupAsync(IPermissionGroup group)
             => throw new NotSupportedException("Creating groups from proxy is not supported.");
 
-        public bool DeleteGroup(IPermissionGroup group)
+        public Task<bool> DeleteGroupAsync(IPermissionGroup group)
             => throw new NotSupportedException("Deleting groups from proxy is not supported.");
 
-        public void Load(IConfigurationContext context)
+        public async Task LoadAsync(IConfigurationContext context)
         {
-            ProxiedServices.ForEach(c => c.Load(context));
+            foreach (var service in ProxiedServices)
+                await service.LoadAsync(context);
         }
 
-        public void Reload()
+        public async Task ReloadAsync()
         {
-            ProxiedServices.ForEach(c => c.Reload());
+            foreach (var service in ProxiedServices)
+                await service.ReloadAsync();
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            ProxiedServices.ForEach(c => c.Save());
+            foreach (var service in ProxiedServices)
+                await service.SaveAsync();
         }
 
         private void GuardTarget(IPermissionEntity target)

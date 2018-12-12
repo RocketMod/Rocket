@@ -1,11 +1,6 @@
 ﻿namespace Rocket.API.User
 {
     /// <summary>
-    ///     Defines built in Rocket identity types.
-    /// </summary>
-    public enum IdentityProvider { Builtin = 1, Steam = 2 };
-
-    /// <summary>
     ///     An identity.
     /// </summary>
     public interface IIdentity
@@ -16,8 +11,8 @@
         string Id { get; }
 
         /// <summary>
-        ///     The identity provider.
+        ///     The identity type (e.g. "rocket", "steam", etc.)
         /// </summary>
-        IdentityProvider Provider { get; }
+        string IdentityType { get; }
     }
 }

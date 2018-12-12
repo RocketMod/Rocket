@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
 using Rocket.Core.Logging;
+using Rocket.Core.User;
 
 namespace Rocket.Tests.Mock.Providers
 {
@@ -17,7 +19,7 @@ namespace Rocket.Tests.Mock.Providers
         public TestHost(IDependencyContainer container, ILogger logger)
         {
             this.logger = logger;
-            Console = new TestConsole(container);
+            Console = new StdConsole(container);
         }
 
         public IEnumerable<string> Capabilities => new List<string>
@@ -34,20 +36,20 @@ namespace Rocket.Tests.Mock.Providers
 
         public string GameName => "Rocket.Test";
 
-        public void Init(IRuntime runtime)
+        public async Task InitAsync(IRuntime runtime)
         {
             logger.LogInformation("Loading host");
-            runtime.Container.Resolve<IPluginLoader>().Init();
+            await runtime.Container.Resolve<IPluginLoader>().InitAsync();
         }
 
-        public void Reload()
+        public async Task ReloadAsync()
         {
             logger.LogInformation("Reloading host");
         }
 
         public IConsole Console { get; }
 
-        public void Shutdown()
+        public async Task ShutdownAsync()
         {
             logger.LogInformation("Shutting down host");
         }

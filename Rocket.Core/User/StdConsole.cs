@@ -14,6 +14,9 @@ namespace Rocket.Core.User
     public class StdConsole : IConsole
     {
         private ConsoleLogger consoleLogger => (ConsoleLogger)Container.Resolve<ILogger>("console_logger");
+
+        public string UserType => "Console";
+
         public IDependencyContainer Container { get; }
 
         public StdConsole(IDependencyContainer container)
@@ -26,7 +29,6 @@ namespace Rocket.Core.User
         public string Id => "console";
         public string DisplayName => "Console";
         public string UserName => "Console";
-        public UserType Type => UserType.Console;
 
         public IUserManager UserManager => Container.Resolve<IUserManager>("stdconsole");
 

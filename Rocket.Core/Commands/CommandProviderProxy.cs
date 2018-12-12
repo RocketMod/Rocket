@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
@@ -29,16 +30,16 @@ namespace Rocket.Core.Commands
             return GetProvider(command)?.GetOwner(command) ?? throw new Exception("Owner not found.");
         }
 
-        public void Init()
+        public async Task InitAsync()
         {
             foreach (var service in ProxiedServices)
             {
-                service.Init();
+                await service.InitAsync();
             }
 
             IRuntime runtime = container.Resolve<IRuntime>();
             var context = runtime.CreateChildConfigurationContext("Commands");
-            configuration.Load(context, new CommandProviderProxyConfig());
+            await configuration.LoadAsync(context, new CommandProviderProxyConfig());
         }
 
         public ICommandProvider GetProvider(ICommand command)
@@ -125,7 +126,7 @@ namespace Rocket.Core.Commands
                 registeredCommands.Select(c => GetProxyCommand(c, commands[c]));
 
             configuration.Set(new CommandProviderProxyConfig { Commands = configCommands.ToArray() });
-            configuration.Save();
+            configuration.SaveAsync().GetAwaiter().GetResult();
         }
 
         private ConfigCommandProxy GetProxyCommand(ICommand command, ICommandProvider provider)

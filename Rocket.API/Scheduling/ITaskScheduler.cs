@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 
 namespace Rocket.API.Scheduling

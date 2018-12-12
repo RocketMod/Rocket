@@ -1,5 +1,4 @@
-﻿using System;
-using Rocket.API.Drawing;
+﻿using Rocket.API.Drawing;
 using System.Globalization;
 
 namespace Rocket.Core.Util

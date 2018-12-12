@@ -1,5 +1,5 @@
-﻿using System;
-using Rocket.API.DependencyInjection;
+﻿using Rocket.API.DependencyInjection;
+using System;
 
 namespace Rocket.API.Logging
 {
@@ -24,5 +24,7 @@ namespace Rocket.API.Logging
         /// <param name="level">The log level to check.</param>
         /// <returns><b>true</b> if the log level is enabled; otherwise, <b>false</b>.</returns>
         bool IsEnabled(LogLevel level);
+
+        void SetEnabled(LogLevel level, bool enabled);
     }
 }

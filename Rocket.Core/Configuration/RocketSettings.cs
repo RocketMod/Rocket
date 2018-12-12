@@ -1,6 +1,4 @@
-﻿using Rocket.API.Logging;
-
-namespace Rocket.Core.Configuration
+﻿namespace Rocket.Core.Configuration
 {
     /// <summary>
     ///     See <see cref="IRocketSettingsProvider" />.

@@ -1,6 +1,5 @@
 ﻿using System;
 using Rocket.API.Permissions;
-using Rocket.API.User;
 
 namespace Rocket.Core.Permissions
 {

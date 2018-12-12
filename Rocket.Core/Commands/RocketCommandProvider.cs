@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.Core.DependencyInjection;
@@ -18,7 +19,7 @@ namespace Rocket.Core.Commands
         }
 
         public ILifecycleObject GetOwner(ICommand command) => runtime;
-        public void Init()
+        public async Task InitAsync()
         {
             IEnumerable<Type> types = typeof(RocketCommandProvider).Assembly.FindTypes<ICommand>()
                                                                    .Where(c => c

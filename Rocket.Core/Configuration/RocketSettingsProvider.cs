@@ -1,4 +1,5 @@
-﻿using Rocket.API;
+﻿using System.Threading.Tasks;
+using Rocket.API;
 using Rocket.API.Configuration;
 
 namespace Rocket.Core.Configuration
@@ -14,22 +15,22 @@ namespace Rocket.Core.Configuration
             this.configuration = configuration;
         }
 
-        public void Load()
+        public async Task LoadAsync()
         {
             ConfigurationContext context = new ConfigurationContext(runtime, "Configuration");
-            configuration.Load(context, Settings);
+            await configuration.LoadAsync(context, Settings);
             Settings = configuration.Get(Settings);
         }
 
-        public void Reload()
+        public async Task ReloadAsync()
         {
-            configuration.Reload();
+            await configuration.ReloadAsync();
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
             configuration.Set(Settings);
-            configuration.Save();
+            await configuration.SaveAsync();
         }
 
         public RocketSettings Settings { get; private set; } = new RocketSettings();

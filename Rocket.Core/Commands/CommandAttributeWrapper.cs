@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.User;
@@ -12,12 +13,12 @@ namespace Rocket.Core.Commands
     [DontAutoRegister]
     public class CommandAttributeWrapper : ICommand
     {
-        private readonly UserType[] supportedUsers;
+        private readonly Type[] supportedUsers;
 
         public CommandAttributeWrapper(object instance, MethodBase method,
                                        CommandAttribute attribute,
                                        string[] aliases,
-                                       UserType[] supportedUsers)
+                                       Type[] supportedUsers)
         {
             this.supportedUsers = supportedUsers;
             Instance = instance;
@@ -40,12 +41,12 @@ namespace Rocket.Core.Commands
         public IChildCommand[] ChildCommands { get; } //todo
         public string[] Aliases { get; }
 
-        public bool SupportsUser(UserType user)
+        public bool  SupportsUser(IUser user)
         {
-            return supportedUsers.Any(u => (u & user) == user);
+            return supportedUsers.Any(u => u.IsInstanceOfType(user));
         }
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
             List<object> @params = new List<object>();
 
@@ -81,7 +82,7 @@ namespace Rocket.Core.Commands
                 {
                     try
                     {
-                        @params.Add(context.Parameters.Get(index, type));
+                        @params.Add(await context.Parameters.GetAsync(index, type));
                     }
                     catch (IndexOutOfRangeException)
                     {

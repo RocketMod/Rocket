@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
@@ -22,7 +23,7 @@ namespace Rocket.Core.Plugins
             base(dependencyContainer, eventBus, logger)
         { }
 
-        protected override IEnumerable<Assembly> LoadAssemblies()
+        protected override async Task<IEnumerable<Assembly>> LoadAssemblies()
         {
             IRuntime runtime = Container.Resolve<IRuntime>();
             List<Assembly> assemblies = new List<Assembly>();

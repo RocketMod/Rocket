@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API.Configuration;
 using Rocket.API.I18N;
 
@@ -14,25 +15,25 @@ namespace Rocket.Core.I18N
             this.config = config;
         }
 
-        public string ToString(string format, IFormatProvider formatProvider) => Get(format);
+        public string ToString(string format, IFormatProvider formatProvider) => GetAsync(format).GetAwaiter().GetResult();
 
-        public string Get(string translationKey, params object[] arguments)
+        public async Task<string> GetAsync(string translationKey, params object[] arguments)
             => string.Format(config[translationKey].Get<string>(), arguments);
 
-        public void Set(string translationKey, string format)
+        public async Task SetAsync(string translationKey, string format)
         {
             if (!config.ChildExists(translationKey))
                 config.CreateSection(translationKey, SectionType.Value);
             config[translationKey].Set(format);
         }
 
-        public void Load(IConfigurationContext context, Dictionary<string, string> defaultConfiguration)
+        public async Task LoadAsync(IConfigurationContext context, Dictionary<string, string> defaultConfiguration)
         {
             if (config.IsLoaded)
                 throw new Exception("Translation locator was already loaded");
 
             config.ConfigurationContext = context;
-            config.Load(new { });
+            await config.LoadAsync(new { });
             foreach (KeyValuePair<string, string> pair in defaultConfiguration)
             {
                 if (config.ChildExists(pair.Key))
@@ -42,17 +43,17 @@ namespace Rocket.Core.I18N
                 config[pair.Key].Set(pair.Value);
             }
 
-            config.Save();
+            await config.SaveAsync();
         }
 
-        public void Reload()
+        public async Task ReloadAsync()
         {
-            config.Reload();
+            await config.ReloadAsync();
         }
 
-        public void Save()
+        public async Task SaveAsync()
         {
-            config.Save();
+            await config.SaveAsync();
         }
 
         public string ServiceName => "RocketTranslations";

@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net35;net461</TargetFrameworks>
     <AssemblyName>Rocket.API</AssemblyName>
@@ -8,7 +8,6 @@
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup> 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
-	<PackageReference Include="Theraot.Core" Version="1.0.5" />
 	<PackageReference Include="AsyncBridge" Version="0.3.1" />
 	<ProjectReference Include="..\Rocket.Compatibility\Rocket.Compatibility.csproj" />
   </ItemGroup>

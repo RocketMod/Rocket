@@ -1,21 +1,27 @@
-﻿using System;
-using System.Diagnostics;
-using Rocket.API.Drawing;
-using System.IO;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Drawing;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
 using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Logging;
+using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Rocket
 {
     public class Runtime : IRuntime
     {
-        private Runtime()
+        public Runtime()
+        {
+            // non public constructor
+        }
+
+        public async Task BootstrapAsync()
         {
             Container = new UnityDependencyContainer();
             Container.RegisterInstance<IRuntime>(this);
@@ -24,10 +30,10 @@ namespace Rocket
             FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(IRuntime).Assembly.Location);
             Container.Activate(typeof(RegistrationByConvention));
 
-            Container.Resolve<ICommandProvider>().Init();
+            await Container.Resolve<ICommandProvider>().InitAsync();
 
             var settingsProvider = Container.Resolve<IRocketSettingsProvider>();
-            settingsProvider.Load();
+            await settingsProvider.LoadAsync();
 
             int p = (int)Environment.OSVersion.Platform;
             bool isLinux = (p == 4) || (p == 6) || (p == 128);
@@ -103,15 +109,15 @@ namespace Rocket
             if (!Directory.Exists(WorkingDirectory))
                 Directory.CreateDirectory(WorkingDirectory);
 
-            permissions.Load(this);
+            await permissions.LoadAsync(this);
 
             Container.Resolve<ILogger>().LogInformation($"Initializing host: {impl.Name}", Color.Green);
-            impl.Init(this);
+            await impl.InitAsync(this);
         }
 
         public IDependencyResolver Resolver { get; private set; }
 
-        public IDependencyContainer Container { get; }
+        public IDependencyContainer Container { get; private set; }
 
         public bool IsAlive => true;
         public string Name => "Rocket.Runtime";
@@ -130,13 +136,11 @@ namespace Rocket
 
         public string ConfigurationName { get; } = "Rocket";
 
-        public static IRuntime Bootstrap() => new Runtime();
-
-        public void Shutdown()
+        public async Task ShutdownAsync()
         {
             Container.Dispose();
         }
 
-        public Version Version { get; }
+        public Version Version { get; private set; }
     }
 }

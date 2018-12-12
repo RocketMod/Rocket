@@ -40,7 +40,7 @@ namespace Rocket.Core.Player
             string subFormat = subFormats.Length > 1 ? subFormats[1] : null;
 
             if (format.Equals("group", StringComparison.OrdinalIgnoreCase))
-                return Container.Resolve<IPermissionProvider>().GetPrimaryGroup(User).Name;
+                return Container.Resolve<IPermissionProvider>().GetPrimaryGroupAsync(User).GetAwaiter().GetResult().Name;
 
             if (IsOnline && Entity is ILivingEntity entity)
             {

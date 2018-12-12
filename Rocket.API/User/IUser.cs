@@ -5,9 +5,6 @@ using Rocket.API.Permissions;
 
 namespace Rocket.API.User
 {
-    [Flags]
-    public enum UserType { Console = 0, Player = 1, Bot = 2 }
-
     /// <summary>
     ///     A message communication User.
     /// </summary>
@@ -23,13 +20,16 @@ namespace Rocket.API.User
         /// </summary>
         IUserManager UserManager { get; }
 
-        UserType Type { get; }
-
         string UserName { get; }
 
         string DisplayName { get; }
 
         List<IIdentity> Identities { get; }
+
+        /// <summary>
+        /// The user type (e.g. "Player", "Console", "Discord" etc)
+        /// </summary>
+        string UserType { get; }
 
         /// <summary>
         ///     The distinct dependency container of the user.

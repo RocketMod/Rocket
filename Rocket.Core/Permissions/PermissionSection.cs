@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration;
 
@@ -22,7 +23,7 @@ namespace Rocket.Core.Permissions
         [ConfigArray("Permission")]
         public virtual string[] Permissions { get; set; } = new string[0];
 
-        public virtual void Save() => throw new NotSupportedException();
+        public virtual Task SaveAsync() => throw new NotSupportedException();
 
         public void SetConfigElement(IConfigurationElement element)
         {
