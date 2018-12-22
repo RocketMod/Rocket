@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Drawing;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
 using Rocket.API.User;
 using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
+using Rocket.Core.User;
 using Rocket.API.Player;
 
 namespace Rocket.Core.Commands
@@ -83,7 +85,7 @@ namespace Rocket.Core.Commands
             {
                 if (e is ICommandFriendlyException exception)
                 {
-                    exception.SendErrorMessage(context);
+                    await exception.SendErrorMessageAsync(context);
                     return true;
                 }
 
