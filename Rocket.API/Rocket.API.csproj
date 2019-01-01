@@ -6,6 +6,10 @@
     <RootNamespace>Rocket.API</RootNamespace>
     <OutputType>Library</OutputType>
 	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Version>0.0.0.0</Version> <!-- Set by CI -->
+	<PackageVersion>0.0.0.0</PackageVersion> <!-- Set by CI -->	
+    <AssemblyVersion>0.0.0.0</AssemblyVersion> <!-- Set by CI --> 
+    <FileVersion>0.0.0.0</FileVersion> <!-- Set by CI -->	
   </PropertyGroup> 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
 	<PackageReference Include="AsyncBridge" Version="0.3.1" />

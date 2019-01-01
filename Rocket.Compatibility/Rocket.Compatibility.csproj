@@ -6,6 +6,10 @@
     <RootNamespace>System</RootNamespace>
     <OutputType>Library</OutputType>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Version>0.0.0.0</Version> <!-- Set by CI -->
+	<PackageVersion>0.0.0.0</PackageVersion> <!-- Set by CI -->	
+    <AssemblyVersion>0.0.0.0</AssemblyVersion> <!-- Set by CI --> 
+    <FileVersion>0.0.0.0</FileVersion> <!-- Set by CI -->	
   </PropertyGroup>
 
   <ItemGroup>
