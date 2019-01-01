@@ -9,9 +9,10 @@ using Rocket.API.User;
 namespace Rocket.Core.Player
 {
     [TypeConverter(typeof(PlayerTypeConverter))]
-    public abstract class BasePlayer<TUser, TEntity> : IPlayer<TUser, TEntity> 
-        where TEntity : IPlayerEntity
-        where TUser : IUser
+    public abstract class BasePlayer<TUser, TEntity, TSelf> : IPlayer<TUser, TEntity, TSelf> 
+        where TEntity : IPlayerEntity<TSelf>
+        where TUser : IPlayerUser<TSelf>
+        where TSelf : IPlayer
     {
         protected BasePlayer(IDependencyContainer container, IPlayerManager manager)
         {
@@ -73,9 +74,5 @@ namespace Rocket.Core.Player
         public abstract DateTime SessionConnectTime { get; }
 
         public abstract DateTime? SessionDisconnectTime { get; }
-
-        IUser IPlayer.User =>  User;
-
-        IPlayerEntity IPlayer.Entity => Entity;
     }
 }

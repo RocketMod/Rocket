@@ -10,8 +10,12 @@ using Rocket.Core.Player;
 
 namespace Rocket.Tests.Mock
 {
-    public sealed class TestEntity : IPlayerEntity, ILivingEntity
+    public sealed class TestEntity : IPlayerEntity<TestPlayer>, ILivingEntity
     {
+        public TestEntity(TestPlayer player)
+        {
+            Player = player;
+        }
         public string EntityTypeName => "";
 
         public Vector3 Position => new Vector3();
@@ -25,10 +29,11 @@ namespace Rocket.Tests.Mock
         public Task KillAsync(IEntity killer) => throw new NotImplementedException();
 
         public Task KillAsync(IUser killer) => throw new NotImplementedException();
+        public TestPlayer Player { get; }
     }
 
 
-    public sealed class TestPlayer : BasePlayer<TestUser, TestEntity>
+    public sealed class TestPlayer : BasePlayer<TestUser, TestEntity, TestPlayer>
     {
         public override string ToString()
         {
@@ -36,7 +41,7 @@ namespace Rocket.Tests.Mock
         }
         public TestPlayer(IDependencyContainer container,  IPlayerManager manager) : base(container, manager)
         {
-            User = new TestUser(container);
+            User = new TestUser(container, this);
         }
 
         public override bool IsOnline => true;
@@ -72,15 +77,16 @@ namespace Rocket.Tests.Mock
 
         public override DateTime? SessionDisconnectTime => DateTime.Now;
 
-        public override TestEntity Entity => new TestEntity();
+        public override TestEntity Entity => new TestEntity(this);
         public override TestUser User { get; }
     }
 
-    public class TestUser : IUser
+    public class TestUser : IPlayerUser<TestPlayer>
     {
-        public TestUser(IDependencyContainer container)
+        public TestUser(IDependencyContainer container, TestPlayer player)
         {
             Container = container;
+            Player = player;
         }
 
         public string Id => "TestPlayerId";
@@ -94,5 +100,6 @@ namespace Rocket.Tests.Mock
         public string UserType => "TestPlayer";
 
         public IDependencyContainer Container { get; private set; }
+        public TestPlayer Player { get; }
     }
 }

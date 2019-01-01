@@ -13,6 +13,7 @@ using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
 using Rocket.Core.User;
 using Rocket.API.Player;
+using Rocket.Core.Player;
 
 namespace Rocket.Core.Commands
 {
@@ -25,10 +26,9 @@ namespace Rocket.Core.Commands
             this.container = container;
         }
 
-
         public Task<bool> HandleCommandAsync(IPlayer player, string commandLine, string prefix)
         {
-            return HandleCommandAsync(player.User, player, commandLine, prefix);
+            return HandleCommandAsync(player.GetUser(), player, commandLine, prefix);
         }
 
         public Task<bool> HandleCommandAsync(IUser user, string commandLine, string prefix)

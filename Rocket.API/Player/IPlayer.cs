@@ -1,40 +1,19 @@
 ﻿using System;
 using Rocket.API.DependencyInjection;
-using Rocket.API.Entities;
-using Rocket.API.User;
 
 namespace Rocket.API.Player
 {
     /// <summary>
     ///     This interface represents a player.
     /// </summary>
-    public interface IPlayer<TUser, TEntity> : IPlayer
-        where TUser : IUser
-        where TEntity : IPlayerEntity
+    public interface IPlayer<TUser, TEntity, TSelf> : IPlayer
+        where TUser : IPlayerUser<TSelf>
+        where TEntity : IPlayerEntity<TSelf>
+        where TSelf : IPlayer
     {
-        /// <summary>
-        ///     Checks if the player is online.
-        /// </summary>
-        bool IsOnline { get; }
+        TUser User { get; }
 
-        new TUser User { get; }
-
-        new TEntity Entity { get; }
-
-        /// <summary>
-        ///     The User connect time.
-        /// </summary>
-        DateTime SessionConnectTime { get; }
-
-        /// <summary>
-        ///     The User disconnect time.
-        /// </summary>
-        DateTime? SessionDisconnectTime { get; }
-
-        /// <summary>
-        ///     The PlayerManager of the player.
-        /// </summary>
-        IPlayerManager PlayerManager { get; }
+        TEntity Entity { get; }
     }
 
     public interface IPlayer : IFormattable
@@ -44,11 +23,7 @@ namespace Rocket.API.Player
         /// </summary>
         bool IsOnline { get; }
 
-        IUser User { get; }
-
         IDependencyContainer Container { get; }
-
-        IPlayerEntity Entity { get; }
 
         /// <summary>
         ///     The User connect time.

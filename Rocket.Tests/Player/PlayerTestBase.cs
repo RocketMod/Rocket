@@ -4,6 +4,7 @@ using System.Globalization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Rocket.API.Player;
 using Rocket.Core.Extensions;
+using Rocket.Core.Player;
 using Rocket.Tests.Mock;
 
 namespace Rocket.Tests.Player
@@ -45,7 +46,7 @@ namespace Rocket.Tests.Player
             TypeConverter playerConverter = TypeConverterExtensions.GetConverter(typeof(IPlayer));
 
             Assert.AreEqual(TestPlayer.User.Id,
-                ((IPlayer) playerConverter.ConvertFromWithContext(Runtime.Container, TestPlayer.User.Id)).User.Id);
+                ((IPlayer) playerConverter.ConvertFromWithContext(Runtime.Container, TestPlayer.User.Id)).GetUser().Id);
         }
 
         protected abstract IPlayerManager GetPlayerManager();
