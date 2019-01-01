@@ -93,7 +93,22 @@ namespace Rocket.Core.Commands
                 }
             }
 
-            Method.Invoke(Instance, @params.ToArray());
+            bool isAsync = false;
+            if (Method is MethodInfo methodInfo)
+            {
+                var returntype = methodInfo.ReturnType;
+                isAsync = typeof(Task).IsAssignableFrom(returntype);
+            }
+
+            if (isAsync)
+            {
+                var task = (Task) Method.Invoke(Instance, @params.ToArray());
+                await task;
+            }
+            else
+            {
+                Method.Invoke(Instance, @params.ToArray());
+            }
         }
 
         private string BuildSyntaxFromMethod()
