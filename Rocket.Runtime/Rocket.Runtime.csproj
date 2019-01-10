@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net35;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <AssemblyName>Rocket.Runtime</AssemblyName>
 	<Description>RocketMod .NET Game Server Plugin Framework Runtime implementation</Description>
     <RootNamespace>Rocket</RootNamespace>
@@ -10,10 +10,6 @@
     <AssemblyVersion>0.0.0.0</AssemblyVersion> <!-- Set by CI --> 
     <FileVersion>0.0.0.0</FileVersion> <!-- Set by CI -->	
   </PropertyGroup> 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net35' ">
-	<PackageReference Include="AsyncBridge" Version="0.3.1" />
-    <ProjectReference Include="..\Rocket.Compatibility\Rocket.Compatibility.csproj" />
-  </ItemGroup>
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net461' ">
     <!-- Stuff which isn't compatible with NET35 -->
 	<PackageReference Include="System.Numerics.Vectors">
