@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Rocket.API.Entities;
 using Rocket.API.Permissions;
 using Rocket.API.Player;
 using Rocket.API.User;
@@ -7,7 +8,7 @@ using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Player
 {
-    public static class PlayerExtensions
+    public static class EntityExtensions
     {
         public static Task<bool> KickAsync(this IPlayer player, IUser kickedBy = null, string reason = null)
         {
@@ -55,6 +56,12 @@ namespace Rocket.Core.Player
         public static IUser GetUser(this IPlayer player)
         {
             return player.GetPrivateProperty<IUser>("User");
+        }
+
+
+        public static IEntity GetEntity(this IPlayer player)
+        {
+            return player.GetPrivateProperty<IEntity>("Entity");
         }
     }
 }

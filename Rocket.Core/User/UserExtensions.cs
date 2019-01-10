@@ -4,6 +4,8 @@ using Rocket.API.User;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Rocket.API.Permissions;
+using Rocket.API.Player;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.User
 {
@@ -101,6 +103,11 @@ namespace Rocket.Core.User
 
             var permissionProvider = user.Container.Resolve<IPermissionProvider>();
             return await permissionProvider.CheckHasAllPermissionsAsync(user, permissions);
+        }
+
+        public static IPlayer GetPlayer(this IUser user)
+        {
+            return user.GetPrivateProperty<IPlayer>("Player");
         }
     }
 }

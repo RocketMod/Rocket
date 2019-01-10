@@ -1,67 +1,15 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{31BA2AC3-EF06-430F-8008-61D16FD567B5}</ProjectGuid>
+    <TargetFrameworks>net461</TargetFrameworks>
+    <AssemblyName>Rocket.Examples.HelloWorld</AssemblyName>
+	<Description>Example "Hello world" project for RocketMod</Description>
+    <RootNamespace>Rocket.Examples.HelloWorld</RootNamespace>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Rocket.Examples.HelloWorldPlugin</RootNamespace>
-    <AssemblyName>HelloWorldPlugin</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+	<GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="HelloWorldPlugin.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Rocket.API\Rocket.API.csproj">
-      <Project>{da356abb-aa77-4b22-9ab1-34a30cf4048a}</Project>
-      <Name>Rocket.API</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rocket.Compatibility\Rocket.Compatibility.csproj">
-      <Project>{01263b0d-9ce3-4d5a-afcb-165592ef24b5}</Project>
-      <Name>Rocket.Compatibility</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Rocket.Core\Rocket.Core.csproj">
-      <Project>{a7056ab1-c5f5-493b-8e47-dc42de69961d}</Project>
-      <Name>Rocket.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-  -->
+    <ProjectReference Include="..\..\Rocket.API\Rocket.API.csproj" />
+    <ProjectReference Include="..\..\Rocket.Compatibility\Rocket.Compatibility.csproj" />
+    <ProjectReference Include="..\..\Rocket.Core\Rocket.Core.csproj" />
+  </ItemGroup> 
 </Project>

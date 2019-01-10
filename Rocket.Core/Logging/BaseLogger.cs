@@ -22,7 +22,7 @@ namespace Rocket.Core.Logging
             typeof(LoggingExtensions),
             typeof(StdConsoleUserManager),
             typeof(UserExtensions),
-            typeof(PlayerExtensions),
+            typeof(EntityExtensions),
         };
 
         private static readonly ICollection<MethodBase> ignoredLoggingMethods = new HashSet<MethodBase>

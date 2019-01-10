@@ -3,7 +3,7 @@ using Rocket.API.DependencyInjection;
 using Rocket.API.User;
 using Rocket.Core.Plugins;
 
-namespace Rocket.Examples.CommandsPlugin
+namespace Rocket.Examples.CommandsExample
 {
     public class CommandsPlugin : Plugin
     {

@@ -1,11 +1,12 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Rocket.API.Commands;
 using Rocket.API.Entities;
 using Rocket.API.Player;
 using Rocket.API.User;
+using Rocket.Core.Player;
 using Rocket.Core.User;
 
-namespace Rocket.Examples.CommandsPlugin
+namespace Rocket.Examples.CommandsExample
 {
     public class SetHealthCommand : ICommand
     {
@@ -17,17 +18,17 @@ namespace Rocket.Examples.CommandsPlugin
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => new[] {"sh"};
 
-        public bool SupportsUser(Type user) => true;
+        public bool SupportsUser(IUser user) => true;
 
-        public void Execute(ICommandContext context)
+        public async Task ExecuteAsync(ICommandContext context)
         {
-            IPlayer target = context.Parameters.Get<IPlayer>(0); // target player is first parameter
-            double health = context.Parameters.Get<double>(1);               // health is second parameter
+            IPlayer target = await context.Parameters.GetAsync<IPlayer>(0); // target player is first parameter
+            double health = await context.Parameters.GetAsync<double>(1);               // health is second parameter
 
-            if (target.IsOnline && target.Entity is ILivingEntity entity)
+            if (target.IsOnline && target.GetEntity() is ILivingEntity entity)
                 entity.Health = health;
             else // the game likely does not support killing players (e.g. Eco)
-                context.User.SendMessage("Target could not be killed :(");
+                await context.User.SendMessageAsync("Target could not be killed :(");
         }
     }
 }

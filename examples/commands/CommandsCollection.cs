@@ -1,12 +1,14 @@
-﻿using Rocket.API.Commands;
+﻿using System.Threading.Tasks;
+using Rocket.API.Commands;
 using Rocket.API.Entities;
 using Rocket.API.I18N;
 using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.Commands;
+using Rocket.Core.Player;
 using Rocket.Core.User;
 
-namespace Rocket.Examples.CommandsPlugin
+namespace Rocket.Examples.CommandsExample
 {
     public class CommandsCollection
     {
@@ -20,12 +22,12 @@ namespace Rocket.Examples.CommandsPlugin
         }
 
         [Command(Summary = "Kills a player.")] //By default, name is the same as the method name, and it will support all command callers
-        public void KillPlayer(IUser sender, IPlayer target)
+        public async Task KillPlayer(IUser sender, IPlayer target)
         {
-            if (target.IsOnline && target.Entity is ILivingEntity entity)
-                entity.Kill(sender);
+            if (target.IsOnline && target.GetEntity() is ILivingEntity entity)
+                await entity.KillAsync(sender);
             else // the game likely does not support killing players (e.g. Eco)
-                sender.SendMessage("Target could not be killed :(");
+                await sender.SendMessageAsync("Target could not be killed :(");
         }
 
         [Command(Name = "Broadcast", Summary = "Broadcasts a message.")]
@@ -33,7 +35,7 @@ namespace Rocket.Examples.CommandsPlugin
         [CommandUser(typeof(IConsole))] // only console can call it
         public void Broadcast(IUser sender, string[] args)
         {
-            userManager.Broadcast(sender, translations.Get("broadcast", sender, string.Join(" ", args)));
+            userManager.BroadcastAsync(sender, translations.GetAsync("broadcast", sender, string.Join(" ", args)).Result);
         }
     }
 }
