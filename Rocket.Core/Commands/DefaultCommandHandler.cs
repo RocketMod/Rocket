@@ -28,7 +28,7 @@ namespace Rocket.Core.Commands
 
         public Task<bool> HandleCommandAsync(IPlayer player, string commandLine, string prefix)
         {
-            return HandleCommandAsync(player.GetUser(), player, commandLine, prefix);
+            return HandleCommandAsync(player.User, player, commandLine, prefix);
         }
 
         public Task<bool> HandleCommandAsync(IUser user, string commandLine, string prefix)

@@ -46,7 +46,7 @@ namespace Rocket.Tests.Player
             TypeConverter playerConverter = TypeConverterExtensions.GetConverter(typeof(IPlayer));
 
             Assert.AreEqual(TestPlayer.User.Id,
-                ((IPlayer) playerConverter.ConvertFromWithContext(Runtime.Container, TestPlayer.User.Id)).GetUser().Id);
+                ((IPlayer) playerConverter.ConvertFromWithContext(Runtime.Container, TestPlayer.User.Id)).User.Id);
         }
 
         protected abstract IPlayerManager GetPlayerManager();

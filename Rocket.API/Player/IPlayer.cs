@@ -1,5 +1,7 @@
 ﻿using System;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Entities;
+using Rocket.API.User;
 
 namespace Rocket.API.Player
 {
@@ -11,9 +13,9 @@ namespace Rocket.API.Player
         where TEntity : IPlayerEntity<TSelf>
         where TSelf : IPlayer
     {
-        TUser User { get; }
+        new TUser User { get; }
 
-        TEntity Entity { get; }
+        new TEntity Entity { get; }
     }
 
     public interface IPlayer : IFormattable
@@ -39,5 +41,9 @@ namespace Rocket.API.Player
         ///     The PlayerManager of the player.
         /// </summary>
         IPlayerManager PlayerManager { get; }
+
+        IUser User { get; }
+
+        IEntity Entity { get; }
     }
 }

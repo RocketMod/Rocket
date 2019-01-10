@@ -23,6 +23,9 @@ namespace Rocket.Core.Player
         public IDependencyContainer Container { get; }
 
         public IPlayerManager PlayerManager { get; }
+        IUser IPlayer.User => User;
+
+        IEntity IPlayer.Entity => Entity;
 
         public virtual string ToString(string format, IFormatProvider formatProvider)
         {

@@ -25,7 +25,7 @@ namespace Rocket.Examples.CommandsExample
             IPlayer target = await context.Parameters.GetAsync<IPlayer>(0); // target player is first parameter
             double health = await context.Parameters.GetAsync<double>(1);               // health is second parameter
 
-            if (target.IsOnline && target.GetEntity() is ILivingEntity entity)
+            if (target.IsOnline && target.Entity is ILivingEntity entity)
                 entity.Health = health;
             else // the game likely does not support killing players (e.g. Eco)
                 await context.User.SendMessageAsync("Target could not be killed :(");

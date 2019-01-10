@@ -24,7 +24,7 @@ namespace Rocket.Examples.CommandsExample
         [Command(Summary = "Kills a player.")] //By default, name is the same as the method name, and it will support all command callers
         public async Task KillPlayer(IUser sender, IPlayer target)
         {
-            if (target.IsOnline && target.GetEntity() is ILivingEntity entity)
+            if (target.IsOnline && target.Entity is ILivingEntity entity)
                 await entity.KillAsync(sender);
             else // the game likely does not support killing players (e.g. Eco)
                 await sender.SendMessageAsync("Target could not be killed :(");
