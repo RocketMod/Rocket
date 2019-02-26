@@ -26,17 +26,7 @@ namespace Rocket.Core.Commands
             this.container = container;
         }
 
-        public Task<bool> HandleCommandAsync(IPlayer player, string commandLine, string prefix)
-        {
-            return HandleCommandAsync(player.User, player, commandLine, prefix);
-        }
-
-        public Task<bool> HandleCommandAsync(IUser user, string commandLine, string prefix)
-        {
-            return HandleCommandAsync(user,null, commandLine, prefix);
-        }
-
-        public async Task<bool> HandleCommandAsync(IUser user,IPlayer player,string commandLine, string prefix)
+        public async Task<bool> HandleCommandAsync(IUser user, string commandLine, string prefix)
         {
             GuardUser(user);
 
@@ -50,7 +40,7 @@ namespace Rocket.Core.Commands
                 contextContainer.Resolve<ILogger>().LogInformation($"{user.ToString()} executed command: \"{commandLine}\"");
 
             CommandContext context = new CommandContext(contextContainer,
-                user,player, prefix, null,
+                user,prefix, null,
                 args[0], args.Skip(1).ToArray(), null, null);
 
             ICommand target = context.Container.Resolve<ICommandProvider>()
@@ -139,7 +129,6 @@ namespace Rocket.Core.Commands
             CommandContext childContext = new CommandContext(
                 context.Container.CreateChildContainer(),
                 context.User,
-                context.Player,
                 context.CommandPrefix + context.CommandAlias + " ",
                 cmd,
                 alias,

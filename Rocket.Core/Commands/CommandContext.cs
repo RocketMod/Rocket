@@ -12,7 +12,6 @@ namespace Rocket.Core.Commands
     {
         public CommandContext(IDependencyContainer container,
                               IUser user,
-                              IPlayer player,
                               string commandPrefix,
                               ICommand command,
                               string commandAlias,
@@ -22,7 +21,6 @@ namespace Rocket.Core.Commands
         {
             Container = container;
             User = user;
-            Player = player;
             Command = command;
             CommandAlias = commandAlias;
             ParentContext = parentCommandContext;
@@ -33,7 +31,6 @@ namespace Rocket.Core.Commands
 
         public ICommand Command { get; internal set; }
         public IUser User { get; }
-        public IPlayer Player { get; }
         public ICommandContext ChildContext { get; internal set; }
         public ICommandContext ParentContext { get; }
         public ICommandContext RootContext { get; }

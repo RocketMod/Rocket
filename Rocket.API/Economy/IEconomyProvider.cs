@@ -145,6 +145,6 @@ namespace Rocket.API.Economy
         /// <summary>
         ///     Checks if the provider supports multiple accounts per user.
         /// </summary>
-        Task<bool> SupportsMultipleAccountsAsync { get; }
+        bool SupportsMultipleAccounts { get; }
     }
 }
