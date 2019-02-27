@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using Microsoft.Practices.Unity;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Logging;
 using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
+using Unity;
+using Unity.Lifetime;
+using Unity.Registration;
 
 namespace Rocket.Core.DependencyInjection
 {
@@ -137,8 +139,7 @@ namespace Rocket.Core.DependencyInjection
         {
             foreach (ContainerRegistration registration in container.Registrations
                                                                     .Where(p => p.RegisteredType == type
-                                                                        && p.LifetimeManagerType
-                                                                        == typeof(ContainerControlledLifetimeManager)
+                                                                        && p.LifetimeManager?.GetType() == typeof(ContainerControlledLifetimeManager)
                                                                         && (mappingNames == null
                                                                             || mappingNames.Length == 0
                                                                             || mappingNames.Any(c
@@ -213,7 +214,7 @@ namespace Rocket.Core.DependencyInjection
                 Logger?.LogTrace("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered<T>(mappingName))
-                return container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+                return container.Resolve<T>(mappingName);
 
             throw new ServiceResolutionFailedException(typeof(T), mappingName);
         }
@@ -227,8 +228,13 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogTrace("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
 
+            if (parameters.Length > 0)
+            {
+                throw new NotSupportedException("Resolving with parameters is currently not supported.");
+            }
+
             if (IsRegistered<T>(mappingName))
-                return container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+                return container.Resolve<T>(mappingName/*, new OrderedParametersOverride(parameters)*/);
 
             throw new ServiceResolutionFailedException(typeof(T), mappingName);
         }
@@ -243,7 +249,7 @@ namespace Rocket.Core.DependencyInjection
                 Logger?.LogTrace("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
 
             if (IsRegistered(serviceType, mappingName))
-                return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+                return container.Resolve(serviceType, mappingName);
 
             throw new ServiceResolutionFailedException(serviceType, mappingName);
         }
@@ -257,8 +263,13 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
                 Logger?.LogTrace("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
 
+            if (parameters.Length > 0)
+            {
+                throw new NotSupportedException("Resolving with parameters is currently not supported.");
+            }
+
             if (IsRegistered(serviceType, mappingName))
-                return container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+                return container.Resolve(serviceType, mappingName /*, new OrderedParametersOverride(parameters)*/);
 
             throw new ServiceResolutionFailedException(serviceType, mappingName);
         }
@@ -279,7 +290,12 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogTrace("Trying to resolve all: <" + typeof(T).Name + ">");
 
-            return container.ResolveAll<T>(new OrderedParametersOverride(parameters))
+            if (parameters.Length > 0)
+            {
+                throw new NotSupportedException("Resolving with parameters is currently not supported.");
+            }
+
+            return container.ResolveAll<T>(/*new OrderedParametersOverride(parameters)*/)
                             .Where(c => !(c is IServiceProxy));
         }
 
@@ -299,7 +315,12 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(type))
                 Logger?.LogTrace("Trying to resolve all: <" + type.Name + ">");
 
-            return container.ResolveAll(type, new OrderedParametersOverride(parameters))
+            if (parameters.Length > 0)
+            {
+                throw new NotSupportedException("Resolving with parameters is currently not supported.");
+            }
+
+            return container.ResolveAll(type/*, new OrderedParametersOverride(parameters)*/)
                             .Where(c => !(c is IServiceProxy));
         }
 
@@ -318,7 +339,7 @@ namespace Rocket.Core.DependencyInjection
 
             if (IsRegistered<T>(mappingName))
             {
-                output = container.Resolve<T>(mappingName, new OrderedParametersOverride(new object[0]));
+                output = container.Resolve<T>(mappingName);
 
                 return true;
             }
@@ -337,9 +358,14 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(typeof(T)))
                 Logger?.LogTrace("Trying to resolve: <" + typeof(T).Name + ">; mappingName: " + mappingName);
 
+            if (parameters.Length > 0)
+            {
+                throw new NotSupportedException("Resolving with parameters is currently not supported.");
+            }
+
             if (IsRegistered<T>(mappingName))
             {
-                output = container.Resolve<T>(mappingName, new OrderedParametersOverride(parameters));
+                output = container.Resolve<T>(mappingName/*, new OrderedParametersOverride(parameters)*/);
 
                 return true;
             }
@@ -360,7 +386,7 @@ namespace Rocket.Core.DependencyInjection
 
             if (IsRegistered(serviceType, mappingName))
             {
-                output = container.Resolve(serviceType, mappingName, new OrderedParametersOverride(new object[0]));
+                output = container.Resolve(serviceType, mappingName);
 
                 return true;
             }
@@ -382,9 +408,14 @@ namespace Rocket.Core.DependencyInjection
             if (!typeof(ILogger).IsAssignableFrom(serviceType))
                 Logger?.LogTrace("Trying to resolve: <" + serviceType.Name + ">; mappingName: " + mappingName);
 
+            if (parameters.Length > 0)
+            {
+                throw new NotSupportedException("Resolving with parameters is currently not supported.");
+            }
+
             if (IsRegistered(serviceType, mappingName))
             {
-                output = container.Resolve(serviceType, mappingName, new OrderedParametersOverride(parameters));
+                output = container.Resolve(serviceType, mappingName/*, new OrderedParametersOverride(parameters)*/);
 
                 return true;
             }

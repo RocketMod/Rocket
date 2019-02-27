@@ -1,8 +1,6 @@
-﻿using Microsoft.Practices.ObjectBuilder2;
-using Rocket.API.Configuration;
+﻿using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Permissions;
-using Rocket.API.User;
 using Rocket.Core.ServiceProxies;
 using System;
 using System.Collections.Generic;
