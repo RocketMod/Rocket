@@ -37,7 +37,7 @@ namespace Rocket.Core.Commands
             IRocketSettingsProvider settings = contextContainer.Resolve<IRocketSettingsProvider>();
 
             if (settings.Settings.Logging.EnableCommandExecutionsLogs)
-                contextContainer.Resolve<ILogger>().LogInformation($"{user.ToString()} executed command: \"{commandLine}\"");
+                contextContainer.Resolve<ILogger>().LogInformation($"{user.UserName} executed command: \"{commandLine}\"");
 
             CommandContext context = new CommandContext(contextContainer,
                 user,prefix, null,
