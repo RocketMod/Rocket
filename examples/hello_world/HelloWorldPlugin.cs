@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins;
@@ -26,7 +27,7 @@ namespace Rocket.Examples.HelloWorld
             {"some_translatable_message", "This is some translatable / replaceable text!"}
         };
 
-        protected override void OnActivate(bool isFromReload)
+        protected override async Task OnActivate(bool isFromReload)
         {
             Logger.LogInformation("Hello world!");
         }
