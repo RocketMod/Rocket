@@ -16,6 +16,8 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
+//todo: find dependencies
+//implement method
 namespace Rocket.Core.Plugins.NuGet
 {
     public class NuGetPluginLoader : ClrPluginLoader
@@ -81,13 +83,13 @@ namespace Rocket.Core.Plugins.NuGet
                         {
                             Name = "rocketmod",
                             Url = "http://nuget.rocketmod.net/",
-                            Enabled = true
+                            IsEnabled = true
                         },
                         new Repository
                         {
                             Name = "nuget",
-                            Url = "https://www.nuget.org/api/v2",
-                            Enabled = true
+                            Url = "https://api.nuget.org/v3/index.json",
+                            IsEnabled = true
                         }
                     }
                 }).GetAwaiter().GetResult();
@@ -97,30 +99,34 @@ namespace Rocket.Core.Plugins.NuGet
             }
         }
 
-        public virtual IEnumerable<Repository> Repositories
-            => Configuration["Repositories"].Get<Repository[]>();
+        public virtual IEnumerable<Repository> Repositories => Configuration["Repositories"].Get<Repository[]>();
 
-        public async Task<NuGetInstallResult> Update(string packageName, string version = null, string repoName = null, bool isPreRelease = false)
+        public async Task<NuGetInstallResult> UpdateAsync(string packageName, string version = null, string repoName = null, bool isPreRelease = false)
         {
-            return await InstallOrUpdate(packageName, version, repoName, isPreRelease, true);
+            return await InstallOrUpdateAsync(packageName, version, repoName, isPreRelease, true);
         }
 
-        public async Task<NuGetInstallResult> Install(string packageName, string version = null, string repoName = null, bool isPreRelease = false)
+        public async Task<NuGetInstallResult> InstallAsync(string packageName, string version = null, string repoName = null, bool isPreRelease = false)
         {
-            return await InstallOrUpdate(packageName, version, repoName, isPreRelease);
+            return await InstallOrUpdateAsync(packageName, version, repoName, isPreRelease);
         }
 
-        protected virtual async Task<NuGetInstallResult> InstallOrUpdate(string packageName, string version = null, string repoName = null, bool isPreRelease = false, bool isUpdate = false)
+        protected virtual async Task<NuGetInstallResult> InstallOrUpdateAsync(string packageName, string version = null, string repoName = null, bool isPreRelease = false, bool isUpdate = false)
         {
             if (isUpdate && !PackageExists(packageName))
                 return NuGetInstallResult.PackageNotFound;
 
+            Repository repo;
             if (repoName == null)
             {
-                repoName = FindRepositoryForPackage(packageName, isPreRelease);
+                repo = await FindRepositoryForPackageAsync(packageName, version, isPreRelease);
+            }
+            else
+            {
+                repo = Repositories.FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
             }
 
-            if (repoName == null)
+            if (repo == null)
             {
                 return NuGetInstallResult.PackageNotFound;
             }
@@ -128,39 +134,42 @@ namespace Rocket.Core.Plugins.NuGet
             if (isUpdate
                 || Packages.NugetPackages.Any(c => c.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase))
                 || PackageExists(packageName))
-                await Uninstall(packageName);
+                await UninstallAsync(packageName);
 
-            var configRepo = Repositories.FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
-
-            if (configRepo == null)
-                return NuGetInstallResult.RepositoryNotFound;
-
-            if (!configRepo.Enabled)
-                return NuGetInstallResult.RepositoryNotFound;
-
-            var repo = client.FetchRepository(configRepo.Url);
-            List<NuGetPackage> packages = client.QueryPackages(repo, new NuGetQuery
+            if (!repo.IsEnabled)
             {
-                Name = packageName
-            }, isPreRelease)
+                return NuGetInstallResult.RepositoryNotFound;
+            }
+
+            List<NuGetPackage> packages = (await client.QueryPackagesAsync(repo.Url, new NuGetQuery
+            {
+                Name = packageName,
+                PreRelease = isPreRelease,
+                Version = version
+            }))
             //Todo: remove after harbor queries are fixed                                    
             .Where(c => c.Id.ToLower().Contains(packageName.ToLower())).ToList();
 
             if (packages.Count == 0)
+            {
                 return NuGetInstallResult.PackageNotFound;
+            }
 
             if (packages.Count > 1)
+            {
                 return NuGetInstallResult.MultipleMatch;
+            }
 
             var package = packages.First();
             version = version ?? package.Version;
-            var targetVersion =
-                package.Versions.FirstOrDefault(c => c.Version.Equals(version, StringComparison.OrdinalIgnoreCase));
+            var targetVersion = package.Versions.FirstOrDefault(c => c.Version.Equals(version, StringComparison.OrdinalIgnoreCase));
 
             if (targetVersion == null)
+            {
                 return NuGetInstallResult.VersionNotFound;
+            }
 
-            byte[] data = client.DownloadPackage(repo, targetVersion);
+            byte[] data = await client.DownloadPackageAsync(repo.Url, targetVersion);
 
             string uid = package.Id + "." + targetVersion.Version;
             if (!Directory.Exists(PackagesDirectory))
@@ -196,14 +205,29 @@ namespace Rocket.Core.Plugins.NuGet
             return NuGetInstallResult.Success;
         }
 
-        public string FindRepositoryForPackage(string packageName, bool includePreReleases = false)
+        public async Task<Repository> FindRepositoryForPackageAsync(string packageName, string version = null, bool includePreReleases = false)
         {
-            //todo: return repository with highest version
+            foreach (Repository repository in Repositories.Where(d => d.IsEnabled))
+            {
+                var results = (await client.QueryPackagesAsync(repository.Url, new NuGetQuery
+                {
+                    Name = packageName,
+                    Version = version,
+                    PreRelease = includePreReleases
+                })).ToList();
 
-            throw new NotImplementedException();
+                if (results.Count == 0)
+                {
+                    continue;
+                }
+
+                return repository;
+            }
+
+            return null;
         }
 
-        public virtual async Task<bool> Uninstall(string packageName)
+        public virtual async Task<bool> UninstallAsync(string packageName)
         {
             PackagesConfiguration config = Packages;
             var list = config.NugetPackages.ToList();
@@ -236,7 +260,7 @@ namespace Rocket.Core.Plugins.NuGet
 
         protected virtual async Task<bool> LoadPluginFromNugetPackageAsync(string packagePath)
         {
-            var assemblies = await LoadAssembliesFromNugetPackageAync(packagePath);
+            var assemblies = await LoadAssembliesFromNugetPackageAsync(packagePath);
             bool success = false;
             foreach (var asm in assemblies)
             {
@@ -272,7 +296,7 @@ namespace Rocket.Core.Plugins.NuGet
         }
 
         public override string ServiceName => "NuGet Plugins";
-        protected override async Task<IEnumerable<Assembly>> LoadAssemblies()
+        protected override async Task<IEnumerable<Assembly>> LoadAssembliesAsync()
         {
             List<Assembly> assemblies = new List<Assembly>();
             if (!Directory.Exists(PackagesDirectory))
@@ -285,7 +309,7 @@ namespace Rocket.Core.Plugins.NuGet
                 if (!File.Exists(nugetPackageFile))
                     continue;
 
-                assemblies.AddRange(await LoadAssembliesFromNugetPackageAync(nugetPackageFile));
+                assemblies.AddRange(await LoadAssembliesFromNugetPackageAsync(nugetPackageFile));
             }
 
             return assemblies;
@@ -344,7 +368,7 @@ namespace Rocket.Core.Plugins.NuGet
                 if (isInstalled)
                     continue;
 
-                var result = await Install(package.Id, isLatest ? null : package.Version, null, true);
+                var result = await InstallAsync(package.Id, isLatest ? null : package.Version, null, true);
                 if (result != NuGetInstallResult.Success)
                     Logger.LogWarning($"Package \"{package.Id}\" failed to install: " + result);
                 else
@@ -352,7 +376,7 @@ namespace Rocket.Core.Plugins.NuGet
             }
         }
 
-        public virtual async Task<IEnumerable<Assembly>> LoadAssembliesFromNugetPackageAync(string nugetPackageFile)
+        public virtual async Task<IEnumerable<Assembly>> LoadAssembliesFromNugetPackageAsync(string nugetPackageFile)
         {
             List<Assembly> allAssemblies = new List<Assembly>();
             using (Stream fs = new FileStream(nugetPackageFile, FileMode.Open))

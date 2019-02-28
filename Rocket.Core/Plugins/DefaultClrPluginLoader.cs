@@ -23,7 +23,7 @@ namespace Rocket.Core.Plugins
             base(dependencyContainer, eventBus, logger)
         { }
 
-        protected override async Task<IEnumerable<Assembly>> LoadAssemblies()
+        protected override async Task<IEnumerable<Assembly>> LoadAssembliesAsync()
         {
             IRuntime runtime = Container.Resolve<IRuntime>();
             List<Assembly> assemblies = new List<Assembly>();

@@ -52,7 +52,7 @@ namespace Rocket.Core.Plugins
         {
             Logger.LogDebug($"[{GetType().Name}] Initializing CLR plugins.");
 
-            assemblies = await LoadAssemblies();
+            assemblies = await LoadAssembliesAsync();
 
             IRuntime runtime = Container.Resolve<IRuntime>();
 
@@ -252,7 +252,7 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        protected abstract Task<IEnumerable<Assembly>> LoadAssemblies();
+        protected abstract Task<IEnumerable<Assembly>> LoadAssembliesAsync();
 
         protected virtual Assembly LoadCachedAssembly(string path)
         {

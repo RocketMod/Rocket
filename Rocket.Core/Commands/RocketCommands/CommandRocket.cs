@@ -110,7 +110,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 }
             }
 
-            var result = await pm.Install(packageName, version, repoName, isPre);
+            var result = await pm.InstallAsync(packageName, version, repoName, isPre);
             if (result != NuGetInstallResult.Success)
             {
                 await context.User.SendMessageAsync($"Failed to install \"{packageName}\": " + result, Color.DarkRed);
@@ -142,7 +142,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
             string packageName = context.Parameters[0];
 
-            if (!await pm.Uninstall(packageName))
+            if (!await pm.UninstallAsync(packageName))
             {
                 await context.User.SendMessageAsync($"Failed to uninstall \"{packageName}\"", Color.DarkRed);
                 return;
@@ -202,7 +202,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 }
             }
 
-            var result = await pm.Update(pluginName, version, repoName, isPre);
+            var result = await pm.UpdateAsync(pluginName, version, repoName, isPre);
             if (result != NuGetInstallResult.Success)
             {
                 await context.User.SendMessageAsync($"Failed to update \"{pluginName}\": " + result, Color.DarkRed);
