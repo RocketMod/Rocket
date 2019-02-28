@@ -2,5 +2,9 @@
     public class NuGetQuery
     {
         public string Name { get; set; }
+
+        public string Version { get; set; }
+
+        public bool PreRelease { get; set; }
     }
 }

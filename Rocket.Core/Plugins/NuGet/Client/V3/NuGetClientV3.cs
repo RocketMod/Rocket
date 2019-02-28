@@ -1,12 +1,12 @@
-﻿using System;
+﻿using RestSharp;
+using Rocket.API.DependencyInjection;
+using Rocket.API.Logging;
+using Rocket.Core.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using RestSharp;
-using Rocket.API.DependencyInjection;
-using Rocket.API.Logging;
-using Rocket.Core.Logging;
 
 namespace Rocket.Core.Plugins.NuGet.Client.V3
 {
@@ -35,15 +35,25 @@ namespace Rocket.Core.Plugins.NuGet.Client.V3
             return repo;
         }
 
-        public IEnumerable<NuGetPackage> QueryPackages(NuGetRepository repository, NuGetQuery query = null, bool isPreRelease = false)
+        public IEnumerable<NuGetPackage> QueryPackages(NuGetRepository repository, NuGetQuery query)
         {
             var client = GetRestClient(repository.BaseUrl);
-            var prereleaseSuffix = isPreRelease ? (query == null ? "?" : "&") + "prerelease=true" : "";
 
-            RestRequest request = new RestRequest(query == null ? "query" + prereleaseSuffix : "query?q={QUERY}" + prereleaseSuffix, Method.GET);
+            RestRequest request = new RestRequest("query", Method.GET);
+            if (query.PreRelease)
+            {
+                request.AddQueryParameter("prerelease", "true");
+            }
 
-            if (query != null)
-                request.AddParameter("QUERY", query.Name, ParameterType.UrlSegment);
+            if (!string.IsNullOrEmpty(query.Name))
+            {
+                request.AddQueryParameter("q", query.Name);
+            }
+
+            if (!string.IsNullOrEmpty(query.Version))
+            {
+                request.AddQueryParameter("semVerLevel", query.Version);
+            }
 
             var result = client.Execute<NuGetQueryResult>(request);
 
