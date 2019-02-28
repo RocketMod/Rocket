@@ -145,7 +145,7 @@ namespace Rocket.Core.Plugins
             IsAlive = true;
             try
             {
-                OnActivate(isReload);
+                await OnActivate(isReload);
             }
             catch (Exception ex)
             {
@@ -189,7 +189,7 @@ namespace Rocket.Core.Plugins
 
             try
             {
-                OnDeactivate();
+                await OnDeactivate();
             }
             catch (Exception ex)
             {
@@ -218,8 +218,8 @@ namespace Rocket.Core.Plugins
             p?.RegisterCommands(Container, o);
         }
 
-        protected virtual void OnActivate(bool isFromReload) { }
-        protected virtual void OnDeactivate() { }
+        protected virtual async Task OnActivate(bool isFromReload) { }
+        protected virtual async Task OnDeactivate() { }
 
         public void Subscribe(IEventListener listener)
         {
