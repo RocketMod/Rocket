@@ -68,35 +68,39 @@ namespace Rocket.Core.Plugins.NuGet
                 if (configuration != null)
                     return configuration;
 
-                configuration = Container.Resolve<IConfiguration>();
-
-                PackagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
-                if (!Directory.Exists(PackagesDirectory))
-                    Directory.CreateDirectory(PackagesDirectory);
-
-                ConfigurationContext context = new ConfigurationContext(PackagesDirectory, "repositories");
-                configuration.LoadAsync(context, new
-                {
-                    Repositories = new[]
-                    {
-                        new Repository
-                        {
-                            Name = "rocketmod",
-                            Url = "http://nuget.rocketmod.net/",
-                            IsEnabled = true
-                        },
-                        new Repository
-                        {
-                            Name = "nuget",
-                            Url = "https://api.nuget.org/v3/index.json",
-                            IsEnabled = true
-                        }
-                    }
-                }).GetAwaiter().GetResult();
-                configuration.SaveAsync().GetAwaiter().GetResult();
-
+                CreateConfiguration();
                 return configuration;
             }
+        }
+
+        private void CreateConfiguration()
+        {
+            configuration = Container.Resolve<IConfiguration>();
+
+            PackagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
+            if (!Directory.Exists(PackagesDirectory))
+                Directory.CreateDirectory(PackagesDirectory);
+
+            ConfigurationContext context = new ConfigurationContext(PackagesDirectory, "repositories");
+            configuration.LoadAsync(context, new
+            {
+                Repositories = new[]
+                {
+                    new Repository
+                    {
+                        Name = "rocketmod",
+                        Url = "http://nuget.rocketmod.net/",
+                        IsEnabled = true
+                    },
+                    new Repository
+                    {
+                        Name = "nuget",
+                        Url = "https://api.nuget.org/v3/index.json",
+                        IsEnabled = true
+                    }
+                }
+            }).GetAwaiter().GetResult();
+            configuration.SaveAsync().GetAwaiter().GetResult();
         }
 
         public virtual IEnumerable<Repository> Repositories => Configuration["Repositories"].Get<Repository[]>();
@@ -317,7 +321,8 @@ namespace Rocket.Core.Plugins.NuGet
 
         public override async Task InitAsync()
         {
-            Logger.LogDebug($"[{GetType().Name}] Initializing Nuget plugins.");
+            Logger.LogDebug($"[{GetType().Name}] Initializing NuGet.");
+            CreateConfiguration();
 
             PluginManagerInitEvent pluginManagerInitEvent =
                 new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
