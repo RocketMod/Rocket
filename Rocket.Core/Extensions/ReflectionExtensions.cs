@@ -51,7 +51,9 @@ namespace Rocket.Core.Extensions
                     frameMethod = frame.GetMethod();
 
                     // Check parent frame - if its from AsyncMethodBuilderCore, its definitely an async Task
-                    if (frameMethod is MethodInfo parentFrameMethodInfo && parentFrameMethodInfo.DeclaringType?.Name == "AsyncMethodBuilderCore")
+                    if (frameMethod is MethodInfo parentFrameMethodInfo && 
+                        (parentFrameMethodInfo.DeclaringType?.Name == "AsyncMethodBuilderCore"
+                            || parentFrameMethodInfo.DeclaringType?.Name == "AsyncTaskMethodBuilder"))
                     {
                         frame = st.GetFrame(++tmpIndex);
                         frameMethod = frame.GetMethod();
