@@ -37,9 +37,9 @@ namespace Rocket.Core.Plugins
                 Logger.LogDebug("Loaded rocket assembly: " + entry.Key + " -> " + entry.Value);
             */
 
-            var packagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
-            Directory.CreateDirectory(packagesDirectory);
-            packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(packagesDirectory);
+            var librariesDirectory = Path.Combine(runtime.WorkingDirectory, "Library");
+            Directory.CreateDirectory(librariesDirectory);
+            packageAssemblies = ReflectionExtensions.GetAssembliesFromDirectory(librariesDirectory);
             foreach (var entry in packageAssemblies)
                 Logger.LogDebug("Loaded library: " + entry.Key + " -> " + entry.Value);
 

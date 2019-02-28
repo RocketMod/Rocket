@@ -1,15 +1,15 @@
-﻿using System;
-using System.Diagnostics;
-using Rocket.API.Drawing;
-using System.Linq;
-using System.Threading.Tasks;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.Commands;
+using Rocket.API.Drawing;
 using Rocket.API.Permissions;
 using Rocket.API.Plugins;
+using Rocket.API.User;
 using Rocket.Core.Plugins.NuGet;
 using Rocket.Core.User;
-using Rocket.API.User;
+using System;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Commands.RocketCommands
 {
@@ -33,7 +33,7 @@ namespace Rocket.Core.Commands.RocketCommands
             throw new CommandWrongUsageException();
         }
 
-        public bool  SupportsUser(IUser user) => true;
+        public bool SupportsUser(IUser user) => true;
     }
 
     public class CommandRocketReload : IChildCommand
@@ -45,16 +45,18 @@ namespace Rocket.Core.Commands.RocketCommands
         public IChildCommand[] ChildCommands => null;
         public string[] Aliases => null;
 
-        public bool  SupportsUser(IUser user) => true;
+        public bool SupportsUser(IUser user) => true;
 
         public async Task ExecuteAsync(ICommandContext context)
         {
             IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
             await permissions.ReloadAsync();
 
-            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.DeactivateAsync();
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>())
+                await plugin.DeactivateAsync();
 
-            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>()) plugin.ActivateAsync(true);
+            foreach (IPlugin plugin in context.Container.Resolve<IPluginLoader>())
+                await plugin.ActivateAsync(true);
 
             await context.User.SendMessageAsync("Reload completed.", Color.DarkGreen);
         }
@@ -64,12 +66,12 @@ namespace Rocket.Core.Commands.RocketCommands
     {
         public string Name => "Install";
         public string[] Aliases => null;
-        public string Summary => "Installs a plugin";
+        public string Summary => "Installs a package.";
         public string Description => null;
-        public string Syntax => "<repo> <plugin> [version] [-Pre]";
+        public string Syntax => "<plugin> [repo] [version] [-Pre]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool  SupportsUser(IUser user) => true;
+        public bool SupportsUser(IUser user) => true;
         public async Task ExecuteAsync(ICommandContext context)
         {
             if (context.Parameters.Length < 2)
@@ -79,8 +81,8 @@ namespace Rocket.Core.Commands.RocketCommands
 
             var args = context.Parameters.ToList();
 
-            string repoName = args[0];
-            string pluginName = args[1];
+            string packageName = args[0];
+            string repoName = null;
             string version = null;
             bool isPre = false;
 
@@ -90,33 +92,33 @@ namespace Rocket.Core.Commands.RocketCommands
                 args.Remove("-Pre");
             }
 
+            if (args.Count > 1)
+                repoName = args[1];
+
             if (args.Count > 2)
                 version = args[2];
 
-            var repo = pm.Repositories.FirstOrDefault(c
-                => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
 
-            if (repo == null)
+            if (repoName != null)
             {
-                await context.User.SendMessageAsync("Repository not found: " + repoName, Color.DarkRed);
-                return;
+                var repo = pm.Repositories.FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
+
+                if (repo == null)
+                {
+                    await context.User.SendMessageAsync("Repository not found: " + repoName, Color.DarkRed);
+                    return;
+                }
             }
 
-            var result = await pm.Install(repoName, pluginName, version, isPre);
+            var result = await pm.Install(packageName, version, repoName, isPre);
             if (result != NuGetInstallResult.Success)
             {
-                await context.User.SendMessageAsync($"Failed to install \"{pluginName}\": " + result, Color.DarkRed);
+                await context.User.SendMessageAsync($"Failed to install \"{packageName}\": " + result, Color.DarkRed);
                 return;
             }
 
-            if (!await pm.LoadPluginAsync(repoName, pluginName))
-            {
-                await context.User.SendMessageAsync($"Failed to initialize \"{pluginName}\"", Color.DarkRed);
-                await pm.Uninstall(repoName, pluginName);
-                return;
-            }
-
-            await context.User.SendMessageAsync($"Successfully installed \"{pluginName}\"", Color.DarkGreen);
+            await pm.LoadPluginFromNugetAsync(packageName);
+            await context.User.SendMessageAsync($"Successfully installed \"{packageName}\"", Color.DarkGreen);
         }
     }
 
@@ -124,12 +126,12 @@ namespace Rocket.Core.Commands.RocketCommands
     {
         public string Name => "Uninstall";
         public string[] Aliases => null;
-        public string Summary => "Uninstalls plugin";
+        public string Summary => "Uninstalls a package.";
         public string Description => null;
-        public string Syntax => "<repo> <plugin>";
+        public string Syntax => "<package>";
         public IChildCommand[] ChildCommands => null;
 
-        public bool  SupportsUser(IUser user) => true;
+        public bool SupportsUser(IUser user) => true;
 
         public async Task ExecuteAsync(ICommandContext context)
         {
@@ -138,25 +140,15 @@ namespace Rocket.Core.Commands.RocketCommands
 
             NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
 
-            string repoName = context.Parameters[0];
-            string pluginName = context.Parameters[1];
+            string packageName = context.Parameters[0];
 
-            var repo = pm.Repositories.FirstOrDefault(c
-                => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
-
-            if (repo == null)
+            if (!await pm.Uninstall(packageName))
             {
-                await context.User.SendMessageAsync("Repository not found: " + repoName, Color.DarkRed);
+                await context.User.SendMessageAsync($"Failed to uninstall \"{packageName}\"", Color.DarkRed);
                 return;
             }
 
-            if (!await pm.Uninstall(repoName, pluginName))
-            {
-                await context.User.SendMessageAsync($"Failed to uninstall \"{pluginName}\"", Color.DarkRed);
-                return;
-            }
-
-            await context.User.SendMessageAsync($"Successfully uninstalled  \"{pluginName}\"", Color.DarkGreen);
+            await context.User.SendMessageAsync($"Successfully uninstalled  \"{packageName}\"", Color.DarkGreen);
             await context.User.SendMessageAsync("Restart server to finish uninstall.", Color.Red);
         }
     }
@@ -165,12 +157,12 @@ namespace Rocket.Core.Commands.RocketCommands
     {
         public string Name => "Update";
         public string[] Aliases => null;
-        public string Summary => "Updates plugin";
+        public string Summary => "Updates a package.";
         public string Description => null;
-        public string Syntax => "<repo> <plugin> [version] [-Pre]";
+        public string Syntax => "<plugin> [repo] [version] [-Pre]";
         public IChildCommand[] ChildCommands => null;
 
-        public bool  SupportsUser(IUser user) => true;
+        public bool SupportsUser(IUser user) => true;
 
         public async Task ExecuteAsync(ICommandContext context)
         {
@@ -181,8 +173,8 @@ namespace Rocket.Core.Commands.RocketCommands
 
             var args = context.Parameters.ToList();
 
-            string repoName = args[0];
-            string pluginName = args[1];
+            string pluginName = args[0];
+            string repoName = null;
             string version = null;
             bool isPre = false;
 
@@ -192,19 +184,25 @@ namespace Rocket.Core.Commands.RocketCommands
                 args.Remove("-Pre");
             }
 
+            if (args.Count > 1)
+                repoName = args[1];
+
             if (args.Count > 2)
                 version = args[2];
 
-            var repo = pm.Repositories.FirstOrDefault(c
-                => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
-
-            if (repo == null)
+            if (repoName != null)
             {
-                await context.User.SendMessageAsync("Repository not found: " + repoName, Color.DarkRed);
-                return;
+                var repo = pm.Repositories.FirstOrDefault(c
+                    => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
+
+                if (repo == null)
+                {
+                    await context.User.SendMessageAsync("Repository not found: " + repoName, Color.DarkRed);
+                    return;
+                }
             }
 
-            var result = await pm.Update(repoName, pluginName, version, isPre);
+            var result = await pm.Update(pluginName, version, repoName, isPre);
             if (result != NuGetInstallResult.Success)
             {
                 await context.User.SendMessageAsync($"Failed to update \"{pluginName}\": " + result, Color.DarkRed);
@@ -224,7 +222,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public string Description => null;
         public string Syntax => "";
         public IChildCommand[] ChildCommands => null;
-        public bool  SupportsUser(IUser user) => true;
+        public bool SupportsUser(IUser user) => true;
 
         public async Task ExecuteAsync(ICommandContext context)
         {

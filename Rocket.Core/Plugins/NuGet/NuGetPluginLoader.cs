@@ -1,16 +1,5 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading.Tasks;
-using ICSharpCode.SharpZipLib.Zip;
-#if NET35
-using MoreLinq;
-#else
+﻿using ICSharpCode.SharpZipLib.Zip;
 using MoreLinq.Extensions;
-#endif
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -20,6 +9,12 @@ using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
 using Rocket.Core.Plugins.NuGet.Client.V3;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Plugins.NuGet
 {
@@ -30,7 +25,7 @@ namespace Rocket.Core.Plugins.NuGet
         private IConfiguration configuration;
         private IConfiguration packagesConfiguration;
 
-        public virtual string RepositoriesDirectory { get; protected set; }
+        public virtual string PackagesDirectory { get; protected set; }
 
         public NuGetPluginLoader(IDependencyContainer container,
                                   IEventBus eventBus,
@@ -51,19 +46,18 @@ namespace Rocket.Core.Plugins.NuGet
 
                 packagesConfiguration = Container.Resolve<IConfiguration>();
 
-                RepositoriesDirectory = Path.Combine(runtime.WorkingDirectory, "Repositories");
-                if (!Directory.Exists(RepositoriesDirectory))
-                    Directory.CreateDirectory(RepositoriesDirectory);
+                PackagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
+                if (!Directory.Exists(PackagesDirectory))
+                    Directory.CreateDirectory(PackagesDirectory);
 
-                ConfigurationContext context = new ConfigurationContext(RepositoriesDirectory, "packages");
+                ConfigurationContext context = new ConfigurationContext(PackagesDirectory, "packages");
                 packagesConfiguration.LoadAsync(context, new PackagesConfiguration()).GetAwaiter().GetResult();
-
+                packagesConfiguration.SaveAsync().GetAwaiter().GetResult();
                 return packagesConfiguration;
             }
         }
 
-        public virtual PackagesConfiguration Packages
-            => PackagesConfiguration.Get<PackagesConfiguration>();
+        public virtual PackagesConfiguration Packages => PackagesConfiguration.Get<PackagesConfiguration>();
 
         protected virtual IConfiguration Configuration
         {
@@ -74,45 +68,30 @@ namespace Rocket.Core.Plugins.NuGet
 
                 configuration = Container.Resolve<IConfiguration>();
 
-                RepositoriesDirectory = Path.Combine(runtime.WorkingDirectory, "Repositories");
-                if (!Directory.Exists(RepositoriesDirectory))
-                    Directory.CreateDirectory(RepositoriesDirectory);
+                PackagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
+                if (!Directory.Exists(PackagesDirectory))
+                    Directory.CreateDirectory(PackagesDirectory);
 
-                ConfigurationContext context = new ConfigurationContext(RepositoriesDirectory, "Repositories");
+                ConfigurationContext context = new ConfigurationContext(PackagesDirectory, "repositories");
                 configuration.LoadAsync(context, new
                 {
                     Repositories = new[]
                     {
                         new Repository
                         {
-                            Name = "universal",
+                            Name = "rocketmod",
                             Url = "http://nuget.rocketmod.net/",
-                            Enabled = true,
-                            Type = "Plugins"
-                        },
-                        new Repository
-                        {
-                            Name = "unturned",
-                            Url = "http://unturned.nuget.rocketmod.net/",
-                            Enabled = false,
-                            Type = "Plugins"
-                        },
-                        new Repository
-                        {
-                            Name = "eco",
-                            Url = "http://eco.nuget.rocketmod.net/",
-                            Enabled = false,
-                            Type = "Plugins"
+                            Enabled = true
                         },
                         new Repository
                         {
                             Name = "nuget",
-                            Url = "",
-                            Enabled = true,
-                            Type = "Libraries"
+                            Url = "https://www.nuget.org/api/v2",
+                            Enabled = true
                         }
                     }
                 }).GetAwaiter().GetResult();
+                configuration.SaveAsync().GetAwaiter().GetResult();
 
                 return configuration;
             }
@@ -121,48 +100,57 @@ namespace Rocket.Core.Plugins.NuGet
         public virtual IEnumerable<Repository> Repositories
             => Configuration["Repositories"].Get<Repository[]>();
 
-        public async Task<NuGetInstallResult> Update(string repoName, string packageName, string version = null, bool isPreRelease = false)
+        public async Task<NuGetInstallResult> Update(string packageName, string version = null, string repoName = null, bool isPreRelease = false)
         {
-            return await InstallOrUpdate(repoName, packageName, version, isPreRelease, true);
+            return await InstallOrUpdate(packageName, version, repoName, isPreRelease, true);
         }
 
-        public async Task<NuGetInstallResult> Install(string repoName, string packageName, string version = null, bool isPreRelease = false)
+        public async Task<NuGetInstallResult> Install(string packageName, string version = null, string repoName = null, bool isPreRelease = false)
         {
-            return await InstallOrUpdate(repoName, packageName, version, isPreRelease);
+            return await InstallOrUpdate(packageName, version, repoName, isPreRelease);
         }
 
-        protected virtual async Task<NuGetInstallResult> InstallOrUpdate(string repoName, string packageName, string version = null, bool isPreRelease = false, bool isUpdate = false)
+        protected virtual async Task<NuGetInstallResult> InstallOrUpdate(string packageName, string version = null, string repoName = null, bool isPreRelease = false, bool isUpdate = false)
         {
-            if (isUpdate && !PluginExists(repoName, packageName))
+            if (isUpdate && !PackageExists(packageName))
                 return NuGetInstallResult.PackageNotFound;
 
-            if (isUpdate
-                || Packages.NugetPackages.Any(c => c.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase) && c.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase))
-                || PluginExists(repoName, packageName))
-                await Uninstall(repoName, packageName);
+            if (repoName == null)
+            {
+                repoName = FindRepositoryForPackage(packageName, isPreRelease);
+            }
 
-            var configRepo = Repositories
-                .FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
+            if (repoName == null)
+            {
+                return NuGetInstallResult.PackageNotFound;
+            }
+
+            if (isUpdate
+                || Packages.NugetPackages.Any(c => c.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase))
+                || PackageExists(packageName))
+                await Uninstall(packageName);
+
+            var configRepo = Repositories.FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
 
             if (configRepo == null)
-                throw new ArgumentException("Repo not found: " + repoName, nameof(repoName));
+                return NuGetInstallResult.RepositoryNotFound;
 
             if (!configRepo.Enabled)
-                throw new ArgumentException("Repo not enabled: " + repoName, nameof(repoName));
+                return NuGetInstallResult.RepositoryNotFound;
 
             var repo = client.FetchRepository(configRepo.Url);
             List<NuGetPackage> packages = client.QueryPackages(repo, new NuGetQuery
             {
                 Name = packageName
             }, isPreRelease)
-            //Todo: remove after queries are fixed                                    
+            //Todo: remove after harbor queries are fixed                                    
             .Where(c => c.Id.ToLower().Contains(packageName.ToLower())).ToList();
 
             if (packages.Count == 0)
                 return NuGetInstallResult.PackageNotFound;
 
             if (packages.Count > 1)
-                throw new Exception("Multiple packages matched.");
+                return NuGetInstallResult.MultipleMatch;
 
             var package = packages.First();
             version = version ?? package.Version;
@@ -175,17 +163,16 @@ namespace Rocket.Core.Plugins.NuGet
             byte[] data = client.DownloadPackage(repo, targetVersion);
 
             string uid = package.Id + "." + targetVersion.Version;
-            var targetDir = Path.Combine(Path.Combine(RepositoriesDirectory, configRepo.Name), uid);
-            if (!Directory.Exists(targetDir))
-                Directory.CreateDirectory(targetDir);
+            if (!Directory.Exists(PackagesDirectory))
+                Directory.CreateDirectory(PackagesDirectory);
 
-            File.WriteAllBytes(Path.Combine(targetDir, uid + ".nupkg"), data);
+            File.WriteAllBytes(Path.Combine(PackagesDirectory, uid + ".nupkg"), data);
             PackagesConfiguration config = Packages;
 
             bool wasInstalled = false;
             foreach (var np in config.NugetPackages)
             {
-                if (!np.Id.Equals(package.Id, StringComparison.OrdinalIgnoreCase) || np.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase))
+                if (!np.Id.Equals(package.Id, StringComparison.OrdinalIgnoreCase))
                     continue;
 
                 wasInstalled = true;
@@ -195,10 +182,9 @@ namespace Rocket.Core.Plugins.NuGet
             if (!wasInstalled)
             {
                 var list = config.NugetPackages.ToList();
-                list.Add(new ConfigurationNuGetPackage()
+                list.Add(new ConfigurationNuGetPackage
                 {
                     Id = package.Id,
-                    Repository = repoName,
                     Version = package.Version
                 });
                 config.NugetPackages = list.ToArray();
@@ -210,20 +196,23 @@ namespace Rocket.Core.Plugins.NuGet
             return NuGetInstallResult.Success;
         }
 
-        public virtual async Task<bool> Uninstall(string repoName, string packageName)
+        public string FindRepositoryForPackage(string packageName, bool includePreReleases = false)
+        {
+            //todo: return repository with highest version
+
+            throw new NotImplementedException();
+        }
+
+        public virtual async Task<bool> Uninstall(string packageName)
         {
             PackagesConfiguration config = Packages;
             var list = config.NugetPackages.ToList();
-            list.RemoveAll(d => d.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase) && d.Repository.Equals(repoName, StringComparison.OrdinalIgnoreCase));
+            list.RemoveAll(d => d.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase));
             config.NugetPackages = list.ToArray();
             PackagesConfiguration.Set(config);
             await PackagesConfiguration.SaveAsync();
 
-            var repoDir = Path.Combine(RepositoriesDirectory, repoName);
-            if (!Directory.Exists(repoDir))
-                return true;
-
-            foreach (var directory in Directory.GetDirectories(repoDir))
+            foreach (var directory in Directory.GetDirectories(PackagesDirectory))
             {
                 var name = new DirectoryInfo(directory).Name;
                 if (name.ToLowerInvariant().StartsWith(packageName.ToLowerInvariant()))
@@ -236,11 +225,11 @@ namespace Rocket.Core.Plugins.NuGet
             return false;
         }
 
-        public virtual async Task<bool> LoadPluginAsync(string repo, string pluginName)
+        public virtual async Task<bool> LoadPluginFromNugetAsync(string pluginName)
         {
-            var pkg = GetNugetPackageFile(repo, pluginName);
+            var pkg = GetNugetPackageFile(pluginName);
             if (pkg == null)
-                throw new Exception($"Plugin \"{pluginName}\" was not found in repo \"{repo}\".");
+                throw new Exception($"Plugin \"{pluginName}\" was not found.");
 
             return await LoadPluginFromNugetPackageAsync(pkg);
         }
@@ -260,21 +249,20 @@ namespace Rocket.Core.Plugins.NuGet
             return success;
         }
 
-        public virtual bool PluginExists(string repo, string pluginName)
+        public virtual bool PackageExists(string packageName)
         {
-            return File.Exists(GetNugetPackageFile(repo, pluginName));
+            return File.Exists(GetNugetPackageFile(packageName));
         }
 
-        public virtual string GetNugetPackageFile(string repo, string pluginName)
+        public virtual string GetNugetPackageFile(string packageName)
         {
-            var repoDir = Path.Combine(RepositoriesDirectory, repo);
-            if (!Directory.Exists(repoDir))
+            if (!Directory.Exists(PackagesDirectory))
                 return null;
 
-            foreach (var dir in Directory.GetDirectories(repoDir))
+            foreach (var dir in Directory.GetDirectories(PackagesDirectory))
             {
                 var dirName = new DirectoryInfo(dir).Name;
-                if (dirName.ToLower().StartsWith(pluginName.ToLower() + "."))
+                if (dirName.ToLower().StartsWith(packageName.ToLower() + "."))
                 {
                     return Path.Combine(dir, dirName + ".nupkg");
                 }
@@ -287,21 +275,17 @@ namespace Rocket.Core.Plugins.NuGet
         protected override async Task<IEnumerable<Assembly>> LoadAssemblies()
         {
             List<Assembly> assemblies = new List<Assembly>();
-            foreach (var repo in Repositories.Where(c => c.Enabled))
+            if (!Directory.Exists(PackagesDirectory))
+                return Array.Empty<Assembly>();
+
+            foreach (var dir in Directory.GetDirectories(PackagesDirectory))
             {
-                var repoDir = Path.Combine(RepositoriesDirectory, repo.Name);
-                if (!Directory.Exists(repoDir))
+                var dirName = new DirectoryInfo(dir).Name;
+                var nugetPackageFile = Path.Combine(dir, dirName + "nupkg");
+                if (!File.Exists(nugetPackageFile))
                     continue;
 
-                foreach (var dir in Directory.GetDirectories(repoDir))
-                {
-                    var dirName = new DirectoryInfo(dir).Name;
-                    var nugetPackageFile = Path.Combine(dir, dirName + "nupkg");
-                    if (!File.Exists(nugetPackageFile))
-                        continue;
-
-                    assemblies.AddRange(await LoadAssembliesFromNugetPackageAync(nugetPackageFile));
-                }
+                assemblies.AddRange(await LoadAssembliesFromNugetPackageAync(nugetPackageFile));
             }
 
             return assemblies;
@@ -323,24 +307,13 @@ namespace Rocket.Core.Plugins.NuGet
 
             foreach (var package in Packages.NugetPackages.DistinctBy(d => d.Id.Trim().ToLowerInvariant()))
             {
-                var repo = Repositories.FirstOrDefault(c
-                    => c.Enabled && c.Name.Equals(package.Repository, StringComparison.OrdinalIgnoreCase));
-
-                if (repo == null)
-                {
-                    Logger.LogWarning($"Skipped package \"{package.Id}\" in repository \"{package.Repository}\" because repository was not found or is not enabed.");
-                    continue;
-                }
-
-                var repoDir = Path.Combine(RepositoriesDirectory, repo.Name);
-
-                if (!Directory.Exists(repoDir))
-                    Directory.CreateDirectory(repoDir);
+                if (!Directory.Exists(PackagesDirectory))
+                    Directory.CreateDirectory(PackagesDirectory);
 
                 bool isInstalled = false;
                 bool isLatest = package.Version == null || package.Version == "*" || package.Version == "latest";
 
-                foreach (var dir in Directory.GetDirectories(repoDir))
+                foreach (var dir in Directory.GetDirectories(PackagesDirectory))
                 {
                     var dirName = new DirectoryInfo(dir).Name;
                     if (isLatest)
@@ -371,11 +344,11 @@ namespace Rocket.Core.Plugins.NuGet
                 if (isInstalled)
                     continue;
 
-                var result = await Install(package.Repository, package.Id, isLatest ? null : package.Version, true);
+                var result = await Install(package.Id, isLatest ? null : package.Version, null, true);
                 if (result != NuGetInstallResult.Success)
-                    Logger.LogWarning($"Package \"{package.Id}\" in repository \"{package.Repository}\" failed to install: " + result);
+                    Logger.LogWarning($"Package \"{package.Id}\" failed to install: " + result);
                 else
-                    await LoadPluginAsync(package.Repository, package.Id);
+                    await LoadPluginFromNugetAsync(package.Id);
             }
         }
 
@@ -386,20 +359,18 @@ namespace Rocket.Core.Plugins.NuGet
             {
                 ZipFile zf = new ZipFile(fs);
                 List<ZipEntry> assemblies = new List<ZipEntry>();
-#if NET35
-                foreach (ZipEntry entry in zf)
-                    if (entry.Name.ToLower().StartsWith("lib/net35") && entry.Name.EndsWith(".dll"))
-                        assemblies.Add(entry);
 
-#elif NETSTANDARD2_0
-                foreach (ZipEntry entry in zf)
-                    if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
-                        assemblies.Add(entry);
-#elif NET461
+#if NET461
                 foreach (ZipEntry entry in zf)
                     if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
                         assemblies.Add(entry);
-#else
+
+                if (assemblies.Count < 1) // if no NET461 assemblies were found; continue to check.
+#elif NETSTANDARD2_0 || NET461
+                foreach (ZipEntry entry in zf)
+                    if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
+                        assemblies.Add(entry);
+
 #endif
 
                 if (assemblies.Count == 0)
@@ -410,11 +381,7 @@ namespace Rocket.Core.Plugins.NuGet
                     Stream inputStream = zf.GetInputStream(ze);
                     MemoryStream ms = new MemoryStream();
 
-#if NET35
-                    inputStream.CopyTo(ms);
-#else
                     await inputStream.CopyToAsync(ms);
-#endif
                     var asm = Assembly.Load(ms.ToArray());
 
                     ms.Close();

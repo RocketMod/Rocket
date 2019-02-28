@@ -11,7 +11,6 @@ namespace Rocket.Core.Plugins.NuGet
     public class ConfigurationNuGetPackage
     {
         public string Id { get; set; }
-        public string Repository { get; set; }
         public string Version { get; set; }
     }
 }

@@ -4,6 +4,8 @@
     {
         Success,
         VersionNotFound,
-        PackageNotFound
+        PackageNotFound,
+        RepositoryNotFound,
+        MultipleMatch
     }
 }
