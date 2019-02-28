@@ -74,7 +74,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public bool SupportsUser(IUser user) => true;
         public async Task ExecuteAsync(ICommandContext context)
         {
-            if (context.Parameters.Length < 2)
+            if (context.Parameters.Length < 1 || context.Parameters.Length > 3)
                 throw new CommandWrongUsageException();
 
             NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
@@ -125,7 +125,7 @@ namespace Rocket.Core.Commands.RocketCommands
     public class CommandRocketUninstall : IChildCommand
     {
         public string Name => "Uninstall";
-        public string[] Aliases => null;
+        public string[] Aliases => new []{ "Remove" };
         public string Summary => "Uninstalls a package.";
         public string Description => null;
         public string Syntax => "<package>";
@@ -135,7 +135,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public async Task ExecuteAsync(ICommandContext context)
         {
-            if (context.Parameters.Length != 2)
+            if (context.Parameters.Length != 1)
                 throw new CommandWrongUsageException();
 
             NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
@@ -166,7 +166,7 @@ namespace Rocket.Core.Commands.RocketCommands
 
         public async Task ExecuteAsync(ICommandContext context)
         {
-            if (context.Parameters.Length < 2)
+            if (context.Parameters.Length < 1 || context.Parameters.Length > 3)
                 throw new CommandWrongUsageException();
 
             NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
