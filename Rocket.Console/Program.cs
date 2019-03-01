@@ -4,10 +4,9 @@ namespace Rocket.Console
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
-            var bootTask = new Runtime().BootstrapAsync();
-            bootTask.GetAwaiter().GetResult();
+            await new Runtime().BootstrapAsync();
         }
     }
 }

@@ -111,14 +111,14 @@ namespace Rocket.Core.Commands.RocketCommands
             }
 
             var result = await pm.InstallAsync(packageName, version, repoName, isPre);
-            if (result != NuGetInstallResult.Success)
+            if (result.Code != NuGetInstallCode.Success)
             {
                 await context.User.SendMessageAsync($"Failed to install \"{packageName}\": " + result, Color.DarkRed);
                 return;
             }
 
             await pm.LoadPluginFromNugetAsync(packageName);
-            await context.User.SendMessageAsync($"Successfully installed \"{packageName}\"", Color.DarkGreen);
+            await context.User.SendMessageAsync($"Successfully installed {packageName} v{result.InstalledVersion}.", Color.DarkGreen);
         }
     }
 
@@ -203,13 +203,13 @@ namespace Rocket.Core.Commands.RocketCommands
             }
 
             var result = await pm.UpdateAsync(pluginName, version, repoName, isPre);
-            if (result != NuGetInstallResult.Success)
+            if (result.Code != NuGetInstallCode.Success)
             {
                 await context.User.SendMessageAsync($"Failed to update \"{pluginName}\": " + result, Color.DarkRed);
                 return;
             }
 
-            await context.User.SendMessageAsync($"Successfully updated \"{pluginName}\"", Color.DarkGreen);
+            await context.User.SendMessageAsync($"Successfully updated {pluginName} to {result.InstalledVersion}", Color.DarkGreen);
             await context.User.SendMessageAsync("Restart server to finish update.", Color.Red);
         }
     }
