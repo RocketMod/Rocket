@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
-using Rocket.API.User;
 using Rocket.Core.Logging;
 using Rocket.Core.User;
+using Color = Rocket.API.Drawing.Color;
 
 namespace Rocket.Console
 {
@@ -46,9 +45,17 @@ namespace Rocket.Console
             string line;
             while (!(line = System.Console.ReadLine())?.Equals("exit", StringComparison.OrdinalIgnoreCase) ?? false)
             {
-                if (!await cmdHandler.HandleCommandAsync(Console, line, ""))
-                    System.Console.WriteLine("Command not found: " + line);
-                System.Console.Write("> ");
+                try
+                {
+                    if (!await cmdHandler.HandleCommandAsync(Console, line, ""))
+                        System.Console.WriteLine("Command not found: " + line);
+                    System.Console.Write("> ");
+                }
+                catch (Exception ex)
+
+                {
+                    Console.WriteLine(ex.ToString(), Color.DarkRed);
+                }
             }
         }
 

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Rocket.API.Commands;
+﻿using Rocket.API.Commands;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Drawing;
 using Rocket.API.Logging;
@@ -12,8 +8,10 @@ using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
 using Rocket.Core.User;
-using Rocket.API.Player;
-using Rocket.Core.Player;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Commands
 {
@@ -40,7 +38,7 @@ namespace Rocket.Core.Commands
                 contextContainer.Resolve<ILogger>().LogInformation($"{user.UserName} executed command: \"{commandLine}\"");
 
             CommandContext context = new CommandContext(contextContainer,
-                user,prefix, null,
+                user, prefix, null,
                 args[0], args.Skip(1).ToArray(), null, null);
 
             ICommand target = context.Container.Resolve<ICommandProvider>()
@@ -55,21 +53,18 @@ namespace Rocket.Core.Commands
 
             var permission = GetPermission(context);
 
-#if !DEBUG
             try
             {
-#endif
-            IPermissionProvider provider = container.Resolve<IPermissionProvider>();
+                IPermissionProvider provider = container.Resolve<IPermissionProvider>();
 
-            if (await provider.CheckPermissionAsync(user, permission) != PermissionResult.Grant)
-            {
-                var logger = container.Resolve<ILogger>();
-                logger.LogInformation($"{user.ToString()} does not have permissions to execute: \"{commandLine}\"");
-                throw new NotEnoughPermissionsException(user, permission);
-            }
+                if (await provider.CheckPermissionAsync(user, permission) != PermissionResult.Grant)
+                {
+                    var logger = container.Resolve<ILogger>();
+                    logger.LogInformation($"{user.UserName} does not have permissions to execute: \"{commandLine}\"");
+                    throw new NotEnoughPermissionsException(user, permission);
+                }
 
-            await context.Command.ExecuteAsync(context);
-#if !DEBUG
+                await context.Command.ExecuteAsync(context);
             }
             catch (Exception e)
             {
@@ -80,14 +75,13 @@ namespace Rocket.Core.Commands
                 }
 
                 await context.User.SendMessageAsync("An internal error occured.", Color.DarkRed);
-                throw new Exception($"Command {commandLine} of user {user.ToString()} caused an exception: ", e);
+                throw new Exception($"Command {commandLine} of user {user.UserName} caused an exception: ", e);
             }
-#endif
 
             return true;
         }
 
-        public bool  SupportsUser(IUser user) => true;
+        public bool SupportsUser(IUser user) => true;
 
         //Builds a defalt permission
         //If the command is "A" with Child Command "B", the default permission will be "A.B"
