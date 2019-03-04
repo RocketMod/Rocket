@@ -17,9 +17,11 @@
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
       <Private>false</Private>
+      <ExcludeAssets>all</ExcludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\Rocket.Core\Rocket.Core.csproj">
       <Private>false</Private>
+      <ExcludeAssets>all</ExcludeAssets>
     </ProjectReference>
     <ProjectReference Include="..\Rocket.NuGet\Rocket.NuGet.csproj" />
   </ItemGroup>
