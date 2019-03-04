@@ -34,9 +34,6 @@ namespace Rocket.Core.Commands
             IDependencyContainer contextContainer = container.CreateChildContainer();
             IRocketSettingsProvider settings = contextContainer.Resolve<IRocketSettingsProvider>();
 
-            if (settings.Settings.Logging.EnableCommandExecutionsLogs)
-                contextContainer.Resolve<ILogger>().LogInformation($"{user.UserName} executed command: \"{commandLine}\"");
-
             CommandContext context = new CommandContext(contextContainer,
                 user, prefix, null,
                 args[0], args.Skip(1).ToArray(), null, null);
@@ -60,10 +57,14 @@ namespace Rocket.Core.Commands
                 if (await provider.CheckPermissionAsync(user, permission) != PermissionResult.Grant)
                 {
                     var logger = container.Resolve<ILogger>();
-                    logger.LogInformation($"{user.UserName} does not have permissions to execute: \"{commandLine}\"");
+                    logger.LogInformation($"User \"{user.UserName}\" does not have permission to execute: \"{commandLine}\"");
                     throw new NotEnoughPermissionsException(user, permission);
                 }
 
+                if (settings.Settings.Logging.EnableCommandExecutionsLogs)
+                {
+                    contextContainer.Resolve<ILogger>().LogInformation($"{user.UserName} has executed command: \"{commandLine}\"");
+                }
                 await context.Command.ExecuteAsync(context);
             }
             catch (Exception e)
@@ -75,7 +76,7 @@ namespace Rocket.Core.Commands
                 }
 
                 await context.User.SendMessageAsync("An internal error occured.", Color.DarkRed);
-                throw new Exception($"Command {commandLine} of user {user.UserName} caused an exception: ", e);
+                throw new Exception($"Command \"{commandLine}\" of user \"{user.UserName}\" caused an exception: ", e);
             }
 
             return true;
