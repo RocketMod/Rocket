@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using ICSharpCode.SharpZipLib.Zip;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Frameworks;
@@ -18,6 +11,13 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Resolver;
 using NuGet.Versioning;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rocket.NuGet
 {
@@ -55,7 +55,7 @@ namespace Rocket.NuGet
             var sourceRepositoryProvider = new SourceRepositoryProvider(packageSourceProvider, providers);
 
             var project = new FolderNuGetProject(packagesDirectory);
-            
+
             NuGetPackageManager packageManager = new NuGetPackageManager(sourceRepositoryProvider, nugetSettings, packagesDirectory)
             {
                 PackagesFolderNuGetProject = project
@@ -87,6 +87,7 @@ namespace Rocket.NuGet
                 sourceRepository,
                 Array.Empty<SourceRepository>(),
                 CancellationToken.None);
+
             return new NuGetInstallResult(version);
         }
 
@@ -102,7 +103,7 @@ namespace Rocket.NuGet
                 var searchFilter = new SearchFilter(includePreRelease)
                 {
                     IncludeDelisted = false,
-                    SupportedFrameworks = new []{ currentFramework .DotNetFrameworkName }
+                    SupportedFrameworks = new[] { currentFramework.DotNetFrameworkName }
                 };
 
                 var searchResult = await searchResource.SearchAsync(packageName, searchFilter, 0, 10, logger, CancellationToken.None);
@@ -168,30 +169,51 @@ namespace Rocket.NuGet
             using (Stream fs = new FileStream(nugetPackageFile, FileMode.Open))
             {
                 ZipFile zf = new ZipFile(fs);
-                List<ZipEntry> assemblies = new List<ZipEntry>();
+                List<ZipEntry> assemblyEntries = new List<ZipEntry>();
+                List<NuGetFramework> frameworks = new List<NuGetFramework>();
 
-#if NET461
                 foreach (ZipEntry entry in zf)
-                    if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
-                        assemblies.Add(entry);
+                {
+                    if (entry.Name.StartsWith("lib/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var parts = entry.Name.Split('/');
+                        var frameworkName = parts[1];
+                        var framework = NuGetFramework.ParseFolder(frameworkName, new DefaultFrameworkNameProvider());
 
-#if NETSTANDARD2_0
-                if (assemblies.Count < 1) // if no NET461 assemblies were found; continue to check.
-#endif
-#elif NETSTANDARD2_0 || NET461
+                        if (NuGetFrameworkUtility.IsCompatibleWithFallbackCheck(currentFramework, framework))
+                        {
+                            frameworks.Add(framework);
+                        }
+                    }
+                }
+
+                var targetFramework = frameworks.OrderByDescending(d => d.Version).FirstOrDefault();
+                if (targetFramework == null)
+                {
+                    logger.LogWarning("No compatible framework found in: " + nugetPackageFile);
+                    return allAssemblies;
+                }
+
                 foreach (ZipEntry entry in zf)
-                    if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
-                        assemblies.Add(entry);
+                {
+                    string frameworkPrefix = "lib/" + targetFramework.GetShortFolderName() + "/";
 
-#endif
+                    if (!entry.Name.StartsWith(frameworkPrefix, StringComparison.OrdinalIgnoreCase)
+                        || !entry.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                    {
+                        continue;
+                    }
 
-                if (assemblies.Count == 0)
+                    assemblyEntries.Add(entry);
+                }
+
+                if (assemblyEntries.Count == 0)
                 {
                     logger.LogWarning("No assemblies found in: " + nugetPackageFile);
                     return allAssemblies;
                 }
 
-                foreach (var ze in assemblies)
+                foreach (var ze in assemblyEntries)
                 {
                     Stream inputStream = zf.GetInputStream(ze);
                     MemoryStream ms = new MemoryStream();

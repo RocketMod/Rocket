@@ -78,6 +78,8 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length < 1 || context.Parameters.Length > 3)
                 throw new CommandWrongUsageException();
 
+            await Task.Yield();
+
             NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
 
             var args = context.Parameters.ToList();
@@ -111,15 +113,17 @@ namespace Rocket.Core.Commands.RocketCommands
                 }
             }
 
+            await context.User.SendMessageAsync($"Installing {packageName}...", Color.White);
+
             var result = await pm.InstallAsync(packageName, version, repoName, isPre);
             if (result.Code != NuGetInstallCode.Success)
             {
-                await context.User.SendMessageAsync($"Failed to install \"{packageName}\": " + result, Color.DarkRed);
+                await context.User.SendMessageAsync($"Failed to install \"{packageName}\": " + result.Code, Color.DarkRed);
                 return;
             }
 
             await pm.LoadPluginFromNugetAsync(packageName);
-            await context.User.SendMessageAsync($"Successfully installed {packageName} v{result.InstalledVersion}.", Color.DarkGreen);
+            await context.User.SendMessageAsync($"Successfully installed {packageName} v{result.Version}.", Color.DarkGreen);
         }
     }
 
@@ -139,10 +143,13 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length != 1)
                 throw new CommandWrongUsageException();
 
+            await Task.Yield();
+
             NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
 
             string packageName = context.Parameters[0];
 
+            await context.User.SendMessageAsync($"Uninstalling {packageName}...", Color.White);
             if (!await pm.UninstallAsync(packageName))
             {
                 await context.User.SendMessageAsync($"Failed to uninstall \"{packageName}\"", Color.DarkRed);
@@ -169,12 +176,14 @@ namespace Rocket.Core.Commands.RocketCommands
         {
             if (context.Parameters.Length < 1 || context.Parameters.Length > 3)
                 throw new CommandWrongUsageException();
+            
+            await Task.Yield();
 
             NuGetPluginLoader pm = (NuGetPluginLoader)context.Container.Resolve<IPluginLoader>("nuget_plugins");
 
             var args = context.Parameters.ToList();
 
-            string pluginName = args[0];
+            string packageName = args[0];
             string repoName = null;
             string version = null;
             bool isPre = false;
@@ -203,14 +212,15 @@ namespace Rocket.Core.Commands.RocketCommands
                 }
             }
 
-            var result = await pm.UpdateAsync(pluginName, version, repoName, isPre);
+            await context.User.SendMessageAsync($"Updating {packageName}...", Color.White);
+            var result = await pm.UpdateAsync(packageName, version, repoName, isPre);
             if (result.Code != NuGetInstallCode.Success)
             {
-                await context.User.SendMessageAsync($"Failed to update \"{pluginName}\": " + result, Color.DarkRed);
+                await context.User.SendMessageAsync($"Failed to update \"{packageName}\": " + result.Code, Color.DarkRed);
                 return;
             }
 
-            await context.User.SendMessageAsync($"Successfully updated {pluginName} to {result.InstalledVersion}", Color.DarkGreen);
+            await context.User.SendMessageAsync($"Successfully updated {packageName} to {result.Version}", Color.DarkGreen);
             await context.User.SendMessageAsync("Restart server to finish update.", Color.Red);
         }
     }

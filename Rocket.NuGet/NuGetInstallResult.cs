@@ -16,8 +16,6 @@
         }
 
         public NuGetInstallCode Code { get; set; }
-
-        public string InstalledVersion { get; set; }
     }
 
     public enum NuGetInstallCode
