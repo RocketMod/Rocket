@@ -36,7 +36,7 @@ namespace Rocket.NuGet
             providers = new List<Lazy<INuGetResourceProvider>>();
             providers.AddRange(Repository.Provider.GetCoreV3()); // Add v3 API support
 
-            nugetSettings = Settings.LoadDefaultSettings(packagesDirectory, null, new MachineWideSettings());
+            nugetSettings = Settings.LoadDefaultSettings(packagesDirectory, null, null);
 
             var frameworkName = Assembly.GetExecutingAssembly().GetCustomAttributes(true)
                                            .OfType<System.Runtime.Versioning.TargetFrameworkAttribute>()
@@ -231,25 +231,5 @@ namespace Rocket.NuGet
 
             return allAssemblies;
         }
-    }
-
-    public class MachineWideSettings : IMachineWideSettings
-    {
-        public MachineWideSettings()
-        {
-            var baseDirectory = NuGetEnvironment.GetFolderPath(NuGetFolderPath.MachineWideConfigDirectory);
-            Settings = global::NuGet.Configuration.Settings.LoadMachineWideSettings(baseDirectory);
-        }
-
-        public ISettings Settings { get; }
-    }
-
-    public class QueriedNuGetPackage
-    {
-        public IPackageSearchMetadata Metadata { get; set; }
-
-        public IEnumerable<VersionInfo> Versions { get; set; }
-
-        public string Repository { get; set; }
     }
 }
