@@ -4,12 +4,10 @@ using NuGet.Frameworks;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
-using NuGet.ProjectManagement;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Resolver;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,7 +18,7 @@ using System.Threading.Tasks;
 
 namespace Rocket.NuGet
 {
-    public class NuGetInstaller
+    public class NuGetPackageManager
     {
         private readonly ILogger logger;
         private readonly string packagesDirectory;
@@ -31,7 +29,7 @@ namespace Rocket.NuGet
         private readonly PackagePathResolver packagePathResolver;
         private readonly PackageResolver packageResolver;
 
-        public NuGetInstaller(ILogger logger, string packagesDirectory)
+        public NuGetPackageManager(ILogger logger, string packagesDirectory)
         {
             this.logger = logger;
             this.packagesDirectory = packagesDirectory;
@@ -57,14 +55,22 @@ namespace Rocket.NuGet
             InstallAssemblyResolver();
         }
 
-        public async Task<NuGetInstallResult> InstallAsync(string repo, PackageIdentity packageIdentity, NuGetActionType action = NuGetActionType.Update, bool allowPrereleaseVersions = false)
+        public async Task<NuGetInstallResult> InstallAsync(string repo, PackageIdentity packageIdentity, bool allowPrereleaseVersions = false)
         {
             using (var cacheContext = new SourceCacheContext())
             {
                 var packageSource = new PackageSource(repo);
                 var sourceRepository = new SourceRepository(packageSource, providers);
 
-                var packagesToInstall = await GetDependenciesAsync(packageIdentity, cacheContext);
+                IEnumerable<SourcePackageDependencyInfo> packagesToInstall;
+                try
+                {
+                    packagesToInstall = await GetDependenciesAsync(packageIdentity, cacheContext);
+                }
+                catch (NuGetResolverInputException)
+                {
+                    return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
+                }
 
                 var packageExtractionContext = new PackageExtractionContext(
                     PackageSaveMode.Nupkg,

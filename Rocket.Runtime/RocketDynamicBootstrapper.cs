@@ -1,6 +1,5 @@
 ﻿using NuGet.Common;
 using NuGet.Packaging.Core;
-using NuGet.ProjectManagement;
 using NuGet.Protocol.Core.Types;
 using Rocket.NuGet;
 using System;
@@ -31,7 +30,7 @@ namespace Rocket
                 Directory.CreateDirectory(packagesDirectory);
             }
 
-            var nugetInstaller = new NuGetInstaller(logger, packagesDirectory);
+            var nugetInstaller = new NuGetPackageManager(logger, packagesDirectory);
             PackageIdentity packageIdentity;
             if (!nugetInstaller.PackageExists(packagesDirectory, packageId))
             {
@@ -39,7 +38,7 @@ namespace Rocket
                     await nugetInstaller.QueryPackageExactAsync(repository, packageId, null, allowPrereleaseVersions);
 
                 Console.WriteLine($"Downloading {rocketPackage.Identity.Id} v{rocketPackage.Identity.Version} via NuGet, this can take a while...");
-                var installResult = await nugetInstaller.InstallAsync(repository, rocketPackage.Identity, NuGetActionType.Install, allowPrereleaseVersions);
+                var installResult = await nugetInstaller.InstallAsync(repository, rocketPackage.Identity, allowPrereleaseVersions);
                 if (installResult.Code != NuGetInstallCode.Success)
                 {
                     Console.WriteLine($"Downloading finished. Loading runtime for {rocketPackage.Identity.Id}.");
@@ -68,11 +67,10 @@ namespace Rocket
             await InitializeRuntimeAsync();
         }
 
-        private async Task LoadPackageAsync(NuGetInstaller installer, PackageIdentity identity)
+        private async Task LoadPackageAsync(NuGetPackageManager packageManager, PackageIdentity identity)
         {
-            Console.WriteLine($"Loading: {identity.Id} v{identity.Version}");
-            var pkg = installer.GetNugetPackageFile(identity);
-            await installer.LoadAssembliesFromNugetPackageAsync(pkg);
+            var pkg = packageManager.GetNugetPackageFile(identity);
+            await packageManager.LoadAssembliesFromNugetPackageAsync(pkg);
         }
 
         private async Task InitializeRuntimeAsync()

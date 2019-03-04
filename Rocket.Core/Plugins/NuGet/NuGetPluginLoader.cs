@@ -1,7 +1,4 @@
-﻿using MoreLinq.Extensions;
-using NuGet.Frameworks;
-using NuGet.Packaging.Core;
-using NuGet.ProjectManagement;
+﻿using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using Rocket.API;
 using Rocket.API.Configuration;
@@ -27,7 +24,7 @@ namespace Rocket.Core.Plugins.NuGet
         private readonly IRuntime runtime;
         private IConfiguration configuration;
         private IConfiguration packagesConfiguration;
-        private NuGetInstaller nugetInstaller;
+        private NuGetPackageManager nugetPackageManager;
 
         public virtual string PackagesDirectory { get; protected set; }
 
@@ -62,7 +59,7 @@ namespace Rocket.Core.Plugins.NuGet
             CreateConfiguration();
 
             var adapter = new NuGetLoggerAdapter(logger);
-            nugetInstaller = new NuGetInstaller(adapter, PackagesDirectory);
+            nugetPackageManager = new NuGetPackageManager(adapter, PackagesDirectory);
 
             PluginManagerInitEvent pluginManagerInitEvent =
                 new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
@@ -137,7 +134,7 @@ namespace Rocket.Core.Plugins.NuGet
             string repo;
             if (repoName == null)
             {
-                repo = await nugetInstaller.FindRepositoryForPackageAsync(repoUrls, packageName, version, isPreRelease);
+                repo = await nugetPackageManager.FindRepositoryForPackageAsync(repoUrls, packageName, version, isPreRelease);
                 if (repo == null)
                 {
                     return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
@@ -155,7 +152,7 @@ namespace Rocket.Core.Plugins.NuGet
             if (isUpdate || packageExists)
                 await UninstallAsync(packageName);
 
-            var packages = (await nugetInstaller.QueryPackagesAsync(repoUrls, packageName, version, isPreRelease)).ToList();
+            var packages = (await nugetPackageManager.QueryPackagesAsync(repoUrls, packageName, version, isPreRelease)).ToList();
 
             if (packages.Count == 0)
             {
@@ -176,7 +173,7 @@ namespace Rocket.Core.Plugins.NuGet
 
             var packageIdentity = new PackageIdentity(package.Identity.Id, new NuGetVersion(version));
 
-            var result = await nugetInstaller.InstallAsync(repo, packageIdentity, isUpdate ? NuGetActionType.Update : NuGetActionType.Install, isPreRelease);
+            var result = await nugetPackageManager.InstallAsync(repo, packageIdentity, isPreRelease);
             if (result.Code != NuGetInstallCode.Success)
             {
                 return result;
@@ -202,7 +199,7 @@ namespace Rocket.Core.Plugins.NuGet
 
         public virtual async Task<bool> LoadPluginFromNugetAsync(PackageIdentity identity)
         {
-            var pkg = nugetInstaller.GetNugetPackageFile(identity);
+            var pkg = nugetPackageManager.GetNugetPackageFile(identity);
             if (pkg == null)
                 throw new Exception($"Plugin {identity.Id} v{identity.Version} was not found.");
 
@@ -211,7 +208,7 @@ namespace Rocket.Core.Plugins.NuGet
 
         protected virtual async Task<bool> LoadPluginFromNugetPackageAsync(string packagePath)
         {
-            var assemblies = await nugetInstaller.LoadAssembliesFromNugetPackageAsync(packagePath);
+            var assemblies = await nugetPackageManager.LoadAssembliesFromNugetPackageAsync(packagePath);
             bool success = false;
             foreach (var asm in assemblies)
             {
@@ -226,7 +223,7 @@ namespace Rocket.Core.Plugins.NuGet
 
         public virtual bool PackageExists(string packageName)
         {
-            return nugetInstaller.PackageExists(PackagesDirectory, packageName);
+            return nugetPackageManager.PackageExists(PackagesDirectory, packageName);
         }
 
         public override string ServiceName => "NuGet Plugins";
@@ -246,7 +243,7 @@ namespace Rocket.Core.Plugins.NuGet
                     continue;
                 }
 
-                assemblies.AddRange(await nugetInstaller.LoadAssembliesFromNugetPackageAsync(nupkgFile));
+                assemblies.AddRange(await nugetPackageManager.LoadAssembliesFromNugetPackageAsync(nupkgFile));
             }
 
             return assemblies;
