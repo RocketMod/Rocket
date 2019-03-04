@@ -1,5 +1,8 @@
 ﻿using MoreLinq.Extensions;
 using NuGet.Frameworks;
+using NuGet.Packaging.Core;
+using NuGet.ProjectManagement;
+using NuGet.Versioning;
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -22,7 +25,6 @@ namespace Rocket.Core.Plugins.NuGet
     {
         private readonly ILogger logger;
         private readonly IRuntime runtime;
-        private readonly NuGetFramework currentFramework;
         private IConfiguration configuration;
         private IConfiguration packagesConfiguration;
         private NuGetInstaller nugetInstaller;
@@ -37,15 +39,6 @@ namespace Rocket.Core.Plugins.NuGet
         {
             this.logger = logger;
             this.runtime = runtime;
-
-            string frameworkName = Assembly.GetExecutingAssembly().GetCustomAttributes(true)
-                                           .OfType<System.Runtime.Versioning.TargetFrameworkAttribute>()
-                                           .Select(x => x.FrameworkName)
-                                           .FirstOrDefault();
-
-            currentFramework = frameworkName == null
-                ? NuGetFramework.AnyFramework
-                : NuGetFramework.ParseFrameworkName(frameworkName, new DefaultFrameworkNameProvider());
         }
 
         public virtual IEnumerable<Repository> Repositories => Configuration["Repositories"].Get<Repository[]>();
@@ -160,8 +153,7 @@ namespace Rocket.Core.Plugins.NuGet
             if (isUpdate || PackageExists(packageName))
                 await UninstallAsync(packageName);
 
-            var packages = (await nugetInstaller.QueryPackagesAsync(repoUrls, packageName, version, isPreRelease))
-                .ToList();
+            var packages = (await nugetInstaller.QueryPackagesAsync(repoUrls, packageName, version, isPreRelease)).ToList();
 
             if (packages.Count == 0)
             {
@@ -180,10 +172,9 @@ namespace Rocket.Core.Plugins.NuGet
                 version = package.Metadata.Identity.Version.OriginalVersion;
             }
 
-            string uid = packageName + "." + version;
-            string installPath = Path.Combine(PackagesDirectory, uid);
+            var packageIdentity = new PackageIdentity(package.Metadata.Identity.Id, new NuGetVersion(version));
 
-            var result = await nugetInstaller.InstallAsync(repo, package, installPath, version, isPreRelease);
+            var result = await nugetInstaller.InstallAsync(repo, packageIdentity, isUpdate ? NuGetActionType.Update : NuGetActionType.Install, isPreRelease);
             if (result.Code != NuGetInstallCode.Success)
             {
                 return result;
@@ -209,7 +200,7 @@ namespace Rocket.Core.Plugins.NuGet
 
         public virtual async Task<bool> LoadPluginFromNugetAsync(string pluginName)
         {
-            var pkg = GetNugetPackageFile(pluginName);
+            var pkg = nugetInstaller.GetNugetPackageFile(PackagesDirectory, pluginName);
             if (pkg == null)
                 throw new Exception($"Plugin \"{pluginName}\" was not found.");
 
@@ -233,26 +224,7 @@ namespace Rocket.Core.Plugins.NuGet
 
         public virtual bool PackageExists(string packageName)
         {
-            return File.Exists(GetNugetPackageFile(packageName));
-        }
-
-        public virtual string GetNugetPackageFile(string packageName)
-        {
-            if (!Directory.Exists(PackagesDirectory))
-            {
-                return null;
-            }
-
-            foreach (var dir in Directory.GetDirectories(PackagesDirectory))
-            {
-                var dirName = new DirectoryInfo(dir).Name;
-                if (dirName.ToLower().StartsWith(packageName.ToLower() + "."))
-                {
-                    return Path.Combine(dir, dirName + ".nupkg");
-                }
-            }
-
-            return null;
+            return nugetInstaller.PackageExists(PackagesDirectory, packageName);
         }
 
         public override string ServiceName => "NuGet Plugins";

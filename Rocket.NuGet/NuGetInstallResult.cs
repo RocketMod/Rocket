@@ -1,18 +1,20 @@
-﻿namespace Rocket.NuGet
+﻿using NuGet.Packaging.Core;
+
+namespace Rocket.NuGet
 {
     public class NuGetInstallResult
     {
-        public string Version { get; }
+        public PackageIdentity Identity { get; }
 
         public NuGetInstallResult(NuGetInstallCode code)
         {
             Code = code;
         }
 
-        public NuGetInstallResult(string version)
+        public NuGetInstallResult(PackageIdentity identity)
         {
+            Identity = identity;
             Code = NuGetInstallCode.Success;
-            Version = version;
         }
 
         public NuGetInstallCode Code { get; set; }
@@ -24,6 +26,7 @@
         VersionNotFound,
         PackageNotFound,
         RepositoryNotFound,
-        MultipleMatch
+        MultipleMatch,
+        DependencyFail
     }
 }

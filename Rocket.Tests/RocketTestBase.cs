@@ -14,8 +14,8 @@ namespace Rocket.Tests
         [TestInitialize]
         public virtual void Bootstrap()
         {
-            Runtime = new Rocket.Runtime();
-            Runtime.BootstrapAsync().GetAwaiter().GetResult();
+            Runtime = new Runtime();
+            Runtime.InitAsync().GetAwaiter().GetResult();
             Runtime.Container.RegisterSingletonType<ILogger, NullLogger>("default_file_logger");
         }
     }

@@ -6,7 +6,7 @@ using RocketLogger = Rocket.API.Logging.ILogger;
 
 namespace Rocket.Core.Plugins.NuGet
 {
-    public class NuGetLoggerAdapter : ILogger
+    public class NuGetLoggerAdapter : LoggerBase
     {
         private readonly RocketLogger logger;
 
@@ -20,79 +20,38 @@ namespace Rocket.Core.Plugins.NuGet
             this.logger = logger;
         }
 
-        public void LogDebug(string data)
+        public override void Log(ILogMessage message)
         {
-            logger.LogDebug("[NuGet] " + data);
-        }
+            var level = message.Level;
+            string prefix = "[NuGet] ";
+            var text = prefix + message.Message;
 
-        public void LogVerbose(string data)
-        {
-            logger.LogTrace("[NuGet] " + data);
-        }
-
-        public void LogInformation(string data)
-        {
-            logger.LogInformation("[NuGet] " + data);
-        }
-
-        public void LogMinimal(string data)
-        {
-            logger.LogInformation("[NuGet] " + data);
-        }
-
-        public void LogWarning(string data)
-        {
-            logger.LogWarning("[NuGet] " + data);
-        }
-
-        public void LogError(string data)
-        {
-            logger.Log("[NuGet] " + data);
-        }
-
-        public void LogInformationSummary(string data)
-        {
-            logger.LogInformation("[NuGet] " + data);
-        }
-
-        public void Log(LogLevel level, string data)
-        {
             switch (level)
             {
                 case LogLevel.Debug:
-                    LogDebug(data);
+                    logger.LogDebug(text);
                     break;
                 case LogLevel.Verbose:
-                    LogVerbose(data);
+                    logger.LogTrace(text);
                     break;
                 case LogLevel.Information:
-                    LogInformation(data);
+                    logger.LogInformation(text);
                     break;
                 case LogLevel.Minimal:
-                    LogMinimal(data);
+                    logger.LogInformation(text);
                     break;
                 case LogLevel.Warning:
-                    LogWarning(data);
+                    logger.LogWarning(text);
                     break;
                 case LogLevel.Error:
-                    LogError(data);
+                    logger.LogError(text);
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(level), level, null);
             }
         }
 
-        public async Task LogAsync(LogLevel level, string data)
-        {
-            Log(level, data);
-        }
-
-        public void Log(ILogMessage message)
-        {
-            Log(message.Level, message.Message);
-        }
-
-        public async Task LogAsync(ILogMessage message)
+        public override async Task LogAsync(ILogMessage message)
         {
             Log(message);
         }

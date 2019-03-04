@@ -121,7 +121,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 await context.User.SendMessageAsync($"Failed to install \"{packageName}\": " + result.Code, Color.DarkRed);
                 return;
             }
-            await context.User.SendMessageAsync($"Successfully installed {packageName} v{result.Version}.", Color.DarkGreen);
+            await context.User.SendMessageAsync($"Successfully installed {result.Identity.Id} v{result.Identity.Version}.", Color.DarkGreen);
 
             await pm.LoadPluginFromNugetAsync(packageName);
         }
@@ -220,7 +220,7 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            await context.User.SendMessageAsync($"Successfully updated {packageName} to {result.Version}", Color.DarkGreen);
+            await context.User.SendMessageAsync($"Successfully updated {result.Identity.Id} to {result.Identity.Version}", Color.DarkGreen);
             await context.User.SendMessageAsync("Restart server to finish update.", Color.Red);
         }
     }

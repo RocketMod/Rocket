@@ -21,7 +21,35 @@ namespace Rocket
             // non public constructor
         }
 
-        public async Task BootstrapAsync()
+        public IDependencyResolver Resolver { get; private set; }
+
+        public IDependencyContainer Container { get; private set; }
+
+        public bool IsAlive => true;
+        public string Name => "Rocket.Runtime";
+
+        public string WorkingDirectory
+        {
+            get
+            {
+                string implDir = Container.Resolve<IHost>().WorkingDirectory;
+                string dirName = new DirectoryInfo(implDir).Name;
+                if (dirName != "Rocket")
+                    return Path.Combine(implDir, "Rocket");
+                return implDir;
+            }
+        }
+
+        public string ConfigurationName { get; } = "Rocket";
+
+        public async Task ShutdownAsync()
+        {
+            Container.Dispose();
+        }
+
+        public Version Version { get; private set; }
+
+        public async Task InitAsync()
         {
             Container = new UnityDependencyContainer();
             Container.RegisterInstance<IRuntime>(this);
@@ -114,33 +142,5 @@ namespace Rocket
             Container.Resolve<ILogger>().LogInformation($"Initializing host: {impl.Name}", Color.Green);
             await impl.InitAsync(this);
         }
-
-        public IDependencyResolver Resolver { get; private set; }
-
-        public IDependencyContainer Container { get; private set; }
-
-        public bool IsAlive => true;
-        public string Name => "Rocket.Runtime";
-
-        public string WorkingDirectory
-        {
-            get
-            {
-                string implDir = Container.Resolve<IHost>().WorkingDirectory;
-                string dirName = new DirectoryInfo(implDir).Name;
-                if (dirName != "Rocket")
-                    return Path.Combine(implDir, "Rocket");
-                return implDir;
-            }
-        }
-
-        public string ConfigurationName { get; } = "Rocket";
-
-        public async Task ShutdownAsync()
-        {
-            Container.Dispose();
-        }
-
-        public Version Version { get; private set; }
     }
 }
