@@ -1,6 +1,5 @@
 ﻿using NuGet.Common;
 using NuGet.Packaging.Core;
-using NuGet.Protocol.Core.Types;
 using Rocket.NuGet;
 using System;
 using System.Collections.Generic;
@@ -17,19 +16,22 @@ namespace Rocket
             string rocketFolder,
             string packageId,
             bool allowPrereleaseVersions = false,
-            string repository = DefaultNugetRepository, 
+            string repository = DefaultNugetRepository,
             ILogger logger = null)
         {
-            await BootstrapAsync(rocketFolder, new List<string> {packageId}, allowPrereleaseVersions, repository, logger);
+            await BootstrapAsync(rocketFolder, new List<string> { packageId }, allowPrereleaseVersions, repository, logger);
         }
 
         public async Task BootstrapAsync(
-            string rocketFolder, 
-            IEnumerable<string> packageIds, 
-            bool allowPrereleaseVersions = false, 
-            string repository = DefaultNugetRepository, 
+            string rocketFolder,
+            IEnumerable<string> packageIds,
+            bool allowPrereleaseVersions = false,
+            string repository = DefaultNugetRepository,
             ILogger logger = null)
         {
+            logger = logger ?? new NuGetConsoleLogger();
+            logger.LogInformation("Bootstrap has started.");
+
             rocketFolder = Path.GetFullPath(rocketFolder);
 
             if (string.IsNullOrEmpty(repository))
@@ -38,7 +40,6 @@ namespace Rocket
                 return;
             }
 
-            logger = logger ?? new NuGetConsoleLogger();
             var packagesDirectory = Path.Combine(rocketFolder, "Packages");
 
             if (!Directory.Exists(packagesDirectory))
@@ -46,19 +47,18 @@ namespace Rocket
                 Directory.CreateDirectory(packagesDirectory);
             }
 
-            var nugetInstaller = new NuGetPackageManager(logger, packagesDirectory, new []{ repository });
+            var nugetInstaller = new NuGetPackageManager(logger, packagesDirectory, new[] { repository });
 
             foreach (var packageId in packageIds)
             {
                 PackageIdentity packageIdentity;
                 if (!await nugetInstaller.PackageExistsAsync(packageId))
                 {
-                    var rocketPackage =
-                        await nugetInstaller.QueryPackageExactAsync(packageId, null, allowPrereleaseVersions);
+                    logger.LogInformation("Searching for: " + packageId);
+                    var rocketPackage = await nugetInstaller.QueryPackageExactAsync(packageId, null, allowPrereleaseVersions);
 
                     logger.LogInformation($"Downloading {rocketPackage.Identity.Id} v{rocketPackage.Identity.Version} via NuGet, this might take a while...");
-                    var installResult =
-                        await nugetInstaller.InstallAsync(rocketPackage.Identity, allowPrereleaseVersions);
+                    var installResult = await nugetInstaller.InstallAsync(rocketPackage.Identity, allowPrereleaseVersions);
                     if (installResult.Code != NuGetInstallCode.Success)
                     {
                         logger.LogInformation($"Downloading has failed for {rocketPackage.Identity.Id}: " + installResult.Code);
