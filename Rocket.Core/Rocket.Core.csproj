@@ -32,9 +32,7 @@
     <PackageReference Include="morelinq" Version="3.1.0"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
-      <Private>true</Private>
-    </ProjectReference>
+    <ProjectReference Include="..\Rocket.API\Rocket.API.csproj" />
     <ProjectReference Include="..\Rocket.NuGet\Rocket.NuGet.csproj">
       <PrivateAssets>all</PrivateAssets>
       <Private>true</Private>
