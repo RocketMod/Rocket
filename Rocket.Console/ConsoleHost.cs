@@ -9,7 +9,7 @@ using Rocket.API.Logging;
 using Rocket.API.Plugins;
 using Rocket.Core.Logging;
 using Rocket.Core.User;
-using Color = Rocket.API.Drawing.Color;
+using Color = System.Drawing.Color;
 
 namespace Rocket.Console
 {
