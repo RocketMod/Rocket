@@ -15,8 +15,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Rocket.NuGet;
 
-//todo: find and install dependencies
 namespace Rocket.Core.Plugins.NuGet
 {
     public class NuGetPluginLoader : ClrPluginLoader
@@ -89,7 +89,9 @@ namespace Rocket.Core.Plugins.NuGet
             Logger.LogDebug($"[{GetType().Name}] Initializing NuGet.");
 
             CreateConfiguration();
-            nugetInstaller = new NuGetInstaller(logger, PackagesDirectory);
+
+            var adapter = new NuGetLoggerAdapter(logger);
+            nugetInstaller = new NuGetInstaller(adapter, PackagesDirectory);
 
             PluginManagerInitEvent pluginManagerInitEvent =
                 new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
@@ -194,20 +196,24 @@ namespace Rocket.Core.Plugins.NuGet
                 return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
 
             var enabledRepos = Repositories.Where(d => d.IsEnabled).ToList();
+            var repoUrls = enabledRepos.Select(c => c.Url).ToList();
 
-            Repository repo;
+            string repo;
             if (repoName == null)
             {
-                repo = await nugetInstaller.FindRepositoryForPackageAsync(enabledRepos, packageName, version, isPreRelease);
+                repo = await nugetInstaller.FindRepositoryForPackageAsync(repoUrls, packageName, version, isPreRelease);
+                if (repo == null)
+                {
+                    return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
+                }
             }
             else
             {
-                repo = enabledRepos.FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase));
-            }
-
-            if (repo == null)
-            {
-                return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
+                repo = enabledRepos.FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase))?.Url;
+                if (repo == null)
+                {
+                    return new NuGetInstallResult(NuGetInstallCode.RepositoryNotFound);
+                }
             }
 
             if (isUpdate
@@ -215,12 +221,7 @@ namespace Rocket.Core.Plugins.NuGet
                 || PackageExists(packageName))
                 await UninstallAsync(packageName);
 
-            if (!repo.IsEnabled)
-            {
-                return new NuGetInstallResult(NuGetInstallCode.RepositoryNotFound);
-            }
-
-            var packages = (await nugetInstaller.QueryPackagesAsync(enabledRepos, packageName, version, isPreRelease))
+            var packages = (await nugetInstaller.QueryPackagesAsync(repoUrls, packageName, version, isPreRelease))
                 .ToList();
 
             if (packages.Count == 0)
@@ -312,7 +313,7 @@ namespace Rocket.Core.Plugins.NuGet
 
         protected virtual async Task<bool> LoadPluginFromNugetPackageAsync(string packagePath)
         {
-            var assemblies = await LoadAssembliesFromNugetPackageAsync(packagePath);
+            var assemblies = await nugetInstaller.LoadAssembliesFromNugetPackageAsync(packagePath);
             bool success = false;
             foreach (var asm in assemblies)
             {
@@ -362,58 +363,10 @@ namespace Rocket.Core.Plugins.NuGet
                 if (!File.Exists(nugetPackageFile))
                     continue;
 
-                assemblies.AddRange(await LoadAssembliesFromNugetPackageAsync(nugetPackageFile));
+                assemblies.AddRange(await nugetInstaller.LoadAssembliesFromNugetPackageAsync(nugetPackageFile));
             }
 
             return assemblies;
-        }
-
-        public virtual async Task<IEnumerable<Assembly>> LoadAssembliesFromNugetPackageAsync(string nugetPackageFile)
-        {
-            List<Assembly> allAssemblies = new List<Assembly>();
-            using (Stream fs = new FileStream(nugetPackageFile, FileMode.Open))
-            {
-                ZipFile zf = new ZipFile(fs);
-                List<ZipEntry> assemblies = new List<ZipEntry>();
-
-#if NET461
-                foreach (ZipEntry entry in zf)
-                    if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
-                        assemblies.Add(entry);
-
-#if NETSTANDARD2_0
-                if (assemblies.Count < 1) // if no NET461 assemblies were found; continue to check.
-#endif
-#elif NETSTANDARD2_0 || NET461
-                foreach (ZipEntry entry in zf)
-                    if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
-                        assemblies.Add(entry);
-
-#endif
-
-                if (assemblies.Count == 0)
-                {
-                    logger.LogWarning("No assemblies found in: " + nugetPackageFile);
-                    return allAssemblies;
-                }
-
-                foreach (var ze in assemblies)
-                {
-                    Stream inputStream = zf.GetInputStream(ze);
-                    MemoryStream ms = new MemoryStream();
-
-                    await inputStream.CopyToAsync(ms);
-                    var asm = Assembly.Load(ms.ToArray());
-
-                    ms.Close();
-                    inputStream.Close();
-                    zf.Close();
-
-                    allAssemblies.Add(asm);
-                }
-            }
-
-            return allAssemblies;
         }
     }
 }

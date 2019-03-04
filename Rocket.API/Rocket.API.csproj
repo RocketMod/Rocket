@@ -2,21 +2,20 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
     <AssemblyName>Rocket.API</AssemblyName>
-	<Description>RocketMod .NET Game Server Plugin Framework Core definitions</Description>
+    <Description>RocketMod .NET Game Server Plugin Framework Core definitions</Description>
     <RootNamespace>Rocket.API</RootNamespace>
     <OutputType>Library</OutputType>
-	<GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <Version>0.0.0.0</Version> <!-- Set by CI -->
-	<PackageVersion>0.0.0.0</PackageVersion> <!-- Set by CI -->	
-    <AssemblyVersion>0.0.0.0</AssemblyVersion> <!-- Set by CI --> 
-    <FileVersion>0.0.0.0</FileVersion> <!-- Set by CI -->	
-  </PropertyGroup> 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' Or '$(TargetFramework)' == 'net461' ">
-    <!-- Stuff which isn't compatible with NET35 -->
-	<PackageReference Include="System.Numerics.Vectors">
+    <PackageVersion>0.0.0.0</PackageVersion> <!-- Set by CI -->
+    <AssemblyVersion>0.0.0.0</AssemblyVersion> <!-- Set by CI -->
+    <FileVersion>0.0.0.0</FileVersion> <!-- Set by CI -->
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Numerics.Vectors">
       <Version>4.5.0</Version>
     </PackageReference>
   </ItemGroup>
-  
+
   <Import Project="$(MSBuildThisFileDirectory)..\props\SharedNuGet.props" />
 </Project>

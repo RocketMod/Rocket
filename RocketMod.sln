@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.API", "Rocket.API\Ro
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.Console", "Rocket.Console\Rocket.Console.csproj", "{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rocket.NuGet", "Rocket.NuGet\Rocket.NuGet.csproj", "{5A4ACB33-A65E-4338-B88A-3A5296F651AE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,12 +41,16 @@ Global
 		{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F305F61-A5EA-43BB-906E-5F61EAB9E5C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A4ACB33-A65E-4338-B88A-3A5296F651AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A4ACB33-A65E-4338-B88A-3A5296F651AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A4ACB33-A65E-4338-B88A-3A5296F651AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A4ACB33-A65E-4338-B88A-3A5296F651AE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 		SolutionGuid = {44CEEF5D-7AE2-4DF9-91E1-E4B4B0C9EAC1}
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.2\lib\NET35
 	EndGlobalSection
 EndGlobal

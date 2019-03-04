@@ -1,4 +1,4 @@
-﻿namespace Rocket.Core.Plugins.NuGet
+﻿namespace Rocket.NuGet
 {
     public class NuGetInstallResult
     {
