@@ -4,15 +4,19 @@ using NuGet.ProjectManagement;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Resolver;
-using Rocket.API.Logging;
 using Rocket.Core.Logging;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using NuGet.Common;
+using NuGet.Packaging;
 using NuGet.Packaging.Core;
+using NuGet.Packaging.Signing;
 using NuGet.Versioning;
+using ILogger = Rocket.API.Logging.ILogger;
 using Types_Repository = NuGet.Protocol.Core.Types.Repository;
 
 namespace Rocket.Core.Plugins.NuGet
@@ -34,42 +38,56 @@ namespace Rocket.Core.Plugins.NuGet
             providers.AddRange(Types_Repository.Provider.GetCoreV3()); // Add v3 API support
 
             nuGetLoggerAdapter = new NuGetLoggerAdapter(logger);
-            nugetSettings = Settings.LoadDefaultSettings(packagesDirectory, null, new XPlatMachineWideSetting());
+            nugetSettings = Settings.LoadDefaultSettings(packagesDirectory, null, new MachineWideSettings());
             sourceCacheContext = new SourceCacheContext();
         }
 
-        public async Task<NuGetInstallResult> InstallAsync(Repository repo, NuGetQueryResult queryResult, string path, string version, bool allowPrereleaseVersions = false)
+        public async Task<NuGetInstallResult> InstallAsync(Repository repo, QueriedNuGetPackage queryResult, string installPath, string version, bool allowPrereleaseVersions = false)
         {
-            ISourceRepositoryProvider sourceRepositoryProvider = new SourceRepositoryProvider(nugetSettings, providers);
+            var packageSource = new PackageSource(repo.Url);
+            var sourceRepository = new SourceRepository(packageSource, providers);
+            var packageSourceProvider = new PackageSourceProvider(nugetSettings);
+            var sourceRepositoryProvider = new SourceRepositoryProvider(packageSourceProvider, providers);
+
+            var project = new FolderNuGetProject(packagesDirectory);
+            
             NuGetPackageManager packageManager = new NuGetPackageManager(sourceRepositoryProvider, nugetSettings, packagesDirectory)
             {
-                PackagesFolderNuGetProject = new FolderNuGetProject(path)
+                PackagesFolderNuGetProject = project
             };
 
-            ResolutionContext resolutionContext = new ResolutionContext(DependencyBehavior.Lowest, allowPrereleaseVersions, false, VersionConstraints.None);
-            INuGetProjectContext projectContext = new EmptyNuGetProjectContext();
+            INuGetProjectContext projectContext = new EmptyNuGetProjectContext()
+            {
+                PackageExtractionContext = new PackageExtractionContext(
+                    PackageSaveMode.Nupkg,
+                    XmlDocFileSaveMode.Skip,
+                    ClientPolicyContext.GetClientPolicy(nugetSettings, nuGetLoggerAdapter),
+                    nuGetLoggerAdapter),
+                ActionType = NuGetActionType.Install,
+            };
 
-            PackageSource packageSource = new PackageSource(repo.Url);
-            SourceRepository sourceRepository = new SourceRepository(packageSource, providers);
+            ResolutionContext resolutionContext = new ResolutionContext(
+                DependencyBehavior.Lowest,
+                allowPrereleaseVersions,
+                false,
+                VersionConstraints.None);
 
-            var packageIdentity = new PackageIdentity(queryResult.Metadata.Identity.Id, new NuGetVersion(version));
+            var identity = new PackageIdentity(queryResult.Metadata.Identity.Id, new NuGetVersion(version));
 
-            IEnumerable<SourceRepository> sourceRepositories = new[] { sourceRepository };
             await packageManager.InstallPackageAsync(
-                    packageManager.PackagesFolderNuGetProject,
-                    packageIdentity,
-                    resolutionContext,
-                    projectContext,
-                    sourceRepositories,
-                    Array.Empty<SourceRepository>(),
-                    CancellationToken.None);
-
+                project,
+                identity,
+                resolutionContext,
+                projectContext,
+                sourceRepository,
+                Array.Empty<SourceRepository>(),
+                CancellationToken.None);
             return new NuGetInstallResult(version);
         }
 
-        public async Task<IEnumerable<NuGetQueryResult>> QueryPackagesAsync(IEnumerable<Repository> repositories, string packageName, string version = null, bool includePreRelease = false)
+        public async Task<IEnumerable<QueriedNuGetPackage>> QueryPackagesAsync(IEnumerable<Repository> repositories, string packageName, string version = null, bool includePreRelease = false)
         {
-            var matches = new List<NuGetQueryResult>();
+            var matches = new List<QueriedNuGetPackage>();
 
             foreach (var repo in repositories)
             {
@@ -88,7 +106,7 @@ namespace Rocket.Core.Plugins.NuGet
 
                 if (version == null)
                 {
-                    matches.AddRange(metadatas.Select(d => new NuGetQueryResult
+                    matches.AddRange(metadatas.Select(d => new QueriedNuGetPackage
                     {
                         Metadata = d,
                         Repository = repo,
@@ -102,7 +120,7 @@ namespace Rocket.Core.Plugins.NuGet
                     var versions = (await meta.GetVersionsAsync()).ToList();
                     if (versions.Any(d => d.Version.OriginalVersion.Equals(version, StringComparison.OrdinalIgnoreCase)))
                     {
-                        matches.Add(new NuGetQueryResult
+                        matches.Add(new QueriedNuGetPackage
                         {
                             Metadata = meta,
                             Repository = repo,
@@ -142,7 +160,20 @@ namespace Rocket.Core.Plugins.NuGet
         }
     }
 
-    public class NuGetQueryResult
+    public class MachineWideSettings : IMachineWideSettings
+    {
+        private readonly ISettings _settings;
+
+        public MachineWideSettings()
+        {
+            var baseDirectory = NuGetEnvironment.GetFolderPath(NuGetFolderPath.MachineWideConfigDirectory);
+            _settings = global::NuGet.Configuration.Settings.LoadMachineWideSettings(baseDirectory);
+        }
+
+        public ISettings Settings => _settings ;
+    }
+
+    public class QueriedNuGetPackage
     {
         public IPackageSearchMetadata Metadata { get; set; }
 

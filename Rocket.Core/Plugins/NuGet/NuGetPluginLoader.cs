@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using MoreLinq.Extensions;
+using NuGet.Frameworks;
 using Rocket.API;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
@@ -14,8 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using NuGet.Frameworks;
-using NuGet.Protocol.Core.Types;
 
 //todo: find and install dependencies
 namespace Rocket.Core.Plugins.NuGet
@@ -382,7 +381,9 @@ namespace Rocket.Core.Plugins.NuGet
                     if (entry.Name.ToLower().StartsWith("lib/net461") && entry.Name.EndsWith(".dll"))
                         assemblies.Add(entry);
 
+#if NETSTANDARD2_0
                 if (assemblies.Count < 1) // if no NET461 assemblies were found; continue to check.
+#endif
 #elif NETSTANDARD2_0 || NET461
                 foreach (ZipEntry entry in zf)
                     if (entry.Name.ToLower().StartsWith("lib/netstandard2.0") && entry.Name.EndsWith(".dll"))
@@ -391,7 +392,10 @@ namespace Rocket.Core.Plugins.NuGet
 #endif
 
                 if (assemblies.Count == 0)
-                    throw new Exception("No compatible assemblies were found.");
+                {
+                    logger.LogWarning("No assemblies found in: " + nugetPackageFile);
+                    return allAssemblies;
+                }
 
                 foreach (var ze in assemblies)
                 {
