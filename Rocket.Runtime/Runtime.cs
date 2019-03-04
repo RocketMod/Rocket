@@ -11,6 +11,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Rocket.Core.Extensions;
 
 namespace Rocket
 {
@@ -55,7 +56,19 @@ namespace Rocket
             Container.RegisterInstance<IRuntime>(this);
             Container.RegisterSingletonType<ILogger, NullLogger>();
 
-            FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(typeof(IRuntime).Assembly.Location);
+            var assembly = typeof(Runtime).Assembly.FullName;
+            ReflectionExtensions.GetVersionIndependentName(assembly, out string extactedVersion);
+            Version version;
+            try
+            {
+                version = new Version(extactedVersion);
+            }
+            catch
+            {
+                Console.WriteLine("Failed to get RocketMod version.");
+                version = new Version(0, 0, 0, 0);
+            }
+
             Container.Activate(typeof(RegistrationByConvention));
 
             await Container.Resolve<ICommandProvider>().InitAsync();
@@ -80,9 +93,9 @@ namespace Rocket
             }
 
             IHost impl = Container.Resolve<IHost>();
-            Version = new Version(versionInfo.FileVersion);
+            Version = version;
 
-            string rocketInitializeMessage = "Initializing RocketMod " + versionInfo.FileVersion;
+            string rocketInitializeMessage = "Initializing RocketMod Runtime v" + version;
             impl.Console.WriteLine(rocketInitializeMessage, Color.DarkGreen);
             impl.Console.WriteLine(@"                                    
 									

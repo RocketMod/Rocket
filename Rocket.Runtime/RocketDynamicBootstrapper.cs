@@ -1,15 +1,11 @@
 ﻿using NuGet.Common;
-using NuGet.Configuration;
-using NuGet.Packaging;
+using NuGet.Packaging.Core;
+using NuGet.ProjectManagement;
 using NuGet.Protocol.Core.Types;
-using NuGet.Resolver;
 using Rocket.NuGet;
 using System;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
-using NuGet.ProjectManagement;
 
 namespace Rocket
 {
@@ -17,7 +13,7 @@ namespace Rocket
     {
         private const string DefaultNugetRepository = "https://api.nuget.org/v3/index.json";
 
-        public async Task BootstrapAsync(string rocketFolder, string repository)
+        public async Task BootstrapAsync(string rocketFolder, string packageId, bool allowPrereleaseVersions = false, string repository = DefaultNugetRepository)
         {
             rocketFolder = Path.GetFullPath(rocketFolder);
 
@@ -35,51 +31,48 @@ namespace Rocket
                 Directory.CreateDirectory(packagesDirectory);
             }
 
-            string packageId = "Rocket.Core";
             var nugetInstaller = new NuGetInstaller(logger, packagesDirectory);
-
-            if (nugetInstaller.PackageExists(packagesDirectory, packageId))
+            PackageIdentity packageIdentity;
+            if (!nugetInstaller.PackageExists(packagesDirectory, packageId))
             {
-                await InitializeRuntimeAsync();
-                return;
+                var rocketPackage =
+                    await nugetInstaller.QueryPackageExactAsync(repository, packageId, null, allowPrereleaseVersions);
+
+                Console.WriteLine($"Downloading {rocketPackage.Identity.Id} v{rocketPackage.Identity.Version} via NuGet, this can take a while...");
+                var installResult = await nugetInstaller.InstallAsync(repository, rocketPackage.Identity, NuGetActionType.Install, allowPrereleaseVersions);
+                if (installResult.Code != NuGetInstallCode.Success)
+                {
+                    Console.WriteLine($"Downloading finished. Loading runtime for {rocketPackage.Identity.Id}.");
+                    return;
+                }
+
+                packageIdentity = installResult.Identity;
+                Console.WriteLine($"Downloading finished.");
+            }
+            else
+            {
+                packageIdentity = nugetInstaller.GetLatestPackageIdentity(packageId);
             }
 
-            var rocketPackage = await nugetInstaller.QueryPackageExactAsync(repository, packageId);
+            Console.WriteLine($"Loading runtime for {packageId}.");
 
-            var installResult = await nugetInstaller.InstallAsync(repository, rocketPackage.Metadata.Identity, NuGetActionType.Install, false);
-            var packageIdentity = installResult.Identity;
-
-            var resolver = new PackageResolver();
-            var context = new PackageResolverContext(
-                DependencyBehavior.Lowest,
-                new[] { packageIdentity.Id },
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<PackageReference>(),
-                new[] { packageIdentity },
-                Enumerable.Empty<SourcePackageDependencyInfo>(),
-                Enumerable.Empty<PackageSource>(),
-                logger
-            );
-
-            var results = resolver.Resolve(context, CancellationToken.None);
-            foreach (var result in results)
+            using (var cache = new SourceCacheContext())
             {
-                await LoadPackageAsync(nugetInstaller, packagesDirectory, result.Id);
+                var dependencies = await nugetInstaller.GetDependenciesAsync(packageIdentity, cache);
+                foreach (var dependency in dependencies)
+                {
+                    await LoadPackageAsync(nugetInstaller, dependency);
+                }
             }
 
-            await LoadPackageAsync(nugetInstaller, packagesDirectory, packageId);
             await InitializeRuntimeAsync();
         }
 
-        private async Task LoadPackageAsync(NuGetInstaller nugetInstaller, string packagesDirectory, string packageId)
+        private async Task LoadPackageAsync(NuGetInstaller installer, PackageIdentity identity)
         {
-            string nupkgFile = nugetInstaller.GetNugetPackageFile(packagesDirectory, packageId);
-            await nugetInstaller.LoadAssembliesFromNugetPackageAsync(nupkgFile);
-        }
-
-        public async Task BootstrapAsync(string rocketFolder, bool useLocalRocketAssemblies)
-        {
-            await BootstrapAsync(rocketFolder, useLocalRocketAssemblies ? null : DefaultNugetRepository);
+            Console.WriteLine($"Loading: {identity.Id} v{identity.Version}");
+            var pkg = installer.GetNugetPackageFile(identity);
+            await installer.LoadAssembliesFromNugetPackageAsync(pkg);
         }
 
         private async Task InitializeRuntimeAsync()
@@ -93,6 +86,9 @@ namespace Rocket
     {
         public override void Log(ILogMessage message)
         {
+            if (message.Level < LogLevel.Minimal)
+                return;
+
             Console.WriteLine($"[{message.Level}] [NuGet] {message.Message}");
         }
 

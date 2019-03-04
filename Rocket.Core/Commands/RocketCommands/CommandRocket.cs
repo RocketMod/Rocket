@@ -123,7 +123,7 @@ namespace Rocket.Core.Commands.RocketCommands
             }
             await context.User.SendMessageAsync($"Successfully installed {result.Identity.Id} v{result.Identity.Version}.", Color.DarkGreen);
 
-            await pm.LoadPluginFromNugetAsync(packageName);
+            await pm.LoadPluginFromNugetAsync(result.Identity);
         }
     }
 

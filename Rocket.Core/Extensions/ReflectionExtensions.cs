@@ -171,12 +171,12 @@ namespace Rocket.Core.Extensions
             return GetVersionIndependentName(name, out _);
         }
 
+        private static readonly Regex versionRegex = new Regex("Version=(?<version>.+?), ", RegexOptions.Compiled);
         public static string GetVersionIndependentName(string name, out string extractedVersion)
         {
-            Regex regex = new Regex("Version=(?<version>.+?), ", RegexOptions.Compiled);
-            var match = regex.Match(name);
-            extractedVersion = match.Groups[0].Value;
-            return regex.Replace(name, "");
+            var match = versionRegex.Match(name);
+            extractedVersion = match.Groups[1].Value;
+            return versionRegex.Replace(name, "");
         }
 
         public static string GetDebugName(this MethodBase mb)

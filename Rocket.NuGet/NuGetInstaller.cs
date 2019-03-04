@@ -1,8 +1,6 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
-using NuGet.Common;
+﻿using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Frameworks;
-using NuGet.PackageManagement;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
 using NuGet.Packaging.Signing;
@@ -11,10 +9,12 @@ using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Resolver;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,6 +27,9 @@ namespace Rocket.NuGet
         private readonly List<Lazy<INuGetResourceProvider>> providers;
         private readonly ISettings nugetSettings;
         private readonly NuGetFramework currentFramework;
+        private readonly FrameworkReducer frameworkReducer;
+        private readonly PackagePathResolver packagePathResolver;
+        private readonly PackageResolver packageResolver;
 
         public NuGetInstaller(ILogger logger, string packagesDirectory)
         {
@@ -35,111 +38,121 @@ namespace Rocket.NuGet
             providers = new List<Lazy<INuGetResourceProvider>>();
             providers.AddRange(Repository.Provider.GetCoreV3()); // Add v3 API support
 
-            nugetSettings = Settings.LoadDefaultSettings(packagesDirectory, null, null);
+            nugetSettings = Settings.LoadDefaultSettings(null);
+
+            frameworkReducer = new FrameworkReducer();
 
             var frameworkName = Assembly.GetExecutingAssembly().GetCustomAttributes(true)
                                            .OfType<System.Runtime.Versioning.TargetFrameworkAttribute>()
                                            .Select(x => x.FrameworkName)
                                            .FirstOrDefault();
+
             currentFramework = frameworkName == null
                 ? NuGetFramework.AnyFramework
                 : NuGetFramework.ParseFrameworkName(frameworkName, new DefaultFrameworkNameProvider());
+
+            packagePathResolver = new PackagePathResolver(packagesDirectory);
+            packageResolver = new PackageResolver();
+
+            InstallAssemblyResolver();
         }
 
         public async Task<NuGetInstallResult> InstallAsync(string repo, PackageIdentity packageIdentity, NuGetActionType action = NuGetActionType.Update, bool allowPrereleaseVersions = false)
         {
-            var packageSource = new PackageSource(repo);
-            var sourceRepository = new SourceRepository(packageSource, providers);
-            var packageSourceProvider = new PackageSourceProvider(nugetSettings);
-            var sourceRepositoryProvider = new SourceRepositoryProvider(packageSourceProvider, providers);
-
-            var project = new FolderNuGetProject(packagesDirectory);
-
-            NuGetPackageManager packageManager = new NuGetPackageManager(sourceRepositoryProvider, nugetSettings, packagesDirectory)
+            using (var cacheContext = new SourceCacheContext())
             {
-                PackagesFolderNuGetProject = project
-            };
+                var packageSource = new PackageSource(repo);
+                var sourceRepository = new SourceRepository(packageSource, providers);
 
-            INuGetProjectContext projectContext = new EmptyNuGetProjectContext
+                var packagesToInstall = await GetDependenciesAsync(packageIdentity, cacheContext);
+
+                var packageExtractionContext = new PackageExtractionContext(
+                    PackageSaveMode.Nupkg,
+                    XmlDocFileSaveMode.None,
+                    ClientPolicyContext.GetClientPolicy(nugetSettings, logger),
+                    logger);
+
+                foreach (var packageToInstall in packagesToInstall)
+                {
+                    var installedPath = packagePathResolver.GetInstalledPath(packageToInstall);
+                    if (installedPath == null)
+                    {
+                        var downloadResource = await packageToInstall.Source.GetResourceAsync<DownloadResource>(CancellationToken.None);
+                        var downloadResult = await downloadResource.GetDownloadResourceResultAsync(
+                            packageToInstall,
+                            new PackageDownloadContext(cacheContext),
+                            SettingsUtility.GetGlobalPackagesFolder(nugetSettings),
+                            logger, CancellationToken.None);
+
+                        await PackageExtractor.ExtractPackageAsync(
+                            downloadResult.PackageSource,
+                            downloadResult.PackageStream,
+                            packagePathResolver,
+                            packageExtractionContext,
+                            CancellationToken.None);
+                    }
+                }
+
+                return new NuGetInstallResult(packageIdentity);
+            }
+        }
+
+        private async Task GetPackageDependencies(PackageIdentity package,
+                                          SourceCacheContext cacheContext,
+                                          IEnumerable<SourceRepository> repositories,
+                                          ISet<SourcePackageDependencyInfo> availablePackages)
+        {
+            if (availablePackages.Contains(package))
             {
-                PackageExtractionContext = new PackageExtractionContext(
-                         PackageSaveMode.Nupkg,
-                         XmlDocFileSaveMode.Skip,
-                         ClientPolicyContext.GetClientPolicy(nugetSettings, logger),
-                         logger),
-                ActionType = action
-            };
+                return;
+            }
 
-            ResolutionContext resolutionContext = new ResolutionContext(
-                DependencyBehavior.Lowest,
-                allowPrereleaseVersions,
-                false,
-                VersionConstraints.None);
+            var repos = repositories.ToList();
+            foreach (var sourceRepository in repos)
+            {
+                var dependencyInfoResource = await sourceRepository.GetResourceAsync<DependencyInfoResource>();
+                var dependencyInfo = await dependencyInfoResource.ResolvePackage(
+                    package, currentFramework, cacheContext, logger, CancellationToken.None);
 
-            await packageManager.InstallPackageAsync(
-                project,
-                packageIdentity,
-                resolutionContext,
-                projectContext,
-                sourceRepository,
-                Array.Empty<SourceRepository>(),
-                CancellationToken.None);
+                if (dependencyInfo == null) continue;
 
-            //var dependencies = GetDependencies(packageIdentity).ToList();
-
-            //List<NuGetInstallResult> installedDependencies = new List<NuGetInstallResult>();
-            //List<PackageIdentity> packagesToRemove = new List<PackageIdentity>();
-
-            //foreach (var dependency in dependencies)
-            //{
-            //    var result = await InstallAsync(repo, dependency, allowPrereleaseVersions);
-            //    if (result.Code != NuGetInstallCode.Success)
-            //    {
-            //        logger.LogError($"Failed to install dependency {dependency.Id} v{dependency.Version}: " + result.Code);
-            //        RollbackInstallation(packageIdentity, installedDependencies.Select(d => d.Identity));
-            //        return new NuGetInstallResult(NuGetInstallCode.DependencyFail);
-            //    }
-
-            //    //todo: remove older dependencies
-            //    installedDependencies.Add(result);
-            //}
-
-            //foreach (var package in packagesToRemove)
-            //{
-            //    DeletePackage(package);
-            //}
-
-            return new NuGetInstallResult(packageIdentity);
+                availablePackages.Add(dependencyInfo);
+                foreach (var dependency in dependencyInfo.Dependencies)
+                {
+                    await GetPackageDependencies(
+                        new PackageIdentity(dependency.Id, dependency.VersionRange.MinVersion), cacheContext, repos, availablePackages);
+                }
+            }
         }
 
         public bool PackageExists(string rootDirectory, string packageId)
         {
-            return File.Exists(GetNugetPackageFile(rootDirectory, packageId));
+            return GetLatestPackageIdentity(packageId) != null;
         }
 
-        public async Task<QueriedNuGetPackage> QueryPackageExactAsync(
+        public async Task<IPackageSearchMetadata> QueryPackageExactAsync(
             string repository, string packageId, string version = null, bool includePreRelease = false)
         {
             var matches = await QueryPackagesAsync(repository, packageId, version, includePreRelease);
-            return matches.FirstOrDefault(d => d.Metadata.Identity.Id.Equals(packageId));
+            return matches.FirstOrDefault(d => d.Identity.Id.Equals(packageId));
         }
 
-        public async Task<IEnumerable<QueriedNuGetPackage>> QueryPackagesAsync(
+        public async Task<IEnumerable<IPackageSearchMetadata>> QueryPackagesAsync(
             string repository, string packageId, string version = null, bool includePreRelease = false)
         {
             return await QueryPackagesAsync(new[] { repository }, packageId, version, includePreRelease);
         }
 
-        public async Task<QueriedNuGetPackage> QueryPackageExactAsync(
+        public async Task<IPackageSearchMetadata> QueryPackageExactAsync(
             IEnumerable<string> repositories, string packageId, string version = null, bool includePreRelease = false)
         {
             var matches = await QueryPackagesAsync(repositories, packageId, version, includePreRelease);
-            return matches.FirstOrDefault(d => d.Metadata.Identity.Id.Equals(packageId));
+            return matches.FirstOrDefault(d => d.Identity.Id.Equals(packageId));
         }
 
-        public async Task<IEnumerable<QueriedNuGetPackage>> QueryPackagesAsync(IEnumerable<string> repositories, string packageId, string version = null, bool includePreRelease = false)
+        public async Task<IEnumerable<IPackageSearchMetadata>> QueryPackagesAsync(IEnumerable<string> repositories, string packageId, string version = null, bool includePreRelease = false)
         {
-            var matches = new List<QueriedNuGetPackage>();
+            var matches = new List<IPackageSearchMetadata>();
 
             foreach (var repo in repositories)
             {
@@ -156,12 +169,7 @@ namespace Rocket.NuGet
 
                 if (version == null)
                 {
-                    matches.AddRange(searchResult.Select(d => new QueriedNuGetPackage
-                    {
-                        Metadata = d,
-                        Repository = repo,
-                        Versions = null
-                    }));
+                    matches.AddRange(searchResult);
                     continue;
                 }
 
@@ -170,12 +178,7 @@ namespace Rocket.NuGet
                     var versions = (await packageMeta.GetVersionsAsync()).ToList();
                     if (versions.Any(d => d.Version.OriginalVersion.Equals(version, StringComparison.OrdinalIgnoreCase)))
                     {
-                        matches.Add(new QueriedNuGetPackage
-                        {
-                            Metadata = packageMeta,
-                            Repository = repo,
-                            Versions = versions
-                        });
+                        matches.Add(packageMeta);
                     }
                 }
             }
@@ -183,7 +186,7 @@ namespace Rocket.NuGet
             return matches;
         }
 
-        public async Task<string> FindRepositoryForPackageAsync(IEnumerable<string> repositories, string packageName, string version = null, bool includePreReleases = false)
+        public async Task<string> FindRepositoryForPackageAsync(IEnumerable<string> repositories, string packageId, string version = null, bool includePreReleases = false)
         {
             var repoList = repositories.ToList();
 
@@ -191,7 +194,7 @@ namespace Rocket.NuGet
             {
                 try
                 {
-                    var results = (await QueryPackagesAsync(repository, packageName, version, includePreReleases)).ToList();
+                    var results = (await QueryPackagesAsync(repository, packageId, version, includePreReleases)).ToList();
 
                     if (results.Count == 0)
                     {
@@ -209,132 +212,162 @@ namespace Rocket.NuGet
             return null;
         }
 
-        public virtual async Task<IEnumerable<Assembly>> LoadAssembliesFromNugetPackageAsync(string nugetPackageFile)
+        private readonly Dictionary<string, List<CachedAssembly>> loadedPackageAssemblies = new Dictionary<string, List<CachedAssembly>>();
+        public virtual async Task<IEnumerable<Assembly>> LoadAssembliesFromNugetPackageAsync(string nupkgFile)
         {
-            List<Assembly> allAssemblies = new List<Assembly>();
-            using (Stream fs = new FileStream(nugetPackageFile, FileMode.Open))
+            var fullPath = Path.GetFullPath(nupkgFile).ToLower();
+
+            if (loadedPackageAssemblies.ContainsKey(fullPath))
             {
-                ZipFile zf = new ZipFile(fs);
-                List<ZipEntry> assemblyEntries = new List<ZipEntry>();
-                List<NuGetFramework> frameworks = new List<NuGetFramework>();
+                return loadedPackageAssemblies[nupkgFile].Select(d => d.Assembly);
+            }
 
-                foreach (ZipEntry entry in zf)
+            List<CachedAssembly> assemblies = new List<CachedAssembly>();
+
+            var packageReader = new PackageArchiveReader(nupkgFile);
+            var libItems = packageReader.GetLibItems().ToList();
+            var nearest = frameworkReducer.GetNearest(currentFramework, libItems.Select(x => x.TargetFramework));
+
+            foreach (var file in libItems.Where(x => x.TargetFramework.Equals(nearest)))
+            {
+                foreach (var item in file.Items)
                 {
-                    if (entry.Name.StartsWith("lib/", StringComparison.OrdinalIgnoreCase) && entry.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
-                    {
-                        var parts = entry.Name.Split('/');
-                        var frameworkName = parts[1];
-                        var framework = NuGetFramework.ParseFolder(frameworkName, new DefaultFrameworkNameProvider());
-
-                        if (NuGetFrameworkUtility.IsCompatibleWithFallbackCheck(currentFramework, framework))
-                        {
-                            frameworks.Add(framework);
-                        }
-                    }
-                }
-
-                var targetFramework = frameworks.OrderByDescending(d => d.Version).FirstOrDefault();
-                if (targetFramework == null)
-                {
-                    logger.LogWarning("No compatible framework found in: " + nugetPackageFile);
-                    return allAssemblies;
-                }
-
-                foreach (ZipEntry entry in zf)
-                {
-                    string frameworkPrefix = "lib/" + targetFramework.GetShortFolderName() + "/";
-
-                    if (!entry.Name.StartsWith(frameworkPrefix, StringComparison.OrdinalIgnoreCase)
-                        || !entry.Name.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+                    if (!item.EndsWith(".dll"))
                     {
                         continue;
                     }
 
-                    assemblyEntries.Add(entry);
-                }
+                    var entry = packageReader.GetEntry(item);
+                    using (var stream = entry.Open())
+                    {
+                        MemoryStream ms = new MemoryStream();
+                        await stream.CopyToAsync(ms);
 
-                if (assemblyEntries.Count == 0)
-                {
-                    logger.LogWarning("No assemblies found in: " + nugetPackageFile);
-                    return allAssemblies;
-                }
+                        try
+                        {
+                            var asm = Assembly.Load(ms.ToArray());
+                          
+                            var name = GetVersionIndependentName(asm.FullName, out string extractedVersion);
+                            var parsedVersion = new Version(extractedVersion);
 
-                foreach (var ze in assemblyEntries)
-                {
-                    Stream inputStream = zf.GetInputStream(ze);
-                    MemoryStream ms = new MemoryStream();
-
-                    await inputStream.CopyToAsync(ms);
-                    var asm = Assembly.Load(ms.ToArray());
-
-                    ms.Close();
-                    inputStream.Close();
-                    zf.Close();
-
-                    allAssemblies.Add(asm);
+                            assemblies.Add(new CachedAssembly
+                            {
+                                Assembly = asm,
+                                AssemblyName = name,
+                                Version = parsedVersion
+                            });
+                        }
+                        catch (Exception ex)
+                        {
+                            logger.LogError("Failed to load assembly: " + item);
+                            logger.LogError(ex.ToString());
+                        }
+                        finally
+                        {
+                            ms.Close();
+                            stream.Close();
+                        }
+                    }
                 }
             }
 
-            return allAssemblies;
+            loadedPackageAssemblies.Add(fullPath, assemblies);
+            packageReader.Dispose();
+            return assemblies.Select(d => d.Assembly);
         }
 
-        public string GetNugetPackageFile(string rootDirectory, string packageId)
+        public PackageIdentity GetLatestPackageIdentity(string packageId)
         {
-            if (!Directory.Exists(rootDirectory))
+            if (!Directory.Exists(packagesDirectory))
             {
                 return null;
             }
 
-            foreach (var dir in Directory.GetDirectories(rootDirectory))
+            List<PackageIdentity> packageIdentities = new List<PackageIdentity>();
+            foreach (var dir in Directory.GetDirectories(packagesDirectory))
             {
                 var dirName = new DirectoryInfo(dir).Name;
-                if (dirName.ToLower().StartsWith(packageId.ToLower() + "."))
+                if (dirName.StartsWith(packageId + ".", StringComparison.OrdinalIgnoreCase))
                 {
-                    return Path.Combine(dir, dirName + ".nupkg");
+                    var directoryName = new DirectoryInfo(dir).Name;
+                    var nupkgFile = Path.Combine(dir, directoryName + ".nupkg");
+                    if (!File.Exists(nupkgFile))
+                    {
+                        return null;
+                    }
+
+                    using (var reader = new PackageArchiveReader(nupkgFile))
+                    {
+                        var identity = reader.NuspecReader.GetIdentity();
+
+                        if (identity.Id.Equals(packageId))
+                        {
+                            packageIdentities.Add(identity);
+                        }
+                    }
                 }
             }
 
-            return null;
+            return packageIdentities.OrderByDescending(c => c.Version).FirstOrDefault();
         }
 
-        private IEnumerable<PackageIdentity> GetDependencies(PackageIdentity identity)
+        public string GetNugetPackageFile(PackageIdentity identity)
         {
-            var resolver = new PackageResolver();
+            var dir = packagePathResolver.GetInstallPath(identity);
+            var dirName = new DirectoryInfo(dir).Name;
 
-            var context = new PackageResolverContext(
+            return Path.Combine(dir, dirName + ".nupkg");
+        }
+
+        public async Task<IEnumerable<SourcePackageDependencyInfo>> GetDependenciesAsync(PackageIdentity identity, SourceCacheContext cacheContext)
+        {
+            var packageSourceProvider = new PackageSourceProvider(nugetSettings);
+            var sourceRepositoryProvider = new SourceRepositoryProvider(packageSourceProvider, providers);
+
+            var repositories = sourceRepositoryProvider.GetRepositories();
+            var availablePackages = new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
+            await GetPackageDependencies(identity, cacheContext, repositories, availablePackages);
+
+            var resolverContext = new PackageResolverContext(
                 DependencyBehavior.Lowest,
                 new[] { identity.Id },
                 Enumerable.Empty<string>(),
                 Enumerable.Empty<PackageReference>(),
-                new[] { identity },
-                Enumerable.Empty<SourcePackageDependencyInfo>(),
-                Enumerable.Empty<PackageSource>(),
-                logger
-            );
+                Enumerable.Empty<PackageIdentity>(),
+                availablePackages,
+                sourceRepositoryProvider.GetRepositories().Select(s => s.PackageSource),
+                logger);
 
-            return resolver.Resolve(context, CancellationToken.None);
+            return packageResolver.Resolve(resolverContext, CancellationToken.None).Select(p => availablePackages.Single(x => PackageIdentityComparer.Default.Equals(x, p)));
         }
 
-        private void RollbackInstallation(PackageIdentity packageIdentity, IEnumerable<PackageIdentity> dependencies)
+        private void InstallAssemblyResolver()
         {
-            DeletePackage(packageIdentity);
-
-            foreach (var dep in dependencies)
+            AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
             {
-                DeletePackage(dep);
-            }
+                var name = GetVersionIndependentName(args.Name, out _);
+                var matchingAssemblies = 
+                    loadedPackageAssemblies.Values.SelectMany(d => d)
+                        .Where(d => d.AssemblyName.Equals(name, StringComparison.OrdinalIgnoreCase))
+                        .OrderByDescending(d => d.Version);
+
+                return matchingAssemblies.FirstOrDefault()?.Assembly;
+            };
         }
 
-        private void DeletePackage(PackageIdentity package)
+        private static readonly Regex versionRegex = new Regex("Version=(?<version>.+?), ", RegexOptions.Compiled);
+        private static string GetVersionIndependentName(string fullAssemblyName, out string extractedVersion)
         {
-            var packagePath = Path.Combine(packagesDirectory, $"{package.Id}.{package.Version.OriginalVersion}");
-            if (Directory.Exists(packagePath))
-            {
-                logger.LogWarning("Path not found: " + packagePath);
-                return;
-            }
-
-            Directory.Delete(packagePath, true);
+            var match = versionRegex.Match(fullAssemblyName);
+            extractedVersion = match.Groups[1].Value;
+            return versionRegex.Replace(fullAssemblyName, "");
         }
+    }
+
+    public class CachedAssembly
+    {
+        public string AssemblyName { get; set; }
+        public Version Version { get; set; }
+        public Assembly Assembly { get; set; }
     }
 }

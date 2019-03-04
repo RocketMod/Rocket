@@ -126,7 +126,9 @@ namespace Rocket.Core.Plugins.NuGet
 
         protected virtual async Task<NuGetInstallResult> InstallOrUpdateAsync(string packageName, string version = null, string repoName = null, bool isPreRelease = false, bool isUpdate = false)
         {
-            if (isUpdate && !PackageExists(packageName))
+            bool packageExists = PackageExists(packageName);
+
+            if (isUpdate && !packageExists)
                 return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
 
             var enabledRepos = Repositories.Where(d => d.IsEnabled).ToList();
@@ -150,7 +152,7 @@ namespace Rocket.Core.Plugins.NuGet
                 }
             }
 
-            if (isUpdate || PackageExists(packageName))
+            if (isUpdate || packageExists)
                 await UninstallAsync(packageName);
 
             var packages = (await nugetInstaller.QueryPackagesAsync(repoUrls, packageName, version, isPreRelease)).ToList();
@@ -160,7 +162,7 @@ namespace Rocket.Core.Plugins.NuGet
                 return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
             }
 
-            var package = packages.FirstOrDefault(d => packages.Count == 1 || d.Metadata.Identity.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase));
+            var package = packages.FirstOrDefault(d => packages.Count == 1 || d.Identity.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase));
             if (package == null)
             {
                 // we have no exact match but multiple results
@@ -169,10 +171,10 @@ namespace Rocket.Core.Plugins.NuGet
 
             if (version == null)
             {
-                version = package.Metadata.Identity.Version.OriginalVersion;
+                version = package.Identity.Version.OriginalVersion;
             }
 
-            var packageIdentity = new PackageIdentity(package.Metadata.Identity.Id, new NuGetVersion(version));
+            var packageIdentity = new PackageIdentity(package.Identity.Id, new NuGetVersion(version));
 
             var result = await nugetInstaller.InstallAsync(repo, packageIdentity, isUpdate ? NuGetActionType.Update : NuGetActionType.Install, isPreRelease);
             if (result.Code != NuGetInstallCode.Success)
@@ -198,11 +200,11 @@ namespace Rocket.Core.Plugins.NuGet
             return false;
         }
 
-        public virtual async Task<bool> LoadPluginFromNugetAsync(string pluginName)
+        public virtual async Task<bool> LoadPluginFromNugetAsync(PackageIdentity identity)
         {
-            var pkg = nugetInstaller.GetNugetPackageFile(PackagesDirectory, pluginName);
+            var pkg = nugetInstaller.GetNugetPackageFile(identity);
             if (pkg == null)
-                throw new Exception($"Plugin \"{pluginName}\" was not found.");
+                throw new Exception($"Plugin {identity.Id} v{identity.Version} was not found.");
 
             return await LoadPluginFromNugetPackageAsync(pkg);
         }
@@ -237,12 +239,14 @@ namespace Rocket.Core.Plugins.NuGet
 
             foreach (var dir in Directory.GetDirectories(PackagesDirectory))
             {
-                var dirName = new DirectoryInfo(dir).Name;
-                var nugetPackageFile = Path.Combine(dir, dirName + "nupkg");
-                if (!File.Exists(nugetPackageFile))
+                var directoryName = new DirectoryInfo(dir).Name;
+                var nupkgFile = Path.Combine(dir, directoryName + ".nupkg");
+                if (!File.Exists(nupkgFile))
+                {
                     continue;
+                }
 
-                assemblies.AddRange(await nugetInstaller.LoadAssembliesFromNugetPackageAsync(nugetPackageFile));
+                assemblies.AddRange(await nugetInstaller.LoadAssembliesFromNugetPackageAsync(nupkgFile));
             }
 
             return assemblies;
