@@ -351,7 +351,18 @@ namespace Rocket.NuGet
         {
             AppDomain.CurrentDomain.AssemblyResolve += delegate (object sender, ResolveEventArgs args)
             {
-                var name = GetVersionIndependentName(args.Name, out _);
+                var name = GetVersionIndependentName(args.Name, out string version);
+                var parsedVersion = new Version(version);
+
+                var exactMatch = loadedPackageAssemblies
+                                 .Values.SelectMany(d => d)
+                                 .FirstOrDefault(d => d.AssemblyName == name && d.Version == parsedVersion);
+
+                if (exactMatch != null)
+                {
+                    return exactMatch.Assembly;
+                }
+
                 var matchingAssemblies = 
                     loadedPackageAssemblies.Values.SelectMany(d => d)
                         .Where(d => d.AssemblyName.Equals(name, StringComparison.OrdinalIgnoreCase))
