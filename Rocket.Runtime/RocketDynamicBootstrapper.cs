@@ -11,7 +11,7 @@ namespace Rocket
 {
     public class RocketDynamicBootstrapper
     {
-        private const string DefaultNugetRepository = "https://api.nuget.org/v3/index.json";
+        public const string DefaultNugetRepository = "https://api.nuget.org/v3/index.json";
 
         public async Task BootstrapAsync(
             string rocketFolder,
@@ -56,26 +56,24 @@ namespace Rocket
                     var rocketPackage =
                         await nugetInstaller.QueryPackageExactAsync(packageId, null, allowPrereleaseVersions);
 
-                    Console.WriteLine(
-                        $"Downloading {rocketPackage.Identity.Id} v{rocketPackage.Identity.Version} via NuGet, this might take a while...");
+                    logger.LogInformation($"Downloading {rocketPackage.Identity.Id} v{rocketPackage.Identity.Version} via NuGet, this might take a while...");
                     var installResult =
                         await nugetInstaller.InstallAsync(rocketPackage.Identity, allowPrereleaseVersions);
                     if (installResult.Code != NuGetInstallCode.Success)
                     {
-                        Console.WriteLine($"Downloading finished. Loading runtime for {rocketPackage.Identity.Id}.");
+                        logger.LogInformation($"Downloading has failed for {rocketPackage.Identity.Id}: " + installResult.Code);
                         return;
                     }
 
                     packageIdentity = installResult.Identity;
-                    Console.WriteLine($"Downloading finished.");
+                    logger.LogInformation($"Finished downloading \"{packageId}\"");
                 }
                 else
                 {
                     packageIdentity = await nugetInstaller.GetLatestPackageIdentityAsync(packageId);
                 }
 
-                Console.WriteLine($"Loading runtime for {packageId}.");
-
+                logger.LogInformation($"Loading {packageId}.");
                 await LoadPackageAsync(nugetInstaller, packageIdentity);
             }
 
