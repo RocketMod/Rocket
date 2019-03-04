@@ -121,9 +121,9 @@ namespace Rocket.Core.Commands.RocketCommands
                 await context.User.SendMessageAsync($"Failed to install \"{packageName}\": " + result.Code, Color.DarkRed);
                 return;
             }
+            await context.User.SendMessageAsync($"Successfully installed {packageName} v{result.Version}.", Color.DarkGreen);
 
             await pm.LoadPluginFromNugetAsync(packageName);
-            await context.User.SendMessageAsync($"Successfully installed {packageName} v{result.Version}.", Color.DarkGreen);
         }
     }
 
