@@ -13,14 +13,22 @@ namespace Rocket
     {
         private const string DefaultNugetRepository = "https://api.nuget.org/v3/index.json";
 
-        public async Task BootstrapAsync(string rocketFolder, string packageId,
-                                         bool allowPrereleaseVersions = false,
-                                         string repository = DefaultNugetRepository)
+        public async Task BootstrapAsync(
+            string rocketFolder,
+            string packageId,
+            bool allowPrereleaseVersions = false,
+            string repository = DefaultNugetRepository, 
+            ILogger logger = null)
         {
-            await BootstrapAsync(rocketFolder, new List<string> {packageId}, allowPrereleaseVersions, repository);
+            await BootstrapAsync(rocketFolder, new List<string> {packageId}, allowPrereleaseVersions, repository, logger);
         }
 
-        public async Task BootstrapAsync(string rocketFolder, IEnumerable<string> packageIds, bool allowPrereleaseVersions = false, string repository = DefaultNugetRepository)
+        public async Task BootstrapAsync(
+            string rocketFolder, 
+            IEnumerable<string> packageIds, 
+            bool allowPrereleaseVersions = false, 
+            string repository = DefaultNugetRepository, 
+            ILogger logger = null)
         {
             rocketFolder = Path.GetFullPath(rocketFolder);
 
@@ -30,7 +38,7 @@ namespace Rocket
                 return;
             }
 
-            var logger = new NuGetConsoleLogger();
+            logger = logger ?? new NuGetConsoleLogger();
             var packagesDirectory = Path.Combine(rocketFolder, "Packages");
 
             if (!Directory.Exists(packagesDirectory))
