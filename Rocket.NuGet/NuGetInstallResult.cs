@@ -2,7 +2,7 @@
 
 namespace Rocket.NuGet
 {
-    public class NuGetInstallResult
+    public sealed class NuGetInstallResult
     {
         public PackageIdentity Identity { get; }
 
@@ -18,15 +18,5 @@ namespace Rocket.NuGet
         }
 
         public NuGetInstallCode Code { get; set; }
-    }
-
-    public enum NuGetInstallCode
-    {
-        Success,
-        VersionNotFound,
-        PackageNotFound,
-        RepositoryNotFound,
-        MultipleMatch,
-        DependencyFail
     }
 }

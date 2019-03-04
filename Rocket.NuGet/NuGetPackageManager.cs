@@ -22,17 +22,20 @@ namespace Rocket.NuGet
     {
         private readonly ILogger logger;
         private readonly string packagesDirectory;
+        private readonly IEnumerable<string> repositories;
         private readonly List<Lazy<INuGetResourceProvider>> providers;
         private readonly ISettings nugetSettings;
         private readonly NuGetFramework currentFramework;
         private readonly FrameworkReducer frameworkReducer;
         private readonly PackagePathResolver packagePathResolver;
         private readonly PackageResolver packageResolver;
+        private readonly Dictionary<string, List<CachedNuGetAssembly>> loadedPackageAssemblies;
 
-        public NuGetPackageManager(ILogger logger, string packagesDirectory)
+        public NuGetPackageManager(ILogger logger, string packagesDirectory, IEnumerable<string> repositories)
         {
             this.logger = logger;
             this.packagesDirectory = packagesDirectory;
+            this.repositories = repositories;
             providers = new List<Lazy<INuGetResourceProvider>>();
             providers.AddRange(Repository.Provider.GetCoreV3()); // Add v3 API support
 
@@ -51,17 +54,14 @@ namespace Rocket.NuGet
 
             packagePathResolver = new PackagePathResolver(packagesDirectory);
             packageResolver = new PackageResolver();
-
+            loadedPackageAssemblies = new Dictionary<string, List<CachedNuGetAssembly>>();
             InstallAssemblyResolver();
         }
 
-        public async Task<NuGetInstallResult> InstallAsync(string repo, PackageIdentity packageIdentity, bool allowPrereleaseVersions = false)
+        public virtual async Task<NuGetInstallResult> InstallAsync(PackageIdentity packageIdentity, bool allowPrereleaseVersions = false)
         {
             using (var cacheContext = new SourceCacheContext())
             {
-                var packageSource = new PackageSource(repo);
-                var sourceRepository = new SourceRepository(packageSource, providers);
-
                 IEnumerable<SourcePackageDependencyInfo> packagesToInstall;
                 try
                 {
@@ -69,7 +69,7 @@ namespace Rocket.NuGet
                 }
                 catch (NuGetResolverInputException)
                 {
-                    return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
+                    return new NuGetInstallResult(NuGetInstallCode.PackageOrVersionNotFound);
                 }
 
                 var packageExtractionContext = new PackageExtractionContext(
@@ -103,60 +103,18 @@ namespace Rocket.NuGet
             }
         }
 
-        private async Task GetPackageDependencies(PackageIdentity package,
-                                          SourceCacheContext cacheContext,
-                                          IEnumerable<SourceRepository> repositories,
-                                          ISet<SourcePackageDependencyInfo> availablePackages)
+        public virtual async Task<bool> PackageExistsAsync(string packageId)
         {
-            if (availablePackages.Contains(package))
-            {
-                return;
-            }
-
-            var repos = repositories.ToList();
-            foreach (var sourceRepository in repos)
-            {
-                var dependencyInfoResource = await sourceRepository.GetResourceAsync<DependencyInfoResource>();
-                var dependencyInfo = await dependencyInfoResource.ResolvePackage(
-                    package, currentFramework, cacheContext, logger, CancellationToken.None);
-
-                if (dependencyInfo == null) continue;
-
-                availablePackages.Add(dependencyInfo);
-                foreach (var dependency in dependencyInfo.Dependencies)
-                {
-                    await GetPackageDependencies(
-                        new PackageIdentity(dependency.Id, dependency.VersionRange.MinVersion), cacheContext, repos, availablePackages);
-                }
-            }
+            return (await GetLatestPackageIdentityAsync(packageId)) != null;
         }
 
-        public bool PackageExists(string rootDirectory, string packageId)
+        public virtual async Task<IPackageSearchMetadata> QueryPackageExactAsync(string packageId, string version = null, bool includePreRelease = false)
         {
-            return GetLatestPackageIdentity(packageId) != null;
-        }
-
-        public async Task<IPackageSearchMetadata> QueryPackageExactAsync(
-            string repository, string packageId, string version = null, bool includePreRelease = false)
-        {
-            var matches = await QueryPackagesAsync(repository, packageId, version, includePreRelease);
+            var matches = await QueryPackagesAsync(packageId, version, includePreRelease);
             return matches.FirstOrDefault(d => d.Identity.Id.Equals(packageId));
         }
 
-        public async Task<IEnumerable<IPackageSearchMetadata>> QueryPackagesAsync(
-            string repository, string packageId, string version = null, bool includePreRelease = false)
-        {
-            return await QueryPackagesAsync(new[] { repository }, packageId, version, includePreRelease);
-        }
-
-        public async Task<IPackageSearchMetadata> QueryPackageExactAsync(
-            IEnumerable<string> repositories, string packageId, string version = null, bool includePreRelease = false)
-        {
-            var matches = await QueryPackagesAsync(repositories, packageId, version, includePreRelease);
-            return matches.FirstOrDefault(d => d.Identity.Id.Equals(packageId));
-        }
-
-        public async Task<IEnumerable<IPackageSearchMetadata>> QueryPackagesAsync(IEnumerable<string> repositories, string packageId, string version = null, bool includePreRelease = false)
+        public virtual async Task<IEnumerable<IPackageSearchMetadata>> QueryPackagesAsync(string packageId, string version = null, bool includePreRelease = false)
         {
             var matches = new List<IPackageSearchMetadata>();
 
@@ -192,45 +150,43 @@ namespace Rocket.NuGet
             return matches;
         }
 
-        public async Task<string> FindRepositoryForPackageAsync(IEnumerable<string> repositories, string packageId, string version = null, bool includePreReleases = false)
-        {
-            var repoList = repositories.ToList();
-
-            foreach (var repository in repoList)
-            {
-                try
-                {
-                    var results = (await QueryPackagesAsync(repository, packageId, version, includePreReleases)).ToList();
-
-                    if (results.Count == 0)
-                    {
-                        continue;
-                    }
-
-                    return repository;
-                }
-                catch (Exception ex)
-                {
-                    logger.LogWarning($"Failed to fetch from repository: {repository}: " + ex.Message);
-                }
-            }
-
-            return null;
-        }
-
-        private readonly Dictionary<string, List<CachedAssembly>> loadedPackageAssemblies = new Dictionary<string, List<CachedAssembly>>();
         public virtual async Task<IEnumerable<Assembly>> LoadAssembliesFromNugetPackageAsync(string nupkgFile)
         {
             var fullPath = Path.GetFullPath(nupkgFile).ToLower();
 
             if (loadedPackageAssemblies.ContainsKey(fullPath))
             {
-                return loadedPackageAssemblies[nupkgFile].Select(d => d.Assembly);
+                return loadedPackageAssemblies[fullPath].Select(d => d.Assembly);
             }
 
-            List<CachedAssembly> assemblies = new List<CachedAssembly>();
+            List<CachedNuGetAssembly> assemblies = new List<CachedNuGetAssembly>();
 
             var packageReader = new PackageArchiveReader(nupkgFile);
+            var identity = await packageReader.GetIdentityAsync(CancellationToken.None);
+
+            using (var cache = new SourceCacheContext())
+            {
+                var dependencies = await GetDependenciesAsync(identity, cache);
+                foreach (var dependency in dependencies.Where(d => !d.Id.Equals(identity.Id)))
+                {
+                    var nupkg = GetNugetPackageFile(dependency);
+                    if (!File.Exists(nupkg))
+                    {
+                        var latestInstalledVersion = await GetLatestPackageIdentityAsync(dependency.Id);
+                        if (latestInstalledVersion == null)
+                        {
+                            logger.LogWarning("Failed to resolve: " + dependency.Id);
+                            continue;
+                        }
+
+                        nupkg = GetNugetPackageFile(latestInstalledVersion);
+                    }
+
+                    await LoadAssembliesFromNugetPackageAsync(nupkg);
+                }
+            }
+
+
             var libItems = packageReader.GetLibItems().ToList();
             var nearest = frameworkReducer.GetNearest(currentFramework, libItems.Select(x => x.TargetFramework));
 
@@ -252,11 +208,11 @@ namespace Rocket.NuGet
                         try
                         {
                             var asm = Assembly.Load(ms.ToArray());
-                          
+
                             var name = GetVersionIndependentName(asm.FullName, out string extractedVersion);
                             var parsedVersion = new Version(extractedVersion);
 
-                            assemblies.Add(new CachedAssembly
+                            assemblies.Add(new CachedNuGetAssembly
                             {
                                 Assembly = asm,
                                 AssemblyName = name,
@@ -282,7 +238,7 @@ namespace Rocket.NuGet
             return assemblies.Select(d => d.Assembly);
         }
 
-        public PackageIdentity GetLatestPackageIdentity(string packageId)
+        public virtual async Task<PackageIdentity> GetLatestPackageIdentityAsync(string packageId)
         {
             if (!Directory.Exists(packagesDirectory))
             {
@@ -304,7 +260,7 @@ namespace Rocket.NuGet
 
                     using (var reader = new PackageArchiveReader(nupkgFile))
                     {
-                        var identity = reader.NuspecReader.GetIdentity();
+                        var identity = await reader.GetIdentityAsync(CancellationToken.None);
 
                         if (identity.Id.Equals(packageId))
                         {
@@ -317,7 +273,7 @@ namespace Rocket.NuGet
             return packageIdentities.OrderByDescending(c => c.Version).FirstOrDefault();
         }
 
-        public string GetNugetPackageFile(PackageIdentity identity)
+        public virtual string GetNugetPackageFile(PackageIdentity identity)
         {
             var dir = packagePathResolver.GetInstallPath(identity);
             var dirName = new DirectoryInfo(dir).Name;
@@ -325,14 +281,15 @@ namespace Rocket.NuGet
             return Path.Combine(dir, dirName + ".nupkg");
         }
 
-        public async Task<IEnumerable<SourcePackageDependencyInfo>> GetDependenciesAsync(PackageIdentity identity, SourceCacheContext cacheContext)
+
+        public virtual async Task<IEnumerable<SourcePackageDependencyInfo>> GetDependenciesAsync(PackageIdentity identity, SourceCacheContext cacheContext)
         {
-            var packageSourceProvider = new PackageSourceProvider(nugetSettings);
+            PackageSourceProvider packageSourceProvider = new PackageSourceProvider(nugetSettings, repositories.Select(d => new PackageSource(d)));
             var sourceRepositoryProvider = new SourceRepositoryProvider(packageSourceProvider, providers);
 
-            var repositories = sourceRepositoryProvider.GetRepositories();
+            var sourceRepositories = sourceRepositoryProvider.GetRepositories();
             var availablePackages = new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
-            await GetPackageDependencies(identity, cacheContext, repositories, availablePackages);
+            await GetPackageDependencies(identity, cacheContext, sourceRepositories, availablePackages);
 
             var resolverContext = new PackageResolverContext(
                 DependencyBehavior.Lowest,
@@ -345,6 +302,34 @@ namespace Rocket.NuGet
                 logger);
 
             return packageResolver.Resolve(resolverContext, CancellationToken.None).Select(p => availablePackages.Single(x => PackageIdentityComparer.Default.Equals(x, p)));
+        }
+
+        protected virtual async Task GetPackageDependencies(PackageIdentity package,
+                                                            SourceCacheContext cacheContext,
+                                                            IEnumerable<SourceRepository> repositories,
+                                                            ISet<SourcePackageDependencyInfo> availablePackages)
+        {
+            if (availablePackages.Contains(package))
+            {
+                return;
+            }
+
+            var repos = repositories.ToList();
+            foreach (var sourceRepository in repos)
+            {
+                var dependencyInfoResource = await sourceRepository.GetResourceAsync<DependencyInfoResource>();
+                var dependencyInfo = await dependencyInfoResource.ResolvePackage(
+                    package, currentFramework, cacheContext, logger, CancellationToken.None);
+
+                if (dependencyInfo == null) continue;
+
+                availablePackages.Add(dependencyInfo);
+                foreach (var dependency in dependencyInfo.Dependencies)
+                {
+                    await GetPackageDependencies(
+                        new PackageIdentity(dependency.Id, dependency.VersionRange.MinVersion), cacheContext, repos, availablePackages);
+                }
+            }
         }
 
         private void InstallAssemblyResolver()
@@ -363,7 +348,7 @@ namespace Rocket.NuGet
                     return exactMatch.Assembly;
                 }
 
-                var matchingAssemblies = 
+                var matchingAssemblies =
                     loadedPackageAssemblies.Values.SelectMany(d => d)
                         .Where(d => d.AssemblyName.Equals(name, StringComparison.OrdinalIgnoreCase))
                         .OrderByDescending(d => d.Version);
@@ -373,18 +358,23 @@ namespace Rocket.NuGet
         }
 
         private static readonly Regex versionRegex = new Regex("Version=(?<version>.+?), ", RegexOptions.Compiled);
-        private static string GetVersionIndependentName(string fullAssemblyName, out string extractedVersion)
+        protected static string GetVersionIndependentName(string fullAssemblyName, out string extractedVersion)
         {
             var match = versionRegex.Match(fullAssemblyName);
             extractedVersion = match.Groups[1].Value;
             return versionRegex.Replace(fullAssemblyName, "");
         }
-    }
 
-    public class CachedAssembly
-    {
-        public string AssemblyName { get; set; }
-        public Version Version { get; set; }
-        public Assembly Assembly { get; set; }
+        public async Task<bool> RemoveAsync(PackageIdentity package)
+        {
+            var installDir = packagePathResolver.GetInstallPath(package);
+            if (installDir == null || !Directory.Exists(installDir))
+            {
+                return false;
+            }
+
+            Directory.Delete(installDir, true);
+            return true;
+        }
     }
 }

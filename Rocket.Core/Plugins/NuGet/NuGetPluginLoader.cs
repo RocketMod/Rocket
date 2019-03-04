@@ -23,7 +23,6 @@ namespace Rocket.Core.Plugins.NuGet
         private readonly ILogger logger;
         private readonly IRuntime runtime;
         private IConfiguration configuration;
-        private IConfiguration packagesConfiguration;
         private NuGetPackageManager nugetPackageManager;
 
         public virtual string PackagesDirectory { get; protected set; }
@@ -59,7 +58,7 @@ namespace Rocket.Core.Plugins.NuGet
             CreateConfiguration();
 
             var adapter = new NuGetLoggerAdapter(logger);
-            nugetPackageManager = new NuGetPackageManager(adapter, PackagesDirectory);
+            nugetPackageManager = new NuGetPackageManager(adapter, PackagesDirectory, Repositories.Where(c => c.IsEnabled).Select(d => d.Url));
 
             PluginManagerInitEvent pluginManagerInitEvent =
                 new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
@@ -111,90 +110,61 @@ namespace Rocket.Core.Plugins.NuGet
             configuration.SaveAsync().GetAwaiter().GetResult();
         }
 
-        public async Task<NuGetInstallResult> UpdateAsync(string packageName, string version = null, string repoName = null, bool isPreRelease = false)
+        public virtual async Task<NuGetInstallResult> UpdateAsync(string packageName, string version = null, bool isPreRelease = false)
         {
-            return await InstallOrUpdateAsync(packageName, version, repoName, isPreRelease, true);
+            return await InstallOrUpdateAsync(packageName, version, isPreRelease, true);
         }
 
-        public async Task<NuGetInstallResult> InstallAsync(string packageName, string version = null, string repoName = null, bool isPreRelease = false)
+        public virtual async Task<NuGetInstallResult> InstallAsync(string packageName, string version = null, bool isPreRelease = false)
         {
-            return await InstallOrUpdateAsync(packageName, version, repoName, isPreRelease);
+            bool exists = await nugetPackageManager.PackageExistsAsync(packageName);
+            return await InstallOrUpdateAsync(packageName, version, isPreRelease, exists);
         }
 
-        protected virtual async Task<NuGetInstallResult> InstallOrUpdateAsync(string packageName, string version = null, string repoName = null, bool isPreRelease = false, bool isUpdate = false)
+        protected virtual async Task<NuGetInstallResult> InstallOrUpdateAsync(string packageId, string version = null, bool isPreRelease = false, bool isUpdate = false)
         {
-            bool packageExists = PackageExists(packageName);
+            PackageIdentity previousVersion = await nugetPackageManager.GetLatestPackageIdentityAsync(packageId);
 
-            if (isUpdate && !packageExists)
-                return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
-
-            var enabledRepos = Repositories.Where(d => d.IsEnabled).ToList();
-            var repoUrls = enabledRepos.Select(c => c.Url).ToList();
-
-            string repo;
-            if (repoName == null)
+            if (isUpdate && previousVersion == null)
             {
-                repo = await nugetPackageManager.FindRepositoryForPackageAsync(repoUrls, packageName, version, isPreRelease);
-                if (repo == null)
-                {
-                    return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
-                }
-            }
-            else
-            {
-                repo = enabledRepos.FirstOrDefault(c => c.Name.Equals(repoName, StringComparison.OrdinalIgnoreCase))?.Url;
-                if (repo == null)
-                {
-                    return new NuGetInstallResult(NuGetInstallCode.RepositoryNotFound);
-                }
+                return new NuGetInstallResult(NuGetInstallCode.PackageOrVersionNotFound);
             }
 
-            if (isUpdate || packageExists)
-                await UninstallAsync(packageName);
-
-            var packages = (await nugetPackageManager.QueryPackagesAsync(repoUrls, packageName, version, isPreRelease)).ToList();
-
-            if (packages.Count == 0)
-            {
-                return new NuGetInstallResult(NuGetInstallCode.PackageNotFound);
-            }
-
-            var package = packages.FirstOrDefault(d => packages.Count == 1 || d.Identity.Id.Equals(packageName, StringComparison.OrdinalIgnoreCase));
+            var package = (await nugetPackageManager.QueryPackageExactAsync(packageId, version, isPreRelease));
             if (package == null)
             {
-                // we have no exact match but multiple results
-                return new NuGetInstallResult(NuGetInstallCode.MultipleMatch);
+                return new NuGetInstallResult(NuGetInstallCode.PackageOrVersionNotFound);
             }
 
             if (version == null)
             {
-                version = package.Identity.Version.OriginalVersion;
+                version = package.Identity.Version.OriginalVersion; // set to latest version
             }
 
             var packageIdentity = new PackageIdentity(package.Identity.Id, new NuGetVersion(version));
 
-            var result = await nugetPackageManager.InstallAsync(repo, packageIdentity, isPreRelease);
+            var result = await nugetPackageManager.InstallAsync(packageIdentity, isPreRelease);
             if (result.Code != NuGetInstallCode.Success)
             {
                 return result;
             }
 
+            if (isUpdate)
+            {
+                await nugetPackageManager.RemoveAsync(previousVersion);
+            }
             return result;
         }
 
-        public virtual async Task<bool> UninstallAsync(string packageName)
+        public virtual async Task<bool> RemoveAsync(string packageId)
         {
-            foreach (var directory in Directory.GetDirectories(PackagesDirectory))
+            var package = await nugetPackageManager.GetLatestPackageIdentityAsync(packageId);
+            if (package == null)
             {
-                var name = new DirectoryInfo(directory).Name;
-                if (name.ToLowerInvariant().StartsWith(packageName.ToLowerInvariant()))
-                {
-                    Directory.Delete(directory, true);
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            return await nugetPackageManager.RemoveAsync(package);
         }
 
         public virtual async Task<bool> LoadPluginFromNugetAsync(PackageIdentity identity)
@@ -221,9 +191,9 @@ namespace Rocket.Core.Plugins.NuGet
             return success;
         }
 
-        public virtual bool PackageExists(string packageName)
+        public virtual async Task<bool> PackageExistsAsync(string packageName)
         {
-            return nugetPackageManager.PackageExists(PackagesDirectory, packageName);
+            return await nugetPackageManager.PackageExistsAsync(packageName);
         }
 
         public override string ServiceName => "NuGet Plugins";

@@ -30,15 +30,15 @@ namespace Rocket
                 Directory.CreateDirectory(packagesDirectory);
             }
 
-            var nugetInstaller = new NuGetPackageManager(logger, packagesDirectory);
+            var nugetInstaller = new NuGetPackageManager(logger, packagesDirectory, new []{ repository });
             PackageIdentity packageIdentity;
-            if (!nugetInstaller.PackageExists(packagesDirectory, packageId))
+            if (!await nugetInstaller.PackageExistsAsync(packageId))
             {
                 var rocketPackage =
-                    await nugetInstaller.QueryPackageExactAsync(repository, packageId, null, allowPrereleaseVersions);
+                    await nugetInstaller.QueryPackageExactAsync(packageId, null, allowPrereleaseVersions);
 
-                Console.WriteLine($"Downloading {rocketPackage.Identity.Id} v{rocketPackage.Identity.Version} via NuGet, this can take a while...");
-                var installResult = await nugetInstaller.InstallAsync(repository, rocketPackage.Identity, allowPrereleaseVersions);
+                Console.WriteLine($"Downloading {rocketPackage.Identity.Id} v{rocketPackage.Identity.Version} via NuGet, this might take a while...");
+                var installResult = await nugetInstaller.InstallAsync(rocketPackage.Identity, allowPrereleaseVersions);
                 if (installResult.Code != NuGetInstallCode.Success)
                 {
                     Console.WriteLine($"Downloading finished. Loading runtime for {rocketPackage.Identity.Id}.");
@@ -50,20 +50,12 @@ namespace Rocket
             }
             else
             {
-                packageIdentity = nugetInstaller.GetLatestPackageIdentity(packageId);
+                packageIdentity = await nugetInstaller.GetLatestPackageIdentityAsync(packageId);
             }
 
             Console.WriteLine($"Loading runtime for {packageId}.");
-
-            using (var cache = new SourceCacheContext())
-            {
-                var dependencies = await nugetInstaller.GetDependenciesAsync(packageIdentity, cache);
-                foreach (var dependency in dependencies)
-                {
-                    await LoadPackageAsync(nugetInstaller, dependency);
-                }
-            }
-
+         
+            await LoadPackageAsync(nugetInstaller, packageIdentity);
             await InitializeRuntimeAsync();
         }
 
@@ -85,6 +77,9 @@ namespace Rocket
         public override void Log(ILogMessage message)
         {
             if (message.Level < LogLevel.Minimal)
+                return;
+
+            if (message.Message.Contains("Resolving dependency information took"))
                 return;
 
             Console.WriteLine($"[{message.Level}] [NuGet] {message.Message}");
