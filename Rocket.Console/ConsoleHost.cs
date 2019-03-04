@@ -57,6 +57,8 @@ namespace Rocket.Console
                     Console.WriteLine(ex.ToString(), Color.DarkRed);
                 }
             }
+
+            Environment.Exit(0);
         }
 
         public async Task ShutdownAsync()
