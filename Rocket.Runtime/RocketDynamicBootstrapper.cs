@@ -1,13 +1,16 @@
 ﻿using NuGet.Common;
 using NuGet.Packaging.Core;
 using Rocket.NuGet;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
 namespace Rocket
 {
+    /// <summary>
+    ///     This class is responsible for downloading Rocket.Core, Rocket.API and the host assembly. <br/>
+    ///     After download, it will boot RocketMod and then initialize the IHost interface.
+    /// </summary>
     public class RocketDynamicBootstrapper
     {
         public const string DefaultNugetRepository = "https://api.nuget.org/v3/index.json";
@@ -90,25 +93,6 @@ namespace Rocket
         {
             var runtime = new Runtime();
             await runtime.InitAsync();
-        }
-    }
-
-    public class NuGetConsoleLogger : LoggerBase
-    {
-        public override void Log(ILogMessage message)
-        {
-            if (message.Level < LogLevel.Minimal)
-                return;
-
-            if (message.Message.Contains("Resolving dependency information took"))
-                return;
-
-            Console.WriteLine($"[{message.Level}] [NuGet] {message.Message}");
-        }
-
-        public override async Task LogAsync(ILogMessage message)
-        {
-            Log(message);
         }
     }
 }
