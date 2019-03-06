@@ -96,7 +96,7 @@ namespace Rocket.Core.Plugins.NuGet
                     new Repository
                     {
                         Name = "rocketmod",
-                        Url = "https://hangar.rocketmod.net/index.json",
+                        Url = "http://hangar.rocketmod.net/index.json",
                         IsEnabled = true
                     },
                     new Repository
