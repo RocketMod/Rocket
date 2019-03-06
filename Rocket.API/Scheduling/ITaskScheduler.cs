@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Rocket.API.DependencyInjection;
 
@@ -10,6 +11,8 @@ namespace Rocket.API.Scheduling
     /// </summary>
     public interface ITaskScheduler: IService
     {
+        Thread MainThread { get; }
+
         /// <summary>
         ///     The current scheduled and ongoing tasks. Does not include finished and cancelled tasks.
         /// </summary>

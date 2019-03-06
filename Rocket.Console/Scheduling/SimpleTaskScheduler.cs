@@ -8,6 +8,7 @@ using Rocket.Core.Scheduling;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Rocket.Console.Scheduling
@@ -22,9 +23,13 @@ namespace Rocket.Console.Scheduling
         public SimpleTaskScheduler(IDependencyContainer container)
         {
             Container = container;
+            MainThread = Thread.CurrentThread;
+
             (new AsyncThreadPool(this)).Start();
             InternalTasks = new List<SimpleTask>();
         }
+
+        public Thread MainThread { get; }
 
         public IEnumerable<ITask> Tasks =>
             InternalTasks.Where(c => c.IsReferenceAlive && c.Owner.IsAlive);

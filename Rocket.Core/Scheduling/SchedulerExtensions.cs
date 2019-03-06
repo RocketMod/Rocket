@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using Rocket.API;
 using Rocket.API.Scheduling;
 
@@ -75,5 +76,16 @@ namespace Rocket.Core.Scheduling
         /// <param name="taskName">The tasks human friendly name.</param>
         public static ITask ScheduleDelayed(this ITaskScheduler taskScheduler, ILifecycleObject @object, Action action, string taskName, TimeSpan delay, bool runAsync = false)
             => taskScheduler.ScheduleAt(@object, action, taskName, DateTime.Now + delay, runAsync);
+
+        public static ITask RunOnMainThread(this ITaskScheduler taskScheduler, ILifecycleObject owner, Action action, string taskName)
+        {
+            if (Thread.CurrentThread == taskScheduler.MainThread)
+            {
+                action();
+                return null;
+            }
+
+            return taskScheduler.ScheduleUpdate(owner, action, taskName, ExecutionTargetContext.NextFrame);
+        }
     }
 }
