@@ -66,7 +66,7 @@ namespace Rocket.Core.Commands
 
                 else if (type == typeof(string[]))
                 {
-                    @params.Add(context.Parameters.ToArray());
+                    @params.Add(context.Parameters.Skip(index).ToArray());
                 }
 
                 else if (type == typeof(ICommandParameters))
