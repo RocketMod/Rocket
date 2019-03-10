@@ -5,7 +5,6 @@ using Rocket.API.I18N;
 using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.Commands;
-using Rocket.Core.Player;
 using Rocket.Core.User;
 
 namespace Rocket.Examples.CommandsExample
