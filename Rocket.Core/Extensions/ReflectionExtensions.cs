@@ -185,5 +185,24 @@ namespace Rocket.Core.Extensions
 
             return "<anonymous>#" + mb.Name;
         }
+
+        public static async Task InvokeWithTaskSupport(this MethodBase method, object instance, object[] @params)
+        {
+            bool isAsync = false;
+            if (method is MethodInfo methodInfo)
+            {
+                var returntype = methodInfo.ReturnType;
+                isAsync = typeof(Task).IsAssignableFrom(returntype);
+            }
+
+            if (isAsync)
+            {
+                var task = (Task)method.Invoke(instance, @params);
+                await task;
+                return;
+            }
+
+            method.Invoke(instance, @params.ToArray());
+        }
     }
 }

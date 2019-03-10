@@ -1,4 +1,6 @@
-﻿namespace Rocket.API.Eventing
+﻿using System.Threading.Tasks;
+
+namespace Rocket.API.Eventing
 {
     /// <summary>
     ///     A listener for one or more events.
@@ -16,6 +18,6 @@
         /// </summary>
         /// <param name="emitter">The event emitter.</param>
         /// <param name="event">The event instance.</param>
-        void HandleEvent(IEventEmitter emitter, TEvent @event);
+        Task HandleEvent(IEventEmitter emitter, TEvent @event);
     }
 }

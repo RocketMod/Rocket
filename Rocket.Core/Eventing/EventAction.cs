@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Rocket.API;
 using Rocket.API.Eventing;
+using Rocket.Core.Extensions;
 
 namespace Rocket.Core.Eventing
 {
@@ -27,7 +28,7 @@ namespace Rocket.Core.Eventing
         {
             Owner = new Util.WeakReference<ILifecycleObject>(owner);
             Listener = listener;
-            Action = async (sender, @event) => method.Invoke(listener, new object[] {sender, @event});
+            Action = (sender, @event) => method.InvokeWithTaskSupport(listener, new object[] {sender, @event});
             Handler = handler;
             TargetEventNames = EventBus.GetEventNames(type);
             TargetEventType = type;
