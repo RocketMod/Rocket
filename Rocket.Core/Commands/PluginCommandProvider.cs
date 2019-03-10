@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Commands;
-using Rocket.API.DependencyInjection;
 using Rocket.API.Plugins;
 using Rocket.Core.DependencyInjection;
 
@@ -11,12 +10,10 @@ namespace Rocket.Core.Commands
     [DontAutoRegister]
     public class PluginCommandProvider : ICommandProvider
     {
-        private readonly IDependencyContainer pluginContainer;
         private readonly IPlugin plugin;
 
-        public PluginCommandProvider(IPlugin plugin, IDependencyContainer pluginContainer)
+        public PluginCommandProvider(IPlugin plugin)
         {
-            this.pluginContainer = pluginContainer;
             this.plugin = plugin;
         }
 
@@ -27,7 +24,7 @@ namespace Rocket.Core.Commands
         }
 
         public string ProviderName => plugin.Name;
-        public IEnumerable<ICommand> Commands => pluginContainer.ResolveAll<ICommand>();
+        public IEnumerable<ICommand> Commands => plugin.Container.ResolveAll<ICommand>();
         public string ServiceName => plugin.Name;
     }
 }

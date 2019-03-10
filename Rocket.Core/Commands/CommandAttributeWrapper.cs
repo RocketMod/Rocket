@@ -44,6 +44,9 @@ namespace Rocket.Core.Commands
 
         public bool  SupportsUser(IUser user)
         {
+            if (!supportedUsers.Any())
+                return true;
+
             return supportedUsers.Any(u => u.IsInstanceOfType(user));
         }
 

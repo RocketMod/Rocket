@@ -216,8 +216,8 @@ namespace Rocket.Core.Plugins
 
         public void RegisterCommandsFromObject(object o)
         {
-            DefaultClrPluginLoader p = PluginLoader as DefaultClrPluginLoader;
-            p?.RegisterCommands(Container, o);
+            ClrPluginLoader p = PluginLoader as ClrPluginLoader;
+            p?.RegisterCommands(this, o);
         }
 
         protected virtual async Task OnActivate(bool isFromReload) { }
