@@ -20,6 +20,11 @@ namespace Rocket.Core.Player
             PlayerManager = manager;
         }
 
+        public override string ToString()
+        {
+            return User.DisplayName;
+        }
+
         public IDependencyContainer Container { get; }
 
         public IPlayerManager PlayerManager { get; }

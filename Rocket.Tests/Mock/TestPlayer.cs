@@ -35,10 +35,6 @@ namespace Rocket.Tests.Mock
 
     public sealed class TestPlayer : BasePlayer<TestUser, TestEntity, TestPlayer>
     {
-        public override string ToString()
-        {
-            return User.DisplayName;
-        }
         public TestPlayer(IDependencyContainer container,  IPlayerManager manager) : base(container, manager)
         {
             User = new TestUser(container, this);

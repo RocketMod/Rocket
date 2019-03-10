@@ -108,10 +108,10 @@ namespace Rocket.Core.Commands.RocketCommands
                                                  IPermissionEntity target, string permissionToUpdate)
         {
             if (await permissions.AddPermissionAsync(target, permissionToUpdate))
-                await user.SendMessageAsync($"Successfully added \"{permissionToUpdate}\" to \"{target.ToString()}\"!",
+                await user.SendMessageAsync($"Successfully added \"{permissionToUpdate}\" to \"{target.GetDisplayName()}\"!",
                     Color.DarkGreen);
             else
-                await user.SendMessageAsync($"Failed to add \"{permissionToUpdate}\" to \"{target.ToString()}\"!", Color.Red);
+                await user.SendMessageAsync($"Failed to add \"{permissionToUpdate}\" to \"{target.GetDisplayName()}\"!", Color.Red);
         }
     }
 
@@ -126,10 +126,10 @@ namespace Rocket.Core.Commands.RocketCommands
                                                  IPermissionEntity target, string permissionToUpdate)
         {
             if (await permissions.RemovePermissionAsync(target, permissionToUpdate))
-                await user.SendMessageAsync($"Successfully removed \"{permissionToUpdate}\" from \"{target.ToString()}\"!",
+                await user.SendMessageAsync($"Successfully removed \"{permissionToUpdate}\" from \"{target.GetDisplayName()}\"!",
                     Color.DarkGreen);
             else
-                await user.SendMessageAsync($"Failed to remove \"{permissionToUpdate}\" from \"{target.ToString()}\"!",
+                await user.SendMessageAsync($"Failed to remove \"{permissionToUpdate}\" from \"{target.GetDisplayName()}\"!",
                     Color.Red);
         }
     }
