@@ -8,7 +8,7 @@ namespace Rocket.Examples.HelloWorld
 {
     public class HelloWorldPlugin : Plugin
     {
-        public HelloWorldPlugin(IDependencyContainer container) : base("HelloWorldPlugin", container)
+        public HelloWorldPlugin(IDependencyContainer container) : base("Hello World Plugin", container)
         {
             RegisterCommandsFromObject(this);
         }
@@ -32,7 +32,7 @@ namespace Rocket.Examples.HelloWorld
             Logger.LogInformation("Hello world!");
         }
 
-        protected override void OnDeactivate()
+        protected override async Task OnDeactivate()
         {
             Logger.LogInformation("Good bye!");
         }

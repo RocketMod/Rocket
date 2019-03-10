@@ -9,7 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Rocket.API\Rocket.API.csproj" />
-    <ProjectReference Include="..\..\Rocket.Compatibility\Rocket.Compatibility.csproj" />
     <ProjectReference Include="..\..\Rocket.Core\Rocket.Core.csproj" />
   </ItemGroup> 
 </Project>

@@ -13,6 +13,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Rocket", "Rocket", "{AA1B40
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.API", "..\Rocket.API\Rocket.API.csproj", "{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Rocket.NuGet", "..\Rocket.NuGet\Rocket.NuGet.csproj", "{0ED24087-1A84-4943-9DD2-3CDFBD2A63E4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,10 @@ Global
 		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ED24087-1A84-4943-9DD2-3CDFBD2A63E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED24087-1A84-4943-9DD2-3CDFBD2A63E4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED24087-1A84-4943-9DD2-3CDFBD2A63E4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED24087-1A84-4943-9DD2-3CDFBD2A63E4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,6 +48,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{A7056AB1-C5F5-493B-8E47-DC42DE69961D} = {AA1B40F4-3312-41E0-9D02-8BCB5D9E3F97}
 		{DA356ABB-AA77-4B22-9AB1-34A30CF4048A} = {AA1B40F4-3312-41E0-9D02-8BCB5D9E3F97}
+		{0ED24087-1A84-4943-9DD2-3CDFBD2A63E4} = {AA1B40F4-3312-41E0-9D02-8BCB5D9E3F97}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {F3DD8450-BEEC-4E04-8B4B-85B2779DDC01}
