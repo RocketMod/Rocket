@@ -67,8 +67,9 @@ namespace Rocket.NuGet
                 {
                     packagesToInstall = await GetDependenciesAsync(packageIdentity, cacheContext);
                 }
-                catch (NuGetResolverInputException)
+                catch (NuGetResolverInputException ex)
                 {
+                    logger.LogDebug(ex.ToString());
                     return new NuGetInstallResult(NuGetInstallCode.PackageOrVersionNotFound);
                 }
 
@@ -120,6 +121,8 @@ namespace Rocket.NuGet
 
             foreach (var repo in repositories)
             {
+                logger.LogInformation("Searching repository: " + repo + " for package: " + packageId);
+
                 var packageSource = new PackageSource(repo);
                 var sourceRepository = new SourceRepository(packageSource, providers);
                 var searchResource = await sourceRepository.GetResourceAsync<PackageSearchResource>();
@@ -129,7 +132,18 @@ namespace Rocket.NuGet
                     SupportedFrameworks = new[] { currentFramework.DotNetFrameworkName }
                 };
 
-                var searchResult = await searchResource.SearchAsync(packageId, searchFilter, 0, 10, logger, CancellationToken.None);
+                IEnumerable<IPackageSearchMetadata> searchResult;
+                try
+                {
+                    searchResult = await searchResource.SearchAsync(packageId, searchFilter, 0, 10, logger,
+                        CancellationToken.None);
+                }
+                catch (Exception ex)
+                {
+                    logger.LogDebug("Could not find package: ");
+                    logger.LogDebug(ex.ToString());
+                    continue;
+                }
 
                 if (version == null)
                 {
