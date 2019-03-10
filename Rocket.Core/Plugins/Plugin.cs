@@ -62,6 +62,8 @@ namespace Rocket.Core.Plugins
                 if (GetType().Assembly?.Location != null)
                 {
                     assemblyName = Path.GetFileNameWithoutExtension(GetType().Assembly.Location);
+                    if (string.IsNullOrEmpty(assemblyName))
+                        assemblyName = null;
                 }
             }
             catch
