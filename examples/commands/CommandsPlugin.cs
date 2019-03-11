@@ -24,8 +24,8 @@ namespace Rocket.Examples.CommandsExample
 
         protected override async Task OnActivate(bool isFromReload)
         {
-            CommandsCollection commandsObject = new CommandsCollection(userManager, Translations);
-            RegisterCommandsFromObject(commandsObject);
+            CommandsCollection commandsCollection = new CommandsCollection(userManager, Translations);
+            RegisterCommands(commandsCollection);
         }
     }
 }

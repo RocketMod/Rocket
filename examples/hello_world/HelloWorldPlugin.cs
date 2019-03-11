@@ -10,7 +10,6 @@ namespace Rocket.Examples.HelloWorld
     {
         public HelloWorldPlugin(IDependencyContainer container) : base("Hello World Plugin", container)
         {
-            RegisterCommandsFromObject(this);
         }
 
         public override object DefaultConfiguration => new

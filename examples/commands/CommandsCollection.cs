@@ -34,7 +34,7 @@ namespace Rocket.Examples.CommandsExample
         [CommandUser(typeof(IConsole))] // only console can call it
         public async Task Broadcast(IUser sender, string[] args)
         {
-            await userManager.BroadcastAsync(sender, translations.GetAsync("broadcast", sender, string.Join(" ", args)).Result);
+            await userManager.BroadcastAsync(sender, await translations.GetAsync("broadcast", sender, string.Join(" ", args)));
         }
     }
 }

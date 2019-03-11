@@ -24,9 +24,9 @@ namespace Rocket.Core.Plugins
 
         public override object DefaultConfiguration => new TConfig();
 
-        public override async Task SaveConfiguration()
+        public override async Task SaveConfigurationAsync()
         {
-            await base.SaveConfiguration();
+            await base.SaveConfigurationAsync();
             if (Configuration != null)
             {
                 Configuration.Set(ConfigurationInstance);
@@ -34,9 +34,9 @@ namespace Rocket.Core.Plugins
             }
         }
 
-        public override async Task LoadConfiguration()
+        public override async Task LoadConfigurationAsync()
         {
-            await base.LoadConfiguration();
+            await base.LoadConfigurationAsync();
             if (Configuration == null)
                 return;
 
@@ -85,7 +85,7 @@ namespace Rocket.Core.Plugins
                 Container.RegisterSingletonType<ILogger, PluginLogger>("plugin_logger");
         }
 
-        public virtual async Task SaveConfiguration()
+        public virtual async Task SaveConfigurationAsync()
         {
             if (Configuration != null)
                 await Configuration.SaveAsync();
@@ -135,7 +135,7 @@ namespace Rocket.Core.Plugins
                     return false;
             }
 
-            await LoadConfiguration();
+            await LoadConfigurationAsync();
 
             if (DefaultTranslations != null)
             {
@@ -165,7 +165,7 @@ namespace Rocket.Core.Plugins
             return true;
         }
 
-        public virtual async Task LoadConfiguration()
+        public virtual async Task LoadConfigurationAsync()
         {
             if (DefaultConfiguration != null)
             {
@@ -214,7 +214,7 @@ namespace Rocket.Core.Plugins
         public ITranslationCollection Translations { get; protected set; }
         public virtual Dictionary<string, string> DefaultTranslations => null;
 
-        public void RegisterCommandsFromObject(object o)
+        public void RegisterCommands(object o)
         {
             ClrPluginLoader p = PluginLoader as ClrPluginLoader;
             p?.RegisterCommands(this, o);
