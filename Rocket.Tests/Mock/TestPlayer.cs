@@ -97,5 +97,6 @@ namespace Rocket.Tests.Mock
 
         public IDependencyContainer Container { get; private set; }
         public TestPlayer Player { get; }
+        IPlayer IPlayerUser.Player => Player;
     }
 }
