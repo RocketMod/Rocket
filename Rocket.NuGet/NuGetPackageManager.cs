@@ -39,7 +39,15 @@ namespace Rocket.NuGet
             providers = new List<Lazy<INuGetResourceProvider>>();
             providers.AddRange(Repository.Provider.GetCoreV3()); // Add v3 API support
 
-            nugetSettings = Settings.LoadDefaultSettings(null);
+            const string nugetFile = "NuGet.Config";
+
+            var nugetConfig = Path.Combine(packagesDirectory, nugetFile);
+            if (!File.Exists(nugetConfig))
+            {
+                File.WriteAllText(nugetConfig, $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<configuration/>");
+            }
+
+            nugetSettings = Settings.LoadDefaultSettings(packagesDirectory, nugetFile, null);
 
             frameworkReducer = new FrameworkReducer();
 
