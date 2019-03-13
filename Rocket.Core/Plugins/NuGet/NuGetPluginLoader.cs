@@ -5,14 +5,12 @@ using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
-using Rocket.Core.Configuration;
 using Rocket.Core.Logging;
 using Rocket.Core.Plugins.Events;
 using Rocket.NuGet;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -37,28 +35,17 @@ namespace Rocket.Core.Plugins.NuGet
             this.runtime = runtime;
         }
 
-        public virtual IEnumerable<Repository> Repositories => Configuration["Repositories"].Get<Repository[]>();
-
-        protected virtual IConfiguration Configuration
-        {
-            get
-            {
-                if (configuration != null)
-                    return configuration;
-
-                CreateConfiguration();
-                return configuration;
-            }
-        }
-
         public override async Task InitAsync()
         {
             Logger.LogDebug($"[{GetType().Name}] Initializing NuGet.");
-
-            CreateConfiguration();
+            PackagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
+            if (!Directory.Exists(PackagesDirectory))
+            {
+                Directory.CreateDirectory(PackagesDirectory);
+            }
 
             var adapter = new NuGetLoggerAdapter(logger);
-            nugetPackageManager = new NuGetPackageManager(adapter, PackagesDirectory, Repositories.Where(c => c.IsEnabled).Select(d => d.Url));
+            nugetPackageManager = new NuGetPackageManager(adapter, PackagesDirectory);
 
             PluginManagerInitEvent pluginManagerInitEvent =
                 new PluginManagerInitEvent(this, EventExecutionTargetContext.Sync);
@@ -78,36 +65,6 @@ namespace Rocket.Core.Plugins.NuGet
                         await LoadPluginFromNugetPackageAsync(file);
                 }
             }
-        }
-
-        private void CreateConfiguration()
-        {
-            configuration = Container.Resolve<IConfiguration>();
-
-            PackagesDirectory = Path.Combine(runtime.WorkingDirectory, "Packages");
-            if (!Directory.Exists(PackagesDirectory))
-                Directory.CreateDirectory(PackagesDirectory);
-
-            ConfigurationContext context = new ConfigurationContext(PackagesDirectory, "repositories");
-            configuration.LoadAsync(context, new
-            {
-                Repositories = new[]
-                {
-                    new Repository
-                    {
-                        Name = "rocketmod",
-                        Url = "http://hangar.rocketmod.net/index.json",
-                        IsEnabled = true
-                    },
-                    new Repository
-                    {
-                        Name = "nuget",
-                        Url = "https://api.nuget.org/v3/index.json",
-                        IsEnabled = true
-                    }
-                }
-            }).GetAwaiter().GetResult();
-            configuration.SaveAsync().GetAwaiter().GetResult();
         }
 
         public virtual async Task<NuGetInstallResult> UpdateAsync(string packageName, string version = null, bool isPreRelease = false)

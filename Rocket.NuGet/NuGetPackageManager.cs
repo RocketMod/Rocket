@@ -22,7 +22,6 @@ namespace Rocket.NuGet
     {
         private readonly ILogger logger;
         private readonly string packagesDirectory;
-        private readonly IEnumerable<string> repositories;
         private readonly List<Lazy<INuGetResourceProvider>> providers;
         private readonly ISettings nugetSettings;
         private readonly NuGetFramework currentFramework;
@@ -31,11 +30,10 @@ namespace Rocket.NuGet
         private readonly PackageResolver packageResolver;
         private readonly Dictionary<string, List<CachedNuGetAssembly>> loadedPackageAssemblies;
 
-        public NuGetPackageManager(ILogger logger, string packagesDirectory, IEnumerable<string> repositories)
+        public NuGetPackageManager(ILogger logger, string packagesDirectory)
         {
             this.logger = logger;
             this.packagesDirectory = packagesDirectory;
-            this.repositories = repositories;
             providers = new List<Lazy<INuGetResourceProvider>>();
             providers.AddRange(Repository.Provider.GetCoreV3()); // Add v3 API support
 
@@ -44,7 +42,16 @@ namespace Rocket.NuGet
             var nugetConfig = Path.Combine(packagesDirectory, nugetFile);
             if (!File.Exists(nugetConfig))
             {
-                File.WriteAllText(nugetConfig, $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{Environment.NewLine}<configuration/>");
+                var nl = Environment.NewLine;
+
+                File.WriteAllText(nugetConfig,
+                    $"<?xml version=\"1.0\" encoding=\"utf-8\"?>{nl}"
+                    + $"<configuration>{nl}"
+                    + $"    <packageSources>{nl}"
+                    + $"        <add key=\"rocketmod-hangar\" value=\"http://hangar.rocketmod.net/index.json\" protocolVersion=\"3\" />{nl}"
+                    + $"        <add key=\"nuget.org\" value=\"https://api.nuget.org/v3/index.json\" protocolVersion=\"3\" />{nl}"
+                    + $"    </packageSources>{nl}"
+                    + $"</configuration>");
             }
 
             nugetSettings = Settings.LoadDefaultSettings(packagesDirectory, nugetFile, null);
@@ -127,12 +134,15 @@ namespace Rocket.NuGet
         {
             var matches = new List<IPackageSearchMetadata>();
 
-            foreach (var repo in repositories)
-            {
-                logger.LogInformation("Searching repository: " + repo + " for package: " + packageId);
+            logger.LogInformation("Searching repository for package: " + packageId);
 
-                var packageSource = new PackageSource(repo);
-                var sourceRepository = new SourceRepository(packageSource, providers);
+            PackageSourceProvider packageSourceProvider = new PackageSourceProvider(nugetSettings);
+            var sourceRepositoryProvider = new SourceRepositoryProvider(packageSourceProvider, providers);
+
+            var sourceRepositories = sourceRepositoryProvider.GetRepositories();
+
+            foreach (var sourceRepository in sourceRepositories)
+            {
                 var searchResource = await sourceRepository.GetResourceAsync<PackageSearchResource>();
                 var searchFilter = new SearchFilter(includePreRelease)
                 {
@@ -143,8 +153,7 @@ namespace Rocket.NuGet
                 IEnumerable<IPackageSearchMetadata> searchResult;
                 try
                 {
-                    searchResult = await searchResource.SearchAsync(packageId, searchFilter, 0, 10, logger,
-                        CancellationToken.None);
+                    searchResult = await searchResource.SearchAsync(packageId, searchFilter, 0, 10, logger,CancellationToken.None);
                 }
                 catch (Exception ex)
                 {
@@ -155,6 +164,7 @@ namespace Rocket.NuGet
 
                 if (version == null)
                 {
+                    logger.LogDebug("version == null, adding searchResult: " + searchResult.Count());
                     matches.AddRange(searchResult);
                     continue;
                 }
@@ -162,14 +172,44 @@ namespace Rocket.NuGet
                 foreach (var packageMeta in searchResult)
                 {
                     var versions = (await packageMeta.GetVersionsAsync()).ToList();
-                    if (versions.Any(d => d.Version.OriginalVersion.Equals(version, StringComparison.OrdinalIgnoreCase)))
+                    if (versions.Any(d
+                        => d.Version.OriginalVersion.Equals(version, StringComparison.OrdinalIgnoreCase)))
                     {
+                        logger.LogDebug("adding packageMeta: "
+                            + packageMeta.Identity.Id
+                            + ":"
+                            + packageMeta.Identity.Version);
                         matches.Add(packageMeta);
                     }
                 }
             }
 
             return matches;
+        }
+
+        public virtual async Task<IEnumerable<SourcePackageDependencyInfo>> GetDependenciesAsync(PackageIdentity identity, SourceCacheContext cacheContext)
+        {
+            PackageSourceProvider packageSourceProvider = new PackageSourceProvider(nugetSettings);
+            var sourceRepositoryProvider = new SourceRepositoryProvider(packageSourceProvider, providers);
+
+            var sourceRepositories = sourceRepositoryProvider.GetRepositories();
+
+            var availablePackages = new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
+            await GetPackageDependencies(identity, cacheContext, sourceRepositories, availablePackages);
+
+            var resolverContext = new PackageResolverContext(
+                DependencyBehavior.Lowest,
+                new[] { identity.Id },
+                Enumerable.Empty<string>(),
+                Enumerable.Empty<PackageReference>(),
+                Enumerable.Empty<PackageIdentity>(),
+                availablePackages,
+                sourceRepositoryProvider.GetRepositories().Select(s => s.PackageSource),
+                logger);
+
+            return packageResolver.Resolve(resolverContext, CancellationToken.None)
+                                  .Select(p => availablePackages.Single(x
+                                      => PackageIdentityComparer.Default.Equals(x, p)));
         }
 
         public virtual async Task<IEnumerable<Assembly>> LoadAssembliesFromNugetPackageAsync(string nupkgFile)
@@ -207,7 +247,6 @@ namespace Rocket.NuGet
                     await LoadAssembliesFromNugetPackageAsync(nupkg);
                 }
             }
-
 
             var libItems = packageReader.GetLibItems().ToList();
             var nearest = frameworkReducer.GetNearest(currentFramework, libItems.Select(x => x.TargetFramework));
@@ -303,29 +342,6 @@ namespace Rocket.NuGet
             return Path.Combine(dir, dirName + ".nupkg");
         }
 
-
-        public virtual async Task<IEnumerable<SourcePackageDependencyInfo>> GetDependenciesAsync(PackageIdentity identity, SourceCacheContext cacheContext)
-        {
-            PackageSourceProvider packageSourceProvider = new PackageSourceProvider(nugetSettings, repositories.Select(d => new PackageSource(d)));
-            var sourceRepositoryProvider = new SourceRepositoryProvider(packageSourceProvider, providers);
-
-            var sourceRepositories = sourceRepositoryProvider.GetRepositories();
-            var availablePackages = new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
-            await GetPackageDependencies(identity, cacheContext, sourceRepositories, availablePackages);
-
-            var resolverContext = new PackageResolverContext(
-                DependencyBehavior.Lowest,
-                new[] { identity.Id },
-                Enumerable.Empty<string>(),
-                Enumerable.Empty<PackageReference>(),
-                Enumerable.Empty<PackageIdentity>(),
-                availablePackages,
-                sourceRepositoryProvider.GetRepositories().Select(s => s.PackageSource),
-                logger);
-
-            return packageResolver.Resolve(resolverContext, CancellationToken.None).Select(p => availablePackages.Single(x => PackageIdentityComparer.Default.Equals(x, p)));
-        }
-
         protected virtual async Task GetPackageDependencies(PackageIdentity package,
                                                             SourceCacheContext cacheContext,
                                                             IEnumerable<SourceRepository> repositories,
@@ -336,14 +352,24 @@ namespace Rocket.NuGet
                 return;
             }
 
+            logger.LogDebug("GetPackageDependencies: " + package);
             var repos = repositories.ToList();
+            logger.LogDebug($"Repos for {package}: " + repos.Count);
+
             foreach (var sourceRepository in repos)
             {
+                logger.LogDebug("GetResourceAsync for " + sourceRepository.PackageSource.SourceUri);
                 var dependencyInfoResource = await sourceRepository.GetResourceAsync<DependencyInfoResource>();
-                var dependencyInfo = await dependencyInfoResource.ResolvePackage(
-                    package, currentFramework, cacheContext, logger, CancellationToken.None);
 
-                if (dependencyInfo == null) continue;
+                logger.LogDebug("ResolvePackage");
+                var dependencyInfo = await dependencyInfoResource.ResolvePackage(package, currentFramework, cacheContext, logger, CancellationToken.None);
+
+                if (dependencyInfo == null)
+                {
+                    logger.LogDebug("Dependency was not found: " + package + " in " + sourceRepository.PackageSource.SourceUri);
+                    continue;
+                }
+                logger.LogDebug("Dependency was found: " + package + " in " + sourceRepository.PackageSource.SourceUri);
 
                 availablePackages.Add(dependencyInfo);
                 foreach (var dependency in dependencyInfo.Dependencies)

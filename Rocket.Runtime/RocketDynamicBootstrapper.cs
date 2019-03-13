@@ -1,6 +1,7 @@
 ﻿using NuGet.Common;
 using NuGet.Packaging.Core;
 using Rocket.NuGet;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -50,7 +51,7 @@ namespace Rocket
                 Directory.CreateDirectory(packagesDirectory);
             }
 
-            var nugetInstaller = new NuGetPackageManager(logger, packagesDirectory, new[] { repository });
+            var nugetInstaller = new NuGetPackageManager(logger, packagesDirectory);
 
             foreach (var packageId in packageIds)
             {
