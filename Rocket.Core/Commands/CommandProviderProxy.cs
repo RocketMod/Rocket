@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
+using Rocket.API.Logging;
 using Rocket.Core.Configuration;
 using Rocket.Core.ServiceProxies;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Rocket.Core.Logging;
 
 namespace Rocket.Core.Commands
 {
@@ -15,11 +17,13 @@ namespace Rocket.Core.Commands
     {
         private readonly IDependencyContainer container;
         private readonly IConfiguration configuration;
+        private readonly ILogger logger;
 
-        public CommandProviderProxy(IDependencyContainer container, IConfiguration configuration) : base(container)
+        public CommandProviderProxy(IDependencyContainer container, IConfiguration configuration, ILogger logger) : base(container)
         {
             this.container = container;
             this.configuration = configuration;
+            this.logger = logger;
         }
 
         public ILifecycleObject GetOwner(ICommand command)
@@ -68,6 +72,11 @@ namespace Rocket.Core.Commands
             //first register from config
             foreach (var command in configuration.Get<CommandProviderProxyConfig>().Commands)
             {
+                if (!command.IsEnabled)
+                {
+                    continue;
+                }
+
                 var providerName = command.Provider.Split('/')[0];
                 var originalCommandName = command.Provider.Split('/')[1];
 
@@ -77,15 +86,33 @@ namespace Rocket.Core.Commands
                     => c.Name.Equals(originalCommandName,
                         StringComparison.OrdinalIgnoreCase));
 
-                if (providerCommand == null || !command.IsEnabled)
+                if (providerCommand == null)
+                {
                     continue;
+                }
 
                 commands.Add(new ProxyCommand(providerCommand, command.Name), provider);
             }
 
             //now register from serivces and override if required
             foreach (var proxy in ProxiedServices)
-                foreach (var command in proxy.Commands)
+            {
+                IEnumerable<ICommand> proxyCommands;
+                try
+                {
+                    proxyCommands = proxy.Commands;
+                    if (proxyCommands == null)
+                    {
+                        continue;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    logger.LogWarning("Failed to get commands from provider: " + proxy.ServiceName, ex);
+                    continue;
+                }
+
+                foreach (var command in proxyCommands)
                 {
                     ICommand previousRegistration = null;
                     ICommandProvider previousProvider = null;
@@ -100,8 +127,7 @@ namespace Rocket.Core.Commands
                         }
                     }
 
-                    if (((previousRegistration as ProxyCommand)?.BaseCommand ?? previousRegistration)
-                        == command)
+                    if (((previousRegistration as ProxyCommand)?.BaseCommand ?? previousRegistration) == command)
                     {
                         continue;
                     }
@@ -120,6 +146,7 @@ namespace Rocket.Core.Commands
 
                     commands.Add(command, proxy);
                 }
+            }
 
             registeredCommands = commands.Keys;
             IEnumerable<ConfigCommandProxy> configCommands =
