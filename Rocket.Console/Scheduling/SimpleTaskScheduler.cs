@@ -82,7 +82,7 @@ namespace Rocket.Console.Scheduling
             };
 
             if (delay != null)
-                task.StartTime = DateTime.Now + delay;
+                task.StartTime = DateTime.UtcNow + delay;
 
             TriggerEvent(task);
             return task;
@@ -138,25 +138,25 @@ namespace Rocket.Console.Scheduling
             if (!t.Owner.IsAlive)
                 return;
 
-            if (task.StartTime != null && task.StartTime > DateTime.Now)
+            if (task.StartTime != null && task.StartTime > DateTime.UtcNow)
                 return;
 
-            if (task.EndTime != null && task.EndTime < DateTime.Now)
+            if (task.EndTime != null && task.EndTime < DateTime.UtcNow)
             {
-                task.EndTime = DateTime.Now;
+                task.EndTime = DateTime.UtcNow;
                 RemoveTask(task);
                 return;
             }
 
             if (task.Period != null
                 && task.LastRunTime != null
-                && DateTime.Now - task.LastRunTime < task.Period)
+                && DateTime.UtcNow - task.LastRunTime < task.Period)
                 return;
 
             try
             {
                 task.Action();
-                task.LastRunTime = DateTime.Now;
+                task.LastRunTime = DateTime.UtcNow;
             }
             catch (Exception e)
             {
@@ -169,7 +169,7 @@ namespace Rocket.Console.Scheduling
                 || task.ExecutionTarget == ExecutionTargetContext.NextAsyncFrame
                 || task.ExecutionTarget == ExecutionTargetContext.Sync)
             {
-                task.EndTime = DateTime.Now;
+                task.EndTime = DateTime.UtcNow;
                 RemoveTask(task);
             }
         }

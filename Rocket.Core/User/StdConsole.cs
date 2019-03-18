@@ -21,7 +21,7 @@ namespace Rocket.Core.User
 
         public StdConsole(IDependencyContainer container)
         {
-            SessionConnectTime = DateTime.Now;
+            SessionConnectTime = DateTime.UtcNow;
             BaseLogger.SkipTypeFromLogging(GetType());
             Container = container.CreateChildContainer();
         }
@@ -35,7 +35,7 @@ namespace Rocket.Core.User
         public bool IsOnline => true;
         public DateTime SessionConnectTime { get; }
         public DateTime? SessionDisconnectTime => null;
-        public DateTime? LastSeen => DateTime.Now;
+        public DateTime? LastSeen => DateTime.UtcNow;
 
         public List<IIdentity> Identities => new List<IIdentity>();
 

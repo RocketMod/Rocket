@@ -69,9 +69,9 @@ namespace Rocket.Tests.Mock
             throw new NotImplementedException();
         }
 
-        public override DateTime SessionConnectTime => DateTime.Now;
+        public override DateTime SessionConnectTime => DateTime.UtcNow;
 
-        public override DateTime? SessionDisconnectTime => DateTime.Now;
+        public override DateTime? SessionDisconnectTime => DateTime.UtcNow;
 
         public override TestEntity Entity => new TestEntity(this);
         public override TestUser User { get; }
@@ -90,7 +90,7 @@ namespace Rocket.Tests.Mock
         public string DisplayName => "TestPlayer";
         public IUserManager UserManager => throw new NotImplementedException();
         public bool IsOnline => true;
-        public DateTime? LastSeen => DateTime.Now;
+        public DateTime? LastSeen => DateTime.UtcNow;
 
         public List<IIdentity> Identities => throw new NotImplementedException();
         public string UserType => "TestPlayer";

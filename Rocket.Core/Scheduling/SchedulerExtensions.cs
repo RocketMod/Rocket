@@ -82,7 +82,7 @@ namespace Rocket.Core.Scheduling
         /// <param name="runAsync">Defines if the task should run in a separate thread.</param>
         /// <param name="taskName">The tasks human friendly name.</param>
         public static ITask ScheduleDelayed(this ITaskScheduler taskScheduler, ILifecycleObject @object, Action action, string taskName, TimeSpan delay, bool runAsync = false)
-            => taskScheduler.ScheduleAt(@object, action, taskName, DateTime.Now + delay, runAsync);
+            => taskScheduler.ScheduleAt(@object, action, taskName, DateTime.UtcNow + delay, runAsync);
 
         public static ITask RunOnMainThread(this ITaskScheduler taskScheduler, ILifecycleObject owner, Action action, string taskName)
         {
