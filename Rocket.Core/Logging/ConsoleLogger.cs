@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Rocket.API.DependencyInjection;
+using Rocket.API.Logging;
+using Rocket.Core.Configuration;
+using System;
 using System.Drawing;
-using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.Logging
 {
@@ -62,6 +64,14 @@ namespace Rocket.Core.Logging
             };
 
             return Color.FromArgb(cColors[(int)Console.ForegroundColor]);
+        }
+
+        public override bool IsEnabled(LogLevel level)
+        {
+            if (level == LogLevel.Game)
+                return !LogSettings.IgnoreGameLogs;
+
+            return base.IsEnabled(level);
         }
 
         public void SetForegroundColor(Color color)

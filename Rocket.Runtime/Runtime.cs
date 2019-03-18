@@ -73,13 +73,13 @@ namespace Rocket
 
             await Container.Resolve<ICommandProvider>().InitAsync();
 
-            var settingsProvider = Container.Resolve<IRocketSettingsProvider>();
+            var settingsProvider = Container.Resolve<IRocketConfigurationProvider>();
             await settingsProvider.LoadAsync();
 
             int p = (int)Environment.OSVersion.Platform;
             bool isLinux = (p == 4) || (p == 6) || (p == 128);
 
-            string mode = settingsProvider.Settings.Logging.ConsoleMode;
+            string mode = settingsProvider.Configuration.Logging.ConsoleMode;
 
             if (!mode.Equals("Compat", StringComparison.OrdinalIgnoreCase))
             {

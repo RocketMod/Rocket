@@ -4,7 +4,7 @@ using Rocket.API.DependencyInjection;
 
 namespace Rocket.Core.Logging
 {
-    public class AnsiConsoleLogger : FormattedLogger
+    public class AnsiConsoleLogger : ConsoleLogger
     {
         private const string ESC = "\u001b[";
 

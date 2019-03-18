@@ -38,8 +38,8 @@ namespace Rocket.Core.Logging
         {
             get
             {
-                if (Container.TryResolve(null, out IRocketSettingsProvider settings))
-                    return settings.Settings.Logging;
+                if (Container.TryResolve(null, out IRocketConfigurationProvider settings))
+                    return settings.Configuration.Logging;
 
                 return new LogSettings();
             }
@@ -66,9 +66,6 @@ namespace Rocket.Core.Logging
         {
             if (logLevels.ContainsKey(level))
                 return logLevels[level];
-
-            if (level == LogLevel.Game)
-                return !LogSettings.IgnoreGameLogs;
 
             var settingsLevel = (LogLevel) Enum.Parse(typeof(LogLevel), LogSettings.LogLevel, true);
             return level >= settingsLevel;

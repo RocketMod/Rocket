@@ -1,9 +1,9 @@
 ﻿namespace Rocket.Core.Configuration
 {
     /// <summary>
-    ///     See <see cref="IRocketSettingsProvider" />.
+    ///     See <see cref="IRocketConfigurationProvider" />.
     /// </summary>
-    public class RocketSettings
+    public class RocketConfiguration
     {
         public LogSettings Logging { get; set; } = new LogSettings();
     }

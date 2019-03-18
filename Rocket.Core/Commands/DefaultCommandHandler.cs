@@ -32,7 +32,7 @@ namespace Rocket.Core.Commands
             string[] args = commandLine.Split(' ');
 
             IDependencyContainer contextContainer = container.CreateChildContainer();
-            IRocketSettingsProvider settings = contextContainer.Resolve<IRocketSettingsProvider>();
+            IRocketConfigurationProvider configuration = contextContainer.Resolve<IRocketConfigurationProvider>();
 
             CommandContext context = new CommandContext(contextContainer,
                 user, prefix, null,
@@ -61,7 +61,7 @@ namespace Rocket.Core.Commands
                     throw new NotEnoughPermissionsException(user, permission);
                 }
 
-                if (settings.Settings.Logging.EnableCommandExecutionsLogs)
+                if (configuration.Configuration.Logging.EnableCommandExecutionsLogs)
                 {
                     contextContainer.Resolve<ILogger>().LogInformation($"{user.UserName} has executed command: \"{commandLine}\"");
                 }

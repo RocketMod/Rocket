@@ -80,8 +80,8 @@ namespace Rocket.Core.Plugins
 
             WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name.Replace("_", " "));
 
-            IRocketSettingsProvider rocketSettings = Container.Resolve<IRocketSettingsProvider>();
-            if (rocketSettings.Settings.Logging.EnableSeparatePluginLogs)
+            IRocketConfigurationProvider rocketConfiguration = Container.Resolve<IRocketConfigurationProvider>();
+            if (rocketConfiguration.Configuration.Logging.EnableSeparatePluginLogs)
                 Container.RegisterSingletonType<ILogger, PluginLogger>("plugin_logger");
         }
 
