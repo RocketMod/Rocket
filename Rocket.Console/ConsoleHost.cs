@@ -45,6 +45,11 @@ namespace Rocket.Console
             string line;
             while (!(line = System.Console.ReadLine())?.Equals("exit", StringComparison.OrdinalIgnoreCase) ?? false)
             {
+                if (string.IsNullOrEmpty(line))
+                {
+                    continue;
+                }
+
                 try
                 {
                     if (!await cmdHandler.HandleCommandAsync(Console, line, ""))
