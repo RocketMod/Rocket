@@ -375,7 +375,7 @@ namespace Rocket.NuGet
                 foreach (var dependency in dependencyInfo.Dependencies)
                 {
                     await GetPackageDependencies(
-                        new PackageIdentity(dependency.Id, dependency.VersionRange.MinVersion), cacheContext, repos, availablePackages);
+                        new PackageIdentity(dependency.Id, dependency.VersionRange.MaxVersion ?? dependency.VersionRange.MinVersion), cacheContext, repos, availablePackages);
                 }
             }
         }
