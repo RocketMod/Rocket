@@ -16,11 +16,11 @@
     <FileVersion>0.0.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="NuGet.Configuration" Version="4.9.3" />
-    <PackageReference Include="NuGet.Frameworks" Version="4.9.3" />
-    <PackageReference Include="NuGet.Packaging" Version="4.9.3" />
-    <PackageReference Include="NuGet.Protocol" Version="4.9.3" />
-    <PackageReference Include="NuGet.Resolver" Version="4.9.3" />
+    <PackageReference Include="NuGet.Configuration" Version="4.9.4" />
+    <PackageReference Include="NuGet.Frameworks" Version="4.9.4" />
+    <PackageReference Include="NuGet.Packaging" Version="4.9.4" />
+    <PackageReference Include="NuGet.Protocol" Version="4.9.4" />
+    <PackageReference Include="NuGet.Resolver" Version="4.9.4" />
   </ItemGroup>
 
   <Import Project="$(MSBuildThisFileDirectory)..\props\SharedNuGet.props" />

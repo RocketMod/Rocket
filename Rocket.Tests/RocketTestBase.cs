@@ -16,7 +16,7 @@ namespace Rocket.Tests
         {
             Runtime = new Runtime();
             Runtime.InitAsync().GetAwaiter().GetResult();
-            Runtime.Container.RegisterSingletonType<ILogger, NullLogger>("default_file_logger");
+            Runtime.Container.RegisterSingletonType<ILogger, NullLogger>("default_file_logger", null);
         }
     }
 }

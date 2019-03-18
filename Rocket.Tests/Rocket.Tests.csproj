@@ -59,6 +59,7 @@
   <ItemGroup>
     <Compile Include="Configuration\JsonConfigurationTest.cs" />
     <Compile Include="Configuration\XmlConfigurationTest.cs" />
+    <Compile Include="Configuration\YamlConfigurationTest.cs" />
     <Compile Include="Eventing\DefaultEventingTests.cs" />
     <Compile Include="Eventing\EventingTestBase.cs" />
     <Compile Include="Eventing\TestEvent.cs" />

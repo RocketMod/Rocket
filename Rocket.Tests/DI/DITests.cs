@@ -40,6 +40,7 @@ namespace Rocket.Tests.DI
             Assert.IsNotNull(Runtime.Container.Resolve<IPluginLoader>("proxy_plugins"));
 
             Assert.IsNotNull(Runtime.Container.Resolve<IConfiguration>());
+            Assert.IsNotNull(Runtime.Container.Resolve<IConfiguration>("yaml"));
             Assert.IsNotNull(Runtime.Container.Resolve<IConfiguration>("json"));
             Assert.IsNotNull(Runtime.Container.Resolve<IConfiguration>("xml"));
         }
