@@ -132,55 +132,6 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public async Task<PermissionResult> CheckHasAllPermissionsAsync(IPermissionEntity target, params string[] permissions)
-        {
-            GuardLoaded();
-            GuardPermissions(permissions);
-            GuardTarget(target);
-
-            PermissionResult result = PermissionResult.Grant;
-
-            foreach (string permission in permissions)
-            {
-                PermissionResult tmp = await CheckPermissionAsync(target, permission);
-                if (tmp == PermissionResult.Deny)
-                    return PermissionResult.Deny;
-
-                if (tmp == PermissionResult.Default)
-                    result = PermissionResult.Default;
-            }
-
-            return result;
-        }
-
-        public async Task<PermissionResult> CheckHasAnyPermissionAsync(IPermissionEntity target, params string[] permissions)
-        {
-            GuardLoaded();
-            GuardPermissions(permissions);
-            GuardTarget(target);
-
-            foreach (string permission in permissions)
-            {
-                Console.WriteLine("Checking: " + permission);
-
-                PermissionResult result = await CheckPermissionAsync(target, permission);
-                if (result == PermissionResult.Deny)
-                {
-                    Console.WriteLine("Denied: " + permission);
-                    return PermissionResult.Deny;
-                }
-                if (result == PermissionResult.Grant)
-                {
-                    Console.WriteLine("Granted: " + permission);
-                    return PermissionResult.Grant;
-                }
-
-            }
-
-            Console.WriteLine("Default: " + permissions);
-            return PermissionResult.Default;
-        }
-
         public async Task<bool> AddPermissionAsync(IPermissionEntity target, string permission)
         {
             GuardPermission(ref permission);

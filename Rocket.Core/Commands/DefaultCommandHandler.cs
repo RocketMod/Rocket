@@ -52,7 +52,7 @@ namespace Rocket.Core.Commands
 
             try
             {
-                IPermissionProvider provider = container.Resolve<IPermissionProvider>();
+                IPermissionChecker provider = container.Resolve<IPermissionChecker>();
 
                 if (await provider.CheckPermissionAsync(user, permission) != PermissionResult.Grant)
                 {

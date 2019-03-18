@@ -25,7 +25,7 @@ namespace Rocket.Core.Commands.RocketCommands
             ICommandProvider cmdProvider = context.Container.Resolve<ICommandProvider>();
             ICommandHandler cmdHandler = context.Container.Resolve<ICommandHandler>();
 
-            IPermissionProvider permissionProvider = context.Container.Resolve<IPermissionProvider>();
+            IPermissionChecker permissionProvider = context.Container.Resolve<IPermissionChecker>();
 
             string rootPrefix = context.RootContext.CommandPrefix;
             IEnumerable<ICommand> childs = cmdProvider.Commands.OrderBy(c => c.Name);

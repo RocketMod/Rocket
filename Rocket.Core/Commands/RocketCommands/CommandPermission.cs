@@ -58,7 +58,7 @@ namespace Rocket.Core.Commands.RocketCommands
             string permissionToUpdate = context.Parameters[2];
 
             IPermissionProvider configPermissions = context.Container.Resolve<IPermissionProvider>("default_permissions");
-            IPermissionProvider permissions = context.Container.Resolve<IPermissionProvider>();
+            IPermissionChecker permissionChecker = context.Container.Resolve<IPermissionChecker>();
 
             switch (type)
             {
@@ -87,7 +87,7 @@ namespace Rocket.Core.Commands.RocketCommands
                     throw new CommandWrongUsageException();
             }
 
-            if (await permissions.CheckPermissionAsync(context.User, permission) != PermissionResult.Grant)
+            if (await permissionChecker.CheckPermissionAsync(context.User, permission) != PermissionResult.Grant)
                 throw new NotEnoughPermissionsException(context.User, permission, permissionFailMessage);
 
             await UpdatePermissionAsync(context.User, configPermissions, target, permissionToUpdate);

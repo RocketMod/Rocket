@@ -26,9 +26,11 @@ namespace Rocket.Tests.DI
             Assert.IsNotNull(Runtime.Container.Resolve<ITranslationCollection>());
 
             Assert.IsNotNull(Runtime.Container.Resolve<IPermissionProvider>());
-            Assert.IsNotNull(Runtime.Container.Resolve<IPermissionProvider>("proxy_permissions"));
             Assert.IsNotNull(Runtime.Container.Resolve<IPermissionProvider>("default_permissions"));
-            Assert.IsNotNull(Runtime.Container.Resolve<IPermissionProvider>("console_permissions"));
+
+            Assert.IsNotNull(Runtime.Container.Resolve<IPermissionChecker>());
+            Assert.IsNotNull(Runtime.Container.Resolve<IPermissionChecker>("proxy_checker"));
+            Assert.IsNotNull(Runtime.Container.Resolve<IPermissionChecker>("console_checker"));
 
             Assert.IsNotNull(Runtime.Container.Resolve<ICommandHandler>());
             Assert.IsNotNull(Runtime.Container.Resolve<ICommandHandler>("proxy_cmdhandler"));

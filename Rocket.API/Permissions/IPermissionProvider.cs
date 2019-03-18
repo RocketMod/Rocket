@@ -10,7 +10,7 @@ namespace Rocket.API.Permissions
     /// <summary>
     ///     The Permission Provider is responsible for checking permissions.
     /// </summary>
-    public interface IPermissionProvider : IProxyableService
+    public interface IPermissionProvider : IPermissionChecker
     {
         /// <summary>
         ///     Gets the permissions of the given target.
@@ -27,49 +27,6 @@ namespace Rocket.API.Permissions
         /// <param name="inherit">Defines if the parent groups denied permissions should be included.</param>
         /// <returns>A list of all denied permissions of the target.</returns>
         Task<IEnumerable<string>> GetDeniedPermissionsAsync(IPermissionEntity target, bool inherit = true);
-
-        /// <summary>
-        ///     Defines if the given target is supported by this provider.
-        /// </summary>
-        /// <param name="target">The target to check.</param>
-        /// <returns><b>true</b> if the given target is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsTarget(IPermissionEntity target);
-
-        /// <summary>
-        ///     Check if the target has the given permission.
-        /// </summary>
-        /// <param name="target">The target to check.</param>
-        /// <param name="permission">The permission to check.</param>
-        /// <returns>
-        ///     <see cref="PermissionResult.Grant" /> if the target explicity has the permission,
-        ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have the permission; otherwise,
-        ///     <see cref="PermissionResult.Default" />
-        /// </returns>
-        Task<PermissionResult> CheckPermissionAsync(IPermissionEntity target, string permission);
-
-        /// <summary>
-        ///     Checks if the target has all of the given permissions.
-        /// </summary>
-        /// <param name="target">The target to check.</param>
-        /// <param name="permissions">The permissions to check.</param>
-        /// <returns>
-        ///     <see cref="PermissionResult.Grant" /> if the target explicity has access to all of the given permissions,
-        ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have access to any of the permissions;
-        ///     otherwise, <see cref="PermissionResult.Default" />
-        /// </returns>
-        Task<PermissionResult> CheckHasAllPermissionsAsync(IPermissionEntity target, params string[] permissions);
-
-        /// <summary>
-        ///     Checks if the target has any of the given permissions.
-        /// </summary>
-        /// <param name="target">The target to check.</param>
-        /// <param name="permissions">The permissions to check.</param>
-        /// <returns>
-        ///     <see cref="PermissionResult.Grant" /> if the target explicity has access to any of the given permissions,
-        ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have access to any of the permissions;
-        ///     otherwise, <see cref="PermissionResult.Default" />
-        /// </returns>
-        Task<PermissionResult> CheckHasAnyPermissionAsync(IPermissionEntity target, params string[] permissions);
 
         /// <summary>
         ///     Adds an explicitly granted permission to the target.

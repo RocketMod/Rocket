@@ -5,6 +5,7 @@ using Rocket.API.Permissions;
 using Rocket.API.Player;
 using Rocket.API.User;
 using Rocket.Core.Extensions;
+using Rocket.Core.Permissions;
 
 namespace Rocket.Core.Player
 {
@@ -31,8 +32,8 @@ namespace Rocket.Core.Player
             if (player == null)
                 throw new ArgumentNullException(nameof(player));
 
-            var permissionProvider = player.Container.Resolve<IPermissionProvider>();
-            return permissionProvider.CheckPermissionAsync(player.User, permission);
+            var permissionChecker = player.Container.Resolve<IPermissionChecker>();
+            return permissionChecker.CheckPermissionAsync(player.User, permission);
         }
 
         public static Task<PermissionResult> CheckHasAnyPermissionAsync(this IPlayer player, params string[] permissions)
@@ -40,7 +41,7 @@ namespace Rocket.Core.Player
             if (player == null)
                 throw new ArgumentNullException(nameof(player));
 
-            var permissionProvider = player.Container.Resolve<IPermissionProvider>();
+            var permissionProvider = player.Container.Resolve<IPermissionChecker>();
             return permissionProvider.CheckHasAnyPermissionAsync(player.User, permissions);
         }
 
@@ -49,7 +50,7 @@ namespace Rocket.Core.Player
             if (player == null)
                 throw new ArgumentNullException(nameof(player));
 
-            var permissionProvider = player.Container.Resolve<IPermissionProvider>();
+            var permissionProvider = player.Container.Resolve<IPermissionChecker>();
             return permissionProvider.CheckHasAllPermissionsAsync(player.User, permissions);
         }
     }
