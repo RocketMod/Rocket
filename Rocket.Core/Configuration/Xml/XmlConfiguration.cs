@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 using Rocket.Core.Configuration.JsonNetBase;
+using Formatting = Newtonsoft.Json.Formatting;
 
 namespace Rocket.Core.Configuration.Xml
 {
@@ -18,7 +19,7 @@ namespace Rocket.Core.Configuration.Xml
         protected override string FileEnding => "xml";
         public override string Name => "Xml";
 
-        protected override void LoadFromFile(string file)
+        public override void LoadFromFile(string file)
         {
             string xml = File.ReadAllText(file);
             LoadFromXml(xml);
@@ -62,7 +63,7 @@ namespace Rocket.Core.Configuration.Xml
             if (Scheme != null)
                 ApplyScheme(doc.DocumentElement, Scheme, docAttribute);
 
-            string json = JsonConvert.SerializeXmlNode(doc);
+            string json = JsonConvert.SerializeXmlNode(doc, Formatting.None);
 
             JToken tmp = JObject.Parse(json, new JsonLoadSettings
             {
@@ -82,7 +83,7 @@ namespace Rocket.Core.Configuration.Xml
             IsLoaded = true;
         }
 
-        protected override void SaveToFile(string file)
+        public override void SaveToFile(string file)
         {
             File.WriteAllText(file, ToXml());
         }

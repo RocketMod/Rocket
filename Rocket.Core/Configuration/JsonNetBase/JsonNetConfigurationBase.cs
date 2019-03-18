@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
@@ -102,8 +103,8 @@ namespace Rocket.Core.Configuration.JsonNetBase
             Node = JObject.FromObject(o);
         }
 
-        protected abstract void LoadFromFile(string file);
+        public abstract void LoadFromFile(string file);
 
-        protected abstract void SaveToFile(string file);
+        public abstract void SaveToFile(string file);
     }
 }

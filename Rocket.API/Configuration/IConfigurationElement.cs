@@ -23,7 +23,7 @@ namespace Rocket.API.Configuration
         /// <summary>
         ///     The parent configuration node.
         /// </summary>
-        IConfigurationElement Parent { get; }
+        IConfigurationElement ParentElement { get; }
 
         /// <summary>
         ///     The root configuration node. Can be null.

@@ -378,7 +378,7 @@ namespace Rocket.Core.Permissions
 
             IConfigurationContext playersContext = permissionsContext.CreateChildConfigurationContext("Players");
             PlayersConfig.ConfigurationContext = playersContext;
-            await PlayersConfig.LoadAsync(new { });
+            await PlayersConfig.LoadAsync();
         }
 
         public async Task ReloadAsync()

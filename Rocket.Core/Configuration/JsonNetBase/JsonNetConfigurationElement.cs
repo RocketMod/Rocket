@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Rocket.API.Configuration;
 
@@ -9,25 +10,24 @@ namespace Rocket.Core.Configuration.JsonNetBase
 {
     public abstract class JsonNetConfigurationElement : IConfigurationElement
     {
-        protected JsonNetConfigurationElement(IConfiguration root, IConfigurationElement parent, JToken node,
-                                              SectionType type)
-        {
-            Root = root;
-            Parent = parent;
-            Node = node ?? throw new ArgumentNullException(nameof(node));
-            Type = type;
-        }
-
         protected JsonNetConfigurationElement(IConfiguration root)
         {
             Root = root;
+        }
+
+        protected JsonNetConfigurationElement(IConfiguration root, IConfigurationElement parentElement, JToken node, SectionType type)
+        {
+            Root = root;
+            ParentElement = parentElement;
+            Node = node ?? throw new ArgumentNullException(nameof(node));
+            Type = type;
         }
 
         public JToken Node { get; protected set; }
         public SectionType Type { get; }
 
         public IConfigurationSection this[string path] => GetSection(path);
-        public IConfigurationElement Parent { get; }
+        public IConfigurationElement ParentElement { get; }
         public IConfiguration Root { get; protected set; }
 
         public IConfigurationSection GetSection(string path)
@@ -120,7 +120,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
             GuardPath(path);
 
             JToken node = ((JsonNetConfigurationElement) GetSection(path)).Node;
-            JObject parent = (JObject) ((JsonNetConfigurationElement) GetSection(path).Parent).Node;
+            JObject parent = (JObject) ((JsonNetConfigurationElement) GetSection(path).ParentElement).Node;
             parent.Remove(node.Path.Replace(parent.Path + ".", ""));
             return true;
         }
@@ -144,8 +144,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
 
         public abstract string Path { get; }
 
-        public virtual T
-            Get<T>() => Node.ToObject<T>();
+        public virtual T Get<T>() => Node.ToObject<T>();
 
         public object Get()
         {
@@ -171,7 +170,10 @@ namespace Rocket.Core.Configuration.JsonNetBase
         {
             GuardLoaded();
 
-            if (!TryGet(t, out object val)) val = defaultValue;
+            if (!TryGet(t, out object val))
+            {
+                val = defaultValue;
+            }
 
             return val;
         }
@@ -183,7 +185,9 @@ namespace Rocket.Core.Configuration.JsonNetBase
             if (node is JArray array)
             {
                 foreach (JToken child in array.ToList() /* ToList() to make a simple clone */)
+                {
                     child.Remove();
+                }
 
                 if (value is IEnumerable enumerable)
                 {

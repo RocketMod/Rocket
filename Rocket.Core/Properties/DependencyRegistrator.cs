@@ -11,6 +11,7 @@ using Rocket.Core.Commands;
 using Rocket.Core.Configuration;
 using Rocket.Core.Configuration.Json;
 using Rocket.Core.Configuration.Xml;
+using Rocket.Core.Configuration.Yaml;
 using Rocket.Core.Eventing;
 using Rocket.Core.I18N;
 using Rocket.Core.Logging;
@@ -25,11 +26,11 @@ namespace Rocket.Core.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
-            container.RegisterType<IConfiguration, JsonConfiguration>();
+            container.RegisterType<IConfiguration, YamlConfiguration>("yaml", null);
             container.RegisterType<IConfiguration, JsonConfiguration>("json");
             container.RegisterType<IConfiguration, XmlConfiguration>("xml");
 
-            container.RegisterSingletonType<IRocketSettingsProvider, RocketSettingsProvider>();
+            container.RegisterSingletonType<IRocketConfigurationProvider, RocketConfigurationProvider>();
 
             container.RegisterSingletonType<ILogger, ConsoleLogger>("console_logger");
             container.RegisterSingletonType<ILogger, LoggerProxy>("proxy_logger", null);

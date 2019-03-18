@@ -26,13 +26,13 @@ namespace Rocket.Core.Configuration.Json
             IsLoaded = true;
         }
 
-        protected override void LoadFromFile(string file)
+        public override void LoadFromFile(string file)
         {
             string json = File.ReadAllText(file);
             LoadFromJson(json);
         }
 
-        protected override void SaveToFile(string file)
+        public override void SaveToFile(string file)
         {
             string json = ToJson();
             File.WriteAllText(file, json);
