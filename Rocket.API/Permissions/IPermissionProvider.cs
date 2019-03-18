@@ -10,7 +10,7 @@ namespace Rocket.API.Permissions
     /// <summary>
     ///     The Permission Provider is responsible for checking permissions.
     /// </summary>
-    public interface IPermissionProvider : IPermissionChecker
+    public interface IPermissionProvider
     {
         /// <summary>
         ///     Gets the permissions of the given target.

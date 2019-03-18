@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace Rocket.Core.Permissions
 {
     [ServicePriority(Priority = ServicePriority.Low)]
-    public class ConfigurationPermissionProvider : IPermissionProvider
+    public class ConfigurationPermissionProvider : IPermissionProvider, IPermissionChecker
     {
         public ConfigurationPermissionProvider(IConfiguration groupsConfig,
                                                IConfiguration playersConfig)

@@ -9,12 +9,14 @@ namespace Rocket.Tests.Permissions
     {
         protected override IPermissionProvider LoadProvider()
         {
-            ConfigurationPermissionProvider provider = (ConfigurationPermissionProvider) GetPermissionProvider();
+            var provider = (ConfigurationPermissionProvider) Runtime.Container.Resolve<IPermissionProvider>("default_permissions");
             provider.LoadFromConfig(GroupsConfig, PlayersConfig);
             return provider;
         }
 
-        protected override IPermissionProvider GetPermissionProvider()
-            => Runtime.Container.Resolve<IPermissionProvider>("default_permissions");
+        protected override IPermissionChecker LoadChecker()
+        {
+            return (ConfigurationPermissionProvider) LoadProvider();
+        }
     }
 }
