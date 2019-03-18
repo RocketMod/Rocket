@@ -68,12 +68,14 @@ namespace Rocket.API.Economy
         ///     Sets the balance of the users account.
         /// </summary>
         /// <param name="owner">The account owner.</param>
+        /// <param name="amount">Amount to set the balance to.</param>
         Task SetBalanceAsync(IUser owner, decimal amount);
 
         /// <summary>
         ///     Sets the balance of the users account in a specific currency.
         /// </summary>
         /// <param name="account">The account to set the balance of.</param>
+        /// <param name="amount">Amount to set the balance to.</param>
         Task SetBalanceAsync(IEconomyAccount account, decimal amount);
 
         /// <summary>

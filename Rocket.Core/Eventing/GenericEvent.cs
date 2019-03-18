@@ -11,6 +11,6 @@ namespace Rocket.Core.Eventing
             Arguments = new Dictionary<string, object>();
         }
 
-        public Dictionary<string, object> Arguments { get; set; }
+        public override Dictionary<string, object> Arguments { get; }
     }
 }

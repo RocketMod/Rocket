@@ -44,7 +44,7 @@ namespace Rocket.Core.Eventing
         ///     <inheritdoc /><br /><br />
         ///     In this implementation it contains the properties of the class with their respective values.
         /// </summary>
-        public Dictionary<string, object> Arguments
+        public virtual Dictionary<string, object> Arguments
         {
             get
             {

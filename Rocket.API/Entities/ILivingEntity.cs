@@ -24,13 +24,13 @@ namespace Rocket.API.Entities
         Task KillAsync();
 
         /// <summary>
-        ///     <inheritdoc cref="Kill()" />
+        ///     <inheritdoc cref="KillAsync()" />
         /// </summary>
         /// <param name="killer">the killer of the entity.</param>
         Task KillAsync(IEntity killer);
 
         /// <summary>
-        ///     <inheritdoc cref="Kill()" />
+        ///     <inheritdoc cref="KillAsync()" />
         /// </summary>
         /// <param name="killer">the killer of the entity.</param>
         Task KillAsync(IUser killer);

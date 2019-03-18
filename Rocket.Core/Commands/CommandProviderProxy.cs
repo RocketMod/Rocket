@@ -191,7 +191,7 @@ namespace Rocket.Core.Commands
 
     class CommandProviderProxyConfig
     {
-        [ConfigArray]
+        [ConfigArray(elementName: "Command")]
         public ConfigCommandProxy[] Commands { get; set; } = new ConfigCommandProxy[0];
     }
 }

@@ -14,7 +14,7 @@ namespace Rocket.Core.User.Events
             User = user;
         }
 
-        /// <param name="executionTarget">When and where should the event be called? See <see cref="ExecutionTarget" /></param>
+        /// <param name="executionTarget">When and where should the event be called? See <see cref="EventExecutionTargetContext" /></param>
         /// <param name="global">Defines if the event is emitted globally</param>
         protected UserEvent(IUser user,
                             EventExecutionTargetContext executionTarget = EventExecutionTargetContext.Sync,

@@ -15,6 +15,7 @@
     <!-- Set by CI -->
     <FileVersion>0.0.0.0</FileVersion>
     <LangVersion>7.3</LangVersion>
+    <NoWarn>1591;1998</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="$(Configuration) == 'Debug'">
@@ -38,5 +39,6 @@
   <PropertyGroup>
     <DefineConstants Condition="$(NuGetBootstrap) == 'true'">NUGET_BOOTSTRAP</DefineConstants>
   </PropertyGroup>
+
   <Import Project="$(MSBuildThisFileDirectory)..\props\SharedNuGet.props" />
 </Project>

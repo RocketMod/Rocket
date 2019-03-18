@@ -13,7 +13,9 @@
     <AssemblyVersion>0.0.0.0</AssemblyVersion>
     <!-- Set by CI -->
     <FileVersion>0.0.0.0</FileVersion>
+    <NoWarn>1591;1998</NoWarn>
   </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
       <Private>false</Private>

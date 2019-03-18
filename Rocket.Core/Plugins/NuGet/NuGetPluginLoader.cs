@@ -1,7 +1,6 @@
 ﻿using NuGet.Packaging.Core;
 using NuGet.Versioning;
 using Rocket.API;
-using Rocket.API.Configuration;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
@@ -20,7 +19,6 @@ namespace Rocket.Core.Plugins.NuGet
     {
         private readonly ILogger logger;
         private readonly IRuntime runtime;
-        private IConfiguration configuration;
         private NuGetPackageManager nugetPackageManager;
 
         public virtual string PackagesDirectory { get; protected set; }

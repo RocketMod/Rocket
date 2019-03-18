@@ -83,7 +83,6 @@ namespace Rocket.Core.Commands.RocketCommands
             var args = context.Parameters.ToList();
 
             string packageName = args[0];
-            string repoName = null;
             string version = null;
             bool isPre = false;
 

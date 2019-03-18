@@ -196,7 +196,7 @@ namespace Rocket.Core.Configuration.JsonNetBase
                         {
                             array.Add(child is JToken ? child : new JValue(child));
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
                             array.Add(JObject.FromObject(child));
                         }

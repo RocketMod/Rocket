@@ -22,6 +22,7 @@ namespace Rocket.API.Entities
         ///     Teleports the player to the given position.
         /// </summary>
         /// <param name="position">The position to teleport to.</param>
+        /// <param name="rotation">Rotation of the entity on the Y axis.</param>
         /// <returns><b>True</b> if the teleport was succesful, otherwise; <b>false</b>.</returns>
         Task<bool> TeleportAsync(Vector3 position, float rotation);
     }

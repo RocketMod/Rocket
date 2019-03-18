@@ -38,7 +38,7 @@ namespace Rocket.API.I18N
         Task ReloadAsync();
 
         /// <summary>
-        ///     Saves the changes of <see cref="Set" />.
+        ///     Saves the changes of <see cref="SetAsync" />.
         /// </summary>
         Task SaveAsync();
     }

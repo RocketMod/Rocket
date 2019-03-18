@@ -9,6 +9,6 @@ namespace Rocket.API.Player
 
     public interface IPlayerUser<TPlayer> : IPlayerUser where TPlayer: IPlayer
     {
-        TPlayer Player { get; }
+        new TPlayer Player { get; }
     }
 }

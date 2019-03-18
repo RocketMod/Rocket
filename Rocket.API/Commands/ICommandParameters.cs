@@ -55,28 +55,28 @@ namespace Rocket.API.Commands
         Task<T> GetAsync<T>(int index);
 
         /// <summary>
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </summary>
         /// <exception cref="ArgumentOutOfRangeException">
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </exception>
         /// <param name="index">
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </param>
         /// <param name="type">The type to parse the parameter as.</param>
         /// <returns>
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </returns>
         Task<object> GetAsync(int index, Type type);
 
         /// <summary>
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </summary>
         /// <typeparam name="T">
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </typeparam>
         /// <param name="index">
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </param>
         /// <param name="defaultValue">The default return value.</param>
         /// <returns>
@@ -86,26 +86,26 @@ namespace Rocket.API.Commands
         Task<T> GetAsync<T>(int index, T defaultValue);
 
         /// <summary>
-        ///     <inheritdoc cref="Get{T}(int, T)" />
+        ///     <inheritdoc cref="GetAsync{T}(int, T)" />
         /// </summary>
         /// <param name="index">
-        ///     <inheritdoc cref="Get{T}(int, T)" />
+        ///     <inheritdoc cref="GetAsync{T}(int, T)" />
         /// </param>
         /// <param name="type">The type to parse the parameters as.</param>
         /// <param name="defaultValue">The default return value.</param>
         /// <returns>
-        ///     <inheritdoc cref="Get{T}(int, T)" />
+        ///     <inheritdoc cref="GetAsync{T}(int, T)" />
         /// </returns>
         Task<object> GetAsync(int index, Type type, object defaultValue);
 
         /// <summary>
-        ///     Tries to get and parse a parameter. See <see cref="Get{T}(int)" />.
+        ///     Tries to get and parse a parameter. See <see cref="GetAsync{T}(int)" />.
         /// </summary>
         /// <typeparam name="T">
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </typeparam>
         /// <param name="index">
-        ///     <inheritdoc cref="Get{T}(int)" />
+        ///     <inheritdoc cref="GetAsync{T}(int)" />
         /// </param>
         /// <param name="value">The parsed parameter value.</param>
         /// <returns>
