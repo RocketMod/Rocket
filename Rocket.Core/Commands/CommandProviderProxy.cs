@@ -172,11 +172,9 @@ namespace Rocket.Core.Commands
         {
             get
             {
-                if (registeredCommands == null)
-                    Invalidate();
-
                 var currentCount = ProxiedServices.Count();
-                if (currentCount != previousProxyCount)
+
+                if (registeredCommands == null || currentCount != previousProxyCount)
                 {
                     Invalidate();
                     previousProxyCount = currentCount;
