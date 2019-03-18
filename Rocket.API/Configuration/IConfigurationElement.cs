@@ -85,7 +85,7 @@ namespace Rocket.API.Configuration
         ///     GEts the sections value.
         /// </summary>
         /// <returns>the sections value.</returns>
-        object Get();
+        dynamic Get();
 
         /// <summary>
         ///     Gets the sections parsed value.
