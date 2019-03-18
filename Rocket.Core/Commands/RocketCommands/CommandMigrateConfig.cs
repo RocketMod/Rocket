@@ -30,7 +30,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length == 0)
             {
                 await context.User.SendMessageAsync(GetConfigTypes(configProviders));
-                await context.SendCommandUsage();
+                await context.SendCommandUsageAsync();
                 return;
             }
 

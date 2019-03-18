@@ -39,7 +39,7 @@ namespace Rocket.Core.Commands
         public ICommandParameters Parameters { get; }
         public IDependencyContainer Container { get; }
 
-        public async Task SendCommandUsage()
+        public async Task SendCommandUsageAsync()
         {
             await User.SendMessageAsync("Usage: " + CommandPrefix + CommandAlias + " " + Command.Syntax, Color.Blue);
         }

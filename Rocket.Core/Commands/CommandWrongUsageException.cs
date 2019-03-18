@@ -39,7 +39,7 @@ namespace Rocket.Core.Commands
         public virtual async Task SendErrorMessageAsync(ICommandContext context)
         {
             await context.User.SendMessageAsync(Message, Color.DarkRed);
-            context.SendCommandUsage();
+            await context.SendCommandUsageAsync();
         }
     }
 }

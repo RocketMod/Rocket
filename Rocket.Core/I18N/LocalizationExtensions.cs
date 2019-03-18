@@ -17,7 +17,7 @@ namespace Rocket.Core.I18N
         /// <param name="translationKey">The translation key.</param>
         /// <param name="color">The color to use.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" /></param>
-        public static async Task SendLocalizedMessage(this IUser user, ITranslationCollection translations,
+        public static async Task SendLocalizedMessageAsync(this IUser user, ITranslationCollection translations,
                                                 string translationKey, Color? color = null, params object[] arguments)
         {
             await user.SendMessageAsync(await translations.GetAsync(translationKey, arguments), color);
@@ -30,7 +30,7 @@ namespace Rocket.Core.I18N
         /// <param name="translations">The translations source.</param>
         /// <param name="translationKey">The translation key.</param>
         /// <param name="arguments">The arguments for the message. See <see cref="string.Format(string, object[])" /></param>
-        public static async Task SendLocalizedMessage(this IUser user, ITranslationCollection translations,
+        public static async Task SendLocalizedMessageAsync(this IUser user, ITranslationCollection translations,
             string translationKey, params object[] arguments)
         {
             await user.SendMessageAsync(await translations.GetAsync(translationKey, arguments));
@@ -45,7 +45,7 @@ namespace Rocket.Core.I18N
         /// <param name="translationKey">The translation key.</param>
         /// <param name="color">The color to use.</param>
         /// <param name="arguments">The arguments for the message.</param>
-        public static async Task SendLocalizedMessage(this IUserManager userManager, ITranslationCollection translations,
+        public static async Task SendLocalizedMessageAsync(this IUserManager userManager, ITranslationCollection translations,
                                                 IUser user, string translationKey, Color? color = null, params object[] arguments)
         {
             await userManager.SendMessageAsync(user, await translations.GetAsync(translationKey, arguments), color);
@@ -59,7 +59,7 @@ namespace Rocket.Core.I18N
         /// <param name="user">The message receiver.</param>
         /// <param name="translationKey">The translation key.</param>
         /// <param name="arguments">The arguments for the message.</param>
-        public static async Task SendLocalizedMessage(this IUserManager userManager, ITranslationCollection translations,
+        public static async Task SendLocalizedMessageAsync(this IUserManager userManager, ITranslationCollection translations,
             IUser user, string translationKey, params object[] arguments)
         {
             await userManager.SendMessageAsync(user, await translations.GetAsync(translationKey, arguments));

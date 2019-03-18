@@ -63,10 +63,10 @@ namespace Rocket.Core.Commands.RocketCommands
                 return;
             }
 
-            await UpdateGroup(context.User, configPermissions, targetPlayer, groupToUpdate);
+            await UpdateGroupAsync(context.User, configPermissions, targetPlayer, groupToUpdate);
         }
 
-        protected abstract Task UpdateGroup(IUser user, IPermissionProvider permissions,
+        protected abstract Task UpdateGroupAsync(IUser user, IPermissionProvider permissions,
                                             IUser targetUser, IPermissionGroup groupToUpdate);
     }
 
@@ -77,7 +77,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Permission => "Rocket.Permissions.ManageGroups.Add";
         public override string[] Aliases => new[] { "a", "+" };
 
-        protected override async Task UpdateGroup(IUser user, IPermissionProvider permissions,
+        protected override async Task UpdateGroupAsync(IUser user, IPermissionProvider permissions,
                                             IUser targetUser, IPermissionGroup groupToUpdate)
         {
             if (await permissions.AddGroupAsync(targetUser, groupToUpdate))
@@ -95,7 +95,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string Permission => "Rocket.Permissions.ManageGroups.Remove";
         public override string[] Aliases => new[] { "r", "-" };
 
-        protected override async Task UpdateGroup(IUser user, IPermissionProvider permissions,
+        protected override async Task UpdateGroupAsync(IUser user, IPermissionProvider permissions,
                                             IUser targetUser, IPermissionGroup groupToUpdate)
         {
             if (await permissions.RemoveGroupAsync(targetUser, groupToUpdate))

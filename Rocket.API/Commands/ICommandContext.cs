@@ -95,6 +95,6 @@ namespace Rocket.API.Commands
         /// <summary>
         ///     Sends the command usage to the user.
         /// </summary>
-        Task SendCommandUsage();
+        Task SendCommandUsageAsync();
     }
 }

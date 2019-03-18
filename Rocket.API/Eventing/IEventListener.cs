@@ -18,6 +18,6 @@ namespace Rocket.API.Eventing
         /// </summary>
         /// <param name="emitter">The event emitter.</param>
         /// <param name="event">The event instance.</param>
-        Task HandleEvent(IEventEmitter emitter, TEvent @event);
+        Task HandleEventAsync(IEventEmitter emitter, TEvent @event);
     }
 }

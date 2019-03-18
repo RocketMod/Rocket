@@ -195,7 +195,7 @@ namespace Rocket.NuGet
             var sourceRepositories = sourceRepositoryProvider.GetRepositories();
 
             var availablePackages = new HashSet<SourcePackageDependencyInfo>(PackageIdentityComparer.Default);
-            await GetPackageDependencies(identity, cacheContext, sourceRepositories, availablePackages);
+            await GetPackageDependenciesAsync(identity, cacheContext, sourceRepositories, availablePackages);
 
             var resolverContext = new PackageResolverContext(
                 DependencyBehavior.Lowest,
@@ -342,7 +342,7 @@ namespace Rocket.NuGet
             return Path.Combine(dir, dirName + ".nupkg");
         }
 
-        protected virtual async Task GetPackageDependencies(PackageIdentity package,
+        protected virtual async Task GetPackageDependenciesAsync(PackageIdentity package,
                                                             SourceCacheContext cacheContext,
                                                             IEnumerable<SourceRepository> repositories,
                                                             ISet<SourcePackageDependencyInfo> availablePackages)
@@ -374,7 +374,7 @@ namespace Rocket.NuGet
                 availablePackages.Add(dependencyInfo);
                 foreach (var dependency in dependencyInfo.Dependencies)
                 {
-                    await GetPackageDependencies(
+                    await GetPackageDependenciesAsync(
                         new PackageIdentity(dependency.Id, dependency.VersionRange.MaxVersion ?? dependency.VersionRange.MinVersion), cacheContext, repos, availablePackages);
                 }
             }
