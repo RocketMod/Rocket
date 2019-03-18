@@ -6,64 +6,60 @@ namespace Rocket.Console.Scheduling
 {
     public class AsyncThreadPool
     {
-        private readonly SimpleTaskScheduler scheduler;
-
+        private readonly SimpleTaskScheduler taskScheduler;
+        public EventWaitHandle EventWaitHandle { get; }
         public AsyncThreadPool(SimpleTaskScheduler scheduler)
         {
-            this.scheduler = scheduler;
+            taskScheduler = scheduler;
+            EventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
         }
 
-        private readonly EventWaitHandle waitHandle = new EventWaitHandle(false, EventResetMode.AutoReset);
-        private Thread singleCallsThread;
-        private Thread continousCallsThreads;
+        private Thread taskThread;
+        private bool _run;
 
         public void Start()
         {
-            singleCallsThread = new Thread(SingleThreadLoop);
-            singleCallsThread.Start();
+            _run = true;
+            taskThread = new Thread(ContinousThreadLoop);
+            taskThread.Start();
+        }
 
-            continousCallsThreads = new Thread(ContinousThreadLoop);
-            continousCallsThreads.Start();
+        public void Stop()
+        {
+            _run = false;
+            taskThread = null;
         }
 
         private void ContinousThreadLoop()
         {
-            while (true)
+            while (_run)
             {
-                var cpy = scheduler.Tasks.ToList(); // we need a copy because the task list may be modified at runtime
+                var cpy = taskScheduler.Tasks.Where(c => !c.IsFinished && !c.IsCancelled).ToList(); // we need a copy because the task list may be modified at runtime
 
-                foreach (ITask task in cpy.Where(c => !c.IsFinished && !c.IsCancelled))
+                foreach (ITask task in cpy)
                 {
-                    if (task.Period == null)
-                        if (task.ExecutionTarget != ExecutionTargetContext.EveryAsyncFrame
-                            && task.ExecutionTarget != ExecutionTargetContext.EveryFrame
-                            && task.ExecutionTarget != ExecutionTargetContext.EveryPhysicsUpdate)
+                    if (task.Period == null || (task.Period != null && (task.ExecutionTarget != ExecutionTargetContext.Async && task.ExecutionTarget != ExecutionTargetContext.Sync)))
+                        if (task.ExecutionTarget != ExecutionTargetContext.EveryAsyncFrame && task.ExecutionTarget != ExecutionTargetContext.EveryFrame)
                             continue;
 
-                    scheduler.RunTask(task);
+                    taskScheduler.RunTask(task);
+                }
+
+                foreach (ITask task in cpy)
+                {
+                    if (task.ExecutionTarget != ExecutionTargetContext.NextAsyncFrame && task.ExecutionTarget != ExecutionTargetContext.NextFrame &&
+                        task.ExecutionTarget != ExecutionTargetContext.Async && task.ExecutionTarget != ExecutionTargetContext.Sync)
+                        continue;
+
+                    taskScheduler.RunTask(task);
+                }
+
+                if (cpy.Count == 0)
+                {
+                    EventWaitHandle.WaitOne();
                 }
 
                 Thread.Sleep(20);
-            }
-        }
-
-        private void SingleThreadLoop()
-        {
-            while (true)
-            {
-                waitHandle.WaitOne();
-                var cpy = scheduler.Tasks.ToList(); // we need a copy because the task list may be modified at runtime
-
-                foreach (ITask task in cpy.Where(c => !c.IsFinished && !c.IsCancelled))
-                {
-                    if (task.ExecutionTarget != ExecutionTargetContext.NextAsyncFrame &&
-                        task.ExecutionTarget != ExecutionTargetContext.NextFrame &&
-                        task.ExecutionTarget != ExecutionTargetContext.NextPhysicsUpdate &&
-                        task.ExecutionTarget != ExecutionTargetContext.Async)
-                        continue;
-
-                    scheduler.RunTask(task);
-                }
             }
         }
     }

@@ -9,23 +9,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Rocket.Console.Scheduling
 {
-    public class SimpleTaskScheduler : ITaskScheduler
+    public class SimpleTaskScheduler : ITaskScheduler, IDisposable
     {
         protected IDependencyContainer Container { get; set; }
         protected List<SimpleTask> InternalTasks { get; set; }
 
         private volatile int taskIds;
+        private readonly AsyncThreadPool asyncThreadPool;
 
         public SimpleTaskScheduler(IDependencyContainer container)
         {
             Container = container;
             MainThread = Thread.CurrentThread;
 
-            (new AsyncThreadPool(this)).Start();
+            asyncThreadPool = new AsyncThreadPool(this);
+            asyncThreadPool.Start();
             InternalTasks = new List<SimpleTask>();
         }
 
@@ -98,12 +99,15 @@ namespace Rocket.Console.Scheduling
 
         protected virtual void TriggerEvent(SimpleTask task, EventCallback cb = null)
         {
-            TaskScheduleEvent e = new TaskScheduleEvent(task);
+            asyncThreadPool.EventWaitHandle.Set();
 
-            if (!(task.Owner is IEventEmitter owner)) return;
+            TaskScheduleEvent e = new TaskScheduleEvent(task);
+            if (!(task.Owner is IEventEmitter owner))
+            {
+                return;
+            }
 
             IEventBus eventBus = Container.Resolve<IEventBus>();
-
             if (eventBus == null)
             {
                 InternalTasks.Add(task);
@@ -124,7 +128,7 @@ namespace Rocket.Console.Scheduling
 
         protected internal virtual void RunTask(ITask t)
         {
-            var task = (SimpleTask) t;
+            var task = (SimpleTask)t;
             if (!task.IsReferenceAlive)
             {
                 InternalTasks.Remove(task);
@@ -139,20 +143,20 @@ namespace Rocket.Console.Scheduling
 
             if (task.EndTime != null && task.EndTime < DateTime.Now)
             {
-                ((SimpleTask)task).EndTime = DateTime.Now;
+                task.EndTime = DateTime.Now;
                 RemoveTask(task);
                 return;
             }
 
             if (task.Period != null
-                && ((SimpleTask)task).LastRunTime != null
-                && DateTime.Now - ((SimpleTask)task).LastRunTime < task.Period)
+                && task.LastRunTime != null
+                && DateTime.Now - task.LastRunTime < task.Period)
                 return;
 
             try
             {
                 task.Action();
-                ((SimpleTask)task).LastRunTime = DateTime.Now;
+                task.LastRunTime = DateTime.Now;
             }
             catch (Exception e)
             {
@@ -165,7 +169,7 @@ namespace Rocket.Console.Scheduling
                 || task.ExecutionTarget == ExecutionTargetContext.NextAsyncFrame
                 || task.ExecutionTarget == ExecutionTargetContext.Sync)
             {
-                ((SimpleTask)task).EndTime = DateTime.Now;
+                task.EndTime = DateTime.Now;
                 RemoveTask(task);
             }
         }
@@ -173,6 +177,11 @@ namespace Rocket.Console.Scheduling
         protected virtual void RemoveTask(ITask task)
         {
             InternalTasks.Remove((SimpleTask)task);
+        }
+
+        public void Dispose()
+        {
+            asyncThreadPool.Stop();
         }
     }
 }
