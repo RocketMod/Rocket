@@ -32,10 +32,10 @@ namespace Rocket.Console.Scheduling
 
         public Thread MainThread { get; }
 
-        public IEnumerable<ITask> Tasks =>
+        public IEnumerable<IScheduledTask> Tasks =>
             InternalTasks.Where(c => c.IsReferenceAlive && c.Owner.IsAlive);
 
-        public ITask ScheduleUpdate(ILifecycleObject @object, Action action, string taskName, ExecutionTargetContext target)
+        public IScheduledTask ScheduleUpdate(ILifecycleObject @object, Action action, string taskName, ExecutionTargetContext target)
         {
             if (!@object.IsAlive)
                 return null;
@@ -55,7 +55,7 @@ namespace Rocket.Console.Scheduling
             return task;
         }
 
-        public ITask ScheduleAt(ILifecycleObject @object, Action action, string taskName, DateTime date, bool runAsync = false)
+        public IScheduledTask ScheduleAt(ILifecycleObject @object, Action action, string taskName, DateTime date, bool runAsync = false)
         {
             if (!@object.IsAlive)
                 return null;
@@ -69,7 +69,7 @@ namespace Rocket.Console.Scheduling
             return task;
         }
 
-        public ITask SchedulePeriodically(ILifecycleObject @object, Action action, string taskName, TimeSpan period, TimeSpan? delay = null,
+        public IScheduledTask SchedulePeriodically(ILifecycleObject @object, Action action, string taskName, TimeSpan period, TimeSpan? delay = null,
                                           bool runAsync = false)
         {
             if (!@object.IsAlive)
@@ -88,7 +88,7 @@ namespace Rocket.Console.Scheduling
             return task;
         }
 
-        public virtual bool CancelTask(ITask task)
+        public virtual bool CancelTask(IScheduledTask task)
         {
             if (task.IsFinished || task.IsCancelled)
                 return false;
@@ -126,7 +126,7 @@ namespace Rocket.Console.Scheduling
             });
         }
 
-        protected internal virtual void RunTask(ITask t)
+        protected internal virtual void RunTask(IScheduledTask t)
         {
             var task = (SimpleTask)t;
             if (!task.IsReferenceAlive)
@@ -174,7 +174,7 @@ namespace Rocket.Console.Scheduling
             }
         }
 
-        protected virtual void RemoveTask(ITask task)
+        protected virtual void RemoveTask(IScheduledTask task)
         {
             InternalTasks.Remove((SimpleTask)task);
         }

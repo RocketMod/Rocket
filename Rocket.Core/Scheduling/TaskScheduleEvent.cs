@@ -6,12 +6,12 @@ namespace Rocket.Core.Scheduling
 {
     public class TaskScheduleEvent : Event, ICancellableEvent
     {
-        public TaskScheduleEvent(ITask task) : base(EventExecutionTargetContext.Sync)
+        public TaskScheduleEvent(IScheduledTask task) : base(EventExecutionTargetContext.Sync)
         {
             Task = task;
         }
 
-        public ITask Task { get; }
+        public IScheduledTask Task { get; }
 
         public bool IsCancelled { get; set; }
     }

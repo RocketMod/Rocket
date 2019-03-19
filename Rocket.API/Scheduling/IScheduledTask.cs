@@ -6,7 +6,7 @@ namespace Rocket.API.Scheduling
     /// <summary>
     ///     Represents a scheduled task.
     /// </summary>
-    public interface ITask
+    public interface IScheduledTask
     {
         /// <summary>
         ///     Gets the tasks ID.

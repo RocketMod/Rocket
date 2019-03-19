@@ -36,7 +36,7 @@ namespace Rocket.Console.Scheduling
             {
                 var cpy = taskScheduler.Tasks.Where(c => !c.IsFinished && !c.IsCancelled).ToList(); // we need a copy because the task list may be modified at runtime
 
-                foreach (ITask task in cpy)
+                foreach (IScheduledTask task in cpy)
                 {
                     if (task.Period == null || (task.Period != null && (task.ExecutionTarget != ExecutionTargetContext.Async && task.ExecutionTarget != ExecutionTargetContext.Sync)))
                         if (task.ExecutionTarget != ExecutionTargetContext.EveryAsyncFrame && task.ExecutionTarget != ExecutionTargetContext.EveryFrame)
@@ -45,7 +45,7 @@ namespace Rocket.Console.Scheduling
                     taskScheduler.RunTask(task);
                 }
 
-                foreach (ITask task in cpy)
+                foreach (IScheduledTask task in cpy)
                 {
                     if (task.ExecutionTarget != ExecutionTargetContext.NextAsyncFrame && task.ExecutionTarget != ExecutionTargetContext.NextFrame &&
                         task.ExecutionTarget != ExecutionTargetContext.Async && task.ExecutionTarget != ExecutionTargetContext.Sync)

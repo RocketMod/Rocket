@@ -1,12 +1,36 @@
-﻿using System;
-using System.Threading;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.Scheduling;
+using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Rocket.Core.Scheduling
 {
     public static class SchedulerExtensions
     {
+        public delegate Task AsyncAction();
+
+        /// <inheritdoc cref="ITaskScheduler.ScheduleUpdate"/>
+        public static IScheduledTask ScheduleTaskUpdate(this ITaskScheduler taskScheduler, ILifecycleObject @owner,
+                                           AsyncAction action, string taskName, ExecutionTargetContext frame)
+        {
+            return taskScheduler.ScheduleUpdate(@owner, action().GetAwaiter().GetResult, taskName, frame);
+        }
+
+        /// <inheritdoc cref="ITaskScheduler.ScheduleAt"/>
+        public static IScheduledTask ScheduleTaskAt(this ITaskScheduler taskScheduler, ILifecycleObject @owner,
+                                       AsyncAction action, string taskName, DateTime date, bool runAsync = false)
+        {
+            return taskScheduler.ScheduleAt(@owner, action().GetAwaiter().GetResult, taskName, date, runAsync);
+        }
+
+        /// <inheritdoc cref="ITaskScheduler.SchedulePeriodically"/>
+        public static IScheduledTask ScheduleTaskPeriodically(this ITaskScheduler taskScheduler, ILifecycleObject @owner, AsyncAction action,
+                                                 string taskName, TimeSpan period, TimeSpan? delay = null, bool runAsync = false)
+        {
+            return taskScheduler.SchedulePeriodically(@owner, action().GetAwaiter().GetResult, taskName, period, delay, runAsync);
+        }
+
         /// <summary>
         ///     Schedules an action for the next frame on the main thread. See <see cref="ExecutionTargetContext.NextFrame" />.
         /// </summary>
@@ -14,8 +38,12 @@ namespace Rocket.Core.Scheduling
         /// <param name="taskScheduler">the Task Scheduler</param>
         /// <param name="owner">The owner of the task.</param> 
         /// <param name="taskName">The tasks human friendly name.</param> 
-        public static ITask ScheduleNextFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName) 
+        public static IScheduledTask ScheduleNextFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName)
             => taskScheduler.ScheduleUpdate(@owner, action, taskName, ExecutionTargetContext.NextFrame);
+
+        /// <inheritdoc cref="ScheduleNextFrame(ITaskScheduler, ILifecycleObject, Action, string)"/>
+        public static IScheduledTask ScheduleTaskNextFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, AsyncAction action, string taskName)
+            => taskScheduler.ScheduleUpdate(@owner, action().GetAwaiter().GetResult, taskName, ExecutionTargetContext.NextFrame);
 
         /// <summary>
         ///     Schedules an action for all frames on the main thread. See <see cref="ExecutionTargetContext.EveryFrame" />.
@@ -24,8 +52,12 @@ namespace Rocket.Core.Scheduling
         /// <param name="taskScheduler">the Task Scheduler</param>
         /// <param name="owner">The owner of the task.</param>
         /// <param name="taskName">The tasks human friendly name.</param>
-        public static ITask ScheduleEveryFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName) 
+        public static IScheduledTask ScheduleEveryFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName)
             => taskScheduler.ScheduleUpdate(@owner, action, taskName, ExecutionTargetContext.EveryFrame);
+
+        /// <inheritdoc cref="ScheduleEveryFrame"/>
+        public static IScheduledTask ScheduleTaskEveryFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, AsyncAction action, string taskName)
+            => taskScheduler.ScheduleUpdate(@owner, action().GetAwaiter().GetResult, taskName, ExecutionTargetContext.EveryFrame);
 
         /// <summary>
         ///     Schedule an action which includes physics interactions (e.g. applying force to an object) for the next physics
@@ -36,8 +68,12 @@ namespace Rocket.Core.Scheduling
         /// <param name="taskScheduler">the Task Scheduler</param>
         /// <param name="owner">The owner of the task.</param>
         /// <param name="taskName">The tasks human friendly name.</param>
-        public static ITask ScheduleNextPhysicUpdate(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName) 
+        public static IScheduledTask ScheduleNextPhysicUpdate(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName)
             => taskScheduler.ScheduleUpdate(@owner, action, taskName, ExecutionTargetContext.NextPhysicsUpdate);
+
+        /// <inheritdoc cref="ScheduleNextPhysicUpdate"/>
+        public static IScheduledTask ScheduleTaskNextPhysicUpdate(this ITaskScheduler taskScheduler, ILifecycleObject @owner, AsyncAction action, string taskName)
+            => taskScheduler.ScheduleUpdate(@owner, action().GetAwaiter().GetResult, taskName, ExecutionTargetContext.NextPhysicsUpdate);
 
         /// <summary>
         ///     Schedule an action which includes physics interaction (e.g. applying force to an object) for every physics update.
@@ -48,8 +84,12 @@ namespace Rocket.Core.Scheduling
         /// <param name="taskScheduler">the Task Scheduler</param>
         /// <param name="owner">The owner of the task.</param>
         /// <param name="taskName">The tasks human friendly name.</param>
-        public static ITask ScheduleEveryPhysicUpdate(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName) 
+        public static IScheduledTask ScheduleEveryPhysicUpdate(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName)
             => taskScheduler.ScheduleUpdate(@owner, action, taskName, ExecutionTargetContext.EveryPhysicsUpdate);
+
+        /// <inheritdoc cref="ScheduleEveryPhysicUpdate"/>
+        public static IScheduledTask ScheduleTaskEveryPhysicUpdate(this ITaskScheduler taskScheduler, ILifecycleObject @owner, AsyncAction action, string taskName)
+            => taskScheduler.ScheduleUpdate(@owner, action().GetAwaiter().GetResult, taskName, ExecutionTargetContext.EveryPhysicsUpdate);
 
         /// <summary>
         ///     Schedules an action for all frame on a separate thread. See <see cref="ExecutionTargetContext.EveryAsyncFrame" />.
@@ -58,8 +98,12 @@ namespace Rocket.Core.Scheduling
         /// <param name="taskScheduler">the Task Scheduler</param>
         /// <param name="owner">The owner of the task.</param>
         /// <param name="taskName">The tasks human friendly name.</param>
-        public static ITask ScheduleNextAsyncFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName) 
+        public static IScheduledTask ScheduleNextAsyncFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, Action action, string taskName)
             => taskScheduler.ScheduleUpdate(@owner, action, taskName, ExecutionTargetContext.NextAsyncFrame);
+
+        /// <inheritdoc cref="ScheduleNextAsyncFrame"/>
+        public static IScheduledTask ScheduleTaskNextAsyncFrame(this ITaskScheduler taskScheduler, ILifecycleObject @owner, AsyncAction action, string taskName)
+            => taskScheduler.ScheduleUpdate(@owner, action().GetAwaiter().GetResult, taskName, ExecutionTargetContext.NextAsyncFrame);
 
         /// <summary>
         ///     Schedules an action for the next frame on a separate thread. See
@@ -69,8 +113,12 @@ namespace Rocket.Core.Scheduling
         /// <param name="taskScheduler">the Task Scheduler</param>
         /// <param name="owner">The owner of the task.</param>
         /// <param name="taskName">The tasks human friendly name.</param>
-        public static ITask ScheduleEveryAsyncFrame(this ITaskScheduler taskScheduler, ILifecycleObject owner, Action action, string taskName) 
+        public static IScheduledTask ScheduleEveryAsyncFrame(this ITaskScheduler taskScheduler, ILifecycleObject owner, Action action, string taskName)
             => taskScheduler.ScheduleUpdate(owner, action, taskName, ExecutionTargetContext.EveryAsyncFrame);
+
+        /// <inheritdoc cref="ScheduleEveryAsyncFrame"/>
+        public static IScheduledTask ScheduleTaskEveryAsyncFrame(this ITaskScheduler taskScheduler, ILifecycleObject owner, AsyncAction action, string taskName)
+            => taskScheduler.ScheduleUpdate(owner, action().GetAwaiter().GetResult, taskName, ExecutionTargetContext.EveryAsyncFrame);
 
         /// <summary>
         ///     Executes the given task roughly after the given delay.
@@ -81,10 +129,21 @@ namespace Rocket.Core.Scheduling
         /// <param name="delay">The delay.</param>
         /// <param name="runAsync">Defines if the task should run in a separate thread.</param>
         /// <param name="taskName">The tasks human friendly name.</param>
-        public static ITask ScheduleDelayed(this ITaskScheduler taskScheduler, ILifecycleObject @object, Action action, string taskName, TimeSpan delay, bool runAsync = false)
+        public static IScheduledTask ScheduleDelayed(this ITaskScheduler taskScheduler, ILifecycleObject @object, Action action, string taskName, TimeSpan delay, bool runAsync = false)
             => taskScheduler.ScheduleAt(@object, action, taskName, DateTime.UtcNow + delay, runAsync);
 
-        public static ITask RunOnMainThread(this ITaskScheduler taskScheduler, ILifecycleObject owner, Action action, string taskName)
+        /// <inheritdoc cref="ScheduleDelayed"/>
+        public static IScheduledTask ScheduleTaskDelayed(this ITaskScheduler taskScheduler, ILifecycleObject @object, AsyncAction action, string taskName, TimeSpan delay, bool runAsync = false)
+            => taskScheduler.ScheduleAt(@object, action().GetAwaiter().GetResult, taskName, DateTime.UtcNow + delay, runAsync);
+
+        /// <summary>
+        /// Schedules a task to run on main thread. If this is called from main thread, the action will run immediately.
+        /// </summary>
+        /// <param name="taskScheduler">The task scheduler.</param>
+        /// <param name="owner">The owner of the task.</param>
+        /// <param name="action">The action to execute.</param>
+        /// <param name="taskName">The tasks human friendly name.</param>
+        public static IScheduledTask RunOnMainThread(this ITaskScheduler taskScheduler, ILifecycleObject owner, Action action, string taskName)
         {
             if (Thread.CurrentThread == taskScheduler.MainThread)
             {
@@ -93,6 +152,12 @@ namespace Rocket.Core.Scheduling
             }
 
             return taskScheduler.ScheduleUpdate(owner, action, taskName, ExecutionTargetContext.NextFrame);
+        }
+
+        /// <inheritdoc cref="RunOnMainThread"/>
+        public static IScheduledTask RunTaskOnMainThread(this ITaskScheduler taskScheduler, ILifecycleObject owner, AsyncAction action, string taskName)
+        {
+            return taskScheduler.RunOnMainThread(owner, action().GetAwaiter().GetResult, taskName);
         }
     }
 }

@@ -55,7 +55,6 @@ namespace Rocket.Core.Properties
             container.RegisterSingletonType<IPermissionChecker, PermissionProviderProxy>("proxy_checker", null);
 
             container.RegisterType<ITranslationCollection, TranslationCollection>();
-
             container.RegisterSingletonType<IUserManager, UserManagerProxy>();
         }
     }

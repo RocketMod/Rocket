@@ -6,7 +6,7 @@ using Rocket.API.Scheduling;
 
 namespace Rocket.Console.Scheduling
 {
-    public class SimpleTask : ITask
+    public class SimpleTask : IScheduledTask
     {
         private readonly Core.Util.WeakReference<ILifecycleObject> ownerRef;
 
