@@ -105,10 +105,5 @@ namespace Rocket.Core.User
             var permissionChecker = user.Container.Resolve<IPermissionChecker>();
             return await permissionChecker.CheckHasAllPermissionsAsync(user, permissions);
         }
-
-        public static IPlayer GetPlayer(this IUser user)
-        {
-            return user.GetPrivateProperty<IPlayer>("Player");
-        }
     }
 }
