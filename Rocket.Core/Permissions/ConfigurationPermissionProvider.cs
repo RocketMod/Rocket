@@ -23,7 +23,7 @@ namespace Rocket.Core.Permissions
         public IConfiguration GroupsConfig { get; protected set; }
         public IConfiguration PlayersConfig { get; protected set; }
 
-        public async Task<IEnumerable<string>> GetGrantedPermissionsAsync(IPermissionEntity target, bool inherit = true)
+        public async Task<IEnumerable<string>> GetGrantedPermissionsAsync(IPermissionActor target, bool inherit = true)
         {
             PermissionSection section = target is IPermissionGroup
                 ? (PermissionSection)await GetConfigSectionAsync<GroupPermissionSection>(target, false)
@@ -52,7 +52,7 @@ namespace Rocket.Core.Permissions
             return permissions.Distinct();
         }
 
-        public async Task<IEnumerable<string>> GetDeniedPermissionsAsync(IPermissionEntity target, bool inherit = true)
+        public async Task<IEnumerable<string>> GetDeniedPermissionsAsync(IPermissionActor target, bool inherit = true)
         {
             PermissionSection section = target is IPermissionGroup
                 ? (PermissionSection)await GetConfigSectionAsync<GroupPermissionSection>(target, false)
@@ -81,10 +81,10 @@ namespace Rocket.Core.Permissions
             return permissions.Distinct();
         }
 
-        public bool SupportsTarget(IPermissionEntity target)
+        public bool SupportsTarget(IPermissionActor target)
             => target is IPermissionGroup || target is IUser;
 
-        public async Task<PermissionResult> CheckPermissionAsync(IPermissionEntity target, string permission)
+        public async Task<PermissionResult> CheckPermissionAsync(IPermissionActor target, string permission)
         {
             GuardLoaded();
             GuardPermission(ref permission);
@@ -132,7 +132,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        public async Task<bool> AddPermissionAsync(IPermissionEntity target, string permission)
+        public async Task<bool> AddPermissionAsync(IPermissionActor target, string permission)
         {
             GuardPermission(ref permission);
             GuardTarget(target);
@@ -148,7 +148,7 @@ namespace Rocket.Core.Permissions
             return true;
         }
 
-        public Task<bool> AddDeniedPermissionAsync(IPermissionEntity target, string permission)
+        public Task<bool> AddDeniedPermissionAsync(IPermissionActor target, string permission)
         {
             GuardPermission(ref permission);
             GuardTarget(target);
@@ -156,7 +156,7 @@ namespace Rocket.Core.Permissions
             return AddPermissionAsync(target, "!" + permission);
         }
 
-        public async Task<bool> RemovePermissionAsync(IPermissionEntity target, string permission)
+        public async Task<bool> RemovePermissionAsync(IPermissionActor target, string permission)
         {
             GuardPermission(ref permission);
 
@@ -174,7 +174,7 @@ namespace Rocket.Core.Permissions
             return i > 0;
         }
 
-        public async Task<bool> RemoveDeniedPermissionAsync(IPermissionEntity target, string permission)
+        public async Task<bool> RemoveDeniedPermissionAsync(IPermissionActor target, string permission)
         {
             GuardPermission(ref permission);
             GuardTarget(target);
@@ -182,16 +182,16 @@ namespace Rocket.Core.Permissions
             return await RemovePermissionAsync(target, "!" + permission);
         }
 
-        public async Task<IPermissionGroup> GetPrimaryGroupAsync(IPermissionEntity permissionEntity)
+        public async Task<IPermissionGroup> GetPrimaryGroupAsync(IPermissionActor permissionActor)
         {
             GuardLoaded();
-            if (!(permissionEntity is IUser))
+            if (!(permissionActor is IUser))
                 throw new NotSupportedException();
 
-            return (await GetGroupsAsync(permissionEntity)).OrderByDescending(c => c.Priority).FirstOrDefault();
+            return (await GetGroupsAsync(permissionActor)).OrderByDescending(c => c.Priority).FirstOrDefault();
         }
 
-        public async Task<IEnumerable<IPermissionGroup>> GetGroupsAsync(IPermissionEntity target)
+        public async Task<IEnumerable<IPermissionGroup>> GetGroupsAsync(IPermissionActor target)
         {
             GuardLoaded();
             GuardTarget(target);
@@ -246,7 +246,7 @@ namespace Rocket.Core.Permissions
             return true;
         }
 
-        public async Task<bool> AddGroupAsync(IPermissionEntity target, IPermissionGroup group)
+        public async Task<bool> AddGroupAsync(IPermissionActor target, IPermissionGroup group)
         {
             GuardLoaded();
             GuardTarget(target);
@@ -264,7 +264,7 @@ namespace Rocket.Core.Permissions
             return true;
         }
 
-        public async Task<bool> RemoveGroupAsync(IPermissionEntity target, IPermissionGroup group)
+        public async Task<bool> RemoveGroupAsync(IPermissionActor target, IPermissionGroup group)
         {
             GuardLoaded();
             GuardTarget(target);
@@ -411,7 +411,7 @@ namespace Rocket.Core.Permissions
             }
         }
 
-        private bool DeleteConfigSection(IPermissionEntity target)
+        private bool DeleteConfigSection(IPermissionActor target)
         {
             IConfigurationElement config = target is IPermissionGroup
                 ? GroupsConfig["Groups"]
@@ -423,7 +423,7 @@ namespace Rocket.Core.Permissions
             return i > 0;
         }
 
-        public async Task<T> GetConfigSectionAsync<T>(IPermissionEntity target, bool createIfNotFound) where T : PermissionSection
+        public async Task<T> GetConfigSectionAsync<T>(IPermissionActor target, bool createIfNotFound) where T : PermissionSection
         {
             GuardTarget(target);
 
@@ -487,7 +487,7 @@ namespace Rocket.Core.Permissions
                 throw new Exception("Players config has not been loaded");
         }
 
-        private void GuardTarget(IPermissionEntity target)
+        private void GuardTarget(IPermissionActor target)
         {
             if (!SupportsTarget(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");

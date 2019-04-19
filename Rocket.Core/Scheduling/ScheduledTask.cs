@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Rocket.API;
 using Rocket.API.Scheduling;
 
-namespace Rocket.Console.Scheduling
+namespace Rocket.Core.Scheduling
 {
-    public class SimpleTask : IScheduledTask
+    public class ScheduledTask : IScheduledTask
     {
         private readonly Core.Util.WeakReference<ILifecycleObject> ownerRef;
 
-        internal SimpleTask(int taskId, string taskName, ITaskScheduler scheduler, ILifecycleObject owner, Action action,
+        internal ScheduledTask(int taskId, string taskName, ITaskScheduler scheduler, ILifecycleObject owner, Action action,
                             ExecutionTargetContext executionTarget)
         {
             Name = taskName;

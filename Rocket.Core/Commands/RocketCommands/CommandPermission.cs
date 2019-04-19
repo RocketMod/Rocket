@@ -49,7 +49,7 @@ namespace Rocket.Core.Commands.RocketCommands
             if (context.Parameters.Length != 3)
                 throw new CommandWrongUsageException();
 
-            IPermissionEntity target;
+            IPermissionActor target;
             string permission;
             string permissionFailMessage;
 
@@ -94,7 +94,7 @@ namespace Rocket.Core.Commands.RocketCommands
         }
 
         protected abstract Task UpdatePermissionAsync(IUser user, IPermissionProvider permissions,
-                                                 IPermissionEntity target, string permissionToUpdate);
+                                                 IPermissionActor target, string permissionToUpdate);
     }
 
     public class CommandPermissionAdd : CommandPermissionUpdate
@@ -105,7 +105,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] {"a", "+"};
 
         protected override async Task UpdatePermissionAsync(IUser user, IPermissionProvider permissions,
-                                                 IPermissionEntity target, string permissionToUpdate)
+                                                 IPermissionActor target, string permissionToUpdate)
         {
             if (await permissions.AddPermissionAsync(target, permissionToUpdate))
                 await user.SendMessageAsync($"Successfully added \"{permissionToUpdate}\" to \"{target.GetDisplayName()}\"!",
@@ -123,7 +123,7 @@ namespace Rocket.Core.Commands.RocketCommands
         public override string[] Aliases => new[] {"r", "-"};
 
         protected override async Task UpdatePermissionAsync(IUser user, IPermissionProvider permissions,
-                                                 IPermissionEntity target, string permissionToUpdate)
+                                                 IPermissionActor target, string permissionToUpdate)
         {
             if (await permissions.RemovePermissionAsync(target, permissionToUpdate))
                 await user.SendMessageAsync($"Successfully removed \"{permissionToUpdate}\" from \"{target.GetDisplayName()}\"!",

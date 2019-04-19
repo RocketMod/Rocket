@@ -5,7 +5,7 @@ namespace Rocket.API.Permissions
     /// <summary>
     ///     A permission group contains a collection of permissions.
     /// </summary>
-    public interface IPermissionGroup : IPermissionEntity
+    public interface IPermissionGroup : IPermissionActor
     {
         /// <summary>
         ///     The priority of this group.

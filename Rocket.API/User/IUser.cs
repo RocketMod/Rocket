@@ -8,7 +8,7 @@ namespace Rocket.API.User
     /// <summary>
     ///     A message communication User.
     /// </summary>
-    public interface IUser : IPermissionEntity
+    public interface IUser : IPermissionActor
     {
         /// <summary>
         ///     Gets the last time the user was online on the server or null if the user was never online before.

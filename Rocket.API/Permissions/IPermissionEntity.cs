@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Rocket.API.Permissions
+﻿namespace Rocket.API.Permissions
 {
     /// <summary>
-    /// Represents an object that can have permissions.
+    /// Represents an actor that can have permissions.
     /// </summary>
-    public interface IPermissionEntity
+    public interface IPermissionActor
     {
         /// <summary>
-        /// The unique and persistent ID of the entity.
+        /// The unique and persistent ID of the actor.
         /// </summary>
         string Id { get; }
     }

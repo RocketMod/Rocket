@@ -12,12 +12,12 @@ namespace Rocket.Core.Permissions
     {
         public PermissionProviderProxy(IDependencyContainer container) : base(container) { }
 
-        public bool SupportsTarget(IPermissionEntity target)
+        public bool SupportsTarget(IPermissionActor target)
         {
             return ProxiedServices.Any(c => c.SupportsTarget(target));
         }
 
-        public async Task<PermissionResult> CheckPermissionAsync(IPermissionEntity target, string permission)
+        public async Task<PermissionResult> CheckPermissionAsync(IPermissionActor target, string permission)
         {
             GuardTarget(target);
 
@@ -33,7 +33,7 @@ namespace Rocket.Core.Permissions
             return PermissionResult.Default;
         }
 
-        private void GuardTarget(IPermissionEntity target)
+        private void GuardTarget(IPermissionActor target)
         {
             if (!SupportsTarget(target))
                 throw new NotSupportedException(target.GetType().FullName + " is not supported!");

@@ -10,7 +10,7 @@ namespace Rocket.API.Permissions
         /// </summary>
         /// <param name="target">The target to check.</param>
         /// <returns><b>true</b> if the given target is supported; otherwise, <b>false</b>.</returns>
-        bool SupportsTarget(IPermissionEntity target);
+        bool SupportsTarget(IPermissionActor target);
 
         /// <summary>
         ///     Check if the target has the given permission.
@@ -22,6 +22,6 @@ namespace Rocket.API.Permissions
         ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have the permission; otherwise,
         ///     <see cref="PermissionResult.Default" />
         /// </returns>
-        Task<PermissionResult> CheckPermissionAsync(IPermissionEntity target, string permission);
+        Task<PermissionResult> CheckPermissionAsync(IPermissionActor target, string permission);
     }
 }

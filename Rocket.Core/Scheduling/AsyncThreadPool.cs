@@ -2,13 +2,13 @@
 using System.Threading;
 using Rocket.API.Scheduling;
 
-namespace Rocket.Console.Scheduling
+namespace Rocket.Core.Scheduling
 {
     public class AsyncThreadPool
     {
-        private readonly SimpleTaskScheduler taskScheduler;
+        private readonly DefaultTaskScheduler taskScheduler;
         public EventWaitHandle EventWaitHandle { get; }
-        public AsyncThreadPool(SimpleTaskScheduler scheduler)
+        public AsyncThreadPool(DefaultTaskScheduler scheduler)
         {
             taskScheduler = scheduler;
             EventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);

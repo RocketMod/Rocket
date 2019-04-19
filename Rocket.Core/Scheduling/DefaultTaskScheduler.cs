@@ -1,33 +1,34 @@
-﻿using Rocket.API;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.Eventing;
 using Rocket.API.Logging;
 using Rocket.API.Scheduling;
 using Rocket.Core.Logging;
-using Rocket.Core.Scheduling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
 
-namespace Rocket.Console.Scheduling
+namespace Rocket.Core.Scheduling
 {
-    public class SimpleTaskScheduler : ITaskScheduler, IDisposable
+    public class DefaultTaskScheduler : ITaskScheduler, IDisposable
     {
+        private readonly ITaskRunner taskRunner;
         protected IDependencyContainer Container { get; set; }
-        protected List<SimpleTask> InternalTasks { get; set; }
+        protected List<ScheduledTask> InternalTasks { get; set; }
 
         private volatile int taskIds;
         private readonly AsyncThreadPool asyncThreadPool;
 
-        public SimpleTaskScheduler(IDependencyContainer container)
+        public DefaultTaskScheduler(IDependencyContainer container, ITaskRunner taskRunner)
         {
+            this.taskRunner = taskRunner;
             Container = container;
             MainThread = Thread.CurrentThread;
 
             asyncThreadPool = new AsyncThreadPool(this);
             asyncThreadPool.Start();
-            InternalTasks = new List<SimpleTask>();
+            InternalTasks = new List<ScheduledTask>();
         }
 
         public Thread MainThread { get; }
@@ -40,7 +41,7 @@ namespace Rocket.Console.Scheduling
             if (!@object.IsAlive)
                 return null;
 
-            SimpleTask task = new SimpleTask(++taskIds, taskName, this, @object, action, target);
+            ScheduledTask task = new ScheduledTask(++taskIds, taskName, this, @object, action, target);
 
             TriggerEvent(task, async (sender, @event) =>
             {
@@ -60,7 +61,7 @@ namespace Rocket.Console.Scheduling
             if (!@object.IsAlive)
                 return null;
 
-            SimpleTask task = new SimpleTask(++taskIds, taskName, this, @object, action,
+            ScheduledTask task = new ScheduledTask(++taskIds, taskName, this, @object, action,
                 runAsync ? ExecutionTargetContext.Async : ExecutionTargetContext.Sync)
             {
                 StartTime = date
@@ -75,7 +76,7 @@ namespace Rocket.Console.Scheduling
             if (!@object.IsAlive)
                 return null;
 
-            SimpleTask task = new SimpleTask(++taskIds, taskName, this, @object, action,
+            ScheduledTask task = new ScheduledTask(++taskIds, taskName, this, @object, action,
                 runAsync ? ExecutionTargetContext.Async : ExecutionTargetContext.Sync)
             {
                 Period = period
@@ -93,11 +94,11 @@ namespace Rocket.Console.Scheduling
             if (task.IsFinished || task.IsCancelled)
                 return false;
 
-            ((SimpleTask)task).IsCancelled = true;
+            ((ScheduledTask)task).IsCancelled = true;
             return true;
         }
 
-        protected virtual void TriggerEvent(SimpleTask task, EventCallback cb = null)
+        protected virtual void TriggerEvent(ScheduledTask task, EventCallback cb = null)
         {
             asyncThreadPool.EventWaitHandle.Set();
 
@@ -128,7 +129,7 @@ namespace Rocket.Console.Scheduling
 
         protected internal virtual void RunTask(IScheduledTask t)
         {
-            var task = (SimpleTask)t;
+            var task = (ScheduledTask)t;
             if (!task.IsReferenceAlive)
             {
                 InternalTasks.Remove(task);
@@ -136,47 +137,56 @@ namespace Rocket.Console.Scheduling
             }
 
             if (!t.Owner.IsAlive)
+            {
                 return;
+            }
 
             if (task.StartTime != null && task.StartTime > DateTime.UtcNow)
+            {
                 return;
+            }
 
             if (task.EndTime != null && task.EndTime < DateTime.UtcNow)
             {
                 task.EndTime = DateTime.UtcNow;
                 RemoveTask(task);
-                return;
+                {
+                    return;
+                }
             }
 
             if (task.Period != null
                 && task.LastRunTime != null
                 && DateTime.UtcNow - task.LastRunTime < task.Period)
+            {
                 return;
-
-            try
-            {
-                task.Action();
-                task.LastRunTime = DateTime.UtcNow;
-            }
-            catch (Exception e)
-            {
-                Container.Resolve<ILogger>().LogError("An exception occured in task: " + task.Name, e);
             }
 
-            if (task.ExecutionTarget == ExecutionTargetContext.NextFrame
-                || task.ExecutionTarget == ExecutionTargetContext.NextPhysicsUpdate
-                || task.ExecutionTarget == ExecutionTargetContext.Async
-                || task.ExecutionTarget == ExecutionTargetContext.NextAsyncFrame
-                || task.ExecutionTarget == ExecutionTargetContext.Sync)
+            taskRunner.Run(task, (taskException) =>
             {
-                task.EndTime = DateTime.UtcNow;
-                RemoveTask(task);
-            }
+                if (taskException != null)
+                {
+                    Container.Resolve<ILogger>().LogError("An exception occured in task: " + task.Name, taskException);
+                    task.EndTime = DateTime.UtcNow;
+                    RemoveTask(task);
+                    return;
+                }
+
+                if (task.ExecutionTarget == ExecutionTargetContext.NextFrame
+                    || task.ExecutionTarget == ExecutionTargetContext.NextPhysicsUpdate
+                    || task.ExecutionTarget == ExecutionTargetContext.Async
+                    || task.ExecutionTarget == ExecutionTargetContext.NextAsyncFrame
+                    || task.ExecutionTarget == ExecutionTargetContext.Sync)
+                {
+                    task.EndTime = DateTime.UtcNow;
+                    RemoveTask(task);
+                }
+            });
         }
 
         protected virtual void RemoveTask(IScheduledTask task)
         {
-            InternalTasks.Remove((SimpleTask)task);
+            InternalTasks.Remove((ScheduledTask)task);
         }
 
         public void Dispose()

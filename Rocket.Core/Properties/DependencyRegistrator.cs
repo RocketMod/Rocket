@@ -6,6 +6,7 @@ using Rocket.API.I18N;
 using Rocket.API.Logging;
 using Rocket.API.Permissions;
 using Rocket.API.Plugins;
+using Rocket.API.Scheduling;
 using Rocket.API.User;
 using Rocket.Core.Commands;
 using Rocket.Core.Configuration;
@@ -18,6 +19,7 @@ using Rocket.Core.Logging;
 using Rocket.Core.Permissions;
 using Rocket.Core.Plugins;
 using Rocket.Core.Plugins.NuGet;
+using Rocket.Core.Scheduling;
 using Rocket.Core.User;
 
 namespace Rocket.Core.Properties
@@ -26,6 +28,8 @@ namespace Rocket.Core.Properties
     {
         public void Register(IDependencyContainer container, IDependencyResolver resolver)
         {
+            container.RegisterSingletonType<ITaskRunner, TaskRunnerProxy>();
+            container.RegisterSingletonType<ITaskScheduler, DefaultTaskScheduler>();
             container.RegisterType<IConfiguration, YamlConfiguration>("yaml", null);
             container.RegisterType<IConfiguration, JsonConfiguration>("json");
             container.RegisterType<IConfiguration, XmlConfiguration>("xml");

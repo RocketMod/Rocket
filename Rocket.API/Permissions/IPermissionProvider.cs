@@ -18,7 +18,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target whichs permissions to get.</param>
         /// <param name="inherit">Defines if the parent groups permissions should be included.</param>
         /// <returns>A list of all permissions of the target.</returns>
-        Task<IEnumerable<string>> GetGrantedPermissionsAsync(IPermissionEntity target, bool inherit = true);
+        Task<IEnumerable<string>> GetGrantedPermissionsAsync(IPermissionActor target, bool inherit = true);
 
         /// <summary>
         ///     Gets the denied permissions of the given target.
@@ -26,7 +26,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target whichs denied permissions to get.</param>
         /// <param name="inherit">Defines if the parent groups denied permissions should be included.</param>
         /// <returns>A list of all denied permissions of the target.</returns>
-        Task<IEnumerable<string>> GetDeniedPermissionsAsync(IPermissionEntity target, bool inherit = true);
+        Task<IEnumerable<string>> GetDeniedPermissionsAsync(IPermissionActor target, bool inherit = true);
 
         /// <summary>
         ///     Adds an explicitly granted permission to the target.
@@ -34,7 +34,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <param name="permission">The permission to add.</param>
         /// <returns><b>true</b> if the permission was successfully added; otherwise, <b>false</b>.</returns>
-        Task<bool> AddPermissionAsync(IPermissionEntity target, string permission);
+        Task<bool> AddPermissionAsync(IPermissionActor target, string permission);
 
         /// <summary>
         ///     Adds an explicitly denied permission to the target.
@@ -42,7 +42,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <param name="permission">The denied permission to add.</param>
         /// <returns><b>true</b> if the permission was successfully added; otherwise, <b>false</b>.</returns>
-        Task<bool> AddDeniedPermissionAsync(IPermissionEntity target, string permission);
+        Task<bool> AddDeniedPermissionAsync(IPermissionActor target, string permission);
 
         /// <summary>
         ///     Removes an explicitly granted permission from the target.
@@ -50,7 +50,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <param name="permission">The permission to remove.</param>
         /// <returns><b>true</b> if the permission was successfully removed; otherwise, <b>false</b>.</returns>
-        Task<bool> RemovePermissionAsync(IPermissionEntity target, string permission);
+        Task<bool> RemovePermissionAsync(IPermissionActor target, string permission);
 
         /// <summary>
         ///     Removes an explicitly denied permission from the target.
@@ -58,7 +58,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target.</param>
         /// <param name="permission">The permission to remove.</param>
         /// <returns><b>true</b> if the permission was successfully removed; otherwise, <b>false</b>.</returns>
-        Task<bool> RemoveDeniedPermissionAsync(IPermissionEntity target, string permission);
+        Task<bool> RemoveDeniedPermissionAsync(IPermissionActor target, string permission);
 
         /// <summary>
         ///     Gets the primary group of the given user.
@@ -66,7 +66,7 @@ namespace Rocket.API.Permissions
         /// <param name="user">The user wose primary group to get of.</param>
         /// <returns>the primary group if it exists; otherwise, <b>null</b>.</returns>
         [Obsolete("Might be removed")]
-        Task<IPermissionGroup> GetPrimaryGroupAsync(IPermissionEntity user);
+        Task<IPermissionGroup> GetPrimaryGroupAsync(IPermissionActor user);
 
         /// <summary>
         ///     Gets the primary group with the given ID.
@@ -80,7 +80,7 @@ namespace Rocket.API.Permissions
         /// </summary>
         /// <param name="target">The target.</param>
         /// <returns>the inherited groups of the target.</returns>
-        Task<IEnumerable<IPermissionGroup>> GetGroupsAsync(IPermissionEntity target);
+        Task<IEnumerable<IPermissionGroup>> GetGroupsAsync(IPermissionActor target);
 
         /// <summary>
         ///     Gets all registered groups.
@@ -101,7 +101,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to add.</param>
         /// <returns><b>true</b> if the group was successfully added; otherwise, <b>false</b>.</returns>
-        Task<bool> AddGroupAsync(IPermissionEntity target, IPermissionGroup group);
+        Task<bool> AddGroupAsync(IPermissionActor target, IPermissionGroup group);
 
         /// <summary>
         ///     Removes the given group from the user.
@@ -109,7 +109,7 @@ namespace Rocket.API.Permissions
         /// <param name="target">The target to add the group to.</param>
         /// <param name="group">The group to remove.</param>
         /// <returns><b>true</b> if the group was successfully removed; otherwise, <b>false</b>.</returns>
-        Task<bool> RemoveGroupAsync(IPermissionEntity target, IPermissionGroup group);
+        Task<bool> RemoveGroupAsync(IPermissionActor target, IPermissionGroup group);
 
         /// <summary>
         ///     Creates a new permission group.

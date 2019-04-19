@@ -5,7 +5,7 @@ namespace Rocket.Core.Permissions
 {
     public static class PermissionExtensions
     {
-        public static string GetDisplayName(this IPermissionEntity target)
+        public static string GetDisplayName(this IPermissionActor target)
         {
             if (target is IUser user)
             {

@@ -17,7 +17,7 @@ namespace Rocket.Core.Permissions
         ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have access to any of the permissions;
         ///     otherwise, <see cref="PermissionResult.Default" />
         /// </returns>
-        public static async Task<PermissionResult> CheckHasAllPermissionsAsync(this IPermissionChecker permissionChecker, IPermissionEntity target, params string[] permissions)
+        public static async Task<PermissionResult> CheckHasAllPermissionsAsync(this IPermissionChecker permissionChecker, IPermissionActor target, params string[] permissions)
         {
             PermissionResult result = PermissionResult.Grant;
 
@@ -45,7 +45,7 @@ namespace Rocket.Core.Permissions
         ///     <see cref="PermissionResult.Deny" /> if the target explicitly does not have access to any of the permissions;
         ///     otherwise, <see cref="PermissionResult.Default" />
         /// </returns>
-        public static async Task<PermissionResult> CheckHasAnyPermissionAsync(this IPermissionChecker permissionChecker, IPermissionEntity target, params string[] permissions)
+        public static async Task<PermissionResult> CheckHasAnyPermissionAsync(this IPermissionChecker permissionChecker, IPermissionActor target, params string[] permissions)
         {
             foreach (string permission in permissions)
             {
