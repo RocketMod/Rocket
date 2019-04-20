@@ -81,10 +81,10 @@ namespace Rocket.Core.Commands.RocketCommands
                                             IUser targetUser, IPermissionGroup groupToUpdate)
         {
             if (await permissions.AddGroupAsync(targetUser, groupToUpdate))
-                await user.SendMessageAsync($"Successfully added {targetUser:Name} to \"{groupToUpdate:Name}\"!",
+                await user.SendMessageAsync($"Successfully added {targetUser.DisplayName} to \"{groupToUpdate.Name}\"!",
                     Color.DarkGreen);
             else
-                await user.SendMessageAsync($"Failed to add {targetUser:Name} to \"{groupToUpdate:Name}\"!", Color.Red);
+                await user.SendMessageAsync($"Failed to add {targetUser.DisplayName} to \"{groupToUpdate.Name}\"!", Color.Red);
         }
     }
 
@@ -99,10 +99,10 @@ namespace Rocket.Core.Commands.RocketCommands
                                             IUser targetUser, IPermissionGroup groupToUpdate)
         {
             if (await permissions.RemoveGroupAsync(targetUser, groupToUpdate))
-                await user.SendMessageAsync($"Successfully removed {targetUser:Name} from \"{groupToUpdate:Name}\"!",
+                await user.SendMessageAsync($"Successfully removed {targetUser.DisplayName} from \"{groupToUpdate.Name}\"!",
                     Color.DarkGreen);
             else
-                await user.SendMessageAsync($"Failed to remove {targetUser:Name} from \"{groupToUpdate:Name}\"!",
+                await user.SendMessageAsync($"Failed to remove {targetUser.DisplayName} from \"{groupToUpdate.Name}\"!",
                     Color.Red);
         }
     }
