@@ -36,10 +36,6 @@
     </ProjectReference>
     <ProjectReference Include="..\Rocket.Runtime\Rocket.Runtime.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Scheduling\" />
-  </ItemGroup>
   <PropertyGroup>
     <DefineConstants Condition="$(NuGetBootstrap) == 'true'">NUGET_BOOTSTRAP</DefineConstants>
   </PropertyGroup>

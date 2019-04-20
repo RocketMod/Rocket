@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -7,7 +6,9 @@ using Rocket.API;
 using Rocket.API.Commands;
 using Rocket.API.Logging;
 using Rocket.API.Plugins;
+using Rocket.API.Scheduling;
 using Rocket.Core.Logging;
+using Rocket.Core.Scheduling;
 using Rocket.Core.User;
 using Color = System.Drawing.Color;
 
@@ -21,8 +22,9 @@ namespace Rocket.Console
         }
 
         private ILogger logger;
+        private AsyncTaskRunner syncTaskRunner;
+        private AsyncTaskRunner physicsTaskRunner;
 
-        public IEnumerable<string> Capabilities => new List<string>();
         public string Name => "Rocket.Console";
 
         public string WorkingDirectory { get; set; } = Path.Combine(Environment.CurrentDirectory, "Rocket");
@@ -32,6 +34,13 @@ namespace Rocket.Console
             logger = runtime.Container.Resolve<ILogger>();
 
             await runtime.Container.Resolve<IPluginLoader>().InitAsync();
+            var taskScheduler = runtime.Container.Resolve<ITaskScheduler>();
+            syncTaskRunner = new AsyncTaskRunner(taskScheduler, ExecutionTargetSide.SyncFrame);
+            syncTaskRunner.Start();
+
+            physicsTaskRunner = new AsyncTaskRunner(taskScheduler, ExecutionTargetSide.SyncFrame);
+            physicsTaskRunner.Start();
+
             ICommandHandler cmdHandler = runtime.Container.Resolve<ICommandHandler>();
 
             Directory.SetCurrentDirectory(WorkingDirectory);
@@ -68,6 +77,9 @@ namespace Rocket.Console
 
         public async Task ShutdownAsync()
         {
+            syncTaskRunner?.Dispose();
+            physicsTaskRunner?.Dispose();
+
             Environment.Exit(0);
         }
 
