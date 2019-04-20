@@ -1,13 +1,15 @@
 ﻿using NuGet.Common;
 using NuGet.Packaging.Core;
 using Rocket.NuGet;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Nito.AsyncEx;
 
 namespace Rocket
 {
+    // NOTE TO DEVELOPER: THIS CLASS SHOULD NOT REFERENCE *ANY* OTHER ROCKET CODE!
+    // RocketMod is not loaded at this sage.
     /// <summary>
     ///     This class is responsible for downloading Rocket.Core, Rocket.API and the host assembly. <br/>
     ///     After download, it will boot RocketMod and then initialize the IHost interface.
@@ -24,6 +26,15 @@ namespace Rocket
             ILogger logger = null)
         {
             await BootstrapAsync(rocketFolder, new List<string> { packageId }, allowPrereleaseVersions, repository, logger);
+        }
+
+        public void Bootstrap(string rocketFolder,
+                              IEnumerable<string> packageIds,
+                              bool allowPrereleaseVersions = false,
+                              string repository = DefaultNugetRepository,
+                              ILogger logger = null)
+        {
+            AsyncContext.Run(() => BootstrapAsync(rocketFolder, packageIds, allowPrereleaseVersions, repository, logger));
         }
 
         public async Task BootstrapAsync(

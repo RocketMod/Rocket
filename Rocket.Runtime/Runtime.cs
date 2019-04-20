@@ -8,22 +8,15 @@ using Rocket.Core.Configuration;
 using Rocket.Core.DependencyInjection;
 using Rocket.Core.Logging;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Rocket.Core.Extensions;
+using Rocket.Core.Scheduling;
 
 namespace Rocket
 {
     public class Runtime : IRuntime
     {
-        public Runtime()
-        {
-            // non public constructor
-        }
-
-        public IDependencyResolver Resolver { get; private set; }
-
         public IDependencyContainer Container { get; private set; }
 
         public bool IsAlive => true;
@@ -50,11 +43,16 @@ namespace Rocket
 
         public Version Version { get; private set; }
 
+        public void Init()
+        {
+            AsyncHelper.RunSync(InitAsync);
+        }
+
         public async Task InitAsync()
         {
             Container = new UnityDependencyContainer();
-            Container.RegisterInstance<IRuntime>(this);
-            Container.RegisterSingletonType<ILogger, NullLogger>();
+            Container.AddTransient<IRuntime>(this);
+            Container.AddSingleton<ILogger, NullLogger>();
 
             var assembly = typeof(Runtime).Assembly.FullName;
             ReflectionExtensions.GetVersionIndependentName(assembly, out string extactedVersion);
@@ -85,7 +83,7 @@ namespace Rocket
             {
                 // use ANSI logging
                 if ((isLinux && mode.Equals("Default", StringComparison.OrdinalIgnoreCase)) || mode.Equals("ANSI", StringComparison.OrdinalIgnoreCase))
-                    Container.RegisterSingletonType<ILogger, AnsiConsoleLogger>("console_logger");
+                    Container.AddSingleton<ILogger, AnsiConsoleLogger>("console_logger");
 
                 // use RGB logging (windows only)
                 //else if (!isLinux && (mode.Equals("Default", StringComparison.OrdinalIgnoreCase) || mode.Equals("RGB", StringComparison.OrdinalIgnoreCase)))
@@ -139,7 +137,7 @@ namespace Rocket
                 string logsDirectory = Path.Combine(WorkingDirectory, "Logs");
                 if (!Directory.Exists(logsDirectory))
                     Directory.CreateDirectory(logsDirectory);
-                Container.RegisterSingletonType<ILogger, FileLogger>("default_file_logger");
+                Container.AddSingleton<ILogger, FileLogger>("default_file_logger");
                 FileLogger fl = (FileLogger)Container.Resolve<ILogger>("default_file_logger");
                 fl.File = Path.Combine(logsDirectory, "Rocket.log");
                 fl.LogInformation(rocketInitializeMessage, Color.DarkGreen);

@@ -15,6 +15,9 @@
     <FileVersion>0.0.0.0</FileVersion>
     <NoWarn>1591;1998</NoWarn>
   </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Nito.AsyncEx.Context" Version="5.0.0" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Rocket.API\Rocket.API.csproj">
