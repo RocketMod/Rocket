@@ -1,58 +1,64 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using Rocket.API.Scheduling;
 
 namespace Rocket.Core.Scheduling
 {
-    public class AsyncThreadPool
+    public class AsyncTaskRunner : IDisposable
     {
-        private readonly DefaultTaskScheduler taskScheduler;
-        public EventWaitHandle EventWaitHandle { get; }
-        public AsyncThreadPool(DefaultTaskScheduler scheduler)
+        private readonly ITaskScheduler taskScheduler;
+        private readonly ExecutionTargetSide executionSide;
+        protected EventWaitHandle EventWaitHandle { get; set; }
+
+        public virtual bool IsRunning => isRunning;
+
+        private volatile bool isRunning;
+        private Thread taskThread;
+
+        public AsyncTaskRunner(ITaskScheduler taskScheduler, ExecutionTargetSide executionSide)
         {
-            taskScheduler = scheduler;
+            this.taskScheduler = taskScheduler;
+            this.executionSide = executionSide;
+
             EventWaitHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
         }
 
-        private Thread taskThread;
-        private bool _run;
-
-        public void Start()
+        public virtual void Start()
         {
-            _run = true;
-            taskThread = new Thread(ContinousThreadLoop);
+            if (isRunning)
+            {
+                return;
+            }
+
+            isRunning = true;
+            taskThread = new Thread(ThreadLoop);
             taskThread.Start();
         }
 
-        public void Stop()
+        public virtual void Stop()
         {
-            _run = false;
+            if (!isRunning)
+            {
+                return;
+            }
+
+            isRunning = false;
             taskThread = null;
         }
 
-        private void ContinousThreadLoop()
+        public virtual void NotifyTaskScheduled()
         {
-            while (_run)
+            EventWaitHandle.Set();
+        }
+
+        protected virtual void ThreadLoop()
+        {
+            while (isRunning)
             {
-                var cpy = taskScheduler.Tasks.Where(c => !c.IsFinished && !c.IsCancelled).ToList(); // we need a copy because the task list may be modified at runtime
+                taskScheduler.RunFrameUpdate(executionSide);
 
-                foreach (IScheduledTask task in cpy)
-                {
-                    if (task.Period == null || (task.Period != null && (task.ExecutionTarget != ExecutionTargetContext.Async && task.ExecutionTarget != ExecutionTargetContext.Sync)))
-                        if (task.ExecutionTarget != ExecutionTargetContext.EveryAsyncFrame && task.ExecutionTarget != ExecutionTargetContext.EveryFrame)
-                            continue;
-
-                    taskScheduler.RunTask(task);
-                }
-
-                foreach (IScheduledTask task in cpy)
-                {
-                    if (task.ExecutionTarget != ExecutionTargetContext.NextAsyncFrame && task.ExecutionTarget != ExecutionTargetContext.NextFrame &&
-                        task.ExecutionTarget != ExecutionTargetContext.Async && task.ExecutionTarget != ExecutionTargetContext.Sync)
-                        continue;
-
-                    taskScheduler.RunTask(task);
-                }
+                var cpy = taskScheduler.Tasks.Where(c => !c.IsFinished).ToList(); // we need a copy because the task list may be modified
 
                 if (cpy.Count == 0)
                 {
@@ -61,6 +67,16 @@ namespace Rocket.Core.Scheduling
 
                 Thread.Sleep(20);
             }
+        }
+
+        public virtual void Dispose()
+        {
+            if (isRunning)
+            {
+                Stop();
+            }
+
+            EventWaitHandle?.Dispose();
         }
     }
 }

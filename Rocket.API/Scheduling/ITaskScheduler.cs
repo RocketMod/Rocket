@@ -53,5 +53,11 @@ namespace Rocket.API.Scheduling
         /// <param name="runAsync">Defines if the task should run in a separate thread.</param>
         /// <param name="taskName">The tasks human friendly name.</param>
         IScheduledTask SchedulePeriodically(ILifecycleObject @object, Action action, string taskName, TimeSpan period, TimeSpan? delay = null, bool runAsync = false);
+
+        /// <summary>
+        /// Triggers a frame update. Should only be called by the game implementation.
+        /// </summary>
+        /// <param name="target">The target frame event to trigger.</param>
+        void RunFrameUpdate(ExecutionTargetSide target);
     }
 }

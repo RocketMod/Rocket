@@ -45,4 +45,23 @@
         /// </summary>
         Async
     }
+
+    /// <summary>
+    /// Represents the execution target sides
+    /// </summary>
+    public enum ExecutionTargetSide
+    {
+        /// <summary>
+        /// Main Thread frames
+        /// </summary>
+        SyncFrame,
+        /// <summary>
+        /// Async Thread frames
+        /// </summary>
+        AsyncFrame,
+        /// <summary>
+        /// Physics Thread frames
+        /// </summary>
+        PhsyicsFrame
+    }
 }

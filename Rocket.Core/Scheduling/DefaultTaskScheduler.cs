@@ -13,21 +13,19 @@ namespace Rocket.Core.Scheduling
 {
     public class DefaultTaskScheduler : ITaskScheduler, IDisposable
     {
-        private readonly ITaskRunner taskRunner;
         protected IDependencyContainer Container { get; set; }
         protected List<ScheduledTask> InternalTasks { get; set; }
 
         private volatile int taskIds;
-        private readonly AsyncThreadPool asyncThreadPool;
+        private readonly AsyncTaskRunner asyncTaskRunner;
 
-        public DefaultTaskScheduler(IDependencyContainer container, ITaskRunner taskRunner)
+        public DefaultTaskScheduler(IDependencyContainer container)
         {
-            this.taskRunner = taskRunner;
             Container = container;
             MainThread = Thread.CurrentThread;
 
-            asyncThreadPool = new AsyncThreadPool(this);
-            asyncThreadPool.Start();
+            asyncTaskRunner = new AsyncTaskRunner(this, ExecutionTargetSide.AsyncFrame);
+            asyncTaskRunner.Start();
             InternalTasks = new List<ScheduledTask>();
         }
 
@@ -89,6 +87,46 @@ namespace Rocket.Core.Scheduling
             return task;
         }
 
+        public void RunFrameUpdate(ExecutionTargetSide target)
+        {
+            for (int index = 0; index < InternalTasks.Count; index++)
+            {
+                var task = InternalTasks[index];
+                if (task.ExecutionTarget == ExecutionTargetContext.NextFrame
+                    || task.ExecutionTarget == ExecutionTargetContext.EveryFrame)
+                {
+                    if (target != ExecutionTargetSide.SyncFrame)
+                    {
+                        continue;
+                    }
+
+                    RunTask(task);
+                }
+
+                if (task.ExecutionTarget == ExecutionTargetContext.NextPhysicsUpdate
+                    || task.ExecutionTarget == ExecutionTargetContext.EveryPhysicsUpdate)
+                {
+                    if (target != ExecutionTargetSide.PhsyicsFrame)
+                    {
+                        continue;
+                    }
+
+                    RunTask(task);
+                }
+
+                if (task.ExecutionTarget == ExecutionTargetContext.NextAsyncFrame
+                    || task.ExecutionTarget == ExecutionTargetContext.EveryAsyncFrame)
+                {
+                    if (target != ExecutionTargetSide.AsyncFrame)
+                    {
+                        continue;
+                    }
+
+                    RunTask(task);
+                }
+            }
+        }
+
         public virtual bool CancelTask(IScheduledTask task)
         {
             if (task.IsFinished || task.IsCancelled)
@@ -100,7 +138,12 @@ namespace Rocket.Core.Scheduling
 
         protected virtual void TriggerEvent(ScheduledTask task, EventCallback cb = null)
         {
-            asyncThreadPool.EventWaitHandle.Set();
+            if (task.ExecutionTarget == ExecutionTargetContext.Async
+                || task.ExecutionTarget == ExecutionTargetContext.NextAsyncFrame
+                || task.ExecutionTarget == ExecutionTargetContext.EveryAsyncFrame)
+            {
+                asyncTaskRunner.NotifyTaskScheduled();
+            }
 
             TaskScheduleEvent e = new TaskScheduleEvent(task);
             if (!(task.Owner is IEventEmitter owner))
@@ -162,26 +205,27 @@ namespace Rocket.Core.Scheduling
                 return;
             }
 
-            taskRunner.Run(task, (taskException) =>
+            try
             {
-                if (taskException != null)
-                {
-                    Container.Resolve<ILogger>().LogError("An exception occured in task: " + task.Name, taskException);
-                    task.EndTime = DateTime.UtcNow;
-                    RemoveTask(task);
-                    return;
-                }
 
-                if (task.ExecutionTarget == ExecutionTargetContext.NextFrame
-                    || task.ExecutionTarget == ExecutionTargetContext.NextPhysicsUpdate
-                    || task.ExecutionTarget == ExecutionTargetContext.Async
-                    || task.ExecutionTarget == ExecutionTargetContext.NextAsyncFrame
-                    || task.ExecutionTarget == ExecutionTargetContext.Sync)
-                {
-                    task.EndTime = DateTime.UtcNow;
-                    RemoveTask(task);
-                }
-            });
+            }
+            catch (Exception ex)
+            {
+                Container.Resolve<ILogger>().LogError("An exception occured in task: " + task.Name, ex);
+                task.EndTime = DateTime.UtcNow;
+                RemoveTask(task);
+                return;
+            }
+
+            if (task.ExecutionTarget == ExecutionTargetContext.NextFrame
+                || task.ExecutionTarget == ExecutionTargetContext.NextPhysicsUpdate
+                || task.ExecutionTarget == ExecutionTargetContext.Async
+                || task.ExecutionTarget == ExecutionTargetContext.NextAsyncFrame
+                || task.ExecutionTarget == ExecutionTargetContext.Sync)
+            {
+                task.EndTime = DateTime.UtcNow;
+                RemoveTask(task);
+            }
         }
 
         protected virtual void RemoveTask(IScheduledTask task)
@@ -191,7 +235,7 @@ namespace Rocket.Core.Scheduling
 
         public void Dispose()
         {
-            asyncThreadPool.Stop();
+            asyncTaskRunner?.Dispose();
         }
     }
 }
