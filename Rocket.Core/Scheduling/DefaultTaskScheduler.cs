@@ -106,7 +106,7 @@ namespace Rocket.Core.Scheduling
                 if (task.ExecutionTarget == ExecutionTargetContext.NextPhysicsUpdate
                     || task.ExecutionTarget == ExecutionTargetContext.EveryPhysicsUpdate)
                 {
-                    if (target != ExecutionTargetSide.PhsyicsFrame)
+                    if (target != ExecutionTargetSide.PhysicsFrame)
                     {
                         continue;
                     }

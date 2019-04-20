@@ -62,6 +62,6 @@
         /// <summary>
         /// Physics Thread frames
         /// </summary>
-        PhsyicsFrame
+        PhysicsFrame
     }
 }
