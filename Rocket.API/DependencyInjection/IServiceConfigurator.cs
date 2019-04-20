@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-
-namespace Rocket.API.DependencyInjection
+﻿namespace Rocket.API.DependencyInjection
 {
     /// <summary>
     ///     Registers services. The dependency registrator is automatically constructed and called before any plugin loads.

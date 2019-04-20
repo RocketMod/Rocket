@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.API.DependencyInjection;
 using Rocket.API.User;
 using Rocket.Core.User;
