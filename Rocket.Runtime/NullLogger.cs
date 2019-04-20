@@ -5,8 +5,8 @@ namespace Rocket
 {
     public class NullLogger : ILogger
     {
-        public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                        params object[] arguments) { }
+        public void Log(LogLevel level, object message, Exception exception = null, params object[] arguments)
+        { }
 
         public bool IsEnabled(LogLevel level) => false;
 
