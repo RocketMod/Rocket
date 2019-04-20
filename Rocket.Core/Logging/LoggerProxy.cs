@@ -10,10 +10,12 @@ namespace Rocket.Core.Logging
     {
         public LoggerProxy(IDependencyContainer container) : base(container) { }
 
-        public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                        params object[] arguments)
+        public void Log(LogLevel level, object message, Exception exception = null, params object[] arguments)
         {
-            foreach (ILogger service in ProxiedServices) service.Log(message, level, exception, arguments);
+            foreach (ILogger service in ProxiedServices)
+            {
+                service.Log(level, message, exception, arguments);
+            }
         }
 
         public bool IsEnabled(LogLevel level)

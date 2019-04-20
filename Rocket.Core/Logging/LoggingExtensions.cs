@@ -12,7 +12,7 @@ namespace Rocket.Core.Logging
 
         public static void LogTrace(this ILogger logger, string message, Exception exception, params object[] arguments)
         {
-            logger.Log(message, LogLevel.Trace, exception, arguments);
+            logger.Log(LogLevel.Trace, message, exception, arguments);
         }
 
         public static void LogDebug(this ILogger logger, string message, params object[] arguments)
@@ -22,7 +22,7 @@ namespace Rocket.Core.Logging
 
         public static void LogDebug(this ILogger logger, string message, Exception exception, params object[] arguments)
         {
-            logger.Log(message, LogLevel.Debug, exception, arguments);
+            logger.Log(LogLevel.Debug, message, exception, arguments);
         }
 
         public static void LogNative(this ILogger logger, string message, params object[] arguments)
@@ -33,7 +33,7 @@ namespace Rocket.Core.Logging
         public static void LogNative(this ILogger logger, string message, Exception exception,
                                      params object[] arguments)
         {
-            logger.Log(message, LogLevel.Game, exception, arguments);
+            logger.Log(LogLevel.Game, message, exception, arguments);
         }
 
         public static void LogInformation(this ILogger logger, string message, params object[] arguments)
@@ -44,7 +44,7 @@ namespace Rocket.Core.Logging
         public static void LogInformation(this ILogger logger, string message, Exception exception,
                                           params object[] arguments)
         {
-            logger.Log(message, LogLevel.Information, exception, arguments);
+            logger.Log(LogLevel.Information, message, exception, arguments);
         }
 
         public static void LogWarning(this ILogger logger, string message, params object[] arguments)
@@ -55,7 +55,7 @@ namespace Rocket.Core.Logging
         public static void LogWarning(this ILogger logger, string message, Exception exception,
                                       params object[] arguments)
         {
-            logger.Log(message, LogLevel.Warning, exception, arguments);
+            logger.Log(LogLevel.Warning, message, exception, arguments);
         }
 
         public static void LogError(this ILogger logger, string message, params object[] arguments)
@@ -65,7 +65,7 @@ namespace Rocket.Core.Logging
 
         public static void LogError(this ILogger logger, string message, Exception exception, params object[] arguments)
         {
-            logger.Log(message, LogLevel.Error, exception, arguments);
+            logger.Log(LogLevel.Error, message, exception, arguments);
         }
 
         public static void LogFatal(this ILogger logger, string message, params object[] arguments)
@@ -75,7 +75,7 @@ namespace Rocket.Core.Logging
 
         public static void LogFatal(this ILogger logger, string message, Exception exception, params object[] arguments)
         {
-            logger.Log(message, LogLevel.Fatal, exception, arguments);
+            logger.Log(LogLevel.Fatal, message, exception, arguments);
         }
     }
 }

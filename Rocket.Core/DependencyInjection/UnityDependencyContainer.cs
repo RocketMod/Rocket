@@ -45,7 +45,7 @@ namespace Rocket.Core.DependencyInjection
         public IDependencyContainer CreateChildContainer() => new UnityDependencyContainer(this);
         public IDependencyContainer ParentContainer { get; }
 
-        public void RegisterSingletonType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
+        public void AddSingleton<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(TInterface)))
                 Logger?.LogTrace("\t\tRegistering singleton: <"
@@ -66,10 +66,10 @@ namespace Rocket.Core.DependencyInjection
 
             TInterface instance = container.Resolve<TInterface>(primaryName);
             foreach (string name in pendingNames)
-                RegisterInstance(instance, name);
+                AddTransient(instance, name);
         }
 
-        public void RegisterSingletonInstance<TInterface>(TInterface value, params string[] mappingNames)
+        public void AddSingleton<TInterface>(TInterface value, params string[] mappingNames)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(TInterface)))
                 Logger?.LogTrace("\t\tRegistering singleton instance: <"
@@ -87,7 +87,7 @@ namespace Rocket.Core.DependencyInjection
                 container.RegisterInstance(mappingName, value, new ContainerControlledLifetimeManager());
         }
 
-        public void RegisterType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
+        public void AddTransient<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(TInterface)))
                 Logger?.LogTrace("\t\tRegistering type: <"
@@ -105,7 +105,7 @@ namespace Rocket.Core.DependencyInjection
                 container.RegisterType<TInterface, TClass>(mappingName);
         }
 
-        public void RegisterInstance<TInterface>(TInterface value, params string[] mappingNames)
+        public void AddTransient<TInterface>(TInterface value, params string[] mappingNames)
         {
             if (!typeof(ILogger).IsAssignableFrom(typeof(TInterface)))
                 Logger?.LogTrace("\t\tRegistering type instance: <"
@@ -123,12 +123,12 @@ namespace Rocket.Core.DependencyInjection
                 container.RegisterInstance(mappingName, value);
         }
 
-        public void UnregisterType<T>(params string[] mappingNames)
+        public void Remove<T>(params string[] mappingNames)
         {
-            UnregisterType(typeof(T), mappingNames);
+            Remove(typeof(T), mappingNames);
         }
 
-        public void UnregisterType(Type type, params string[] mappingNames)
+        public void Remove(Type type, params string[] mappingNames)
         {
             foreach (IContainerRegistration registration in container.Registrations
                                                                     .Where(p => p.RegisteredType == type

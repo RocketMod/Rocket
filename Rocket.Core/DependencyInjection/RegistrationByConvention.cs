@@ -45,10 +45,10 @@ namespace Rocket.Core.DependencyInjection
             }
 
             logger?.LogTrace("Registering assembly: " + assembly.FullName);
-            foreach (Type type in assembly.GetTypesWithInterface<IDependencyRegistrator>())
+            foreach (Type type in assembly.GetTypesWithInterface<IServiceConfigurator>())
             {
-                logger?.LogTrace("\tRegistering from IDependencyRegistrator: " + type.FullName);
-                ((IDependencyRegistrator)Activator.CreateInstance(type)).Register(container, resolver);
+                logger?.LogTrace("\tRegistering from IServiceConfigurator: " + type.FullName);
+                ((IServiceConfigurator)Activator.CreateInstance(type)).ConfigureServices(container);
             }
 
             activatedAssemblies.Add(assembly.FullName);

@@ -53,8 +53,7 @@ namespace Rocket.Core.Logging
 
         public IDependencyContainer Container { get; }
 
-        public void Log(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                        params object[] arguments)
+        public void Log(LogLevel level, object message, Exception exception = null, params object[] arguments)
         {
             if (!IsEnabled(level))
                 return;
@@ -90,8 +89,7 @@ namespace Rocket.Core.Logging
             ignoredLoggingMethods.Add(method);
         }
 
-        public abstract void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
-                                   params object[] bindings);
+        public abstract void OnLog(object message, LogLevel level = LogLevel.Information, Exception exception = null, params object[] bindings);
 
         public static string GetLogLevelPrefix(LogLevel level)
         {

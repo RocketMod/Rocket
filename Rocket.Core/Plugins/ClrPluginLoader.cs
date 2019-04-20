@@ -91,7 +91,9 @@ namespace Rocket.Core.Plugins
             }
 
             foreach (IDependencyContainer childContainer in pluginContainers)
+            {
                 await RegisterAndLoadPluginFromContainer(childContainer);
+            }
         }
 
         protected async Task<bool> RegisterAndLoadPluginFromContainer(IDependencyContainer container)
@@ -101,7 +103,7 @@ namespace Rocket.Core.Plugins
             Logger.LogDebug($"[{GetType().Name}] Trying to load plugin: " + plugin.Name);
 
             PluginCommandProvider cmdProvider = new PluginCommandProvider(plugin);
-            ParentContainer.RegisterSingletonInstance<ICommandProvider>(cmdProvider, plugin.Name);
+            ParentContainer.AddSingleton<ICommandProvider>(cmdProvider, plugin.Name);
 
             var asm = plugin.GetType().Assembly;
             string pluginDir = plugin.WorkingDirectory;
@@ -248,7 +250,7 @@ namespace Rocket.Core.Plugins
                 CommandAttributeWrapper wrapper = new CommandAttributeWrapper(@object, method, cmdAttr,
                     aliasAttrs.Select(c => c.AliasName).ToArray(), supportedTypeAttrs.Select(c => c.Type).ToArray());
 
-                plugin.Container.RegisterSingletonInstance<ICommand>(wrapper, wrapper.Name);
+                plugin.Container.AddSingleton<ICommand>(wrapper, wrapper.Name);
             }
         }
 
@@ -306,7 +308,7 @@ namespace Rocket.Core.Plugins
                 return null;
 
             pluginContainer = Container.CreateChildContainer();
-            pluginContainer.RegisterInstance<IPluginLoader>(this);
+            pluginContainer.AddTransient<IPluginLoader>(this);
 
             IPlugin pluginInstance = (IPlugin)pluginContainer.Activate(pluginType);
             if (pluginInstance == null)
@@ -314,17 +316,17 @@ namespace Rocket.Core.Plugins
                 throw new Exception("Failed to activate: " + pluginType.FullName + ". Is your plugin constructor public?");
             }
 
-            Container.RegisterInstance(pluginInstance, pluginInstance.Name);
+            Container.AddTransient(pluginInstance, pluginInstance.Name);
 
-            pluginContainer.RegisterInstance(pluginInstance);
+            pluginContainer.AddTransient(pluginInstance);
 
             IEnumerable<Type> pluginCommands =
                 pluginInstance.FindTypes<ICommand>(false, c => !typeof(IChildCommand).IsAssignableFrom(c)
                     && c.GetCustomAttributes(typeof(DontAutoRegisterAttribute), true).Length == 0);
-            IEnumerable<Type> dependencyRegistrators = pluginInstance.FindTypes<IDependencyRegistrator>(false);
+            IEnumerable<Type> dependencyRegistrators = pluginInstance.FindTypes<IServiceConfigurator>(false);
 
             foreach (Type registrator in dependencyRegistrators)
-                ((IDependencyRegistrator)Activator.CreateInstance(registrator)).Register(Container, Container);
+                ((IServiceConfigurator)Activator.CreateInstance(registrator)).ConfigureServices(Container);
 
             foreach (Type command in pluginCommands)
             {
@@ -333,7 +335,7 @@ namespace Rocket.Core.Plugins
                     ICommand cmdInstance = (ICommand)pluginContainer.Activate(command);
                     if (cmdInstance != null)
                     {
-                        pluginContainer.RegisterSingletonInstance(cmdInstance, cmdInstance.Name);
+                        pluginContainer.AddSingleton(cmdInstance, cmdInstance.Name);
                     }
                 }
                 catch (Exception ex)

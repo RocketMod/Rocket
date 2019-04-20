@@ -26,7 +26,7 @@ namespace Rocket.API.DependencyInjection
         /// <typeparam name="TInterface">The service interface.</typeparam>
         /// <typeparam name="TClass">The service implementation.</typeparam>
         /// <param name="mappingNames">The mapping names. Include <b>null</b> in mapping names to override default provider.</param>
-        void RegisterType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface;
+        void AddTransient<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface;
 
         /// <summary>
         ///     Registers a singleton service implementation. Singleton implementation instances are shared between all components.
@@ -34,7 +34,7 @@ namespace Rocket.API.DependencyInjection
         /// <typeparam name="TInterface">The service interface.</typeparam>
         /// <typeparam name="TClass">The service implementation.</typeparam>
         /// <param name="mappingNames">The mapping names. Include <b>null</b> in mapping names to override default provider.</param>
-        void RegisterSingletonType<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface;
+        void AddSingleton<TInterface, TClass>(params string[] mappingNames) where TClass : TInterface;
 
         /// <summary>
         ///     Registers a service implementation. These implementation are not be shared between components.
@@ -42,7 +42,7 @@ namespace Rocket.API.DependencyInjection
         /// <typeparam name="TInterface">The service interface.</typeparam>
         /// <param name="value">The service implementation instance.</param>
         /// <param name="mappingNames">The mapping names. Include <b>null</b> in mapping names to override default provider.</param>
-        void RegisterInstance<TInterface>(TInterface value, params string[] mappingNames);
+        void AddTransient<TInterface>(TInterface value, params string[] mappingNames);
 
         /// <summary>
         ///     Registers a singleton service implementation. Singleton implementation instances are shared between all components.
@@ -50,20 +50,20 @@ namespace Rocket.API.DependencyInjection
         /// <typeparam name="TInterface">The service interface.</typeparam>
         /// <param name="value">The service implementation instance.</param>
         /// <param name="mappingNames">The mapping names. Include <b>null</b> in mapping names to override default provider.</param>
-        void RegisterSingletonInstance<TInterface>(TInterface value, params string[] mappingNames);
+        void AddSingleton<TInterface>(TInterface value, params string[] mappingNames);
 
         /// <summary>
         ///     Unregisters a type.
         /// </summary>
         /// <typeparam name="T">The type to unregister.</typeparam>
         /// <param name="mappingNames">The mapping names to unregister. If null or empty it will unregister everything.</param>
-        void UnregisterType<T>(params string[] mappingNames);
+        void Remove<T>(params string[] mappingNames);
 
         /// <summary>
         ///     Unregisters a type.
         /// </summary>
         /// <param name="type">The type to unregister.</param>
         /// <param name="mappingNames">The mapping names to unregister. If null or empty it will unregister everything.</param>
-        void UnregisterType(Type type, params string[] mappingNames);
+        void Remove(Type type, params string[] mappingNames);
     }
 }

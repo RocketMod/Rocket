@@ -15,7 +15,7 @@ namespace Rocket.Core.Logging
             SkipTypeFromLogging(GetType());
         }
 
-        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
+        public override void OnLog(object message, LogLevel level = LogLevel.Information, Exception exception = null,
                                    params object[] bindings)
         {
             if (message != null)
@@ -25,7 +25,7 @@ namespace Rocket.Core.Logging
                 WriteLine(level, exception.ToString(), Color.Red);
         }
 
-        public void WriteLine(LogLevel level, string message, Color? color = null, params object[] bindings)
+        public void WriteLine(LogLevel level, object message, Color? color = null, params object[] bindings)
         {
             lock (OutputLock)
             {
@@ -40,7 +40,7 @@ namespace Rocket.Core.Logging
                     WriteColored("] ", Color.White);
                 }
 
-                WriteLineColored(message, color, bindings);
+                WriteLineColored(message.ToString(), color, bindings);
                 Console.ResetColor();
             }
         }

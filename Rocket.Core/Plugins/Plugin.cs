@@ -75,14 +75,14 @@ namespace Rocket.Core.Plugins
             Name = Name.Replace(" ", "_");
 
             Container = container;
-            container.RegisterSingletonInstance<ILogger>(new LoggerProxy(Container), null, "proxy_logger");
-            Container.RegisterSingletonInstance<IPlugin>(this);
+            container.AddSingleton<ILogger>(new LoggerProxy(Container), null, "proxy_logger");
+            Container.AddSingleton<IPlugin>(this);
 
             WorkingDirectory = Path.Combine(Path.Combine(Runtime.WorkingDirectory, "Plugins"), Name.Replace("_", " "));
 
             IRocketConfigurationProvider rocketConfiguration = Container.Resolve<IRocketConfigurationProvider>();
             if (rocketConfiguration.Configuration.Logging.EnableSeparatePluginLogs)
-                Container.RegisterSingletonType<ILogger, PluginLogger>("plugin_logger");
+                Container.AddSingleton<ILogger, PluginLogger>("plugin_logger");
         }
 
         public virtual async Task SaveConfigurationAsync()

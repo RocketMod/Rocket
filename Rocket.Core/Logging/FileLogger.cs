@@ -76,7 +76,7 @@ namespace Rocket.Core.Logging
             }
         }
 
-        public override void OnLog(string message, LogLevel level = LogLevel.Information, Exception exception = null,
+        public override void OnLog(object message, LogLevel level = LogLevel.Information, Exception exception = null,
                                    params object[] bindings)
         {
             if (string.IsNullOrEmpty(logFile))
@@ -104,7 +104,7 @@ namespace Rocket.Core.Logging
 
             if (message != null)
             {
-                WriteLine(level, message, bindings);
+                WriteLine(level, message.ToString(), bindings);
             }
 
             if (exception != null)

@@ -5,12 +5,12 @@ using Rocket.Tests.Mock.Providers;
 
 namespace Rocket.Tests.Properties
 {
-    public class DependencyRegistrator : IDependencyRegistrator
+    public class ServiceConfigurator : IServiceConfigurator
     {
-        public void Register(IDependencyContainer container, IDependencyResolver resolver)
+        public void ConfigureServices(IDependencyContainer container)
         {
-            container.RegisterSingletonType<IHost, TestHost>();
-            container.RegisterSingletonType<IPlayerManager, TestPlayerManager>();
+            container.AddSingleton<IHost, TestHost>();
+            container.AddSingleton<IPlayerManager, TestPlayerManager>();
         }
     }
 }
