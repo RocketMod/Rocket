@@ -7,6 +7,7 @@ A primary goal of RocketMod is to be inclusive to the largest number of contribu
 This code of conduct outlines our expectations for all those who participate in our community, as well as the consequences for unacceptable behavior.
 
 We invite all those who participate in RocketMod to help us create safe and positive experiences for everyone.
+In order to make this a community approachable for the most of us, conversations in public chat shall be held in english.
 
 ## 2. Open Source Citizenship
 
