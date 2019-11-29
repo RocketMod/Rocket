@@ -13,6 +13,7 @@ RocketMod is available in version 4 (legacy) and version 5.
 
 ## Guides
 [Installing RocketMod 4](https://github.com/RocketMod/Rocket/wiki/Installing-Rocket)
+
 [Fixing issues with RocketMod 4](https://github.com/RocketMod/Rocket/wiki/Fixing-Issues)
 
 ## Implementations
