@@ -56,11 +56,11 @@ Technically the RocketMod repository is Svens property. He is the owner of all c
 all contributors signed a contract to give up their rights on their contribution. Sven did this to protect the community from
 early fragmentation and exploitation, hoping for the developers to have faith in him being maintainer.
 
-From today on i want to resign as maintainer on all RocketMod repos, setting free all code under the MIT license. 
+From today on Sven resigns as maintainer on all RocketMod repos, setting free all code under the MIT license. 
 Enes was fully into his new baby RocketMod 5, but seeing no future in Unturned 3, and having our community consisting of mostly members around that game he also resigns as maintainer.
 
-I already started to tear infrastructure that rested on my shoulders and hope that somebody in the community will continue 
-my efforts. I am available for consulation but won't be afilliated in similar projects in the near future.
+Sven already started to tear infrastructure that rested on his shoulders.We hope that somebody in the community will continue 
+our efforts. Sven is available for consulation but won't be afilliated in similar projects in the near future.
 
 Go create your own RocketMod, find a new name, build a new team and make multiplayer gaming more enjoyable!
 Take our ideas and implementations and use them for good. Its all yours.
