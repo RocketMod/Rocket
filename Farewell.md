@@ -4,7 +4,7 @@ Rocket, later RocketMod started at the end of December 2014.
 ### Beginnings
 Sven "fr34kyn01535" was initially helping "Kunii" with the kLoader.
 The kLoader was an experiment that was built on a loose Unturned 2 game hack framework.
-Technically it consisted of an patcher that would introduce new MSIL instructions into the
+Technically it consisted of an patcher that would inject new MSIL instructions into the
 major Unturned game binaries to allow for loading an additonal payload.
 "Kunii" had no time to put alot of work into this project, so Sven decided to rewrite his attempts
 in order to launch this as a full fledged plugin loader. "Kunii" left the project in early 2015.
@@ -14,10 +14,9 @@ Sven had in mind a big community of plugin creators for Unturned 3 and built the
 Over the years he has created plugin repositories, forums, websites and kept adding new features to 
 RocketMod and his own plugins. RocketMod quickly assimilated all other attempts to "full featured" 
 Unturned 3 extensions by having an easy to understand clean plugin API. 
-Even though I never had a proper documentation, we count over 500 plugins on community websites
-with a few million downloads. Nelson, the game developer of Unturned quickly liked the idea and supported Sven,
-multiplayer servers quickly went to a 75% adoption rate of RocketMod. Nelson rewrote Unturned 3 to automatically
-load RocketMod and stopped obfuscation to support plugin developers add new game mechanics themselves.
+Even though we never had a proper documentation, we count over 500 plugins on community websites
+with a few million downloads. Nelson, the game developer of Unturned quickly liked the idea and supported Sven.
+Nelson rewrote Unturned 3 to automatically load RocketMod and stopped obfuscation to support plugin developers add new game mechanics themselves. Multiplayer servers quickly went to over 75% adoption rate of RocketMod. 
 
 ### Development
 In April 2018 the project had 4 contributors beside Sven, each of them only contributing a single commit. 
@@ -53,7 +52,7 @@ Technically the RocketMod repository was Sven's property. He was the owner of al
 all contributors signed a contract to give up their rights on their contribution. Sven did this to protect the community from
 early fragmentation and exploitation.
 
-As of today, Sven resigns as maintainer on all RocketMod repos, setting free all code under the MIT license. 
+As of today, December 20 2019, Sven resigns as maintainer on all RocketMod repos, setting free all code under the MIT license. 
 Enes will also lay down his work on RocketMod 5. He just finished the first implementation RocketMod 5. Seeing no future in Unturned 3, and having our community consisting of mostly members around that game he also resigns as maintainer.
 
 Sven already started to tear infrastructure that rested on his shoulders. We hope that somebody in the community will continue 
