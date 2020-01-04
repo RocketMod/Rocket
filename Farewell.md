@@ -63,3 +63,7 @@ Take our ideas and implementations and use them for good. Its all yours.
 
 \- Sven Mawby "[fr34kyn01535](https://github.com/fr34kyn01535)"
 \- Enes Sadık Özbek "[Trojaner](https://github.com/Trojaner)"
+
+### & now?
+
+I've kept the Reddit sub at https://www.reddit.com/r/rocketmod/ open, feel free to participate there to talk about the future of RocketMod.
